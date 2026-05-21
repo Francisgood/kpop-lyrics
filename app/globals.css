@@ -11,10 +11,14 @@
   --genius-dark-bg: #1a1a2e;
 }
 
+*, *::before, *::after { box-sizing: border-box; }
+
 body {
   background: var(--genius-bg);
   color: var(--genius-text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 /* Lyrics display */
@@ -157,4 +161,63 @@ body {
 .mukbang-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+/* ── Mobile Responsive ──────────────────────────────────────────────────── */
+
+/* Desktop: hide the mobile nav strip */
+.nav-links-mobile { display: none; }
+
+@media (max-width: 768px) {
+  /* Prevent any element from breaking out of viewport */
+  img, video, iframe, canvas, svg { max-width: 100%; height: auto; }
+
+  /* Nav: hide desktop links, show mobile strip */
+  .nav-links-desktop { display: none !important; }
+  .nav-links-mobile { display: flex !important; }
+
+  /* Hide search bar on mobile (use EXPLORE button instead) */
+  .nav-search-form { display: none; }
+
+  /* Lyric columns: stack vertically */
+  .lyric-line {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  /* Cards should never overflow */
+  .genius-card { overflow-x: hidden; word-break: break-word; }
+
+  /* Artist hero: reduce padding */
+  .artist-hero { padding: 32px 0 24px; }
+
+  /* Reduce heading sizes on mobile */
+  h1 { font-size: clamp(1.6rem, 6vw, 2.8rem) !important; }
+  h2 { font-size: clamp(1.2rem, 5vw, 2rem) !important; }
+}
+
+@media (max-width: 480px) {
+  .btn-yellow { font-size: 0.68rem; padding: 7px 12px; }
+}
+
+/* ── Responsive grid helpers ─────────────────────────────────────────────── */
+.responsive-sidebar-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 48px;
+}
+
+@media (max-width: 900px) {
+  .responsive-sidebar-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* Force network canvas to stay within screen */
+canvas { max-width: 100% !important; }
+
+/* Collabs network: limit height on mobile */
+@media (max-width: 768px) {
+  canvas { height: 300px !important; }
 }

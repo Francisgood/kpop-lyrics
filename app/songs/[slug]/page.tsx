@@ -27,7 +27,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await params;
   const song = await getSong(slug);
-  if (!song) return { title: "Song not found — Aegyo Annotate" };
+  if (!song) return { title: "Song not found — Aegyo Arena" };
 
   const artist      = song.album?.artist?.stageName ?? "";
   const cover       = song.coverArt ?? song.album?.coverArt;
@@ -36,7 +36,7 @@ export async function generateMetadata(
   const description = `${firstKo}  ·  ${firstEn} — Korean lyrics, romanization & English translation with K-pop fan annotations.`;
 
   return {
-    title: `${song.title} — ${artist} | Aegyo Annotate`,
+    title: `${song.title} — ${artist} | Aegyo Arena`,
     description,
     openGraph: {
       title: `${song.title} by ${artist}`,
@@ -94,7 +94,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
       <section style={{ background: "linear-gradient(135deg, #000 0%, #1a1a2e 80%)", color: "#fff", padding: "48px 24px 36px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 12 }}>
-            <Link href="/" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Aegyo Annotate</Link>
+            <Link href="/" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Aegyo Arena</Link>
             {mainArtist && <> / <Link href={`/artists/${mainArtist.slug}`} style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>{mainArtist.stageName}</Link></>}
             {song.album && <> / <Link href={`/artists/${mainArtist?.slug}`} style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>{song.album.title}</Link></>}
             {" / "}{song.title}

@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 export const revalidate = 1800;
 
 export const metadata: Metadata = {
-  title: "K-pop Signals — Aegyo Annotate",
+  title: "K-pop Signals — Aegyo Arena",
   description: "Live K-pop chart data, streaming milestones, Instagram rankings, and breaking artist news.",
 };
 

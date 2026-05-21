@@ -338,7 +338,7 @@ export default function QuizModal({ onClose }: QuizModalProps) {
     pct >= 80   ? "Impressive! You really know your K-pop." :
     pct >= 60   ? "Nice! You've got solid fandom knowledge." :
     pct >= 40   ? "Keep exploring — the K-pop dictionary is waiting." :
-    "Time to deep-dive into Aegyo Annotate!";
+    "Time to deep-dive into Aegyo Arena!";
 
   // ── Shared overlay & panel styles ──────────────────────────────────────────
 
@@ -377,7 +377,7 @@ export default function QuizModal({ onClose }: QuizModalProps) {
         <div style={panel}>
           <button style={closeBtn} onClick={onClose} aria-label="Close">✕</button>
           <div style={{ padding: "36px 32px 32px" }}>
-            <div style={{ fontSize: "0.65rem", color: "var(--genius-yellow)", letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 8 }}>Aegyo Annotate</div>
+            <div style={{ fontSize: "0.65rem", color: "var(--genius-yellow)", letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 8 }}>Aegyo Arena</div>
             <h2 style={{ fontSize: "1.6rem", fontWeight: 800, margin: "0 0 8px" }}>K-pop Quiz</h2>
             <p style={{ color: "#777", fontSize: "0.88rem", marginBottom: 28 }}>
               5 questions · Pick a category to start

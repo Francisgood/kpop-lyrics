@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import CollabNetwork, { type GraphNode, type GraphLink } from "@/components/CollabNetwork";
+import QuizButton from "@/components/QuizButton";
 
 export const revalidate = 1800;
 
@@ -123,7 +124,7 @@ export default async function CollabsPage() {
       </div>
 
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 24px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 48 }}>
+        <div className="responsive-sidebar-grid">
           <div>
             {/* Song Collaborations list */}
             {collabEdges.length > 0 && (
@@ -223,6 +224,21 @@ export default async function CollabsPage() {
           </aside>
         </div>
       </div>
+      {/* Quiz CTA */}
+      <section style={{ background: "#000", padding: "56px 24px", textAlign: "center" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto" }}>
+          <div style={{ fontSize: "0.7rem", color: "var(--genius-yellow)", letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 12 }}>
+            Stan Mode: Activated
+          </div>
+          <h2 style={{ color: "#fff", fontWeight: 800, fontSize: "1.8rem", margin: "0 0 12px" }}>
+            Think you know your collabs?
+          </h2>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.9rem", lineHeight: 1.6, margin: "0 0 28px" }}>
+            Put your knowledge to the test — artist history, lyrics challenges, mukbang moments, and more.
+          </p>
+          <QuizButton />
+        </div>
+      </section>
     </main>
   );
 }

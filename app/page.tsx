@@ -6,10 +6,10 @@ import type { Metadata } from "next";
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Aegyo Annotate — K-pop Lyrics, Translations & Fan Wiki",
+  title: "Aegyo Arena — K-pop Lyrics, Translations & Fan Wiki",
   description: "Korean lyrics with romanization and English translation. Fan-edited annotations, K-pop slang explainers, and artist deep-dives. Updated daily.",
   openGraph: {
-    title: "Aegyo Annotate — K-pop Lyrics, Translations & Fan Wiki",
+    title: "Aegyo Arena — K-pop Lyrics, Translations & Fan Wiki",
     description: "Every lyric. Every meaning. Korean lyrics, fan annotations, and the ultimate K-pop slang dictionary.",
     type: "website",
   },

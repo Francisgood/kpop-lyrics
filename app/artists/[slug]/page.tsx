@@ -53,7 +53,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
       <section className="artist-hero">
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
           <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 20 }}>
-            <Link href="/" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Aegyo Annotate</Link>
+            <Link href="/" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Aegyo Arena</Link>
             {" / "}
             <Link href="/artists" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Artists</Link>
             {" / "}
