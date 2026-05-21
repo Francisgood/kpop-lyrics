@@ -35,6 +35,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/collabs" className="genius-nav" style={{ color: "rgba(255,255,255,0.7)", textDecoration: "none", fontSize: "0.85rem", fontWeight: 600 }}>
                 COLLABS
               </Link>
+              <Link href="/news" className="genius-nav" style={{ color: "rgba(255,255,255,0.7)", textDecoration: "none", fontSize: "0.85rem", fontWeight: 600 }}>
+                SIGNALS
+              </Link>
               <Link href="/define" className="genius-nav" style={{ color: "rgba(255,255,255,0.7)", textDecoration: "none", fontSize: "0.85rem", fontWeight: 600 }}>
                 K-POP TERMS
               </Link>
@@ -62,7 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
             <div>
               <div style={{ fontWeight: 700, fontSize: "0.72rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 12 }}>Discover</div>
-              {[["Artists", "/artists"], ["Collaborations", "/collabs"], ["K-pop Terms", "/define"], ["Search", "/search"]].map(([label, href]) => (
+              {[["Artists", "/artists"], ["Collaborations", "/collabs"], ["Signals", "/news"], ["K-pop Terms", "/define"], ["Search", "/search"]].map(([label, href]) => (
                 <Link key={href} href={href} style={{ display: "block", fontSize: "0.82rem", color: "rgba(255,255,255,0.5)", textDecoration: "none", marginBottom: 8, lineHeight: 1 }}>
                   {label}
                 </Link>
