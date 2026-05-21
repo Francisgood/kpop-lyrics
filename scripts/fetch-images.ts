@@ -13,13 +13,46 @@ const prisma = new PrismaClient();
 // ── Wikipedia title mapping ───────────────────────────────────────────────────
 // Keys must match Artist.slug in the DB.
 export const ARTIST_WIKI: Record<string, string> = {
-  "bts":                 "BTS",
-  "blackpink":           "Blackpink",
-  "twice":               "Twice (group)",
-  "aespa":               "Aespa",
-  "newjeans":            "NewJeans",
-  "seventeen":           "Seventeen (band)",
-  "kiiikiii":            "Kiiikiii",
+  // ── Major groups ────────────────────────────────────────────────────────────
+  "bts":              "BTS",
+  "blackpink":        "Blackpink",
+  "twice":            "Twice (group)",
+  "aespa":            "Aespa",
+  "newjeans":         "NewJeans",
+  "seventeen":        "Seventeen (band)",
+  "kiiikiii":         "Kiiikiii",
+  "ive":              "IVE (group)",
+  "itzy":             "Itzy",
+  "stray-kids":       "Stray Kids",
+  "txt":              "Tomorrow X Together",
+  "enhypen":          "Enhypen",
+  "le-sserafim":      "Le Sserafim",
+  "g-i-dle":          "(G)I-DLE",
+  "ateez":            "Ateez",
+  "red-velvet":       "Red Velvet (group)",
+  "nct-127":          "NCT 127",
+  "nct-dream":        "NCT Dream",
+  "girls-generation": "Girls' Generation",
+  "shinee":           "SHINee",
+  "exo":              "Exo (group)",
+  "mamamoo":          "Mamamoo",
+  "sistar":           "Sistar",
+  "2ne1":             "2NE1",
+  "bigbang":          "Big Bang (South Korean band)",
+  "winner":           "Winner (band)",
+  "ikon":             "iKon",
+  "monsta-x":         "Monsta X",
+  "day6":             "Day6",
+  "got7":             "Got7",
+  "illit":            "Illit (group)",
+  "babymonster":      "Babymonster (group)",
+  "zerobaseone":      "Zerobaseone",
+  "riize":            "Riize",
+  "fx":               "F(x) (group)",
+  "miss-a":           "Miss A",
+  "apink":            "Apink",
+  "nmixx":            "Nmixx",
+  // ── Western / international acts ────────────────────────────────────────────
   "lisa":                "Lisa (rapper)",
   "rosalia":             "Rosalía",
   "doja-cat":            "Doja Cat",
@@ -27,19 +60,70 @@ export const ARTIST_WIKI: Record<string, string> = {
   "future":              "Future (rapper)",
   "megan-thee-stallion": "Megan Thee Stallion",
   "tyla":                "Tyla (singer)",
-  // BTS members
-  "rm-bts":              "RM (rapper)",
-  "jin-bts":             "Jin (singer)",
-  "suga-bts":            "Suga (rapper)",
-  "jhope-bts":           "J-Hope",
-  "jimin-bts":           "Jimin",
-  "v-bts":               "V (singer)",
-  "jungkook-bts":        "Jungkook",
-  // BLACKPINK members
-  "jisoo-blackpink":     "Jisoo",
-  "jennie-blackpink":    "Jennie (rapper)",
-  "rose-blackpink":      "Rosé (singer)",
-  "lisa-blackpink":      "Lisa (rapper)",
+  // ── BTS solos ────────────────────────────────────────────────────────────────
+  "rm-bts":        "RM (rapper)",
+  "jin-bts":       "Jin (singer)",
+  "suga-bts":      "Suga (rapper)",
+  "j-hope-bts":    "J-Hope",
+  "jimin-bts":     "Jimin",
+  "v-bts":         "V (singer)",
+  "jungkook-bts":  "Jungkook",
+  // ── BLACKPINK solos / members ────────────────────────────────────────────────
+  "jisoo-blackpink":  "Jisoo",
+  "jennie-blackpink": "Jennie (rapper)",
+  "rose-blackpink":   "Rosé (singer)",
+  "lisa-blackpink":   "Lisa (rapper)",
+  // ── Other key solos ──────────────────────────────────────────────────────────
+  "iu":       "IU (singer)",
+  // BIGBANG solos
+  "g-dragon": "G-Dragon",
+  "taeyang":  "Taeyang",
+  "top-bigbang": "T.O.P",
+  "daesung":  "Daesung",
+  "seungri":  "Seungri",
+  // ── Key members with solo Wikipedia pages ────────────────────────────────────
+  // TWICE
+  "nayeon-twice":    "Im Na-yeon",
+  "momo-twice":      "Hirai Momo",
+  "sana-twice":      "Minatozaki Sana",
+  "jihyo-twice":     "Park Ji-hyo",
+  "mina-twice":      "Myoui Mina",
+  "tzuyu-twice":     "Chou Tzu-yu",
+  "dahyun-twice":    "Kim Da-hyun",
+  // aespa
+  "karina-aespa":  "Karina (singer)",
+  "winter-aespa":  "Winter (singer)",
+  "giselle-aespa": "Giselle (singer)",
+  // NewJeans
+  "minji-newjeans":   "Kim Min-ji (singer)",
+  "hanni-newjeans":   "Hanni (singer)",
+  "danielle-newjeans":"Danielle (singer)",
+  "haerin-newjeans":  "Kang Hae-rin",
+  // Red Velvet
+  "seulgi-rv": "Seulgi",
+  "wendy-rv":  "Wendy (singer)",
+  "joy-rv":    "Joy (singer)",
+  "yeri-rv":   "Yeri",
+  // IVE
+  "wonyoung-ive": "Jang Won-young",
+  "yujin-ive":    "An Yu-jin",
+  // SEVENTEEN
+  "s-coups-svt":   "S.Coups",
+  "woozi-svt":     "Woozi",
+  "hoshi-svt":     "Hoshi (singer)",
+  "mingyu-svt":    "Mingyu (singer)",
+  // LE SSERAFIM
+  "sakura-lsf":  "Miyawaki Sakura",
+  "chaewon-lsf": "Kim Chae-won",
+  "yunjin-lsf":  "Huh Yun-jin",
+  // MAMAMOO
+  "solar-mamamoo":    "Solar (singer)",
+  "moonbyul-mamamoo": "Moonbyul",
+  "wheein-mamamoo":   "Wheein",
+  // (G)I-DLE
+  "soyeon-gidle": "Soyeon (rapper)",
+  "miyeon-gidle": "Miyeon",
+  "minnie-gidle": "Minnie (singer)",
 };
 
 // Album slug → Wikipedia page title (for album art)
@@ -56,15 +140,80 @@ export const ALBUM_WIKI: Record<string, string> = {
 
 // Album slug → iTunes search term (more reliable for album art)
 export const ALBUM_ITUNES: Record<string, string> = {
+  // BTS
   "map-of-the-soul-persona": "BTS Map of the Soul Persona",
   "love-yourself-answer":    "BTS Love Yourself Answer",
+  // BLACKPINK
   "born-pink":               "BLACKPINK Born Pink",
   "the-album":               "BLACKPINK The Album",
+  // TWICE
   "formula-of-love":         "TWICE Formula of Love",
+  // aespa
   "savage-ep":               "aespa Savage",
+  // NewJeans
   "omg":                     "NewJeans OMG",
+  // LISA
   "lalisa":                  "LISA LALISA",
   "alter-ego":               "LISA Alter Ego",
+  // IVE
+  "ive-eleven":              "IVE ELEVEN",
+  "ive-ive":                 "IVE IVE IVE",
+  // Stray Kids
+  "skz-maxident":            "Stray Kids MAXIDENT",
+  "skz-5-star":              "Stray Kids 5-STAR",
+  // TXT
+  "txt-minisode-2":          "TXT minisode 2 Thursday Child",
+  // ENHYPEN
+  "enhypen-border-day-one":  "ENHYPEN BORDER DAY ONE",
+  // LE SSERAFIM
+  "le-sserafim-fearless":    "LE SSERAFIM FEARLESS",
+  "le-sserafim-antifragile": "LE SSERAFIM ANTIFRAGILE",
+  // (G)I-DLE
+  "g-i-dle-i-never-die":    "(G)I-DLE I NEVER DIE",
+  "g-i-dle-i-feel":         "(G)I-DLE I feel",
+  // ATEEZ
+  "ateez-zero-fever-part-1": "ATEEZ ZERO FEVER Part 1",
+  // aespa
+  "aespa-my-world":          "aespa MY WORLD",
+  // NewJeans
+  "newjeans-ot":             "NewJeans NewJeans",
+  // Red Velvet
+  "rv-perfect-velvet":       "Red Velvet Perfect Velvet",
+  "rv-queendom":             "Red Velvet Queendom",
+  // EXO
+  "exo-xoxo":                "EXO XOXO",
+  // NCT 127
+  "nct-127-regular-irregular": "NCT 127 Regular-Irregular",
+  // MAMAMOO
+  "mamamoo-reality-in-black": "MAMAMOO Reality in Black",
+  // BIGBANG
+  "bigbang-made":             "BIGBANG MADE",
+  // BTS solos
+  "rm-indigo":               "RM Indigo",
+  "jungkook-golden":         "Jungkook GOLDEN",
+  "jimin-face":              "Jimin FACE",
+  "v-layover":               "V Layover",
+  "j-hope-jack-in-the-box":  "j-hope Jack in the Box",
+  "agust-d-d-day":           "Agust D D-DAY",
+  // IU
+  "iu-lilac":                "IU LILAC",
+  "iu-palette":              "IU Palette",
+  // APINK
+  "apink-pink-tape":         "Apink Pink Tape",
+  // NMIXX
+  "nmixx-expergo":           "NMIXX expergo",
+  // SEVENTEEN
+  "seventeen-face-the-sun":  "SEVENTEEN Face the Sun",
+  // ITZY
+  "itzy-checkmate":          "ITZY CHECKMATE",
+  // Girls' Generation
+  "snsd-the-boys":           "Girls Generation The Boys",
+  // SHINee
+  "shinee-1-of-1":           "SHINee 1 of 1",
+  // BABYMONSTER
+  "babymonster-batter-up":   "BABYMONSTER BATTER UP",
+  // ILLIT
+  "illit-super-real-me":     "ILLIT Super Real Me",
 };
 
 // ── iTunes Search API (album art) ─────────────────────────────────────────────
