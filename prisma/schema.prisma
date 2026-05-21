@@ -1,0 +1,134 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Label {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  country     String?
+  foundedYear Int?
+  bio         String?
+  website     String?
+  logoUrl     String?
+  artists     Artist[]
+  createdAt   DateTime @default(now())
+}
+
+model Artist {
+  id          String            @id @default(cuid())
+  slug        String            @unique
+  type        String
+  stageName   String
+  realName    String?
+  debutYear   Int?
+  bio         String?
+  imageUrl    String?
+  labelId     String?
+  label       Label?            @relation(fields: [labelId], references: [id])
+  memberships GroupMembership[] @relation("MemberOf")
+  groupOf     GroupMembership[] @relation("GroupMembers")
+  songs       SongCredit[]
+  albums      Album[]
+  news        ArtistNews[]
+  createdAt   DateTime          @default(now())
+}
+
+model ArtistNews {
+  id          String    @id @default(cuid())
+  artistId    String
+  artist      Artist    @relation(fields: [artistId], references: [id])
+  headline    String
+  body        String
+  source      String?
+  sourceUrl   String?
+  category    String
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+}
+
+model GroupMembership {
+  id        String  @id @default(cuid())
+  groupId   String
+  memberId  String
+  role      String?
+  position  Int     @default(0)
+  group     Artist  @relation("GroupMembers", fields: [groupId], references: [id])
+  member    Artist  @relation("MemberOf", fields: [memberId], references: [id])
+}
+
+model Album {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  artistId    String
+  artist      Artist   @relation(fields: [artistId], references: [id])
+  releaseYear Int?
+  coverArt    String?
+  type        String
+  songs       Song[]
+  createdAt   DateTime @default(now())
+}
+
+model Song {
+  id              String            @id @default(cuid())
+  slug            String            @unique
+  title           String
+  albumId         String?
+  album           Album?            @relation(fields: [albumId], references: [id])
+  releaseYear     Int?
+  coverArt        String?
+  lyricsKo        String?
+  lyricsEn        String?
+  lyricsRomanized String?
+  viewCount       Int               @default(0)
+  credits         SongCredit[]
+  annotations     LyricAnnotation[]
+  createdAt       DateTime          @default(now())
+}
+
+model SongCredit {
+  id       String @id @default(cuid())
+  songId   String
+  artistId String
+  role     String
+  artist   Artist @relation(fields: [artistId], references: [id])
+  song     Song   @relation(fields: [songId], references: [id])
+}
+
+model LyricAnnotation {
+  id        String     @id @default(cuid())
+  songId    String
+  song      Song       @relation(fields: [songId], references: [id])
+  termId    String?
+  term      CodedTerm? @relation(fields: [termId], references: [id])
+  lineIndex Int
+  word      String
+  note      String
+  createdAt DateTime   @default(now())
+}
+
+model CodedTerm {
+  id          String            @id @default(cuid())
+  slug        String            @unique
+  term        String
+  definitions TermDefinition[]
+  annotations LyricAnnotation[]
+  createdAt   DateTime          @default(now())
+}
+
+model TermDefinition {
+  id        String    @id @default(cuid())
+  termId    String
+  term      CodedTerm @relation(fields: [termId], references: [id])
+  body      String
+  example   String?
+  votesUp   Int       @default(0)
+  votesDown Int       @default(0)
+  createdAt DateTime  @default(now())
+}
