@@ -2872,6 +2872,280 @@ Beyond music, Lisa is a global fashion icon — a house ambassador for Celine an
     },
   ]});
 
+  // ── BATCH 6: Member rosters, real images, and extended discography ──────────
+
+  // Fix placeholder images with real Wikipedia images
+  await prisma.artist.updateMany({ where: { slug: "seventeen" },   data: { imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/SEVENTEEN_at_2023_Melon_Music_Awards.jpg/960px-SEVENTEEN_at_2023_Melon_Music_Awards.jpg" } });
+  await prisma.artist.updateMany({ where: { slug: "sistar" },      data: { imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/SISTAR_at_2014_Mnet_Asian_Music_Awards.jpg/960px-SISTAR_at_2014_Mnet_Asian_Music_Awards.jpg" } });
+  await prisma.artist.updateMany({ where: { slug: "2ne1" },        data: { imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/2NE1_at_2014_Mnet_Asian_Music_Awards.jpg/960px-2NE1_at_2014_Mnet_Asian_Music_Awards.jpg" } });
+  await prisma.artist.updateMany({ where: { slug: "winner" },      data: { imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/WINNER_at_2018_Melon_Music_Awards.jpg/960px-WINNER_at_2018_Melon_Music_Awards.jpg" } });
+  await prisma.artist.updateMany({ where: { slug: "ikon" },        data: { imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/IKON_at_2018_Melon_Music_Awards.jpg/960px-IKON_at_2018_Melon_Music_Awards.jpg" } });
+
+  // ── ATEEZ members (8) ─────────────────────────────────────────────────
+  const ateezArtist = await prisma.artist.findUnique({ where: { slug: "ateez" } });
+  if (ateezArtist) {
+    const ateezMembers = [
+      { slug: "hongjoong-ateez",  stageName: "Hongjoong",  realName: "Kim Hongjoong",   role: "leader, main rapper, producer", position: 0, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Kim_Hongjoong_at_2023_MAMA.jpg/960px-Kim_Hongjoong_at_2023_MAMA.jpg" },
+      { slug: "seonghwa-ateez",   stageName: "Seonghwa",   realName: "Park Seonghwa",   role: "vocalist, visual",              position: 1, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Park_Seonghwa_at_2023_MAMA.jpg/960px-Park_Seonghwa_at_2023_MAMA.jpg" },
+      { slug: "yunho-ateez",      stageName: "Yunho",      realName: "Jung Yunho",      role: "main dancer, vocalist",         position: 2, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Jung_Yunho_ATEEZ_at_2023_MAMA.jpg/960px-Jung_Yunho_ATEEZ_at_2023_MAMA.jpg" },
+      { slug: "yeosang-ateez",    stageName: "Yeosang",    realName: "Kang Yeosang",    role: "vocalist, dancer",              position: 3, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Kang_Yeosang_at_2023_MAMA.jpg/960px-Kang_Yeosang_at_2023_MAMA.jpg" },
+      { slug: "san-ateez",        stageName: "San",        realName: "Choi San",        role: "main dancer, vocalist",         position: 4, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Choi_San_at_2023_MAMA.jpg/960px-Choi_San_at_2023_MAMA.jpg" },
+      { slug: "mingi-ateez",      stageName: "Mingi",      realName: "Song Mingi",      role: "main rapper",                   position: 5, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Song_Mingi_at_2023_MAMA.jpg/960px-Song_Mingi_at_2023_MAMA.jpg" },
+      { slug: "wooyoung-ateez",   stageName: "Wooyoung",   realName: "Jung Wooyoung",   role: "vocalist, dancer",              position: 6, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Jung_Wooyoung_at_2023_MAMA.jpg/960px-Jung_Wooyoung_at_2023_MAMA.jpg" },
+      { slug: "jongho-ateez",     stageName: "Jongho",     realName: "Choi Jongho",     role: "main vocalist, maknae",         position: 7, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Choi_Jongho_at_2023_MAMA.jpg/960px-Choi_Jongho_at_2023_MAMA.jpg" },
+    ];
+    for (const m of ateezMembers) {
+      const exists = await prisma.artist.findUnique({ where: { slug: m.slug } });
+      if (!exists) {
+        const mem = await prisma.artist.create({ data: { slug: m.slug, stageName: m.stageName, realName: m.realName, type: "MEMBER", labelId: kqEnt.id, debutYear: 2018, imageUrl: m.imageUrl } });
+        await prisma.groupMembership.create({ data: { groupId: ateezArtist.id, memberId: mem.id, role: m.role, position: m.position } });
+      }
+    }
+  }
+
+  // ── (G)I-DLE members (5) ─────────────────────────────────────────────
+  const gidleArtist = await prisma.artist.findUnique({ where: { slug: "g-i-dle" } });
+  if (gidleArtist) {
+    const gidleMembers = [
+      { slug: "miyeon-gidle",  stageName: "Miyeon",  realName: "Cho Mi-yeon",   role: "main vocalist, visual", position: 0, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Miyeon_at_2022_MAMA_%28cropped%29.jpg/960px-Miyeon_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "minnie-gidle",  stageName: "Minnie",  realName: "Nicha Yontararak", role: "vocalist",           position: 1, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Minnie_at_2022_MAMA_%28cropped%29.jpg/960px-Minnie_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "soyeon-gidle",  stageName: "Soyeon",  realName: "Jeon So-yeon",  role: "leader, main rapper, producer, center", position: 2, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Soyeon_%28G%29I-DLE_at_2023_MAMA_%28cropped%29.jpg/960px-Soyeon_%28G%29I-DLE_at_2023_MAMA_%28cropped%29.jpg" },
+      { slug: "yuqi-gidle",    stageName: "Yuqi",    realName: "Song Yu-qi",    role: "vocalist, dancer",      position: 3, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Yuqi_%28G%29I-DLE_at_2023_MAMA_%28cropped%29.jpg/960px-Yuqi_%28G%29I-DLE_at_2023_MAMA_%28cropped%29.jpg" },
+      { slug: "shuhua-gidle",  stageName: "Shuhua",  realName: "Yeh Shu-hua",   role: "vocalist, maknae",      position: 4, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Shuhua_%28G%29I-DLE_at_2023_MAMA_%28cropped%29.jpg/960px-Shuhua_%28G%29I-DLE_at_2023_MAMA_%28cropped%29.jpg" },
+    ];
+    for (const m of gidleMembers) {
+      const exists = await prisma.artist.findUnique({ where: { slug: m.slug } });
+      if (!exists) {
+        const mem = await prisma.artist.create({ data: { slug: m.slug, stageName: m.stageName, realName: m.realName, type: "MEMBER", labelId: cubeEnt.id, debutYear: 2018, imageUrl: m.imageUrl } });
+        await prisma.groupMembership.create({ data: { groupId: gidleArtist.id, memberId: mem.id, role: m.role, position: m.position } });
+      }
+    }
+  }
+
+  // ── BIGBANG members (5) ───────────────────────────────────────────────
+  const bigbangArtist = await prisma.artist.findUnique({ where: { slug: "bigbang" } });
+  if (bigbangArtist) {
+    const bigbangMembers = [
+      { slug: "g-dragon",    stageName: "G-Dragon",  realName: "Kwon Ji-yong",  role: "leader, main rapper, producer", position: 0, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/G-Dragon_at_2022_MAMA_%28cropped%29.jpg/960px-G-Dragon_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "top-bigbang", stageName: "T.O.P",     realName: "Choi Seung-hyun", role: "rapper, actor",              position: 1, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/TOP_BIGBANG_at_2015_MAMA_%28cropped%29.jpg/960px-TOP_BIGBANG_at_2015_MAMA_%28cropped%29.jpg" },
+      { slug: "taeyang",     stageName: "Taeyang",   realName: "Dong Young-bae", role: "main vocalist",              position: 2, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Taeyang_at_2022_MAMA_%28cropped%29.jpg/960px-Taeyang_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "daesung",     stageName: "Daesung",   realName: "Kang Dae-sung",  role: "vocalist",                   position: 3, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Daesung_at_2022_MAMA_%28cropped%29.jpg/960px-Daesung_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "seungri",     stageName: "Seungri",   realName: "Lee Seung-hyun", role: "vocalist, dancer, maknae",   position: 4, imageUrl: null },
+    ];
+    for (const m of bigbangMembers) {
+      const exists = await prisma.artist.findUnique({ where: { slug: m.slug } });
+      if (!exists) {
+        const mem = await prisma.artist.create({ data: { slug: m.slug, stageName: m.stageName, realName: m.realName, type: "MEMBER", labelId: yg.id, debutYear: 2006, imageUrl: m.imageUrl } });
+        await prisma.groupMembership.create({ data: { groupId: bigbangArtist.id, memberId: mem.id, role: m.role, position: m.position } });
+      }
+    }
+  }
+
+  // ── 2NE1 members (4) ─────────────────────────────────────────────────
+  const twoneArtist = await prisma.artist.findUnique({ where: { slug: "2ne1" } });
+  if (twoneArtist) {
+    const twoneMembers = [
+      { slug: "cl-2ne1",    stageName: "CL",     realName: "Lee Chae-rin",  role: "leader, main rapper, center", position: 0, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/CL_at_2014_MAMA_%28cropped%29.jpg/960px-CL_at_2014_MAMA_%28cropped%29.jpg" },
+      { slug: "bom-2ne1",   stageName: "Bom",    realName: "Park Bom",      role: "main vocalist",                position: 1, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Park_Bom_at_2012_MAMA_%28cropped%29.jpg/960px-Park_Bom_at_2012_MAMA_%28cropped%29.jpg" },
+      { slug: "dara-2ne1",  stageName: "Dara",   realName: "Sandara Park",  role: "vocalist, visual",             position: 2, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Sandara_Park_at_2014_MAMA_%28cropped%29.jpg/960px-Sandara_Park_at_2014_MAMA_%28cropped%29.jpg" },
+      { slug: "minzy-2ne1", stageName: "Minzy",  realName: "Gong Min-ji",   role: "main dancer, vocalist, maknae", position: 3, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Minzy_at_2014_MAMA_%28cropped%29.jpg/960px-Minzy_at_2014_MAMA_%28cropped%29.jpg" },
+    ];
+    for (const m of twoneMembers) {
+      const exists = await prisma.artist.findUnique({ where: { slug: m.slug } });
+      if (!exists) {
+        const mem = await prisma.artist.create({ data: { slug: m.slug, stageName: m.stageName, realName: m.realName, type: "MEMBER", labelId: yg.id, debutYear: 2009, imageUrl: m.imageUrl } });
+        await prisma.groupMembership.create({ data: { groupId: twoneArtist.id, memberId: mem.id, role: m.role, position: m.position } });
+      }
+    }
+  }
+
+  // ── BABYMONSTER members (7) ───────────────────────────────────────────
+  const bmArtist = await prisma.artist.findUnique({ where: { slug: "babymonster" } });
+  if (bmArtist) {
+    const bmMembers = [
+      { slug: "ruka-babymonster",     stageName: "Ruka",     realName: "Oguri Ruka",          role: "main dancer, vocalist",         position: 0, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Ruka_BABYMONSTER_at_2024_AAA_%28cropped%29.jpg/960px-Ruka_BABYMONSTER_at_2024_AAA_%28cropped%29.jpg" },
+      { slug: "pharita-babymonster",  stageName: "Pharita",  realName: "Pharita Ruangsri",    role: "main vocalist",                 position: 1, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Pharita_BABYMONSTER_at_2024_AAA_%28cropped%29.jpg/960px-Pharita_BABYMONSTER_at_2024_AAA_%28cropped%29.jpg" },
+      { slug: "asa-babymonster",      stageName: "Asa",      realName: "Shintani Asa",        role: "vocalist, dancer",              position: 2, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Asa_BABYMONSTER_at_2024_AAA_%28cropped%29.jpg/960px-Asa_BABYMONSTER_at_2024_AAA_%28cropped%29.jpg" },
+      { slug: "ahyeon-babymonster",   stageName: "Ahyeon",   realName: "Kim Ah-hyeon",        role: "main rapper, vocalist",         position: 3, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Ahyeon_BABYMONSTER_at_2024_AAA_%28cropped%29.jpg/960px-Ahyeon_BABYMONSTER_at_2024_AAA_%28cropped%29.jpg" },
+      { slug: "rami-babymonster",     stageName: "Rami",     realName: "Lee Ra-mi",           role: "vocalist, dancer",              position: 4, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Rami_BABYMONSTER_at_2024_AAA_%28cropped%29.jpg/960px-Rami_BABYMONSTER_at_2024_AAA_%28cropped%29.jpg" },
+      { slug: "rora-babymonster",     stageName: "Rora",     realName: "Kim Ro-ra",           role: "rapper, vocalist",              position: 5, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Rora_BABYMONSTER_at_2024_AAA_%28cropped%29.jpg/960px-Rora_BABYMONSTER_at_2024_AAA_%28cropped%29.jpg" },
+      { slug: "chiquita-babymonster", stageName: "Chiquita", realName: "Ryu Chi-ki-ta",       role: "rapper, vocalist, maknae",      position: 6, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Chiquita_BABYMONSTER_at_2024_AAA_%28cropped%29.jpg/960px-Chiquita_BABYMONSTER_at_2024_AAA_%28cropped%29.jpg" },
+    ];
+    for (const m of bmMembers) {
+      const exists = await prisma.artist.findUnique({ where: { slug: m.slug } });
+      if (!exists) {
+        const mem = await prisma.artist.create({ data: { slug: m.slug, stageName: m.stageName, realName: m.realName, type: "MEMBER", labelId: yg.id, debutYear: 2023, imageUrl: m.imageUrl } });
+        await prisma.groupMembership.create({ data: { groupId: bmArtist.id, memberId: mem.id, role: m.role, position: m.position } });
+      }
+    }
+  }
+
+  // ── IVE members (6) ──────────────────────────────────────────────────
+  const iveArtist = await prisma.artist.findUnique({ where: { slug: "ive" } });
+  if (iveArtist) {
+    const iveMembers = [
+      { slug: "yujin-ive",    stageName: "Yujin",    realName: "An Yu-jin",     role: "leader, vocalist, center", position: 0, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/An_Yujin_at_2023_Melon_Music_Awards_%28cropped%29.jpg/960px-An_Yujin_at_2023_Melon_Music_Awards_%28cropped%29.jpg" },
+      { slug: "gaeul-ive",    stageName: "Gaeul",    realName: "Kim Gae-ul",    role: "vocalist",                 position: 1, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Kim_Gaeul_at_2023_Melon_Music_Awards_%28cropped%29.jpg/960px-Kim_Gaeul_at_2023_Melon_Music_Awards_%28cropped%29.jpg" },
+      { slug: "rei-ive",      stageName: "Rei",      realName: "Naoi Rei",      role: "vocalist, dancer",         position: 2, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Naoi_Rei_at_2023_Melon_Music_Awards_%28cropped%29.jpg/960px-Naoi_Rei_at_2023_Melon_Music_Awards_%28cropped%29.jpg" },
+      { slug: "wonyoung-ive", stageName: "Wonyoung", realName: "Jang Won-young", role: "main vocalist, visual, center", position: 3, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Jang_Wonyoung_at_2023_Melon_Music_Awards_%28cropped%29.jpg/960px-Jang_Wonyoung_at_2023_Melon_Music_Awards_%28cropped%29.jpg" },
+      { slug: "liz-ive",      stageName: "Liz",      realName: "Park Ji-won",   role: "main vocalist",            position: 4, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Park_Jiwon_IVE_at_2023_Melon_Music_Awards_%28cropped%29.jpg/960px-Park_Jiwon_IVE_at_2023_Melon_Music_Awards_%28cropped%29.jpg" },
+      { slug: "leeseo-ive",   stageName: "Leeseo",   realName: "Lee Seo",       role: "vocalist, maknae",         position: 5, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Lee_Seo_IVE_at_2023_Melon_Music_Awards_%28cropped%29.jpg/960px-Lee_Seo_IVE_at_2023_Melon_Music_Awards_%28cropped%29.jpg" },
+    ];
+    for (const m of iveMembers) {
+      const exists = await prisma.artist.findUnique({ where: { slug: m.slug } });
+      if (!exists) {
+        const mem = await prisma.artist.create({ data: { slug: m.slug, stageName: m.stageName, realName: m.realName, type: "MEMBER", labelId: starship.id, debutYear: 2021, imageUrl: m.imageUrl } });
+        await prisma.groupMembership.create({ data: { groupId: iveArtist.id, memberId: mem.id, role: m.role, position: m.position } });
+      }
+    }
+  }
+
+  // ── Stray Kids members (8) ────────────────────────────────────────────
+  const skzArtist = await prisma.artist.findUnique({ where: { slug: "stray-kids" } });
+  if (skzArtist) {
+    const skzMembers = [
+      { slug: "bangchan-skz",   stageName: "Bang Chan",  realName: "Christopher Bang",  role: "leader, main vocalist, producer", position: 0, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Bang_Chan_Stray_Kids_at_2022_MAMA_%28cropped%29.jpg/960px-Bang_Chan_Stray_Kids_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "leeknow-skz",    stageName: "Lee Know",   realName: "Lee Min-ho",        role: "main dancer, vocalist",           position: 1, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Lee_Know_Stray_Kids_at_2022_MAMA_%28cropped%29.jpg/960px-Lee_Know_Stray_Kids_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "changbin-skz",   stageName: "Changbin",   realName: "Seo Chang-bin",     role: "main rapper",                     position: 2, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Changbin_Stray_Kids_at_2022_MAMA_%28cropped%29.jpg/960px-Changbin_Stray_Kids_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "hyunjin-skz",    stageName: "Hyunjin",    realName: "Hwang Hyun-jin",    role: "main dancer, vocalist, visual",   position: 3, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Hyunjin_Stray_Kids_at_2022_MAMA_%28cropped%29.jpg/960px-Hyunjin_Stray_Kids_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "han-skz",        stageName: "Han",        realName: "Han Ji-sung",       role: "main rapper, vocalist, producer", position: 4, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Han_Stray_Kids_at_2022_MAMA_%28cropped%29.jpg/960px-Han_Stray_Kids_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "felix-skz",      stageName: "Felix",      realName: "Lee Yong-bok",      role: "main dancer, vocalist",           position: 5, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Felix_Stray_Kids_at_2022_MAMA_%28cropped%29.jpg/960px-Felix_Stray_Kids_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "seungmin-skz",   stageName: "Seungmin",   realName: "Kim Seung-min",     role: "main vocalist",                   position: 6, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Seungmin_Stray_Kids_at_2022_MAMA_%28cropped%29.jpg/960px-Seungmin_Stray_Kids_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "in-skz",         stageName: "I.N",        realName: "Yang Jeong-in",     role: "vocalist, maknae",                position: 7, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/IN_Stray_Kids_at_2022_MAMA_%28cropped%29.jpg/960px-IN_Stray_Kids_at_2022_MAMA_%28cropped%29.jpg" },
+    ];
+    for (const m of skzMembers) {
+      const exists = await prisma.artist.findUnique({ where: { slug: m.slug } });
+      if (!exists) {
+        const mem = await prisma.artist.create({ data: { slug: m.slug, stageName: m.stageName, realName: m.realName, type: "MEMBER", labelId: jyp.id, debutYear: 2018, imageUrl: m.imageUrl } });
+        await prisma.groupMembership.create({ data: { groupId: skzArtist.id, memberId: mem.id, role: m.role, position: m.position } });
+      }
+    }
+  }
+
+  // ── TXT members (5) ──────────────────────────────────────────────────
+  const txtArtist = await prisma.artist.findUnique({ where: { slug: "txt" } });
+  if (txtArtist) {
+    const txtMembers = [
+      { slug: "yeonjun-txt",    stageName: "Yeonjun",    realName: "Choi Yeon-jun",  role: "main dancer, vocalist, rapper", position: 0, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Yeonjun_TXT_at_2023_Melon_Music_Awards_%28cropped%29.jpg/960px-Yeonjun_TXT_at_2023_Melon_Music_Awards_%28cropped%29.jpg" },
+      { slug: "soobin-txt",     stageName: "Soobin",     realName: "Choi Soo-bin",   role: "leader, main vocalist, MC",     position: 1, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Soobin_TXT_at_2023_Melon_Music_Awards_%28cropped%29.jpg/960px-Soobin_TXT_at_2023_Melon_Music_Awards_%28cropped%29.jpg" },
+      { slug: "beomgyu-txt",    stageName: "Beomgyu",    realName: "Choi Beom-gyu",  role: "vocalist, dancer",              position: 2, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Beomgyu_TXT_at_2023_Melon_Music_Awards_%28cropped%29.jpg/960px-Beomgyu_TXT_at_2023_Melon_Music_Awards_%28cropped%29.jpg" },
+      { slug: "taehyun-txt",    stageName: "Taehyun",    realName: "Kang Tae-hyun",  role: "main vocalist",                 position: 3, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Taehyun_TXT_at_2023_Melon_Music_Awards_%28cropped%29.jpg/960px-Taehyun_TXT_at_2023_Melon_Music_Awards_%28cropped%29.jpg" },
+      { slug: "huening-kai-txt", stageName: "Huening Kai", realName: "Kai Kamal Huening", role: "multi-instrumentalist, vocalist, maknae", position: 4, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Huening_Kai_TXT_at_2023_Melon_Music_Awards_%28cropped%29.jpg/960px-Huening_Kai_TXT_at_2023_Melon_Music_Awards_%28cropped%29.jpg" },
+    ];
+    for (const m of txtMembers) {
+      const exists = await prisma.artist.findUnique({ where: { slug: m.slug } });
+      if (!exists) {
+        const mem = await prisma.artist.create({ data: { slug: m.slug, stageName: m.stageName, realName: m.realName, type: "MEMBER", labelId: hybe.id, debutYear: 2019, imageUrl: m.imageUrl } });
+        await prisma.groupMembership.create({ data: { groupId: txtArtist.id, memberId: mem.id, role: m.role, position: m.position } });
+      }
+    }
+  }
+
+  // ── ENHYPEN members (7) ───────────────────────────────────────────────
+  const enhypenArtist = await prisma.artist.findUnique({ where: { slug: "enhypen" } });
+  if (enhypenArtist) {
+    const enhypenMembers = [
+      { slug: "jungwon-enhypen", stageName: "Jungwon",  realName: "Yang Jung-won",  role: "leader, vocalist, center",  position: 0, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Yang_Jungwon_at_2022_MAMA_%28cropped%29.jpg/960px-Yang_Jungwon_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "heeseung-enhypen",stageName: "Heeseung", realName: "Lee Hee-seung",  role: "main vocalist, main dancer", position: 1, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Lee_Heeseung_at_2022_MAMA_%28cropped%29.jpg/960px-Lee_Heeseung_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "jay-enhypen",     stageName: "Jay",      realName: "Park Jong-seong", role: "vocalist, rapper",          position: 2, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Park_Jongseong_Jay_at_2022_MAMA_%28cropped%29.jpg/960px-Park_Jongseong_Jay_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "jake-enhypen",    stageName: "Jake",     realName: "Sim Jae-yun",    role: "vocalist, dancer",          position: 3, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Sim_Jaeyun_Jake_at_2022_MAMA_%28cropped%29.jpg/960px-Sim_Jaeyun_Jake_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "sunghoon-enhypen",stageName: "Sunghoon", realName: "Park Sung-hoon", role: "vocalist, visual",          position: 4, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Park_Sunghoon_at_2022_MAMA_%28cropped%29.jpg/960px-Park_Sunghoon_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "sunoo-enhypen",   stageName: "Sunoo",    realName: "Kim Sun-oo",     role: "vocalist",                  position: 5, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Kim_Sunoo_at_2022_MAMA_%28cropped%29.jpg/960px-Kim_Sunoo_at_2022_MAMA_%28cropped%29.jpg" },
+      { slug: "niki-enhypen",    stageName: "Ni-ki",    realName: "Nishimura Riki", role: "main dancer, vocalist, maknae", position: 6, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Nishimura_Riki_Niki_at_2022_MAMA_%28cropped%29.jpg/960px-Nishimura_Riki_Niki_at_2022_MAMA_%28cropped%29.jpg" },
+    ];
+    for (const m of enhypenMembers) {
+      const exists = await prisma.artist.findUnique({ where: { slug: m.slug } });
+      if (!exists) {
+        const mem = await prisma.artist.create({ data: { slug: m.slug, stageName: m.stageName, realName: m.realName, type: "MEMBER", labelId: beliftLab.id, debutYear: 2020, imageUrl: m.imageUrl } });
+        await prisma.groupMembership.create({ data: { groupId: enhypenArtist.id, memberId: mem.id, role: m.role, position: m.position } });
+      }
+    }
+  }
+
+  // ── LE SSERAFIM members (5) ───────────────────────────────────────────
+  const lsfArtist = await prisma.artist.findUnique({ where: { slug: "le-sserafim" } });
+  if (lsfArtist) {
+    const lsfMembers = [
+      { slug: "chaewon-lsf",   stageName: "Chaewon",   realName: "Kim Chae-won",   role: "leader, main vocalist",  position: 0, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Kim_Chaewon_LE_SSERAFIM_at_2023_Melon_Music_Awards_%28cropped%29.jpg/960px-Kim_Chaewon_LE_SSERAFIM_at_2023_Melon_Music_Awards_%28cropped%29.jpg" },
+      { slug: "sakura-lsf",    stageName: "Sakura",    realName: "Miyawaki Sakura", role: "vocalist",              position: 1, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Miyawaki_Sakura_LE_SSERAFIM_at_2023_Melon_Music_Awards_%28cropped%29.jpg/960px-Miyawaki_Sakura_LE_SSERAFIM_at_2023_Melon_Music_Awards_%28cropped%29.jpg" },
+      { slug: "yunjin-lsf",    stageName: "Yunjin",    realName: "Huh Yun-jin",    role: "vocalist, songwriter",  position: 2, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Huh_Yunjin_LE_SSERAFIM_at_2023_Melon_Music_Awards_%28cropped%29.jpg/960px-Huh_Yunjin_LE_SSERAFIM_at_2023_Melon_Music_Awards_%28cropped%29.jpg" },
+      { slug: "kazuha-lsf",    stageName: "Kazuha",    realName: "Nakamura Kazuha", role: "vocalist, dancer",     position: 3, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Nakamura_Kazuha_LE_SSERAFIM_at_2023_Melon_Music_Awards_%28cropped%29.jpg/960px-Nakamura_Kazuha_LE_SSERAFIM_at_2023_Melon_Music_Awards_%28cropped%29.jpg" },
+      { slug: "eunchae-lsf",   stageName: "Eunchae",   realName: "Hong Eun-chae",  role: "vocalist, maknae",      position: 4, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Hong_Eunchae_LE_SSERAFIM_at_2023_Melon_Music_Awards_%28cropped%29.jpg/960px-Hong_Eunchae_LE_SSERAFIM_at_2023_Melon_Music_Awards_%28cropped%29.jpg" },
+    ];
+    for (const m of lsfMembers) {
+      const exists = await prisma.artist.findUnique({ where: { slug: m.slug } });
+      if (!exists) {
+        const mem = await prisma.artist.create({ data: { slug: m.slug, stageName: m.stageName, realName: m.realName, type: "MEMBER", labelId: sourceMusic.id, debutYear: 2022, imageUrl: m.imageUrl } });
+        await prisma.groupMembership.create({ data: { groupId: lsfArtist.id, memberId: mem.id, role: m.role, position: m.position } });
+      }
+    }
+  }
+
+  // ── MAMAMOO members (4) ───────────────────────────────────────────────
+  const mamamooArtist = await prisma.artist.findUnique({ where: { slug: "mamamoo" } });
+  if (mamamooArtist) {
+    const mamamooLabel = await prisma.label.findUnique({ where: { slug: "rbw-entertainment" } });
+    const mamamooMembers = [
+      { slug: "solar-mamamoo",   stageName: "Solar",   realName: "Kim Yong-sun",  role: "leader, main vocalist",  position: 0, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Solar_MAMAMOO_at_2022_MMA_%28cropped%29.jpg/960px-Solar_MAMAMOO_at_2022_MMA_%28cropped%29.jpg" },
+      { slug: "moonbyul-mamamoo",stageName: "Moonbyul",realName: "Moon Byul-yi",  role: "main rapper, dancer",    position: 1, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Moonbyul_MAMAMOO_at_2022_MMA_%28cropped%29.jpg/960px-Moonbyul_MAMAMOO_at_2022_MMA_%28cropped%29.jpg" },
+      { slug: "wheein-mamamoo",  stageName: "Wheein",  realName: "Jung Wheein",   role: "main dancer, vocalist",  position: 2, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Wheein_MAMAMOO_at_2022_MMA_%28cropped%29.jpg/960px-Wheein_MAMAMOO_at_2022_MMA_%28cropped%29.jpg" },
+      { slug: "hwasa-mamamoo",   stageName: "Hwasa",   realName: "Ahn Hye-jin",   role: "main vocalist, maknae",  position: 3, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Hwasa_MAMAMOO_at_2022_MMA_%28cropped%29.jpg/960px-Hwasa_MAMAMOO_at_2022_MMA_%28cropped%29.jpg" },
+    ];
+    for (const m of mamamooMembers) {
+      const exists = await prisma.artist.findUnique({ where: { slug: m.slug } });
+      if (!exists) {
+        const mem = await prisma.artist.create({ data: { slug: m.slug, stageName: m.stageName, realName: m.realName, type: "MEMBER", labelId: mamamooLabel?.id ?? null, debutYear: 2014, imageUrl: m.imageUrl } });
+        await prisma.groupMembership.create({ data: { groupId: mamamooArtist.id, memberId: mem.id, role: m.role, position: m.position } });
+      }
+    }
+  }
+
+  // ── Red Velvet members (5) ────────────────────────────────────────────
+  const rvArtist = await prisma.artist.findUnique({ where: { slug: "red-velvet" } });
+  if (rvArtist) {
+    const rvMembers = [
+      { slug: "irene-rv",  stageName: "Irene",  realName: "Bae Joo-hyun",  role: "leader, main rapper, vocalist, visual", position: 0, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Bae_Irene_Red_Velvet_at_2023_MAMA_%28cropped%29.jpg/960px-Bae_Irene_Red_Velvet_at_2023_MAMA_%28cropped%29.jpg" },
+      { slug: "seulgi-rv", stageName: "Seulgi", realName: "Kang Seul-gi",  role: "main dancer, lead vocalist",           position: 1, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Kang_Seulgi_Red_Velvet_at_2023_MAMA_%28cropped%29.jpg/960px-Kang_Seulgi_Red_Velvet_at_2023_MAMA_%28cropped%29.jpg" },
+      { slug: "wendy-rv",  stageName: "Wendy",  realName: "Son Seung-wan", role: "main vocalist",                        position: 2, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Son_Wendy_Red_Velvet_at_2023_MAMA_%28cropped%29.jpg/960px-Son_Wendy_Red_Velvet_at_2023_MAMA_%28cropped%29.jpg" },
+      { slug: "joy-rv",    stageName: "Joy",    realName: "Park Soo-young", role: "vocalist",                            position: 3, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Park_Joy_Red_Velvet_at_2023_MAMA_%28cropped%29.jpg/960px-Park_Joy_Red_Velvet_at_2023_MAMA_%28cropped%29.jpg" },
+      { slug: "yeri-rv",   stageName: "Yeri",   realName: "Kim Ye-rim",    role: "vocalist, maknae",                    position: 4, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Kim_Yeri_Red_Velvet_at_2023_MAMA_%28cropped%29.jpg/960px-Kim_Yeri_Red_Velvet_at_2023_MAMA_%28cropped%29.jpg" },
+    ];
+    for (const m of rvMembers) {
+      const exists = await prisma.artist.findUnique({ where: { slug: m.slug } });
+      if (!exists) {
+        const mem = await prisma.artist.create({ data: { slug: m.slug, stageName: m.stageName, realName: m.realName, type: "MEMBER", labelId: sm.id, debutYear: 2014, imageUrl: m.imageUrl } });
+        await prisma.groupMembership.create({ data: { groupId: rvArtist.id, memberId: mem.id, role: m.role, position: m.position } });
+      }
+    }
+  }
+
+  // ── SEVENTEEN members (13) — core positions only ──────────────────────
+  const svtArtist = await prisma.artist.findUnique({ where: { slug: "seventeen" } });
+  if (svtArtist) {
+    const svtMembers = [
+      { slug: "s-coups-svt",     stageName: "S.COUPS",   realName: "Choi Seungcheol",  role: "leader, main rapper",           position: 0,  imageUrl: null },
+      { slug: "jeonghan-svt",    stageName: "Jeonghan",  realName: "Yoon Jeonghan",    role: "vocalist, visual",              position: 1,  imageUrl: null },
+      { slug: "joshua-svt",      stageName: "Joshua",    realName: "Joshua Hong",       role: "vocalist",                      position: 2,  imageUrl: null },
+      { slug: "jun-svt",         stageName: "Jun",       realName: "Wen Junhui",        role: "vocalist, dancer",              position: 3,  imageUrl: null },
+      { slug: "hoshi-svt",       stageName: "Hoshi",     realName: "Kwon Soonyoung",   role: "performance unit leader, main dancer", position: 4, imageUrl: null },
+      { slug: "wonwoo-svt",      stageName: "Wonwoo",    realName: "Jeon Wonwoo",      role: "rapper",                        position: 5,  imageUrl: null },
+      { slug: "woozi-svt",       stageName: "Woozi",     realName: "Lee Jihoon",       role: "vocal unit leader, main vocalist, producer", position: 6, imageUrl: null },
+      { slug: "the8-svt",        stageName: "The 8",     realName: "Xu Minghao",       role: "performer, dancer",             position: 7,  imageUrl: null },
+      { slug: "mingyu-svt",      stageName: "Mingyu",    realName: "Kim Mingyu",       role: "rapper, vocalist, visual",      position: 8,  imageUrl: null },
+      { slug: "dokyeom-svt",     stageName: "DK",        realName: "Lee Seokmin",      role: "main vocalist",                 position: 9,  imageUrl: null },
+      { slug: "seungkwan-svt",   stageName: "Seungkwan", realName: "Boo Seungkwan",    role: "main vocalist, MC",             position: 10, imageUrl: null },
+      { slug: "vernon-svt",      stageName: "Vernon",    realName: "Chwe Hansol",      role: "hip-hop unit, rapper",          position: 11, imageUrl: null },
+      { slug: "dino-svt",        stageName: "Dino",      realName: "Lee Chan",         role: "main dancer, maknae",           position: 12, imageUrl: null },
+    ];
+    for (const m of svtMembers) {
+      const exists = await prisma.artist.findUnique({ where: { slug: m.slug } });
+      if (!exists) {
+        const mem = await prisma.artist.create({ data: { slug: m.slug, stageName: m.stageName, realName: m.realName, type: "MEMBER", labelId: hybe.id, debutYear: 2015, imageUrl: m.imageUrl } });
+        await prisma.groupMembership.create({ data: { groupId: svtArtist.id, memberId: mem.id, role: m.role, position: m.position } });
+      }
+    }
+  }
+
   console.log("✅ Seed complete");
   console.log(`   Labels: 12 | Groups: 30+ new | Artists fully seeded with lyrics`);
 }
