@@ -17,9 +17,9 @@ export default async function DefinePage() {
       <section style={{ background: "#000", color: "#fff", padding: "60px 24px 40px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div style={{ fontSize: "0.7rem", color: "var(--genius-yellow)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>
-            K-pop Dictionary
+            K-pop Slang Dictionary
           </div>
-          <h1 style={{ fontSize: "2.8rem", fontWeight: 800, margin: "0 0 12px" }}>K-pop Slang & Terms</h1>
+          <h1 style={{ fontSize: "2.8rem", fontWeight: 800, margin: "0 0 12px" }}>Slang</h1>
           <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "1rem", maxWidth: 520 }}>
             Fan-written definitions for K-pop culture vocabulary. Vote for the best definitions.
           </p>
