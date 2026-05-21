@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
 import FooterNewsletter from "@/components/FooterNewsletter";
-import UserNav from "@/components/UserNav";
 
 export const metadata: Metadata = {
   title: "Aegyo Arena — K-pop Lyrics & Fan Wiki",
@@ -46,10 +45,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 CITIES
               </Link>
             </div>
-            <Link href="/search" className="btn-yellow" style={{ fontSize: "0.72rem", color: "#000", flexShrink: 0, whiteSpace: "nowrap" }}>
+            <Link href="/search" style={{ fontSize: "0.78rem", fontWeight: 700, color: "rgba(255,255,255,0.5)", textDecoration: "none", flexShrink: 0, whiteSpace: "nowrap", letterSpacing: "0.06em" }}>
               EXPLORE
             </Link>
-            <UserNav />
           </div>
           {/* Mobile secondary row: scrollable nav links */}
           <div className="nav-links-mobile" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", overflowX: "auto", WebkitOverflowScrolling: "touch", display: "flex", gap: 0 }}>

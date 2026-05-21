@@ -1,4 +1,8 @@
 import { PrismaClient } from "@prisma/client";
+import { seed as seedIveSkzTxtEnhypenLs } from "./seed-ive-skz-txt-enhypen-ls";
+import { seed as seedKpopGroups } from "./seed-kpop-groups";
+import { seed as seedAteezGidleBb2ne1Bm } from "./seed-ateez-gidle-bb-2ne1-bm";
+import { seed as seedBtsSolosApink } from "./seed-bts-solos-apink";
 const prisma = new PrismaClient();
 
 function lyrics(lines: [string, string, string][]): { lyricsKo: string; lyricsRomanized: string; lyricsEn: string } {
@@ -2530,16 +2534,7 @@ Beyond music, Lisa is a global fashion icon — a house ambassador for Celine an
 
   // (G)I-DLE — additional album
   const gidleILove = await prisma.album.create({ data: { slug: "g-i-dle-i-love", title: "I love", artistId: gidle.id, releaseYear: 2023, type: "LP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/0f/5a/6b/0f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c/196922803218.jpg/600x600bb.jpg" } });
-  await addSong("g-i-dle-queencard", "Queencard", gidleILove.id, gidle.id, 2023, gidleILove.coverArt!, 88000, lyrics([
-    ["퀸카드야 나는", "Kwinkaadeunyan aneun", "I'm a Queencard"],
-    ["어딜 가도 주인공", "Eodil gado juingong", "The main character wherever I go"],
-    ["Queencard, 나를 봐줘", "Queencard, nareul bwajweo", "Queencard — look at me"],
-    ["이 자신감 느껴봐", "I jasigam neukkyeobwa", "Feel this confidence"],
-    ["여자아이들이야", "Yeoja aideuri ya", "It's (G)I-DLE"],
-    ["Queencard, 최고야", "Queencard, choegoya", "Queencard — the best"],
-    ["자신감 넘쳐흘러", "Jasigam neomcheoheullo", "Confidence overflowing"],
-    ["Queencard, 나야 나", "Queencard, naya na", "Queencard — it's me"],
-  ]));
+  // Note: Queencard already added in BATCH 1 — skip to avoid duplicate
   await addSong("g-i-dle-allnight", "All Night", gidleILove.id, gidle.id, 2023, gidleILove.coverArt!, 73000, lyrics([
     ["밤새도록 너와 함께", "Bamsaedorok neowa hamkke", "All night together with you"],
     ["이 순간이 영원하길", "I sungani yeongwonhagil", "May this moment last forever"],
@@ -3632,6 +3627,12 @@ Beyond music, Lisa is a global fashion icon — a house ambassador for Celine an
       await prisma.cityEvent.create({ data: { cityId: city.id, title: m.title, venue: m.venue, eventDate: m.eventDate, type: "meetup" } });
     }
   }
+
+  // ── Extra seed modules ─────────────────────────────────────────────────────
+  await seedIveSkzTxtEnhypenLs(prisma);
+  await seedKpopGroups(prisma);
+  await seedAteezGidleBb2ne1Bm(prisma);
+  await seedBtsSolosApink(prisma);
 
   // ── Seed TrendingCache with initial scores based on viewCount ──────────────
   const topSongs = await prisma.song.findMany({
