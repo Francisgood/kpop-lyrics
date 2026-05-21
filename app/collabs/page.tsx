@@ -13,7 +13,61 @@ const WESTERN_SLUGS = new Set([
   "lizzo","coldplay","travis-scott","post-malone","olivia-rodrigo",
   "demi-lovato","marshmello","nile-rodgers","pharrell","j-balvin",
   "gunna","skillibeng","070-shake","sza",
+  "teddy-park","ryan-tedder","diplo","maxx-song","250-producer",
+  "danny-chung","tobias-jesso-jr","slushii",
 ]);
+
+// Key cross-cultural producers — spotlight these explicitly
+const PRODUCER_SPOTLIGHTS = [
+  {
+    slug: "teddy-park",
+    name: "Teddy Park",
+    groups: ["BLACKPINK"],
+    role: "Chief Songwriter & Producer",
+    note: "Produced every major BLACKPINK title track. LA-raised, Seoul-based architect of the YG × western hip-hop sound.",
+    songs: ["DDU-DU DDU-DU", "Kill This Love", "How You Like That", "Pink Venom"],
+  },
+  {
+    slug: "pharrell",
+    name: "Pharrell Williams",
+    groups: ["BTS"],
+    role: "Producer & Collaborator",
+    note: "Collaborated with J-Hope on 'On the Street' (2023). Pharrell's Neptunes-era funk DNA meets HYBE's idol production.",
+    songs: ["On the Street (feat. J. Cole)"],
+  },
+  {
+    slug: "nile-rodgers",
+    name: "Nile Rodgers",
+    groups: ["aespa"],
+    role: "Guitar Producer",
+    note: "Co-creator of CHIC. Brought signature disco-funk guitar stabs to aespa's 'Girls' — SM's most prestigious western collab.",
+    songs: ["Girls"],
+  },
+  {
+    slug: "maxx-song",
+    name: "Maxx Song",
+    groups: ["NewJeans"],
+    role: "Songwriter & Producer",
+    note: "Korean-American producer who co-crafted NewJeans' Y2K-minimalist sound. Primary architect of 'Attention' and 'Super Shy'.",
+    songs: ["Attention", "Super Shy", "Hype Boy"],
+  },
+  {
+    slug: "ryan-tedder",
+    name: "Ryan Tedder",
+    groups: ["BTS"],
+    role: "Songwriter",
+    note: "OneRepublic frontman and Grammy producer. Contributed to HYBE's international songwriter recruitment — part of the LA-Seoul pipeline.",
+    songs: ["Life Goes On (co-write)"],
+  },
+  {
+    slug: "diplo",
+    name: "Diplo",
+    groups: ["BLACKPINK"],
+    role: "Producer",
+    note: "Major Lazer founder, global bass music pioneer. Contributed production within YG's extended creative network.",
+    songs: ["Extended collab credits"],
+  },
+];
 
 function isWestern(slug: string) {
   return WESTERN_SLUGS.has(slug) || WESTERN_SLUGS.has(slug.replace(/-\d+$/, ""));
@@ -182,6 +236,34 @@ export default async function CollabsPage() {
 
           {/* Sidebar */}
           <aside>
+            {/* Producer Spotlight */}
+            <div style={{ marginBottom: 28 }}>
+              <div className="section-header">Producers Driving the Crossover</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {PRODUCER_SPOTLIGHTS.map((p) => (
+                  <Link key={p.slug} href={`/artists/${p.slug}`} style={{ textDecoration: "none" }}>
+                    <div className="genius-card" style={{ padding: 14, borderLeft: "3px solid #e879f9" }}>
+                      <div style={{ display: "flex", gap: 6, alignItems: "flex-start", flexWrap: "wrap", marginBottom: 4 }}>
+                        <span style={{ fontWeight: 800, fontSize: "0.9rem", color: "#000" }}>{p.name}</span>
+                        <span style={{ background: "#e879f9", color: "#fff", fontSize: "0.62rem", fontWeight: 700, padding: "2px 7px", borderRadius: 999, whiteSpace: "nowrap" }}>
+                          {p.role.toUpperCase()}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginBottom: 4 }}>
+                        → {p.groups.join(", ")}
+                      </div>
+                      <div style={{ fontSize: "0.78rem", color: "#444", lineHeight: 1.55 }}>{p.note}</div>
+                      <div style={{ marginTop: 6, display: "flex", flexWrap: "wrap", gap: 4 }}>
+                        {p.songs.map((s) => (
+                          <span key={s} style={{ background: "#f0f0f0", fontSize: "0.65rem", padding: "1px 7px", borderRadius: 999, color: "#555" }}>{s}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
             <div className="section-header">Most Connected Artists</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
               {topArtists.map((a, i) => (

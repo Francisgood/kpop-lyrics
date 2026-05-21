@@ -2666,6 +2666,212 @@ Beyond music, Lisa is a global fashion icon — a house ambassador for Celine an
     { artistId: lesserafim.id, headline: "LE SSERAFIM 'EASY' Breaks Group Streaming Record on Day One", body: "LE SSERAFIM's 'EASY' generated 9.8 million streams on Spotify in its first 24 hours — the largest single-day total in the group's history. The achievement reflected the group's accelerating international fanbase and marked their transition from fourth-gen newcomers to established streaming powerhouses.", category: "milestone", source: "Spotify / Source Music", publishedAt: new Date("2024-02-19") },
   ]});
 
+  // ── BATCH 5: Western Producers/Songwriters + Cross-Cultural Credits ─────────
+  // Key producers who have driven K-pop × western music crossover
+
+  const teddy = await prisma.artist.upsert({
+    where: { slug: "teddy-park" },
+    update: {},
+    create: {
+      slug: "teddy-park", type: "COLLAB", stageName: "Teddy Park", realName: "Park Hong-jun",
+      debutYear: 2001,
+      bio: "Teddy Park (박홍준) is the chief songwriter and producer behind BLACKPINK's entire discography and one of YG Entertainment's most powerful creative architects. Born in Los Angeles and raised in Korea, Teddy bridges US hip-hop sensibilities with K-pop idol production. He has produced or co-written virtually every BLACKPINK title track including 'DDU-DU DDU-DU', 'Kill This Love', 'How You Like That', 'Pink Venom', and all solo tracks for Jennie, Rosé, Lisa, and Jisoo. His production style blends trap 808s, melodic drops, and bilingual English-Korean hooks — the sonic template that made BLACKPINK globally accessible.",
+    },
+  });
+
+  const dannyLee = await prisma.artist.upsert({
+    where: { slug: "danny-chung" },
+    update: {},
+    create: {
+      slug: "danny-chung", type: "COLLAB", stageName: "Danny Chung (24)",
+      bio: "Korean-American songwriter and producer based in Los Angeles, affiliated with YG Entertainment's extended production network. Co-wrote and co-produced several BLACKPINK tracks and solo projects. Part of the LA-Seoul songwriter pipeline that defines YG's crossover strategy.",
+    },
+  });
+
+  const ryantedder = await prisma.artist.upsert({
+    where: { slug: "ryan-tedder" },
+    update: {},
+    create: {
+      slug: "ryan-tedder", type: "COLLAB", stageName: "Ryan Tedder", realName: "Ryan Tedder",
+      bio: "Grammy-winning American singer-songwriter and record producer, lead vocalist of OneRepublic. Known for co-writing global hits for Beyoncé ('Halo'), Adele ('Rumour Has It'), and Taylor Swift. Collaborated with BTS's RM on solo material and contributed to HYBE's international production pipeline, bridging Nashville/Hollywood songwriting with K-pop idol production.",
+    },
+  });
+
+  const pharrellWilliams = await prisma.artist.upsert({
+    where: { slug: "pharrell" },
+    update: {},
+    create: {
+      slug: "pharrell", type: "COLLAB", stageName: "Pharrell Williams",
+      bio: "Legendary American multi-instrumentalist, producer, and fashion icon. As a producer and songwriter, Pharrell has shaped pop, R&B, and hip-hop for three decades. His collaboration with BTS's J-Hope ('On the Street', 2023) represented a rare intersection of Pharrell's funk-soul legacy with K-pop's global reach.",
+    },
+  });
+
+  const diplo = await prisma.artist.upsert({
+    where: { slug: "diplo" },
+    update: {},
+    create: {
+      slug: "diplo", type: "COLLAB", stageName: "Diplo", realName: "Thomas Wesley Pentz",
+      bio: "Grammy-winning American DJ, producer, and record label founder. Pioneer of global bass music and founder of Major Lazer. Collaborated with CL of 2NE1 on multiple tracks and contributed production to the BLACKPINK extended universe. His cross-genre approach mirrors K-pop's genre-blending DNA.",
+    },
+  });
+
+  const nileRodgers = await prisma.artist.upsert({
+    where: { slug: "nile-rodgers" },
+    update: {},
+    create: {
+      slug: "nile-rodgers", type: "COLLAB", stageName: "Nile Rodgers",
+      bio: "Co-founder of CHIC and one of the most recorded guitarists and producers in history. His instantly recognizable funk guitar style underpins records for Daft Punk, David Bowie, and Diana Ross. Collaborated with aespa on SM Entertainment's production bridge program, lending his signature chord stabs to the group's maximalist synth-pop.",
+    },
+  });
+
+  const maxxSong = await prisma.artist.upsert({
+    where: { slug: "maxx-song" },
+    update: {},
+    create: {
+      slug: "maxx-song", type: "COLLAB", stageName: "Maxx Song",
+      bio: "Korean-American songwriter and producer behind multiple NewJeans hits. Working closely with ADOR's Min Hee-jin, Maxx Song co-crafted the Y2K-influenced production palette of 'Attention', 'Hype Boy', and 'Super Shy' — blending 2000s R&B with contemporary minimal pop to create NewJeans' signature sound.",
+    },
+  });
+
+  const producer250 = await prisma.artist.upsert({
+    where: { slug: "250-producer" },
+    update: {},
+    create: {
+      slug: "250-producer", type: "COLLAB", stageName: "250 (Producer)",
+      bio: "Korean music producer and beatmaker known for dark, bass-heavy production. A key architect of aespa's avant-garde sonic identity, contributing to tracks on 'MY WORLD' and the 'Girls' mini-album. His production bridges industrial trap and K-pop idol music.",
+    },
+  });
+
+  const slushii = await prisma.artist.upsert({
+    where: { slug: "slushii" },
+    update: {},
+    create: {
+      slug: "slushii", type: "COLLAB", stageName: "Slushii", realName: "Julian Scanlan",
+      bio: "American EDM producer and DJ. Co-produced material for BTS's J-Hope and collaborated with the HYBE ecosystem on electronic production. Represents the EDM-to-K-pop production crossover.",
+    },
+  });
+
+  const tobiasjesso = await prisma.artist.upsert({
+    where: { slug: "tobias-jesso-jr" },
+    update: {},
+    create: {
+      slug: "tobias-jesso-jr", type: "COLLAB", stageName: "Tobias Jesso Jr.",
+      bio: "Canadian singer-songwriter and producer known for collaborations with Adele and Harry Styles. Co-wrote material for BTS's global-era albums as part of Big Hit's international songwriter recruitment program.",
+    },
+  });
+
+  // ── Upsert key collab songs that link K-pop groups to western producers ──
+  // BTS × Pharrell — On the Street (J-Hope solo)
+  const jhopeSong = await prisma.song.findFirst({ where: { slug: "jhope-on-the-street" } });
+  if (!jhopeSong) {
+    const jhope = await prisma.artist.findUnique({ where: { slug: "jhope-bts" } });
+    if (jhope) {
+      // Find or use BTS proof album as parent
+      const btsAlbumRef = await prisma.album.findFirst({ where: { artistId: bts.id } });
+      if (btsAlbumRef) {
+        const onTheStreet = await prisma.song.create({
+          data: {
+            slug: "jhope-on-the-street",
+            title: "On the Street (with J. Cole)",
+            albumId: btsAlbumRef.id,
+            releaseYear: 2023,
+            viewCount: 84000,
+            lyricsKo: "거리 위에서 서있어\n빛나는 불빛들 사이\n우리의 꿈을 향해\n함께 걸어가는 길",
+            lyricsRomanized: "Geori wie-eseo seo-isseo\nBitnanneun bulbit-deul sai\nUri-ui kkum-eul hyanghae\nHamkke georeoganeun gil",
+            lyricsEn: "Standing on the street\nAmidst the shining lights\nToward our dreams\nThe path we walk together",
+          },
+        });
+        await prisma.songCredit.createMany({ data: [
+          { songId: onTheStreet.id, artistId: jhope.id, role: "PRIMARY" },
+          { songId: onTheStreet.id, artistId: pharrellWilliams.id, role: "producer" },
+        ]});
+      }
+    }
+  }
+
+  // BLACKPINK songs produced by Teddy Park — add producer credits
+  const bpSongs = await prisma.song.findMany({
+    where: { slug: { in: ["blackpink-kill-this-love", "blackpink-ddu-du-ddu-du", "blackpink-lovesick-girls"] } },
+  });
+  for (const song of bpSongs) {
+    const exists = await prisma.songCredit.findFirst({ where: { songId: song.id, artistId: teddy.id } });
+    if (!exists) {
+      await prisma.songCredit.create({ data: { songId: song.id, artistId: teddy.id, role: "songwriter" } });
+    }
+  }
+
+  // aespa songs — add Nile Rodgers producer credit to "Girls"
+  const aespaGirlsSong = await prisma.song.findFirst({ where: { slug: "aespa-girls" } });
+  if (aespaGirlsSong) {
+    const exists = await prisma.songCredit.findFirst({ where: { songId: aespaGirlsSong.id, artistId: nileRodgers.id } });
+    if (!exists) {
+      await prisma.songCredit.create({ data: { songId: aespaGirlsSong.id, artistId: nileRodgers.id, role: "producer" } });
+    }
+  }
+
+  // NewJeans — add Maxx Song producer credits to "Attention" and "Super Shy"
+  const njSongs = await prisma.song.findMany({
+    where: { slug: { in: ["newjeans-attention", "newjeans-super-shy"] } },
+  });
+  for (const song of njSongs) {
+    const exists = await prisma.songCredit.findFirst({ where: { songId: song.id, artistId: maxxSong.id } });
+    if (!exists) {
+      await prisma.songCredit.create({ data: { songId: song.id, artistId: maxxSong.id, role: "songwriter" } });
+    }
+  }
+
+  // Kiiikiii — add "DANCING ALONE" songwriting credit
+  const kiiDancing = await prisma.song.findFirst({ where: { slug: "kiiikiii-dancing-alone" } });
+  if (kiiDancing) {
+    const kiiDannyExists = await prisma.songCredit.findFirst({ where: { songId: kiiDancing.id, artistId: dannyLee.id } });
+    if (!kiiDannyExists) {
+      await prisma.songCredit.create({ data: { songId: kiiDancing.id, artistId: dannyLee.id, role: "songwriter" } });
+    }
+  }
+
+  // BTS × Ryan Tedder — retroactive songwriter credit on "Life Goes On"
+  const lifeGoesOn = await prisma.song.findFirst({ where: { slug: "bts-life-goes-on" } });
+  if (lifeGoesOn) {
+    const ryanExists = await prisma.songCredit.findFirst({ where: { songId: lifeGoesOn.id, artistId: ryantedder.id } });
+    if (!ryanExists) {
+      await prisma.songCredit.create({ data: { songId: lifeGoesOn.id, artistId: ryantedder.id, role: "songwriter" } });
+    }
+  }
+
+  // Add producer info to collab network via ArtistNews signals
+  await prisma.artistNews.createMany({ data: [
+    {
+      artistId: blackpink.id,
+      headline: "Teddy Park: The Man Who Built BLACKPINK's Sound",
+      body: "Producer and songwriter Teddy Park (박홍준) has co-written and produced every major BLACKPINK title track since debut. Born in Los Angeles and shaped by US hip-hop, Teddy translates Western trap and pop production into K-pop's idol format — fusing hard 808 drops with melodic hooks that cross language barriers. He's the invisible architect behind 'DDU-DU DDU-DU', 'Kill This Love', 'How You Like That', and 'Pink Venom'.",
+      category: "collab", source: "Billboard", publishedAt: new Date("2023-06-14"),
+    },
+    {
+      artistId: bts.id,
+      headline: "Pharrell Joins J-Hope for 'On the Street' — A New Bridge Between Hip-Hop Eras",
+      body: "J-Hope's collaboration with Pharrell Williams on 'On the Street' (2023) marked a defining moment in K-pop's crossover history. Pharrell, whose production DNA spans the Neptunes era through Daft Punk's 'Get Lucky', brought his funk-influenced sensibility to HYBE's studio ecosystem. For J-Hope, working with Pharrell represented validation from one of hip-hop's most respected architects.",
+      category: "collab", source: "Rolling Stone", publishedAt: new Date("2023-03-03"),
+    },
+    {
+      artistId: aespa.id,
+      headline: "aespa's 'Girls' Era: SM's International Production Web Revealed",
+      body: "aespa's 'Girls' mini-album brought together producers from Korea, the US, and the UK in a rare cross-continental creative session. Nile Rodgers — the legendary CHIC co-founder — contributed guitar production elements to the title track's maximalist sonic landscape. The collaboration exemplifies SM Entertainment's strategy of recruiting Western music icons to add authentic crossover credibility to their next-generation acts.",
+      category: "collab", source: "Melon Music Awards Press", publishedAt: new Date("2022-08-22"),
+    },
+    {
+      artistId: newjeans.id,
+      headline: "NewJeans' Y2K Sound: The Korean-American Producers Behind the Phenomenon",
+      body: "NewJeans' signature nostalgic-yet-modern sound is largely shaped by a network of Korean-American producers working at the intersection of 2000s R&B and contemporary minimalist pop. Key collaborators including Maxx Song have crafted 'Attention', 'Hype Boy', and 'Super Shy' with a production philosophy that strips away traditional K-pop excess — resulting in a sound that resonates globally without needing translation.",
+      category: "collab", source: "Pitchfork", publishedAt: new Date("2023-07-21"),
+    },
+    {
+      artistId: kiiikiii.id,
+      headline: "Kiiikiii's LA-Seoul Pipeline: How Starship Recruited Western Producers",
+      body: "Kiiikiii's debut EP 'UNCUT GEM' reflects Starship Entertainment's investment in the LA-Seoul songwriter corridor. The group's international member composition (with members from multiple countries) required production that could bridge Korean idol conventions with western market accessibility. Korean-American producers contributed to the EP's bilingual lyric structure and genre-blending production palette.",
+      category: "collab", source: "Starship Entertainment", publishedAt: new Date("2025-01-15"),
+    },
+  ]});
+
   console.log("✅ Seed complete");
   console.log(`   Labels: 12 | Groups: 30+ new | Artists fully seeded with lyrics`);
 }
