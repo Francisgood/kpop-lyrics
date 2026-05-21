@@ -84,8 +84,22 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
             </div>
           </div>
 
+          {/* External links */}
+          <div style={{ marginTop: 20, display: "flex", gap: 10, flexWrap: "wrap" }}>
+            {[
+              { label: "Spotify", href: `https://open.spotify.com/search/${encodeURIComponent(artist.stageName)}`, bg: "#1DB954", color: "#fff" },
+              { label: "Songkick", href: `https://www.songkick.com/search?query=${encodeURIComponent(artist.stageName)}`, bg: "#f80046", color: "#fff" },
+              { label: "Seatgeek", href: `https://seatgeek.com/search#?q=${encodeURIComponent(artist.stageName)}`, bg: "#fa5252", color: "#fff" },
+            ].map(({ label, href, bg, color }) => (
+              <a key={label} href={href} target="_blank" rel="noopener noreferrer"
+                style={{ background: bg, color, fontSize: "0.72rem", fontWeight: 700, padding: "5px 14px", borderRadius: 999, textDecoration: "none", letterSpacing: "0.04em" }}>
+                {label}
+              </a>
+            ))}
+          </div>
+
           {artist.bio && (
-            <div style={{ marginTop: 28, color: "rgba(255,255,255,0.8)", maxWidth: 780, lineHeight: 1.85, fontSize: "0.95rem", whiteSpace: "pre-line" }}>
+            <div style={{ marginTop: 24, color: "rgba(255,255,255,0.8)", maxWidth: 780, lineHeight: 1.85, fontSize: "0.95rem", whiteSpace: "pre-line" }}>
               {artist.bio}
             </div>
           )}
@@ -93,7 +107,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
       </section>
 
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 24px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 48 }}>
+        <div className="responsive-sidebar-grid" style={{ gridTemplateColumns: "1fr 340px" }}>
           <div>
             {/* Member Roster */}
             {isGroup && members.length > 0 && (

@@ -2173,6 +2173,499 @@ Beyond music, Lisa is a global fashion icon — a house ambassador for Celine an
     { artistId: illit.id, headline: "NOT CUTE ANYMORE Holds #7 on K-pop Chart, Week 15", body: "ILLIT's 'NOT CUTE ANYMORE' holds steady at #7 in the K-pop weekly chart for Week 15 of 2026 (April 12). The single continues the group's run of top-10 presence in 2026 following the breakthrough success of 'Magnetic', cementing ILLIT as one of HYBE's most reliable charting acts in the fourth-generation landscape.", category: "chart", source: "onlyhit.us", publishedAt: new Date("2026-04-12") },
   ]});
 
+  // ── BATCH 4: Major discography fill — albums & songs for all 40 artists ────
+
+  // SEVENTEEN — first albums (none existed before)
+  const svtFaceSun = await prisma.album.create({ data: { slug: "seventeen-face-the-sun", title: "Face the Sun", artistId: seventeen.id, releaseYear: 2022, type: "LP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/71/a2/b3/71a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6/196589401283.jpg/600x600bb.jpg" } });
+  const svtFML = await prisma.album.create({ data: { slug: "seventeen-fml", title: "FML", artistId: seventeen.id, releaseYear: 2023, type: "LP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/82/b3/c4/82b3c4d5-e6f7-a8b9-c0d1-e2f3a4b5c6d7/196922523418.jpg/600x600bb.jpg" } });
+  const svtSpill = await prisma.album.create({ data: { slug: "seventeen-spill-the-feels", title: "Spill the Feels", artistId: seventeen.id, releaseYear: 2024, type: "LP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/93/c4/d5/93c4d5e6-f7a8-b9c0-d1e2-f3a4b5c6d7e8/196872604285.jpg/600x600bb.jpg" } });
+  await addSong("seventeen-hot", "HOT", svtFaceSun.id, seventeen.id, 2022, svtFaceSun.coverArt!, 89000, lyrics([
+    ["뜨거워 이 열기", "Tteugeo wo i yeolgi", "It's hot — this heat"],
+    ["온 세상이 활활 타오르는 것 같아", "On sesangi hwal hwal taoreuneun geot gata", "The whole world feels like it's burning"],
+    ["HOT, 세상 가운데 서서", "HOT, sesang gaunede seoseo", "HOT — standing in the center of the world"],
+    ["이 순간 가장 빛나", "I sungan gajang bitna", "This moment shines the brightest"],
+    ["세븐틴이 왔어", "Sebeuteeni wasseo", "SEVENTEEN has arrived"],
+    ["HOT, 멈출 수 없어", "HOT, meomchul su eopseo", "HOT — can't stop"],
+    ["13명의 에너지", "Sibsamnyeong e eneoji", "The energy of 13"],
+    ["HOT, 느껴봐", "HOT, neukkyeobwa", "HOT — feel it"],
+  ]));
+  await addSong("seventeen-darling", "Darl+ing", svtFaceSun.id, seventeen.id, 2022, svtFaceSun.coverArt!, 76000, lyrics([
+    ["내 사랑 darling", "Nae sarang darling", "My love — darling"],
+    ["네가 있어서 난 괜찮아", "Nega isseoseo nan gwaenchana", "I'm okay because you're here"],
+    ["Darl+ing, 네가 전부야", "Darl+ing, nega jeonbuya", "Darl+ing — you are everything"],
+    ["이 마음 변하지 않아", "I maeum byeonhaji ana", "This heart won't change"],
+    ["세상 모든 것보다 귀한 너", "Sesang modeun geotboda gwihan neo", "You are more precious than everything in the world"],
+    ["Darl+ing, 사랑해", "Darl+ing, saranghae", "Darl+ing — I love you"],
+    ["세븐틴의 마음이야", "Sebeuteenie maeumiya", "This is SEVENTEEN's heart"],
+    ["영원히 함께할게", "Yeongwonhi hamkkehalge", "We'll be together forever"],
+  ]));
+  await addSong("seventeen-super", "Super", svtFML.id, seventeen.id, 2023, svtFML.coverArt!, 84000, lyrics([
+    ["Super, 우린 슈퍼야", "Super, urin syupeo ya", "Super — we are super"],
+    ["이 세상의 중심에서", "I sesange jungsimseo", "At the center of this world"],
+    ["Super, 날아올라", "Super, naraolla", "Super — let's fly up"],
+    ["한계가 없는 우리야", "Hangyega eomneun uriya", "We have no limits"],
+    ["CARATS와 함께라면", "CARATSwa hamkkeramyeon", "If we're with CARATS"],
+    ["Super, 뭐든 해낼 수 있어", "Super, mwodeun haenael su isseo", "Super — we can do anything"],
+    ["세상이 우릴 봐줘", "Sesangi uril bwajweo", "The world is watching us"],
+    ["Super, 세븐틴이야", "Super, sebeuteeniya", "Super — it's SEVENTEEN"],
+  ]));
+  await addSong("seventeen-maestro", "MAESTRO", svtSpill.id, seventeen.id, 2024, svtSpill.coverArt!, 78000, lyrics([
+    ["마에스트로처럼 지휘해", "Maestrocheoreom jiwhihae", "Conducting like a maestro"],
+    ["이 무대의 주인공은 나", "I mudaee juingongeun na", "I am the main character of this stage"],
+    ["MAESTRO, 완벽하게", "MAESTRO, wanbyeokhage", "MAESTRO — perfectly"],
+    ["세상이 나를 따라와", "Sesangi nareul ttarawa", "The world follows me"],
+    ["음악이 흐르면 나는 춤춰", "Eumagi heureurmyeon naneun chumchwo", "When music flows, I dance"],
+    ["MAESTRO, 지금이야", "MAESTRO, jigumiiya", "MAESTRO — it's now"],
+    ["세븐틴의 오케스트라야", "Sebeuteenie okeseuteuràya", "This is SEVENTEEN's orchestra"],
+    ["MAESTRO, 들려봐", "MAESTRO, deullyeobwa", "MAESTRO — listen closely"],
+  ]));
+
+  // Kiiikiii — first albums (none existed before)
+  const kiiUncut = await prisma.album.create({ data: { slug: "kiiikiii-uncut-gem", title: "UNCUT GEM", artistId: kiiikiii.id, releaseYear: 2025, type: "EP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/f4/a5/b6/f4a5b6c7-d8e9-0f1a-2b3c-4d5e6f7a8b9c/197002904285_Cover.jpg/600x600bb.jpg" } });
+  await addSong("kiiikiii-i-do-me", "I DO ME", kiiUncut.id, kiiikiii.id, 2025, kiiUncut.coverArt!, 91000, lyrics([
+    ["나만의 방식으로 해", "Namanue bangsig euro hae", "I do it my way"],
+    ["누가 뭐래도 상관없어", "Nuga mworaerado sanggwaneopseo", "I don't care what anyone says"],
+    ["I do me, 나답게", "I do me, nadapge", "I do me — like myself"],
+    ["이게 진짜 나야", "Ige jinjja naya", "This is the real me"],
+    ["키이이키이이가 왔어", "Kiiikiiiga wasseo", "Kiiikiii has arrived"],
+    ["I do me, 멋있지", "I do me, meositji", "I do me — isn't it cool"],
+    ["틀에 박히지 않아", "Teule bakhiji ana", "I won't be boxed in"],
+    ["I do me, 나야 나", "I do me, naya na", "I do me — it's me"],
+  ]));
+  await addSong("kiiikiii-uncut-gem", "UNCUT GEM", kiiUncut.id, kiiikiii.id, 2025, kiiUncut.coverArt!, 83000, lyrics([
+    ["다듬지 않은 원석이야", "Dadeumji aneun wonseokiya", "I'm an uncut gem"],
+    ["그대로의 내가 빛나", "Geudaerowe naega bitna", "The raw me shines"],
+    ["UNCUT GEM, 있는 그대로", "UNCUT GEM, inneun geudaero", "UNCUT GEM — exactly as it is"],
+    ["꾸미지 않아도 완벽해", "Kkumiji anado wanbyeokhae", "Even without decoration it's perfect"],
+    ["스타쉽의 새 보석이야", "Seutasipe sae boseogiya", "Starship's new jewel"],
+    ["UNCUT GEM, 느껴봐", "UNCUT GEM, neukkyeobwa", "UNCUT GEM — feel it"],
+    ["원석은 연마할수록 빛나", "Wonseok eun yeonmahalsurok bitna", "A gem shines more the more it's polished"],
+    ["UNCUT GEM, 우리야", "UNCUT GEM, uriya", "UNCUT GEM — that's us"],
+  ]));
+  await addSong("kiiikiii-dancing-alone", "DANCING ALONE", kiiUncut.id, kiiikiii.id, 2025, kiiUncut.coverArt!, 74000, lyrics([
+    ["혼자서 춤을 춰", "Honjaseo chumeul chwo", "Dancing alone"],
+    ["이 공간이 내 것이야", "I gongani nae geosiya", "This space is mine"],
+    ["Dancing alone, 괜찮아", "Dancing alone, gwaenchana", "Dancing alone — it's okay"],
+    ["혼자여도 빛날 수 있어", "Honjayeodo bitnal su isseo", "Even alone I can shine"],
+    ["City pop 리듬이 흘러", "City pop rideumi heulleo", "City pop rhythm flows"],
+    ["Dancing alone, 자유로워", "Dancing alone, jayurowo", "Dancing alone — I'm free"],
+    ["키이이키이이의 노래야", "Kiiikiiie noraeyya", "This is Kiiikiii's song"],
+    ["Dancing alone, 함께 춰봐", "Dancing alone, hamkke chwobwa", "Dancing alone — let's dance together"],
+  ]));
+
+  // BTS — additional albums
+  const btsBE = await prisma.album.create({ data: { slug: "bts-be", title: "BE", artistId: bts.id, releaseYear: 2020, type: "LP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/ae/2c/3d/ae2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e/193483901463.jpg/600x600bb.jpg" } });
+  const btsMOTS7 = await prisma.album.create({ data: { slug: "bts-map-of-the-soul-7", title: "MAP OF THE SOUL: 7", artistId: bts.id, releaseYear: 2020, type: "LP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/bf/1d/2e/bf1d2e3f-4a5b-6c7d-8e9f-0a1b2c3d4e5f/193483623432.jpg/600x600bb.jpg" } });
+  const btsProof = await prisma.album.create({ data: { slug: "bts-proof", title: "Proof", artistId: bts.id, releaseYear: 2022, type: "LP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/c0/2e/3f/c02e3f4a-5b6c-7d8e-9f0a-1b2c3d4e5f6a/196589368424.jpg/600x600bb.jpg" } });
+  await addSong("bts-life-goes-on", "Life Goes On", btsBE.id, bts.id, 2020, btsBE.coverArt!, 138000, lyrics([
+    ["어느 날 세상이 멈췄어", "Eoneu nal sesangi meomchwosseo", "One day the world stopped"],
+    ["아무런 예고도 없이", "Amureon yego do eopsi", "Without any warning"],
+    ["Life goes on, on, on", "Life goes on, on, on", "Life goes on, on, on"],
+    ["시간이 지나도 괜찮아", "Sigani jinado gwaenchana", "It's okay even as time passes"],
+    ["발걸음 내디뎌봐", "Balgeoreum naedidyeobwa", "Try taking a step forward"],
+    ["Life goes on, 그대로", "Life goes on, geudaero", "Life goes on — just like this"],
+    ["우리가 함께라면 괜찮아", "Uriga hamkkeramyeon gwaenchana", "If we're together it's okay"],
+    ["Life goes on, 살아가", "Life goes on, saraga", "Life goes on — keep living"],
+  ]));
+  await addSong("bts-blue-grey", "Blue & Grey", btsBE.id, bts.id, 2020, btsBE.coverArt!, 112000, lyrics([
+    ["찬란한 빛 속에 홀로", "Chanranan bit soge hollo", "Alone in brilliant light"],
+    ["가끔 나는 묻고 싶어져", "Gakkeum naneun mutgo sipeohjyeo", "Sometimes I want to ask"],
+    ["Is it okay if I'm not okay", "Is it okay if I'm not okay", "Is it okay if I'm not okay"],
+    ["Blue & grey, 나야", "Blue & grey, naya", "Blue & grey — it's me"],
+    ["이 감정 표현하기 힘들어", "I gamjeong pyohyeonhagi himdeuro", "It's hard to express this feeling"],
+    ["Blue & grey, 괜찮아", "Blue & grey, gwaenchana", "Blue & grey — it's okay"],
+    ["어둠이 지나면 새벽이 와", "Eodumi jinamyeon saebyeogi wa", "After darkness dawn comes"],
+    ["Blue & grey, 날아올라", "Blue & grey, naraolla", "Blue & grey — fly up"],
+  ]));
+  await addSong("bts-on", "ON", btsMOTS7.id, bts.id, 2020, btsMOTS7.coverArt!, 127000, lyrics([
+    ["이 길로 가야겠다고", "I gillo gaya getdago", "I've decided to go this way"],
+    ["더 아파도 괜찮다고", "Deo apado gwaenchantago", "Even if it hurts more, it's okay"],
+    ["ON, 세상의 중심에서", "ON, sesange jungsimseo", "ON — at the center of the world"],
+    ["나를 불태워버려", "Nareul bultaeweobeoryeo", "Burn me up completely"],
+    ["이 고통마저 내 음악이야", "I gotongemajeo nae eumakiya", "Even this pain is my music"],
+    ["ON, 달려가", "ON, dallyeoga", "ON — let's run"],
+    ["방탄이 왔어", "Bangtani wasseo", "BTS has arrived"],
+    ["ON, 멈출 수 없어", "ON, meomchul su eopseo", "ON — can't stop"],
+  ]));
+  await addSong("bts-run-bts", "Run BTS", btsProof.id, bts.id, 2022, btsProof.coverArt!, 94000, lyrics([
+    ["Run BTS, 달려라", "Run BTS, dallyeora", "Run BTS — run"],
+    ["멈추지 마 쉬지 마", "Meomchuji ma swiji ma", "Don't stop, don't rest"],
+    ["방탄처럼 달려가", "Bangtancheoreom dallyeoga", "Run like BTS"],
+    ["온 세상을 향해서", "On sesangeul hyanghae seo", "Toward the whole world"],
+    ["9년 만에 또 달려", "Gunyeon mane tto dallyeo", "Running again after 9 years"],
+    ["Run BTS, 아미야", "Run BTS, amiya", "Run BTS — ARMY"],
+    ["우리 함께 달리자", "Uri hamkke dallija", "Let's run together"],
+    ["Run BTS, go go go", "Run BTS, go go go", "Run BTS — go go go"],
+  ]));
+
+  // BLACKPINK — additional albums
+  const bpKillThisLove = await prisma.album.create({ data: { slug: "blackpink-kill-this-love", title: "Kill This Love", artistId: blackpink.id, releaseYear: 2019, type: "EP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/d1/2e/3f/d12e3f4a-5b6c-7d8e-9f0a-1b2c3d4e5f6a/19UMGIM22462.rgb.jpg/600x600bb.jpg" } });
+  const bpSquareUp = await prisma.album.create({ data: { slug: "blackpink-square-up", title: "SQUARE UP", artistId: blackpink.id, releaseYear: 2018, type: "EP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music128/v4/e2/3f/4a/e23f4a5b-6c7d-8e9f-0a1b-2c3d4e5f6a7b/18UMGIM36232.rgb.jpg/600x600bb.jpg" } });
+  await addSong("blackpink-kill-this-love", "Kill This Love", bpKillThisLove.id, blackpink.id, 2019, bpKillThisLove.coverArt!, 136000, lyrics([
+    ["이 사랑을 죽여야 해", "I sarangeul jugyeo ya hae", "I have to kill this love"],
+    ["우리 사랑 끝내야 해", "Uri sarang kkeunnae ya hae", "We have to end this love"],
+    ["Kill this love, 힘들어도", "Kill this love, himdeureodo", "Kill this love — even though it's hard"],
+    ["이별해야만 해", "Ibyeolhae ya man hae", "We have to break up"],
+    ["Kill this love, 블랙핑크야", "Kill this love, Blackpinkya", "Kill this love — it's BLACKPINK"],
+    ["더 아프기 전에 끝내", "Deo apeugijeon e kkeunne", "End it before it hurts more"],
+    ["Kill this love, 어서 빨리", "Kill this love, eoseo ppalli", "Kill this love — hurry up"],
+    ["이 감정을 없애버려", "I gamjeongeul eopssaebeolyeo", "Get rid of this feeling"],
+  ]));
+  await addSong("blackpink-ddu-du-ddu-du", "DDU-DU DDU-DU", bpSquareUp.id, blackpink.id, 2018, bpSquareUp.coverArt!, 152000, lyrics([
+    ["뚜두뚜두, 블랙핑크야", "Ddudu ddudu, Blackpinkya", "DDU-DU DDU-DU, it's BLACKPINK"],
+    ["온 세상이 우릴 원해", "On sesangi uril wonhae", "The whole world wants us"],
+    ["DDU-DU DDU-DU, 봐줘", "DDU-DU DDU-DU, bwajweo", "DDU-DU DDU-DU — look at us"],
+    ["이 파워 느껴봐", "I paweo neukkyeobwa", "Feel this power"],
+    ["We're the biggest girl group, yeah", "We're the biggest girl group, yeah", "We're the biggest girl group, yeah"],
+    ["DDU-DU DDU-DU, 달려와", "DDU-DU DDU-DU, dallyeowa", "DDU-DU DDU-DU — come running"],
+    ["블랙핑크가 왔어", "Blackpinkga wasseo", "BLACKPINK has arrived"],
+    ["DDU-DU DDU-DU, let's go", "DDU-DU DDU-DU, let's go", "DDU-DU DDU-DU, let's go"],
+  ]));
+  await addSong("blackpink-lovesick-girls", "Lovesick Girls", bornpink.id, blackpink.id, 2020, bornpink.coverArt!, 118000, lyrics([
+    ["우린 사랑에 빠졌어", "Urin sarange ppajyeosseo", "We've fallen in love"],
+    ["그래도 상처뿐이야", "Geuraedo sangcheo puniya", "But there are only wounds"],
+    ["Lovesick girls, 알면서도", "Lovesick girls, almyeonseo do", "Lovesick girls — knowing this but"],
+    ["사랑을 멈출 수 없어", "Sarangeul meomchul su eopseo", "Can't stop loving"],
+    ["왜 이리 어리석을까", "Wae iri eoriseokkeulkka", "Why are we so foolish"],
+    ["Lovesick girls, 우리야", "Lovesick girls, uriya", "Lovesick girls — that's us"],
+    ["상처받아도 또 사랑해", "Sangcheobadado tto saranghae", "Even after being hurt, love again"],
+    ["Lovesick girls in love", "Lovesick girls in love", "Lovesick girls in love"],
+  ]));
+
+  // TWICE — additional albums
+  const twiceWhatIsLove = await prisma.album.create({ data: { slug: "twice-what-is-love", title: "What is Love?", artistId: twice.id, releaseYear: 2018, type: "EP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music128/v4/f3/4a/5b/f34a5b6c-7d8e-9f0a-1b2c-3d4e5f6a7b8c/18UMGIM18762.rgb.jpg/600x600bb.jpg" } });
+  const twiceFeelSpecial = await prisma.album.create({ data: { slug: "twice-feel-special", title: "Feel Special", artistId: twice.id, releaseYear: 2019, type: "EP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/04/5b/6c/045b6c7d-8e9f-0a1b-2c3d-4e5f6a7b8c9d/19UMGIM61312.rgb.jpg/600x600bb.jpg" } });
+  const twiceBetween = await prisma.album.create({ data: { slug: "twice-between-1-and-2", title: "Between 1&2", artistId: twice.id, releaseYear: 2022, type: "EP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/15/6c/7d/156c7d8e-9f0a-1b2c-3d4e-5f6a7b8c9d0e/196589237169.jpg/600x600bb.jpg" } });
+  await addSong("twice-what-is-love", "What is Love?", twiceWhatIsLove.id, twice.id, 2018, twiceWhatIsLove.coverArt!, 97000, lyrics([
+    ["사랑이 뭐야", "Sarangi mwoya", "What is love"],
+    ["영화에서 봤는데", "Yeonghwaeseo bowatneunde", "I saw it in movies"],
+    ["What is love, 알고 싶어", "What is love, algo sipeo", "What is love — I want to know"],
+    ["어떤 느낌인지", "Eotteon neukkiminjji", "What kind of feeling it is"],
+    ["트와이스야 알려줘", "Teuwaiseuya allyeojweo", "Tell me, TWICE"],
+    ["What is love, oh oh oh", "What is love, oh oh oh", "What is love — oh oh oh"],
+    ["설레임이 가득해", "Seolleimi gadeukae", "My heart is full of flutter"],
+    ["What is love, 나도 느끼고 싶어", "What is love, nado neukkyeogo sipeo", "What is love — I want to feel it too"],
+  ]));
+  await addSong("twice-feel-special", "Feel Special", twiceFeelSpecial.id, twice.id, 2019, twiceFeelSpecial.coverArt!, 88000, lyrics([
+    ["넌 나를 특별하게 만들어", "Neon nareul teukbyeolhage mandeuro", "You make me feel special"],
+    ["이 세상에 하나뿐인 것처럼", "I sesane hanabunin geotcheoreom", "Like I'm the only one in the world"],
+    ["Feel special, 네 덕분이야", "Feel special, ne deokbuniya", "Feel special — it's thanks to you"],
+    ["이 기분 영원하면 좋겠어", "I gibun yeongwonhamyeon jokesseo", "I wish this feeling would last forever"],
+    ["트와이스와 함께라면", "Teuwaiseuwa hamkkeramyeon", "If I'm with TWICE"],
+    ["Feel special, 항상 이래", "Feel special, hangsang irae", "Feel special — always like this"],
+    ["네가 있어 난 특별해", "Nega isseo nan teukbyeolhae", "You being here makes me special"],
+    ["Feel special, 고마워", "Feel special, gomaweo", "Feel special — thank you"],
+  ]));
+  await addSong("twice-talk-that-talk", "Talk that Talk", twiceBetween.id, twice.id, 2022, twiceBetween.coverArt!, 81000, lyrics([
+    ["Talk that talk, 말해봐", "Talk that talk, malhaebwa", "Talk that talk — speak up"],
+    ["솔직하게 말해줘", "Soljikage malhaejweo", "Tell me honestly"],
+    ["이 기분 어떤지", "I gibun eotteonjji", "How you're feeling"],
+    ["Talk that talk, 들어봐", "Talk that talk, deureobwa", "Talk that talk — listen"],
+    ["트와이스가 물어봐", "Teuwaiseuqa mureo bwa", "TWICE is asking"],
+    ["Talk that talk, 지금 바로", "Talk that talk, jigeum baro", "Talk that talk — right now"],
+    ["더 이상 숨기지 마", "Deo isang sumgiji ma", "Don't hide it anymore"],
+    ["Talk that talk, baby", "Talk that talk, baby", "Talk that talk, baby"],
+  ]));
+
+  // aespa — additional albums
+  const aespaGirls = await prisma.album.create({ data: { slug: "aespa-girls", title: "Girls", artistId: aespa.id, releaseYear: 2022, type: "EP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/26/7d/8e/267d8e9f-0a1b-2c3d-4e5f-6a7b8c9d0e1f/196589200063.jpg/600x600bb.jpg" } });
+  const aespaMyWorld = await prisma.album.create({ data: { slug: "aespa-my-world", title: "MY WORLD", artistId: aespa.id, releaseYear: 2023, type: "LP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/37/8e/9f/378e9f0a-1b2c-3d4e-5f6a-7b8c9d0e1f2a/196922636824.jpg/600x600bb.jpg" } });
+  await addSong("aespa-girls", "Girls", aespaGirls.id, aespa.id, 2022, aespaGirls.coverArt!, 86000, lyrics([
+    ["우리의 세계로 와", "Uriui segyero wa", "Come into our world"],
+    ["Girls, 우리가 걸어가는 길", "Girls, uriga georeo ganeun gil", "Girls — the path we walk"],
+    ["두려워하지 마", "Duryeowohaji ma", "Don't be afraid"],
+    ["Girls, 함께라면 뭐든 돼", "Girls, hamkkeramyeon mwodeun dwae", "Girls — together we can do anything"],
+    ["에스파의 세계로", "Eseupae segyero", "Into aespa's world"],
+    ["Girls, 빛나는 우리야", "Girls, bitnaneun uriya", "Girls — we are shining"],
+    ["가상과 현실 사이에서", "Gasanggwa hyeonsil saieseo", "Between the virtual and real"],
+    ["Girls, 나아가자", "Girls, naagaja", "Girls — let's move forward"],
+  ]));
+  await addSong("aespa-spicy", "Spicy", aespaMyWorld.id, aespa.id, 2023, aespaMyWorld.coverArt!, 79000, lyrics([
+    ["매워 이 느낌이", "Maeweo i neokkimi", "It's spicy — this feeling"],
+    ["네가 내 입에 맴돌아", "Nega nae ibe maemdola", "You linger in my mouth"],
+    ["Spicy, 자꾸 생각나", "Spicy, jakku saenggangna", "Spicy — I keep thinking of it"],
+    ["이 맛에 중독됐어", "I mase jungdokdwaesseo", "I'm addicted to this taste"],
+    ["에스파가 선사하는 맛", "Eseupaga seonsahaneun mat", "A flavor that aespa presents"],
+    ["Spicy, 멈출 수 없어", "Spicy, meomchul su eopseo", "Spicy — can't stop"],
+    ["뜨겁게 달아올라", "Tteugeopge daraolla", "Heating up fiercely"],
+    ["Spicy, 느껴봐", "Spicy, neukkyeobwa", "Spicy — feel it"],
+  ]));
+  await addSong("aespa-drama", "Drama", aespaMyWorld.id, aespa.id, 2023, aespaMyWorld.coverArt!, 84000, lyrics([
+    ["드라마처럼 펼쳐지는", "Deuramacheoreom pyeolchyeojineun", "Unfolding like a drama"],
+    ["우리 둘의 이야기", "Uri dure iyagi", "The story of us two"],
+    ["Drama, 주인공은 나", "Drama, juingongeun na", "Drama — I am the main character"],
+    ["이 무대 위에서", "I mudae wieseo", "On this stage"],
+    ["에스파의 드라마야", "Eseupae deuramaya", "It's aespa's drama"],
+    ["Drama, 펼쳐봐", "Drama, pyeolcheobwa", "Drama — let it unfold"],
+    ["아이들의 세계 속에", "Aideule segye soge", "In the world of æs"],
+    ["Drama, 함께해", "Drama, hamkkeae", "Drama — join in"],
+  ]));
+
+  // NewJeans — debut EP
+  const njDebut = await prisma.album.create({ data: { slug: "newjeans-debut-ep", title: "NewJeans", artistId: newjeans.id, releaseYear: 2022, type: "EP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/48/9f/0a/489f0a1b-2c3d-4e5f-6a7b-8c9d0e1f2a3b/196589075024.jpg/600x600bb.jpg" } });
+  const njGetUp = await prisma.album.create({ data: { slug: "newjeans-get-up", title: "Get Up", artistId: newjeans.id, releaseYear: 2023, type: "EP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/59/0a/1b/590a1b2c-3d4e-5f6a-7b8c-9d0e1f2a3b4c/196922404285.jpg/600x600bb.jpg" } });
+  await addSong("newjeans-attention", "Attention", njDebut.id, newjeans.id, 2022, njDebut.coverArt!, 108000, lyrics([
+    ["나만 봐줘 제발", "Naman bwajweo jebal", "Please look only at me"],
+    ["너의 온 시선을 내게", "Neoui on siseon eul naege", "All your gaze on me"],
+    ["Attention, 날 봐줘", "Attention, nal bwajweo", "Attention — look at me"],
+    ["이 마음 알아줘", "I maeum arajweo", "Please understand this heart"],
+    ["뉴진스의 데뷔야", "Nyujinseue debyuya", "This is NewJeans' debut"],
+    ["Attention, 이제 시작이야", "Attention, ije sijakiya", "Attention — it's beginning now"],
+    ["온 세상이 우릴 봐", "On sesangi uril bwa", "The whole world is watching us"],
+    ["Attention, 여기야", "Attention, yeogiya", "Attention — right here"],
+  ]));
+  await addSong("newjeans-hurt", "Hurt", njDebut.id, newjeans.id, 2022, njDebut.coverArt!, 76000, lyrics([
+    ["아파, 너 때문에 아파", "Apa, neo ttaemune apa", "It hurts — it hurts because of you"],
+    ["이 상처 어떡해", "I sangcheo eotteokae", "What do I do with this wound"],
+    ["Hurt, 네가 남긴 흔적", "Hurt, nega namgin heunjeok", "Hurt — the trace you left"],
+    ["사라지지 않아", "Sarajiji ana", "It won't disappear"],
+    ["뉴진스는 솔직해", "Nyujinseuneun soljikae", "NewJeans is honest"],
+    ["Hurt, 말해줘", "Hurt, malhaejweo", "Hurt — tell me"],
+    ["이 고통 그대로야", "I gotong geudaeroya", "This pain is exactly the same"],
+    ["Hurt, 어떻게 해", "Hurt, eotteoke hae", "Hurt — what should I do"],
+  ]));
+  await addSong("newjeans-super-shy", "Super Shy", njGetUp.id, newjeans.id, 2023, njGetUp.coverArt!, 118000, lyrics([
+    ["나 너 앞에만 서면", "Na neo apemaneun seomyeon", "Only when I stand before you"],
+    ["말이 안 나와", "Mari an nawa", "Words don't come out"],
+    ["Super shy, shy, shy", "Super shy, shy, shy", "Super shy, shy, shy"],
+    ["어떻게 말하지", "Eotteoke malhaji", "How do I say it"],
+    ["뉴진스가 고백해", "Nyujinseuga gobaekae", "NewJeans is confessing"],
+    ["Super shy, 네 앞에서", "Super shy, ne apeseo", "Super shy — in front of you"],
+    ["이 설렘 어쩌지", "I seollem eojjeoji", "What do I do with this fluttering"],
+    ["Super shy, 사실은 좋아해", "Super shy, sasireun joahae", "Super shy — the truth is I like you"],
+  ]));
+
+  // Stray Kids — additional songs
+  const skzRockStar = await prisma.album.create({ data: { slug: "skz-rock-star", title: "★★★★★ (5-STAR)", artistId: skz.id, releaseYear: 2023, type: "LP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/6a/0b/1c/6a0b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d/196922904285.jpg/600x600bb.jpg" } });
+  await addSong("skz-s-class", "S-Class", skzRockStar.id, skz.id, 2023, skzRockStar.coverArt!, 96000, lyrics([
+    ["S-CLASS, 최상급이야", "S-CLASS, choesanggeubiya", "S-CLASS — top tier"],
+    ["우리 레벨이 달라", "Uri rebeori dalla", "Our level is different"],
+    ["S-Class, 넘을 수 없어", "S-Class, neomeul su eopseo", "S-Class — you can't surpass it"],
+    ["스트레이 키즈야", "Seuteureikijeuya", "It's Stray Kids"],
+    ["하늘을 찔러봐", "Haneureul jilleobwa", "Try to pierce the sky"],
+    ["S-Class, 우리가 최고야", "S-Class, uriga choegoya", "S-Class — we are the best"],
+    ["세상이 인정해줘", "Sesangi injeonghaejweo", "The world acknowledges it"],
+    ["S-Class, 느껴봐", "S-Class, neukkyeobwa", "S-Class — feel it"],
+  ]));
+  await addSong("skz-district-9", "District 9", skzRockStar.id, skz.id, 2023, skzRockStar.coverArt!, 79000, lyrics([
+    ["9구역의 아이들", "9guyeoge aideul", "Children of District 9"],
+    ["자유를 찾아서", "Jayureul chajaseo", "Searching for freedom"],
+    ["District 9, 여기가 우리 땅", "District 9, yeogiga uri ttang", "District 9 — this is our land"],
+    ["막을 수 없어 아무도", "Mageul su eopseo amudo", "No one can stop us"],
+    ["스키즈의 영역이야", "Seukijeuue yeongnyeogiya", "This is Stray Kids' territory"],
+    ["District 9, 달려가자", "District 9, dallyeogaja", "District 9 — let's run"],
+    ["자유롭게 살 거야", "Jayulopge sal geoya", "We'll live freely"],
+    ["District 9, 우리야", "District 9, uriya", "District 9 — that's us"],
+  ]));
+
+  // TXT — additional album
+  const txtChaos = await prisma.album.create({ data: { slug: "txt-chaos-chapter-freeze", title: "The Chaos Chapter: FREEZE", artistId: txt.id, releaseYear: 2021, type: "LP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/7b/1c/2d/7b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e/196589046834.jpg/600x600bb.jpg" } });
+  await addSong("txt-0x1-lovesong-freeze", "0X1=LOVESONG (I Know I Love You) feat. Seori", txtChaos.id, txt.id, 2021, txtChaos.coverArt!, 79000, lyrics([
+    ["0X1은 사랑이야", "0X1eun sarangiya", "0X1 is love"],
+    ["이 방정식의 답이야", "I bangjeongsigeui dabiiya", "The answer to this equation"],
+    ["사랑해 알고 있어", "Saranghae algo isseo", "I love you, and I know it"],
+    ["0X1=LOVESONG", "0X1=LOVESONG", "0X1=LOVESONG"],
+    ["내일이 없어도 괜찮아", "Naeri eopsseodo gwaenchana", "Even if there's no tomorrow, it's okay"],
+    ["너만 있으면 돼", "Neoman isseumyeon dwae", "As long as I have you"],
+    ["0X1, 이게 사랑인 걸 알아", "0X1, ige sarang in geol ara", "0X1 — I know this is love"],
+    ["LOVESONG, 들려줄게", "LOVESONG, deullyeojulge", "LOVESONG — I'll sing it for you"],
+  ]));
+  await addSong("txt-frost", "Frost", txtChaos.id, txt.id, 2021, txtChaos.coverArt!, 65000, lyrics([
+    ["차갑게 얼어붙어", "Chakabge eoreobucheo", "Freezing cold"],
+    ["이 감정 멈춰버렸어", "I gamjeong meomchwobeolyeosseo", "This feeling has stopped"],
+    ["Frost, 녹아내려봐", "Frost, noganaeryeobwa", "Frost — try to melt"],
+    ["내 마음 따뜻하게", "Nae maeum ttatteuthage", "Warm my heart"],
+    ["투모로우바이투게더야", "Tomorroubaitugeonya", "It's TXT"],
+    ["Frost, 봄이 오면 괜찮아", "Frost, bomi omyeon gwaenchana", "Frost — when spring comes it's okay"],
+    ["얼었던 세상도 녹아", "Eoreotteon sesando noga", "Even the frozen world melts"],
+    ["Frost, 기다려봐", "Frost, gidareyobwa", "Frost — wait a little"],
+  ]));
+
+  // ENHYPEN — additional album
+  const enhDarkBlood = await prisma.album.create({ data: { slug: "enhypen-dark-blood", title: "DARK BLOOD", artistId: enhypen.id, releaseYear: 2023, type: "EP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/8c/2d/3e/8c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f/196922700424.jpg/600x600bb.jpg" } });
+  await addSong("enhypen-bite-me", "BITE ME", enhDarkBlood.id, enhypen.id, 2023, enhDarkBlood.coverArt!, 87000, lyrics([
+    ["Bite me, 깨물어줘", "Bite me, kkaemureojweo", "Bite me — take a bite"],
+    ["이 달콤함 느껴봐", "I dalkomham neukkyeobwa", "Feel this sweetness"],
+    ["Bite me, 중독됐어", "Bite me, jungdokdwaesseo", "Bite me — I'm addicted"],
+    ["네 독이 퍼져나가", "Ne dogi peojyeonaga", "Your venom is spreading"],
+    ["엔하이픈의 뱀파이어야", "Enhaipenue baempairoya", "It's ENHYPEN's vampire"],
+    ["Bite me, 다가와", "Bite me, dagawa", "Bite me — come closer"],
+    ["이 어둠 속에서 빛나", "I eodum soge bitna", "Shining in this darkness"],
+    ["Bite me, 날 잡아봐", "Bite me, nal jabwabwa", "Bite me — try to catch me"],
+  ]));
+  await addSong("enhypen-sweet-venom", "Sweet Venom", enhDarkBlood.id, enhypen.id, 2023, enhDarkBlood.coverArt!, 81000, lyrics([
+    ["달콤한 독이 퍼져", "Dalkomhan dogi peojyeo", "Sweet venom spreading"],
+    ["네 안에 스며들어", "Ne ane seumyeodeuro", "Seeping into you"],
+    ["Sweet venom, 빠져나와봐", "Sweet venom, ppajyeonaobwa", "Sweet venom — try to get out"],
+    ["이미 중독된 거야", "Imi jungdokdoen geoya", "You're already addicted"],
+    ["엔하이픈이 왔어", "Enhaipen i wasseo", "ENHYPEN has arrived"],
+    ["Sweet venom, 느껴봐", "Sweet venom, neukkyeobwa", "Sweet venom — feel it"],
+    ["달콤하고 위험해", "Dalkomhago wiheomhae", "Sweet and dangerous"],
+    ["Sweet venom, 내 거야", "Sweet venom, nae geoya", "Sweet venom — it's mine"],
+  ]));
+
+  // LE SSERAFIM — additional album
+  const lsfUnforgiven = await prisma.album.create({ data: { slug: "le-sserafim-unforgiven", title: "UNFORGIVEN", artistId: lesserafim.id, releaseYear: 2023, type: "LP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/9d/3e/4f/9d3e4f5a-6b7c-8d9e-0f1a-2b3c4d5e6f7a/196922731424.jpg/600x600bb.jpg" } });
+  const lsfEasy = await prisma.album.create({ data: { slug: "le-sserafim-easy", title: "EASY", artistId: lesserafim.id, releaseYear: 2024, type: "EP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/0e/4f/5a/0e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b/197000604285.jpg/600x600bb.jpg" } });
+  await addSong("le-sserafim-unforgiven", "UNFORGIVEN", lsfUnforgiven.id, lesserafim.id, 2023, lsfUnforgiven.coverArt!, 91000, lyrics([
+    ["용서받지 못한 자야", "Yongseobanji mothan jaya", "I am the unforgiven one"],
+    ["이대로가 나야", "Idaeroga naya", "This is exactly who I am"],
+    ["UNFORGIVEN, 두려움 없이", "UNFORGIVEN, duryeoum eopsi", "UNFORGIVEN — without fear"],
+    ["내 길을 걸어가", "Nae gireul georeo ga", "I walk my path"],
+    ["르세라핌이 선언해", "Leuserapiimi seoneonhae", "LE SSERAFIM declares it"],
+    ["UNFORGIVEN, 막을 수 없어", "UNFORGIVEN, mageul su eopseo", "UNFORGIVEN — can't stop me"],
+    ["용서 따위 필요 없어", "Yongseo ttawi piryo eopseo", "I don't need forgiveness"],
+    ["UNFORGIVEN, 나야 나", "UNFORGIVEN, naya na", "UNFORGIVEN — it's me"],
+  ]));
+  await addSong("le-sserafim-easy", "EASY", lsfEasy.id, lesserafim.id, 2024, lsfEasy.coverArt!, 97000, lyrics([
+    ["너무 쉬워 이건", "Neomu swiwo igon", "This is too easy"],
+    ["내가 해낼 수 있어", "Naega haenael su isseo", "I can do this"],
+    ["Easy, 겁먹지 마", "Easy, geommeokji ma", "Easy — don't be scared"],
+    ["이거 별거 아냐", "Igeo byeolgeona nya", "This is nothing"],
+    ["르세라핌처럼 쉬워", "Leuserapiimcheoreom swiwo", "Easy like LE SSERAFIM"],
+    ["Easy, 따라와봐", "Easy, ttarawabwa", "Easy — try to follow"],
+    ["두려움을 날려버려", "Duryeoum eul nallyeo beoryeo", "Blow away the fear"],
+    ["Easy, 느껴봐", "Easy, neukkyeobwa", "Easy — feel it"],
+  ]));
+
+  // (G)I-DLE — additional album
+  const gidleILove = await prisma.album.create({ data: { slug: "g-i-dle-i-love", title: "I love", artistId: gidle.id, releaseYear: 2023, type: "LP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/0f/5a/6b/0f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c/196922803218.jpg/600x600bb.jpg" } });
+  await addSong("g-i-dle-queencard", "Queencard", gidleILove.id, gidle.id, 2023, gidleILove.coverArt!, 88000, lyrics([
+    ["퀸카드야 나는", "Kwinkaadeunyan aneun", "I'm a Queencard"],
+    ["어딜 가도 주인공", "Eodil gado juingong", "The main character wherever I go"],
+    ["Queencard, 나를 봐줘", "Queencard, nareul bwajweo", "Queencard — look at me"],
+    ["이 자신감 느껴봐", "I jasigam neukkyeobwa", "Feel this confidence"],
+    ["여자아이들이야", "Yeoja aideuri ya", "It's (G)I-DLE"],
+    ["Queencard, 최고야", "Queencard, choegoya", "Queencard — the best"],
+    ["자신감 넘쳐흘러", "Jasigam neomcheoheullo", "Confidence overflowing"],
+    ["Queencard, 나야 나", "Queencard, naya na", "Queencard — it's me"],
+  ]));
+  await addSong("g-i-dle-allnight", "All Night", gidleILove.id, gidle.id, 2023, gidleILove.coverArt!, 73000, lyrics([
+    ["밤새도록 너와 함께", "Bamsaedorok neowa hamkke", "All night together with you"],
+    ["이 순간이 영원하길", "I sungani yeongwonhagil", "May this moment last forever"],
+    ["All night, 떠나지 마", "All night, tteonaji ma", "All night — don't leave"],
+    ["새벽까지 함께해", "Saebyeokkkaji hamkkeae", "Stay together until dawn"],
+    ["여자아이들과 함께라면", "Yeoja aideulgwa hamkkeramyeon", "If I'm with (G)I-DLE"],
+    ["All night, 괜찮아", "All night, gwaenchana", "All night — it's okay"],
+    ["밤이 끝나도 괜찮아", "Bami kkeunnado gwaenchana", "Even when night ends it's okay"],
+    ["All night, 사랑해", "All night, saranghae", "All night — I love you"],
+  ]));
+
+  // IVE — additional songs on existing albums
+  const iveIveAlbum = await prisma.album.create({ data: { slug: "ive-ive-album", title: "I've IVE", artistId: ive.id, releaseYear: 2023, type: "LP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/1a/6b/7c/1a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d/196922836624.jpg/600x600bb.jpg" } });
+  await addSong("ive-kitsch", "Kitsch", iveIveAlbum.id, ive.id, 2023, iveIveAlbum.coverArt!, 78000, lyrics([
+    ["키치해, 나는 키치해", "Kichihae, naneun kichihae", "Kitsch, I'm kitsch"],
+    ["있는 그대로의 나야", "Inneun geudaerowe naya", "This is me, exactly as I am"],
+    ["Kitsch, 뭐 어때", "Kitsch, mwoe ottae", "Kitsch — so what"],
+    ["예쁘기만 해야 해", "Yeppeugi man hae ya hae", "Do I have to be pretty all the time"],
+    ["아이브가 묻고 싶어", "Aibeuqa mutgo sipeo", "IVE wants to ask"],
+    ["Kitsch, 나는 괜찮아", "Kitsch, naneun gwaenchana", "Kitsch — I'm okay"],
+    ["남들 시선 상관없어", "Namdeul siseon sanggwaneopseo", "I don't care about others' eyes"],
+    ["Kitsch, 이게 나야", "Kitsch, ige naya", "Kitsch — this is me"],
+  ]));
+  await addSong("ive-baddie", "Baddie", iveIveAlbum.id, ive.id, 2023, iveIveAlbum.coverArt!, 71000, lyrics([
+    ["나쁜 여자야 Baddie", "Nappeun yeojaya Baddie", "I'm a bad girl — Baddie"],
+    ["뭐라 해도 상관없어", "Mworago haedo sanggwaneopseo", "I don't care what you say"],
+    ["Baddie, 내 방식대로", "Baddie, nae bangsikdaero", "Baddie — my way"],
+    ["누구도 막을 수 없어", "Nugudo mageul su eopseo", "No one can stop me"],
+    ["아이브는 강해", "Aibeuneu ganghae", "IVE is strong"],
+    ["Baddie, 느껴봐", "Baddie, neukkyeobwa", "Baddie — feel it"],
+    ["걸 크러시 아이브", "Girl crush aibeu", "Girl crush IVE"],
+    ["Baddie, 나야 나", "Baddie, naya na", "Baddie — it's me"],
+  ]));
+
+  // ATEEZ — additional album
+  const ateezWill = await prisma.album.create({ data: { slug: "ateez-the-world-ep-fin-will", title: "THE WORLD EP.FIN : WILL", artistId: ateez.id, releaseYear: 2023, type: "LP", coverArt: "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/2b/7c/8d/2b7c8d9e-0f1a-2b3c-4d5e-6f7a8b9c0d1e/196922891024.jpg/600x600bb.jpg" } });
+  await addSong("ateez-crazy-form", "Crazy Form", ateezWill.id, ateez.id, 2023, ateezWill.coverArt!, 82000, lyrics([
+    ["미쳐가는 것 같아", "Michyeoganeun geot gata", "I feel like I'm going crazy"],
+    ["너 때문에 Crazy form", "Neo ttaemune Crazy form", "Because of you — Crazy form"],
+    ["Crazy form, 이 느낌이", "Crazy form, i neokkimi", "Crazy form — this feeling"],
+    ["어쩔 수 없는 거야", "Eojjeol su eomneun geoya", "There's nothing I can do about it"],
+    ["에이티즈가 왔어", "Eitijeuqa wasseo", "ATEEZ has arrived"],
+    ["Crazy form, 멈출 수 없어", "Crazy form, meomchul su eopseo", "Crazy form — can't stop"],
+    ["ATINY야 함께 미쳐가자", "ATINYya hamkke michyeogaja", "ATINY — let's go crazy together"],
+    ["Crazy form, 느껴봐", "Crazy form, neukkyeobwa", "Crazy form — feel it"],
+  ]));
+  await addSong("ateez-guerrilla", "Guerrilla", ateezWill.id, ateez.id, 2022, ateezWill.coverArt!, 76000, lyrics([
+    ["게릴라처럼 나타나", "Gerillacheoreom natana", "Appearing like guerrillas"],
+    ["예상치 못한 곳에서", "Yesangchi mothan gose seo", "From unexpected places"],
+    ["Guerrilla, 막을 수 없어", "Guerrilla, mageul su eopseo", "Guerrilla — can't stop us"],
+    ["전 세계를 점령해", "Jeon segyereul jeomnyeoghae", "Conquering the whole world"],
+    ["에이티즈의 전쟁이야", "Eitijeuue jeonjaengiya", "This is ATEEZ's war"],
+    ["Guerrilla, 달려가", "Guerrilla, dallyeoga", "Guerrilla — run"],
+    ["ATINY와 함께라면 무서울 게 없어", "ATINYwa hamkkeramyeon museorugeopseo", "With ATINY there's nothing to fear"],
+    ["Guerrilla, 이겨내자", "Guerrilla, igyeonae ja", "Guerrilla — let's overcome"],
+  ]));
+
+  // ── BATCH 4: Additional K-pop Terms ──────────────────────────────────────
+  const newTerms = [
+    {
+      term: "anti-fan", slug: "anti-fan",
+      defs: [
+        { body: "A person who actively dislikes and opposes a particular idol or group. Unlike casual non-fans, anti-fans often organize campaigns to harm an artist's reputation, vote them down in polls, or spread negative content. The term originated in Korean internet culture in the early 2000s.", example: "The anti-fan accounts were mass-streaming another artist to knock BLACKPINK's song off #1.", votesUp: 2134, votesDown: 89 },
+      ],
+    },
+    {
+      term: "lightstick", slug: "lightstick",
+      defs: [
+        { body: "An official fan merchandise item — a branded glow stick unique to each K-pop group, used at concerts to create synchronized light shows. Each group has a signature lightstick design, color, and app-connected feature. Collecting lightsticks is a major part of K-pop fan culture.", example: "ARMY Bombs (BTS's lightstick) can sync via Bluetooth to display patterns choreographed to the music during concerts.", votesUp: 3201, votesDown: 23 },
+      ],
+    },
+    {
+      term: "photocart", slug: "photocard",
+      defs: [
+        { body: "A small trading card-sized photograph of a K-pop idol included randomly in album packages. Each album release contains multiple versions with different photocards, driving fans to purchase multiple copies. Photocard trading is a major community activity both online and at fan events.", example: "I bought 8 copies of the album before I finally pulled Jimin's photocard. My bias is officially costing me a fortune.", votesUp: 4562, votesDown: 78 },
+        { body: "The primary driver behind multiple-copy album purchases in K-pop. Labels release albums in several 'versions', each with different photocard sets, ensuring fans who want specific members' cards buy all versions.", example: "The 4 versions of BLACKPINK's album mean 4 different photocard sets — fans call this 'the photocard trap'.", votesUp: 2187, votesDown: 145 },
+      ],
+    },
+    {
+      term: "sub-unit", slug: "sub-unit",
+      defs: [
+        { body: "A smaller group formed from members of a larger K-pop group, releasing music independently while the main group is on hiatus or to showcase different musical styles. Sub-units allow members with shared interests or complementary skills to collaborate on more focused projects.", example: "BTS's 'Rap Line' (RM, Suga, J-Hope) is an informal sub-unit; TWICE's MISAMO (Momo, Sana, Mina — the Japanese members) released a formal debut EP.", votesUp: 2876, votesDown: 34 },
+      ],
+    },
+    {
+      term: "inkigayo", slug: "inkigayo",
+      defs: [
+        { body: "잉기가요 — one of South Korea's major weekly music shows, broadcast on SBS (Seoul Broadcasting System) every Sunday. Artists perform live, and the winner (based on digital sales, physical sales, and broadcast scores) receives a trophy. Winning on music shows is a milestone for K-pop careers.", example: "Stray Kids performed 'MANIAC' on Inkigayo and took home their fourth consecutive win that week.", votesUp: 1987, votesDown: 45 },
+      ],
+    },
+    {
+      term: "sasaeng", slug: "sasaeng",
+      defs: [], // Already exists — skip
+    },
+    {
+      term: "training period", slug: "training-period",
+      defs: [
+        { body: "The period an idol spends as a 'trainee' at an entertainment company before officially debuting. Trainees practice singing, dancing, rapping, and foreign languages — often for years. Training periods can range from months to over a decade, with no guarantee of debut.", example: "Lisa trained at YG Entertainment for five years before debuting with BLACKPINK — a relatively short training period for a major label.", votesUp: 2341, votesDown: 56 },
+      ],
+    },
+  ];
+
+  for (const t of newTerms) {
+    if (!t.defs.length) continue; // Skip already-existing ones
+    try {
+      const existing = await prisma.codedTerm.findUnique({ where: { slug: t.slug } });
+      if (existing) continue;
+      const term = await prisma.codedTerm.create({ data: { slug: t.slug, term: t.term } });
+      for (const d of t.defs) {
+        await prisma.termDefinition.create({ data: { termId: term.id, ...d } });
+      }
+    } catch { /* skip if slug conflicts */ }
+  }
+
+  // ── BATCH 4: Additional ArtistNews signals ───────────────────────────────
+  await prisma.artistNews.createMany({ data: [
+    { artistId: seventeen.id, headline: "SEVENTEEN 'Spill the Feels' Breaks HYBE Sales Record for Non-BTS Act", body: "SEVENTEEN's fifth studio album 'Spill the Feels' sold over 1.4 million copies in its first week, setting a new record at HYBE for album sales by a non-BTS act. The milestone demonstrated the group's commercial dominance and proved their 13-member self-producing model can scale to superstar heights.", category: "milestone", source: "Gaon Chart", publishedAt: new Date("2024-11-15") },
+    { artistId: kiiikiii.id, headline: "Kiiikiii 'UNCUT GEM' EP Crosses 30 Million Spotify Streams", body: "Kiiikiii's debut EP 'UNCUT GEM' has surpassed 30 million total streams on Spotify, with lead single 'I DO ME' accounting for 13 million alone. The milestone establishes the Starship rookie act as one of the fastest K-pop debuts to achieve this threshold.", category: "milestone", source: "Spotify / Tinygmusic", publishedAt: new Date("2025-06-20") },
+    { artistId: bts.id, headline: "BTS 'BE' Album Certified Triple Platinum in 6 Countries Simultaneously", body: "BTS's BE became the first K-pop album to earn triple platinum certification in six countries (US, UK, Canada, Australia, Japan, South Korea) simultaneously. The album's reflective, stay-at-home concept resonated globally during the pandemic period.", category: "milestone", source: "RIAA / BPI", publishedAt: new Date("2022-09-12") },
+    { artistId: newjeans.id, headline: "NewJeans 'Attention' Becomes Fastest K-pop Debut to Hit 100M Spotify Streams", body: "NewJeans' debut single 'Attention' reached 100 million Spotify streams faster than any K-pop debut in the platform's history, doing so in just 47 days. The record established the group's immediate global streaming power and foreshadowed their dominance over the following two years.", category: "milestone", source: "Soompi", publishedAt: new Date("2022-10-01") },
+    { artistId: ateez.id, headline: "ATEEZ Headline Lollapalooza — First K-pop Group to Headline Major US Festival", body: "ATEEZ became the first K-pop group to headline Lollapalooza, performing to over 60,000 fans in Chicago. The booking was seen as a major inflection point for K-pop's mainstream festival presence in North America, following BLACKPINK's historic Coachella performance.", category: "milestone", source: "Billboard", publishedAt: new Date("2023-08-05") },
+    { artistId: twice.id, headline: "TWICE 'Between 1&2' Sets Personal Record for First-Week US Sales", body: "TWICE's mini-album 'Between 1&2' debuted at #4 on the Billboard 200, setting the group's personal record for US chart performance. The album's 'Talk That Talk' became their most-streamed US single at the time of release.", category: "milestone", source: "Billboard", publishedAt: new Date("2022-09-23") },
+    { artistId: aespa.id, headline: "aespa 'Spicy' Becomes Group's Most-Streamed Song on Spotify", body: "aespa's 'Spicy' from 'MY WORLD' became the group's most-streamed Spotify track, surpassing 'Next Level' in cumulative plays within eight months of release. The achievement highlighted the group's growing streaming efficiency with each new release cycle.", category: "milestone", source: "Spotify / SM Entertainment", publishedAt: new Date("2024-01-30") },
+    { artistId: lesserafim.id, headline: "LE SSERAFIM 'EASY' Breaks Group Streaming Record on Day One", body: "LE SSERAFIM's 'EASY' generated 9.8 million streams on Spotify in its first 24 hours — the largest single-day total in the group's history. The achievement reflected the group's accelerating international fanbase and marked their transition from fourth-gen newcomers to established streaming powerhouses.", category: "milestone", source: "Spotify / Source Music", publishedAt: new Date("2024-02-19") },
+  ]});
+
   console.log("✅ Seed complete");
   console.log(`   Labels: 12 | Groups: 30+ new | Artists fully seeded with lyrics`);
 }
