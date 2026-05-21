@@ -41,9 +41,10 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
 
   const meta = city.metadata ? (JSON.parse(city.metadata) as { hotels: Hotel[]; communities: Community[]; kpopSpots: KpopSpot[] }) : { hotels: [], communities: [], kpopSpots: [] };
 
-  const concerts = city.events.filter((e) => e.type === "concert");
-  const meetups  = city.events.filter((e) => e.type === "meetup");
-  const color    = city.color ?? "#FFFF64";
+  const concerts   = city.events.filter((e) => e.type === "concert" || e.type === "festival");
+  const meetups    = city.events.filter((e) => e.type === "meetup");
+  const fanEvents  = city.events.filter((e) => e.type === "fan-event");
+  const color      = city.color ?? "#FFFF64";
 
   return (
     <main>
@@ -87,7 +88,14 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                   <div key={c.id} className="genius-card" style={{ padding: 20, borderLeft: `3px solid ${color}` }}>
                     <div style={{ display: "flex", gap: 12, alignItems: "flex-start", flexWrap: "wrap" }}>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 800, fontSize: "1rem", color: "#000", marginBottom: 4 }}>{c.title}</div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                          <div style={{ fontWeight: 800, fontSize: "1rem", color: "#000" }}>{c.title}</div>
+                          {c.type === "festival" && (
+                            <span style={{ fontSize: "0.6rem", background: "#7c3aed", color: "#fff", padding: "1px 7px", borderRadius: 999, fontWeight: 700, letterSpacing: "0.06em", whiteSpace: "nowrap" }}>
+                              FESTIVAL
+                            </span>
+                          )}
+                        </div>
                         {c.venue && <div style={{ fontSize: "0.85rem", color: "var(--genius-gray)" }}>📍 {c.venue}</div>}
                         {c.eventDate && <div style={{ fontSize: "0.82rem", color: "var(--genius-gray)", marginTop: 2 }}>📅 {c.eventDate}</div>}
                       </div>
@@ -127,6 +135,32 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                 )}
               </div>
             </section>
+
+            {/* Fan Events: cupsleeves, fansigns, pop-ups */}
+            {fanEvents.length > 0 && (
+              <section style={{ marginBottom: 48 }}>
+                <div className="section-header">Fansigns, Cupsleeves &amp; Pop-ups</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {fanEvents.map((e) => (
+                    <div key={e.id} className="genius-card" style={{ padding: 20, borderLeft: `3px solid ${color}` }}>
+                      <div style={{ display: "flex", gap: 12, alignItems: "flex-start", flexWrap: "wrap" }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "#000", marginBottom: 6 }}>{e.title}</div>
+                          <div style={{ fontSize: "0.82rem", color: "var(--genius-gray)" }}>
+                            {e.venue && `📍 ${e.venue}`}{e.venue && e.eventDate && " · "}{e.eventDate && `🗓 ${e.eventDate}`}
+                          </div>
+                        </div>
+                        {e.ticketUrl && (
+                          <a href={e.ticketUrl} target="_blank" rel="noopener noreferrer" className="btn-yellow" style={{ fontSize: "0.72rem", textAlign: "center", whiteSpace: "nowrap" }}>
+                            DETAILS
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* K-pop Spots */}
             {meta.kpopSpots.length > 0 && (
