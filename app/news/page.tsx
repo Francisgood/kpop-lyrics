@@ -257,20 +257,25 @@ export default async function NewsPage() {
               </div>
             </div>
 
-            {/* Scraped images */}
+            {/* Scraped images — linked to vault article pages */}
             <div>
               <div className="section-header">From the Vault</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {[
-                  { src: "/scraped/images/instagram-followers-2026.jpg", label: "Instagram Top 10 (2026)" },
-                  { src: "/scraped/images/most-streamed-kpop-spotify-2025.jpg", label: "Most-Streamed K-pop (Spotify 2025)" },
-                  { src: "/scraped/images/bts-jungkook-jimin-spotify-2026.jpg", label: "Jungkook & Jimin Spotify Stats" },
-                  { src: "/scraped/images/groups-vs-soloists-breakdown.jpg", label: "Groups vs Soloists Breakdown" },
-                ].map(({ src, label }) => (
-                  <div key={src} style={{ borderRadius: 6, overflow: "hidden", border: "1px solid var(--genius-border)" }}>
-                    <img src={src} alt={label} style={{ width: "100%", display: "block", objectFit: "cover", maxHeight: 160 }} />
-                    <div style={{ padding: "6px 10px", fontSize: "0.68rem", color: "var(--genius-gray)", background: "#fafafa", fontWeight: 600 }}>{label}</div>
-                  </div>
+                  { src: "/scraped/images/instagram-followers-2026.jpg", label: "Instagram Top 10 (2026)", slug: "instagram-top-10-2026", color: "#e879f9" },
+                  { src: "/scraped/images/most-streamed-kpop-spotify-2025.jpg", label: "Most-Streamed K-pop (Spotify 2025)", slug: "most-streamed-spotify-2025", color: "#ACFA52" },
+                  { src: "/scraped/images/bts-jungkook-jimin-spotify-2026.jpg", label: "Jungkook & Jimin Spotify Stats", slug: "jungkook-jimin-spotify", color: "#FFFF64" },
+                  { src: "/scraped/images/groups-vs-soloists-breakdown.jpg", label: "Groups vs Soloists Breakdown", slug: "groups-vs-soloists-breakdown", color: "#fb923c" },
+                ].map(({ src, label, slug, color }) => (
+                  <Link key={src} href={`/news/${slug}`} style={{ textDecoration: "none", display: "block" }}>
+                    <div style={{ borderRadius: 6, overflow: "hidden", border: `1px solid ${color}`, transition: "box-shadow 0.15s" }}>
+                      <img src={src} alt={label} style={{ width: "100%", display: "block", objectFit: "cover", maxHeight: 140 }} />
+                      <div style={{ padding: "7px 10px", fontSize: "0.68rem", color: "#000", background: "#fafafa", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                        <span>{label}</span>
+                        <span style={{ fontSize: "0.62rem", color, fontWeight: 800 }}>Read →</span>
+                      </div>
+                    </div>
+                  </Link>
                 ))}
               </div>
             </div>
