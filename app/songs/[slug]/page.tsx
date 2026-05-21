@@ -6,6 +6,9 @@ import type { Metadata } from "next";
 import ViewTracker from "@/components/ViewTracker";
 import ShareButtons from "@/components/ShareButtons";
 import MukbangSection from "@/components/MukbangSection";
+import FavoriteButton from "@/components/FavoriteButton";
+import CommentsSection from "@/components/CommentsSection";
+import { getSession } from "@/lib/auth";
 
 // Cache the DB fetch so generateMetadata and the page share one query per request
 const getSong = cache(async (slug: string) => {
@@ -55,8 +58,9 @@ export async function generateMetadata(
 
 export default async function SongPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const song = await getSong(slug);
+  const [song, session] = await Promise.all([getSong(slug), getSession()]);
   if (!song) notFound();
+  const isLoggedIn = !!session;
 
   // ── Gather all artist IDs for news lookup ─────────────────────────────────
   const songArtistIds = [
@@ -137,13 +141,14 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                   </Link>
                 ))}
               </div>
-              <div style={{ marginTop: 16 }}>
+              <div style={{ marginTop: 16, display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
                 <ShareButtons
                   title={song.title}
                   artist={mainArtist?.stageName ?? ""}
                   slug={song.slug}
                   firstKoLine={song.lyricsKo?.split("\n")[0]}
                 />
+                <FavoriteButton entityType="song" entityId={song.id} isLoggedIn={isLoggedIn} />
               </div>
               <div style={{ marginTop: 10, fontSize: "0.75rem", color: "rgba(255,255,255,0.35)" }}>
                 {song.viewCount.toLocaleString()} views
@@ -361,6 +366,14 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
         )}
         {/* Mukbang Corner — below recent news */}
         <MukbangSection />
+
+        {/* Comments */}
+        <CommentsSection
+          entityType="song"
+          entityId={song.id}
+          isLoggedIn={isLoggedIn}
+          currentUserName={session?.user.displayName ?? session?.user.email.split("@")[0]}
+        />
       </div>
     </main>
   );

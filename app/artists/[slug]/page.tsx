@@ -1,6 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import FavoriteButton from "@/components/FavoriteButton";
+import CommentsSection from "@/components/CommentsSection";
+import { getSession } from "@/lib/auth";
 
 export const revalidate = 3600;
 
@@ -18,31 +21,34 @@ const CATEGORY_STYLES: Record<string, { label: string; bg: string; color: string
 export default async function ArtistPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
-  const artist = await prisma.artist.findUnique({
-    where: { slug },
-    include: {
-      label: true,
-      albums: {
-        include: {
-          songs: {
-            include: { credits: { include: { artist: true } } },
-            orderBy: { viewCount: "desc" },
+  const [session, artist] = await Promise.all([
+    getSession(),
+    prisma.artist.findUnique({
+      where: { slug },
+      include: {
+        label: true,
+        albums: {
+          include: {
+            songs: {
+              include: { credits: { include: { artist: true } } },
+              orderBy: { viewCount: "desc" },
+            },
           },
+          orderBy: { releaseYear: "desc" },
         },
-        orderBy: { releaseYear: "desc" },
+        groupOf: {
+          include: { member: true },
+          orderBy: { position: "asc" },
+        },
+        memberships: { include: { group: true } },
+        news: { orderBy: { publishedAt: "desc" } },
+        songs: { include: { song: { include: { album: true } } } },
       },
-      groupOf: {
-        include: { member: true },
-        orderBy: { position: "asc" },
-      },
-      memberships: { include: { group: true } },
-      news: { orderBy: { publishedAt: "desc" } },
-      songs: { include: { song: { include: { album: true } } } },
-    },
-  });
+    }),
+  ]);
 
   if (!artist) notFound();
-
+  const isLoggedIn = !!session;
   const isGroup = artist.type === "GROUP";
   const members = artist.groupOf;
   const totalSongs = artist.albums.reduce((n, a) => n + a.songs.length, 0);
@@ -98,8 +104,12 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
             ))}
           </div>
 
+          <div style={{ marginTop: 16 }}>
+            <FavoriteButton entityType="artist" entityId={artist.id} isLoggedIn={isLoggedIn} />
+          </div>
+
           {artist.bio && (
-            <div style={{ marginTop: 24, color: "rgba(255,255,255,0.8)", maxWidth: 780, lineHeight: 1.85, fontSize: "0.95rem", whiteSpace: "pre-line" }}>
+            <div style={{ marginTop: 16, color: "rgba(255,255,255,0.8)", maxWidth: 780, lineHeight: 1.85, fontSize: "0.95rem", whiteSpace: "pre-line" }}>
               {artist.bio}
             </div>
           )}
@@ -276,6 +286,14 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
             </div>
           </aside>
         </div>
+
+        {/* Comments */}
+        <CommentsSection
+          entityType="artist"
+          entityId={artist.id}
+          isLoggedIn={isLoggedIn}
+          currentUserName={session?.user.displayName ?? session?.user.email.split("@")[0]}
+        />
       </div>
     </main>
   );

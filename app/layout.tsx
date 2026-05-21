@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
 import FooterNewsletter from "@/components/FooterNewsletter";
+import UserNav from "@/components/UserNav";
 
 export const metadata: Metadata = {
   title: "Aegyo Arena — K-pop Lyrics & Fan Wiki",
@@ -41,14 +42,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/define" style={{ color: "rgba(255,255,255,0.7)", textDecoration: "none", fontSize: "0.82rem", fontWeight: 600, whiteSpace: "nowrap" }}>
                 K-POP TERMS
               </Link>
+              <Link href="/cities" style={{ color: "rgba(255,255,255,0.7)", textDecoration: "none", fontSize: "0.82rem", fontWeight: 600, whiteSpace: "nowrap" }}>
+                CITIES
+              </Link>
             </div>
             <Link href="/search" className="btn-yellow" style={{ fontSize: "0.72rem", color: "#000", flexShrink: 0, whiteSpace: "nowrap" }}>
               EXPLORE
             </Link>
+            <UserNav />
           </div>
           {/* Mobile secondary row: scrollable nav links */}
           <div className="nav-links-mobile" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", overflowX: "auto", WebkitOverflowScrolling: "touch", display: "flex", gap: 0 }}>
-            {[["ARTISTS", "/artists"], ["COLLABS", "/collabs"], ["SIGNALS", "/news"], ["K-POP TERMS", "/define"]].map(([label, href]) => (
+            {[["ARTISTS", "/artists"], ["COLLABS", "/collabs"], ["SIGNALS", "/news"], ["K-POP TERMS", "/define"], ["CITIES", "/cities"]].map(([label, href]) => (
               <Link key={href} href={href} style={{ color: "rgba(255,255,255,0.65)", textDecoration: "none", fontSize: "0.72rem", fontWeight: 700, padding: "9px 16px", whiteSpace: "nowrap", letterSpacing: "0.08em", flexShrink: 0 }}>
                 {label}
               </Link>
@@ -72,7 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
             <div>
               <div style={{ fontWeight: 700, fontSize: "0.72rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 12 }}>Discover</div>
-              {[["Artists", "/artists"], ["Collaborations", "/collabs"], ["Signals", "/news"], ["K-pop Terms", "/define"], ["Search", "/search"]].map(([label, href]) => (
+              {[["Artists", "/artists"], ["Collaborations", "/collabs"], ["Signals", "/news"], ["K-pop Terms", "/define"], ["Cities", "/cities"], ["Search", "/search"]].map(([label, href]) => (
                 <Link key={href} href={href} style={{ display: "block", fontSize: "0.82rem", color: "rgba(255,255,255,0.5)", textDecoration: "none", marginBottom: 8, lineHeight: 1 }}>
                   {label}
                 </Link>
