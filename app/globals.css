@@ -1,0 +1,223 @@
+@import "tailwindcss";
+
+:root {
+  --genius-black: #000000;
+  --genius-yellow: #FFFF64;
+  --genius-white: #ffffff;
+  --genius-bg: #f8f8f8;
+  --genius-text: #212121;
+  --genius-gray: #888888;
+  --genius-border: #e8e8e8;
+  --genius-dark-bg: #1a1a2e;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background: var(--genius-bg);
+  color: var(--genius-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Lyrics display */
+.lyric-line {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--genius-border);
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.lyric-line-ko { font-weight: 500; color: var(--genius-text); }
+.lyric-line-en { color: #444; }
+.lyric-romanized { font-size: 0.8rem; color: var(--genius-gray); font-style: italic; margin-top: 2px; }
+
+/* Annotation highlight */
+.annotated {
+  background: rgba(255, 255, 100, 0.3);
+  cursor: pointer;
+  border-bottom: 2px solid var(--genius-yellow);
+  transition: background 0.15s;
+}
+.annotated:hover { background: rgba(255, 255, 100, 0.6); }
+
+/* Nav */
+.genius-nav { background: var(--genius-black); }
+.genius-nav a { color: rgba(255,255,255,0.7); transition: color 0.15s; }
+.genius-nav a:hover { color: #fff; }
+
+/* Yellow CTA button */
+.btn-yellow {
+  background: var(--genius-yellow);
+  color: var(--genius-black);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: opacity 0.15s;
+}
+.btn-yellow:hover { opacity: 0.85; }
+
+/* Card */
+.genius-card {
+  background: #fff;
+  border: 1px solid var(--genius-border);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: box-shadow 0.15s;
+}
+.genius-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+
+/* Artist header */
+.artist-hero {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: #fff;
+  padding: 60px 0 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Section header */
+.section-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--genius-gray);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--genius-black);
+}
+
+/* Search input */
+.search-input {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  border-radius: 4px;
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  outline: none;
+  width: 100%;
+  transition: background 0.15s;
+}
+.search-input::placeholder { color: rgba(255,255,255,0.5); }
+.search-input:focus { background: rgba(255,255,255,0.18); border-color: var(--genius-yellow); }
+
+/* Member card */
+.member-card {
+  background: #fff;
+  border: 1px solid var(--genius-border);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.member-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+
+/* Term vote */
+.vote-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border: 1px solid var(--genius-border);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #fff;
+  transition: all 0.15s;
+}
+.vote-btn.up:hover { border-color: #22c55e; color: #22c55e; }
+.vote-btn.down:hover { border-color: #ef4444; color: #ef4444; }
+
+/* Discography song row hover */
+.song-row {
+  display: flex;
+  align-items: center;
+  padding: 9px 12px;
+  border-radius: 4px;
+  gap: 12px;
+  transition: background 0.1s;
+}
+.song-row:hover { background: #f8f8f8; }
+
+/* Mukbang card hover */
+.mukbang-card {
+  transition: transform 0.15s, box-shadow 0.15s;
+  cursor: pointer;
+}
+.mukbang-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+/* ── Mobile Responsive ──────────────────────────────────────────────────── */
+
+/* Desktop: hide the mobile nav strip */
+.nav-links-mobile { display: none; }
+
+@media (max-width: 768px) {
+  /* Prevent any element from breaking out of viewport */
+  img, video, iframe, canvas, svg { max-width: 100%; height: auto; }
+
+  /* Nav: hide desktop links, show mobile strip */
+  .nav-links-desktop { display: none !important; }
+  .nav-links-mobile { display: flex !important; }
+
+  /* Hide search bar on mobile (use EXPLORE button instead) */
+  .nav-search-form { display: none; }
+
+  /* Lyric columns: stack vertically */
+  .lyric-line {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  /* Cards should never overflow */
+  .genius-card { overflow-x: hidden; word-break: break-word; }
+
+  /* Artist hero: reduce padding */
+  .artist-hero { padding: 32px 0 24px; }
+
+  /* Reduce heading sizes on mobile */
+  h1 { font-size: clamp(1.6rem, 6vw, 2.8rem) !important; }
+  h2 { font-size: clamp(1.2rem, 5vw, 2rem) !important; }
+}
+
+@media (max-width: 480px) {
+  .btn-yellow { font-size: 0.68rem; padding: 7px 12px; }
+}
+
+/* ── Responsive grid helpers ─────────────────────────────────────────────── */
+.responsive-sidebar-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 48px;
+}
+
+@media (max-width: 900px) {
+  .responsive-sidebar-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* Force network canvas to stay within screen */
+canvas { max-width: 100% !important; }
+
+/* Collabs network: limit height on mobile */
+@media (max-width: 768px) {
+  canvas { height: 300px !important; }
+}
