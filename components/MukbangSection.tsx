@@ -1,5 +1,3 @@
-"use client";
-
 // ── Mukbang Section — curated K-pop eating content for stans ──────────────────
 // YouTube links point to official channel search results; thumbnails use artist images.
 
@@ -103,21 +101,11 @@ export default function MukbangSection() {
             style={{ textDecoration: "none", display: "block" }}
           >
             <div
-              className="genius-card"
+              className="mukbang-card genius-card"
               style={{
                 padding: 0,
                 overflow: "hidden",
                 border: "1px solid var(--genius-border)",
-                transition: "transform 0.15s, box-shadow 0.15s",
-                cursor: "pointer",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)";
-                (e.currentTarget as HTMLDivElement).style.boxShadow = "0 6px 20px rgba(0,0,0,0.12)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
-                (e.currentTarget as HTMLDivElement).style.boxShadow = "";
               }}
             >
               {/* Thumbnail row */}
