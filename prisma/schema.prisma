@@ -36,7 +36,12 @@ model Artist {
   songs       SongCredit[]
   albums      Album[]
   news        ArtistNews[]
+  cities      ArtistCity[]
+  cityEvents  CityEvent[]
   createdAt   DateTime          @default(now())
+
+  @@index([type])
+  @@index([labelId])
 }
 
 model ArtistNews {
@@ -50,6 +55,10 @@ model ArtistNews {
   category    String
   publishedAt DateTime?
   createdAt   DateTime  @default(now())
+
+  @@index([artistId])
+  @@index([publishedAt])
+  @@index([category])
 }
 
 model GroupMembership {
@@ -60,6 +69,9 @@ model GroupMembership {
   position  Int     @default(0)
   group     Artist  @relation("GroupMembers", fields: [groupId], references: [id])
   member    Artist  @relation("MemberOf", fields: [memberId], references: [id])
+
+  @@index([groupId])
+  @@index([memberId])
 }
 
 model Album {
@@ -73,6 +85,9 @@ model Album {
   type        String
   songs       Song[]
   createdAt   DateTime @default(now())
+
+  @@index([artistId])
+  @@index([releaseYear])
 }
 
 model Song {
@@ -89,7 +104,12 @@ model Song {
   viewCount       Int               @default(0)
   credits         SongCredit[]
   annotations     LyricAnnotation[]
+  cityCharts      SongCity[]
   createdAt       DateTime          @default(now())
+
+  @@index([albumId])
+  @@index([viewCount])
+  @@index([releaseYear])
 }
 
 model SongCredit {
@@ -99,6 +119,10 @@ model SongCredit {
   role     String
   artist   Artist @relation(fields: [artistId], references: [id])
   song     Song   @relation(fields: [songId], references: [id])
+
+  @@index([songId])
+  @@index([artistId])
+  @@index([role])
 }
 
 model LyricAnnotation {
@@ -111,6 +135,9 @@ model LyricAnnotation {
   word      String
   note      String
   createdAt DateTime   @default(now())
+
+  @@index([songId])
+  @@index([termId])
 }
 
 model CodedTerm {
@@ -119,6 +146,7 @@ model CodedTerm {
   term        String
   definitions TermDefinition[]
   annotations LyricAnnotation[]
+  signals     ContentSignal[]   @relation("TermSignals")
   createdAt   DateTime          @default(now())
 }
 
@@ -131,19 +159,21 @@ model TermDefinition {
   votesUp   Int       @default(0)
   votesDown Int       @default(0)
   createdAt DateTime  @default(now())
+
+  @@index([termId])
 }
 
 // ── Auth & Community ──────────────────────────────────────────────────────────
 
 model User {
-  id             String         @id @default(cuid())
-  email          String         @unique
+  id             String          @id @default(cuid())
+  email          String          @unique
   displayName    String?
   avatarUrl      String?
   bio            String?
   passwordHash   String
-  emailVerified  Boolean        @default(false)
-  createdAt      DateTime       @default(now())
+  emailVerified  Boolean         @default(false)
+  createdAt      DateTime        @default(now())
   sessions       Session[]
   favorites      Favorite[]
   suggestedEdits SuggestedEdit[]
@@ -157,6 +187,8 @@ model Session {
   token     String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model Favorite {
@@ -168,20 +200,25 @@ model Favorite {
   createdAt  DateTime @default(now())
 
   @@unique([userId, entityType, entityId])
+  @@index([userId])
+  @@index([entityType, entityId])
 }
 
 model SuggestedEdit {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  entityType  String   // "song" | "artist" | "album" | "term" | "annotation"
-  entityId    String
-  field       String   // which field is being edited
-  currentVal  String?
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  entityType   String   // "song" | "artist" | "album" | "term" | "annotation"
+  entityId     String
+  field        String   // which field is being edited
+  currentVal   String?
   suggestedVal String
-  reason      String?
-  status      String   @default("pending") // "pending" | "approved" | "rejected"
-  createdAt   DateTime @default(now())
+  reason       String?
+  status       String   @default("pending") // "pending" | "approved" | "rejected"
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+  @@index([status])
 }
 
 model Comment {
@@ -192,4 +229,111 @@ model Comment {
   entityId   String
   body       String
   createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([userId])
+}
+
+// ── Cities ────────────────────────────────────────────────────────────────────
+
+model City {
+  id          String       @id @default(cuid())
+  slug        String       @unique
+  name        String
+  country     String
+  flag        String?
+  timezone    String?
+  currency    String?
+  color       String?
+  description String?
+  // JSON blob for supplementary static data: hotels, communities, kpopSpots
+  metadata    String?
+  artists     ArtistCity[]
+  events      CityEvent[]
+  songs       SongCity[]
+  createdAt   DateTime     @default(now())
+}
+
+model ArtistCity {
+  id       String @id @default(cuid())
+  artistId String
+  cityId   String
+  // "based-in" | "popular-in" | "touring" | "hometown"
+  type     String @default("popular-in")
+  artist   Artist @relation(fields: [artistId], references: [id])
+  city     City   @relation(fields: [cityId], references: [id])
+
+  @@unique([artistId, cityId, type])
+  @@index([cityId])
+  @@index([artistId])
+}
+
+model CityEvent {
+  id        String   @id @default(cuid())
+  cityId    String
+  city      City     @relation(fields: [cityId], references: [id])
+  artistId  String?
+  artist    Artist?  @relation(fields: [artistId], references: [id])
+  title     String
+  venue     String?
+  // Flexible date string: "2025-08" or "Monthly" or "Year-round"
+  eventDate String?
+  ticketUrl String?
+  // "concert" | "meetup" | "festival" | "fan-event"
+  type      String   @default("concert")
+  createdAt DateTime @default(now())
+
+  @@index([cityId])
+  @@index([type])
+}
+
+model SongCity {
+  id     String @id @default(cuid())
+  songId String
+  cityId String
+  rank   Int    @default(0)
+  song   Song   @relation(fields: [songId], references: [id])
+  city   City   @relation(fields: [cityId], references: [id])
+
+  @@unique([songId, cityId])
+  @@index([cityId, rank])
+}
+
+// ── Trending & Signals ────────────────────────────────────────────────────────
+
+model TrendingCache {
+  id         String   @id @default(cuid())
+  // "song" | "artist" | "term" | "city" | "collab"
+  entityType String
+  entityId   String
+  score      Float    @default(0)
+  // "daily" | "weekly" | "monthly"
+  period     String   @default("daily")
+  computedAt DateTime @default(now())
+
+  @@unique([entityType, entityId, period])
+  @@index([entityType, period, score])
+}
+
+model ContentSignal {
+  id          String    @id @default(cuid())
+  // "song" | "artist" | "album" | "term" | "city" | "collab"
+  entityType  String
+  entityId    String
+  // optional FK to CodedTerm if the signal is about a specific term
+  termId      String?
+  term        CodedTerm? @relation("TermSignals", fields: [termId], references: [id])
+  headline    String
+  body        String
+  source      String?
+  sourceUrl   String?
+  // "collab" | "chart" | "release" | "tour" | "community" | "trending"
+  category    String
+  publishedAt DateTime?
+  isPinned    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+
+  @@index([entityType, entityId])
+  @@index([category])
+  @@index([publishedAt])
 }

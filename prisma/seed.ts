@@ -3146,8 +3146,528 @@ Beyond music, Lisa is a global fashion icon — a house ambassador for Celine an
     }
   }
 
+  // ── BATCH 7: Cities, Events, ArtistCity links, TrendingCache init ─────────
+
+  type CityMeta = {
+    name: string; country: string; flag: string; color: string;
+    timezone: string; currency: string; description: string;
+    concerts: { title: string; venue: string; eventDate: string; ticketUrl: string }[];
+    meetups:  { title: string; venue: string; eventDate: string }[];
+    // static supplementary data stored as JSON
+    hotels: { name: string; stars: number; note: string; area: string }[];
+    communities: { name: string; platform: string; url: string; members: string }[];
+    kpopSpots: { name: string; type: string; description: string }[];
+  };
+
+  const CITIES: Record<string, CityMeta> = {
+    "new-york": {
+      name: "New York", country: "US", flag: "🇺🇸", color: "#e32636",
+      timezone: "EST (UTC-5)", currency: "USD",
+      description: "NYC is the US hub for K-pop events — from Times Square album drops to Flushing fan meetups. MSG, Barclays Center, and Radio City host major tours.",
+      concerts: [
+        { title: "STRAY KIDS", venue: "Madison Square Garden", eventDate: "2025-08", ticketUrl: "https://seatgeek.com/search#?q=stray+kids" },
+        { title: "BLACKPINK", venue: "Barclays Center, Brooklyn", eventDate: "2025-09", ticketUrl: "https://www.songkick.com/search?query=blackpink" },
+        { title: "BTS / Solo Members", venue: "MetLife Stadium", eventDate: "2025-11", ticketUrl: "https://seatgeek.com/search#?q=bts" },
+      ],
+      meetups: [
+        { title: "NYC ARMY Meetup", venue: "Central Park (Bethesda Fountain)", eventDate: "Monthly" },
+        { title: "Flushing K-pop Night", venue: "Flushing, Queens", eventDate: "Bi-weekly Saturdays" },
+      ],
+      hotels: [
+        { name: "Lotte New York Palace", stars: 5, note: "BTS members have stayed here during US tours", area: "Midtown Manhattan" },
+        { name: "The Knickerbocker", stars: 4, note: "Walking distance to Times Square kpop stores", area: "Times Square" },
+        { name: "Aloft Harlem", stars: 3, note: "Fan-favorite budget option near Korean restaurants", area: "Harlem" },
+      ],
+      communities: [
+        { name: "NYC K-pop", platform: "Reddit", url: "https://reddit.com/r/nycmeetups", members: "12k+" },
+        { name: "NYC BLINK", platform: "Discord", url: "https://discord.gg", members: "3k+" },
+        { name: "K-Pop in NYC", platform: "Facebook", url: "https://facebook.com/groups/kpopnyc", members: "8k+" },
+      ],
+      kpopSpots: [
+        { name: "New World Mall (Flushing)", type: "Shopping", description: "Underground mall with K-pop merch vendors, boba shops, and Korean bakeries." },
+        { name: "Koreatown 32nd St", type: "District", description: "NYC's K-town strip with norebang (karaoke), Korean BBQ, and fan shops." },
+        { name: "Line 9 Records", type: "Record Store", description: "K-pop album importer with rare photocards and limited editions." },
+      ],
+    },
+    "los-angeles": {
+      name: "Los Angeles", country: "US", flag: "🇺🇸", color: "#003594",
+      timezone: "PST (UTC-8)", currency: "USD",
+      description: "LA is the K-pop gateway to the US — home to HYBE America, SM Global, and the largest Korean-American community outside of Seoul.",
+      concerts: [
+        { title: "aespa", venue: "Crypto.com Arena", eventDate: "2025-07", ticketUrl: "https://seatgeek.com/search#?q=aespa" },
+        { title: "TWICE", venue: "Hollywood Bowl", eventDate: "2025-08", ticketUrl: "https://www.songkick.com/search?query=twice" },
+      ],
+      meetups: [
+        { title: "K-Town Stans Night", venue: "Koreatown, LA", eventDate: "First Friday" },
+        { title: "K-pop Swap Meet", venue: "Little Tokyo", eventDate: "Monthly" },
+      ],
+      hotels: [
+        { name: "Marriott JW at L.A. LIVE", stars: 5, note: "Adjacent to Crypto.com Arena — idol groups often stay here for US shows", area: "Downtown LA" },
+        { name: "Line Hotel Koreatown", stars: 4, note: "Located in K-town, walkable to fan shops and Korean restaurants", area: "Koreatown" },
+        { name: "Freehand Los Angeles", stars: 3, note: "Trendy, fan-friendly budget boutique near Wilshire", area: "Koreatown" },
+      ],
+      communities: [
+        { name: "LA K-pop Fans", platform: "Facebook", url: "https://facebook.com/groups/lakpop", members: "15k+" },
+        { name: "SoCal ONCE", platform: "Discord", url: "https://discord.gg", members: "5k+" },
+      ],
+      kpopSpots: [
+        { name: "Koreatown (K-town)", type: "District", description: "The 2.7-mile Koreatown corridor with norebang, K-beauty, and merch stores." },
+        { name: "Hannam Chain Superstore", type: "Shopping", description: "K-pop albums, import snacks, and idol lifestyle goods." },
+      ],
+    },
+    "seoul": {
+      name: "Seoul", country: "KR", flag: "🇰🇷", color: "#003478",
+      timezone: "KST (UTC+9)", currency: "KRW (₩)",
+      description: "The epicenter of K-pop. Home to HYBE, SM, YG, and JYP headquarters — you can literally walk past your bias's company building.",
+      concerts: [
+        { title: "Multiple Artists", venue: "KSPO Dome (Olympic Gymnastics Arena)", eventDate: "Year-round", ticketUrl: "https://www.songkick.com/search?query=kpop+seoul" },
+        { title: "Multiple Artists", venue: "COEX Artium", eventDate: "Year-round", ticketUrl: "https://seatgeek.com/search#?q=kpop+seoul" },
+      ],
+      meetups: [
+        { title: "Hongdae Fan Street", venue: "Hongdae, Seoul", eventDate: "Daily (especially weekends)" },
+        { title: "Inkigayo Filming Queue", venue: "SBS HQ, Mapo-gu", eventDate: "Sundays" },
+      ],
+      hotels: [
+        { name: "The Shilla Seoul", stars: 5, note: "Historic idol favorite in Namsan", area: "Jung-gu" },
+        { name: "Signiel Seoul", stars: 5, note: "Located in Lotte World Tower", area: "Songpa-gu" },
+        { name: "Myeongdong Tmark Hotel", stars: 3, note: "Budget option in the shopping heart of Seoul", area: "Myeongdong" },
+      ],
+      communities: [
+        { name: "Seoul K-pop Tours", platform: "Instagram", url: "https://instagram.com", members: "200k+" },
+        { name: "HanStan Discord", platform: "Discord", url: "https://discord.gg", members: "20k+" },
+      ],
+      kpopSpots: [
+        { name: "HYBE INSIGHT Museum", type: "Museum", description: "Official HYBE artist exhibition and merch store." },
+        { name: "SM TOWN COEX Artium", type: "Fan Space", description: "SM Entertainment's fan experience center." },
+        { name: "Hongdae Street", type: "District", description: "Indie music, street performances, surrounded by JYP & YG offices." },
+        { name: "Myeongdong K-pop Alley", type: "Shopping", description: "Dozens of merch shops selling albums, photocards, and lightsticks." },
+      ],
+    },
+    "tokyo": {
+      name: "Tokyo", country: "JP", flag: "🇯🇵", color: "#bc002d",
+      timezone: "JST (UTC+9)", currency: "JPY (¥)",
+      description: "Japan is K-pop's largest overseas market. Tokyo sees exclusive Japanese releases, dedicated K-pop floors in Shibuya, and frequent sold-out dome tours.",
+      concerts: [
+        { title: "BTS / Solo", venue: "Tokyo Dome", eventDate: "2025 TBA", ticketUrl: "https://www.songkick.com/search?query=bts+tokyo" },
+        { title: "TWICE", venue: "Saitama Super Arena", eventDate: "2025 TBA", ticketUrl: "https://www.songkick.com/search?query=twice+japan" },
+      ],
+      meetups: [
+        { title: "Shibuya K-pop Fans", venue: "Tower Records Shibuya B1", eventDate: "Monthly" },
+      ],
+      hotels: [
+        { name: "Park Hyatt Tokyo", stars: 5, note: "Iconic hotel in Shinjuku, favored by international artists on Japan tours", area: "Shinjuku" },
+        { name: "Shibuya Excel Hotel Tokyu", stars: 4, note: "Steps from Tower Records and Shibuya K-pop shops", area: "Shibuya" },
+      ],
+      communities: [
+        { name: "Tokyo Kpop Lovers", platform: "Meetup", url: "https://meetup.com", members: "6k+" },
+      ],
+      kpopSpots: [
+        { name: "Tower Records Shibuya — K-pop Floor", type: "Record Store", description: "Entire floor dedicated to K-pop imports with fan events and in-store signings." },
+        { name: "Shin-Okubo Koreatown", type: "District", description: "Tokyo's K-pop district with import stores, Korean food, and idol café pop-ups." },
+      ],
+    },
+    "london": {
+      name: "London", country: "UK", flag: "🇬🇧", color: "#012169",
+      timezone: "GMT (UTC+0)", currency: "GBP (£)",
+      description: "Europe's biggest K-pop hub with dedicated fan clubs, the O2 Arena for major tours, and a growing K-town in New Malden.",
+      concerts: [
+        { title: "BLACKPINK", venue: "The O2", eventDate: "2025 TBA", ticketUrl: "https://www.songkick.com/search?query=blackpink+london" },
+        { title: "STRAY KIDS", venue: "OVO Hydro / O2 Arena", eventDate: "2025", ticketUrl: "https://seatgeek.com/search#?q=stray+kids+uk" },
+      ],
+      meetups: [
+        { title: "London K-pop Socials", venue: "New Malden", eventDate: "Monthly" },
+      ],
+      hotels: [
+        { name: "The Langham London", stars: 5, note: "Historic central London hotel, K-pop acts' top choice near Hyde Park", area: "Marylebone" },
+        { name: "citizenM Tower of London", stars: 4, note: "Modern, affordable near the O2 for concert-goers", area: "Tower Hill" },
+      ],
+      communities: [
+        { name: "UK K-pop", platform: "Reddit", url: "https://reddit.com/r/ukkpop", members: "25k+" },
+      ],
+      kpopSpots: [
+        { name: "New Malden Koreatown", type: "District", description: "Europe's largest Korean community with K-pop shops and Korean restaurants." },
+        { name: "KPOP London (Oxford St)", type: "Store", description: "Dedicated K-pop store in central London with imports and fan goods." },
+      ],
+    },
+    "bangkok": {
+      name: "Bangkok", country: "TH", flag: "🇹🇭", color: "#a51931",
+      timezone: "ICT (UTC+7)", currency: "THB (฿)",
+      description: "Bangkok is Southeast Asia's K-pop epicenter. Lisa (BLACKPINK) is Thai, making the city a global focal point for Blinks and K-pop tourism.",
+      concerts: [
+        { title: "BLACKPINK / Lisa", venue: "Impact Arena", eventDate: "2025 TBA", ticketUrl: "https://www.songkick.com/search?query=lisa+blackpink+bangkok" },
+      ],
+      meetups: [
+        { title: "Bangkok Blink Meetup", venue: "Siam Square", eventDate: "Monthly" },
+      ],
+      hotels: [
+        { name: "Capella Bangkok", stars: 5, note: "Top riverfront luxury — idol-level accommodation", area: "Charoennakorn" },
+        { name: "Centara Grand at CentralWorld", stars: 5, note: "Adjacent to major concert venues and shopping malls", area: "Ratchaprasong" },
+      ],
+      communities: [
+        { name: "Thailand K-pop Fans", platform: "Facebook", url: "https://facebook.com/groups/thaiblink", members: "40k+" },
+      ],
+      kpopSpots: [
+        { name: "Siam Square K-pop Alley", type: "District", description: "Bangkok's youth culture district with K-pop merch shops and dance studios." },
+      ],
+    },
+    "paris": {
+      name: "Paris", country: "FR", flag: "🇫🇷", color: "#002395",
+      timezone: "CET (UTC+1)", currency: "EUR (€)",
+      description: "Paris hosts some of K-pop's most iconic events — from BLACKPINK's Palace of Versailles concert to BTS's Accor Arena shows.",
+      concerts: [
+        { title: "K-pop tours", venue: "Accor Arena (Bercy)", eventDate: "Various 2025", ticketUrl: "https://www.songkick.com/search?query=kpop+paris" },
+      ],
+      meetups: [
+        { title: "Paris K-pop Fan Day", venue: "Place de la République", eventDate: "Quarterly" },
+      ],
+      hotels: [
+        { name: "Hôtel Le Meurice", stars: 5, note: "Palace hotel — BLACKPINK's base during Paris Fashion Week", area: "1st arrondissement" },
+        { name: "Generator Paris", stars: 3, note: "Fan-friendly hostel near Canal Saint-Martin", area: "10th arrondissement" },
+      ],
+      communities: [
+        { name: "K-pop France", platform: "Discord", url: "https://discord.gg/kpopfrance", members: "18k+" },
+      ],
+      kpopSpots: [
+        { name: "K-Star Paris (Opéra)", type: "Store", description: "Largest dedicated K-pop shop in France with rare imports and photocards." },
+      ],
+    },
+    "mexico-city": {
+      name: "Mexico City", country: "MX", flag: "🇲🇽", color: "#006847",
+      timezone: "CST (UTC-6)", currency: "MXN ($)",
+      description: "Latin America's K-pop capital. CDMX fans are known for their legendary fancams and massive fan-organized lightstick oceans.",
+      concerts: [
+        { title: "BTS Members / Solo", venue: "Foro Sol", eventDate: "2025 TBA", ticketUrl: "https://www.songkick.com/search?query=kpop+mexico" },
+      ],
+      meetups: [
+        { title: "CDMX Stan Network", venue: "Parque España, Condesa", eventDate: "Monthly" },
+      ],
+      hotels: [
+        { name: "Four Seasons Mexico City", stars: 5, note: "K-pop artists' top accommodation on Latin American tours", area: "Paseo de la Reforma" },
+        { name: "Hotel Camino Real Polanco", stars: 4, note: "Major concert venue proximity and fan-friendly", area: "Polanco" },
+      ],
+      communities: [
+        { name: "K-pop México", platform: "Facebook", url: "https://facebook.com/groups/kpopmexico", members: "60k+" },
+      ],
+      kpopSpots: [
+        { name: "K-pop Store CDMX (Centro)", type: "Store", description: "Ground zero for K-pop merchandise in Mexico with imports and exclusives." },
+      ],
+    },
+    "chicago": {
+      name: "Chicago", country: "US", flag: "🇺🇸", color: "#00b5e2",
+      timezone: "CST (UTC-6)", currency: "USD",
+      description: "Chicago's United Center and Wintrust Arena draw major K-pop tours, while the city's Korean community in north suburbs supports a growing fan scene.",
+      concerts: [
+        { title: "Multiple", venue: "United Center", eventDate: "2025 various", ticketUrl: "https://seatgeek.com/search#?q=kpop+chicago" },
+      ],
+      meetups: [
+        { title: "Chicago ARMY", venue: "Millennium Park", eventDate: "Summer weekends" },
+      ],
+      hotels: [
+        { name: "Loews Chicago Hotel", stars: 4, note: "Fan-preferred hotel near United Center concert venue", area: "Streeterville" },
+        { name: "Chicago Athletic Association Hotel", stars: 4, note: "Boutique option in the Loop near K-pop venues", area: "The Loop" },
+      ],
+      communities: [
+        { name: "Chicago K-pop", platform: "Meetup", url: "https://meetup.com", members: "3k+" },
+      ],
+      kpopSpots: [
+        { name: "H Mart Niles", type: "Shopping", description: "Korean supermarket with K-pop albums, snacks, and fan goods." },
+      ],
+    },
+    "dallas": {
+      name: "Dallas", country: "US", flag: "🇺🇸", color: "#003594",
+      timezone: "CST (UTC-6)", currency: "USD",
+      description: "DFW is Texas's K-pop hub with one of the fastest-growing Korean-American communities and American Airlines Center for major tours.",
+      concerts: [
+        { title: "Multiple", venue: "American Airlines Center", eventDate: "2025 various", ticketUrl: "https://seatgeek.com/search#?q=kpop+dallas" },
+      ],
+      meetups: [
+        { title: "DFW K-pop Meet", venue: "Koreatown (Dallas)", eventDate: "Monthly" },
+      ],
+      hotels: [
+        { name: "Omni Dallas Hotel", stars: 4, note: "Convention center connected — used by K-pop acts performing downtown", area: "Downtown Dallas" },
+      ],
+      communities: [
+        { name: "DFW K-pop Fans", platform: "Facebook", url: "https://facebook.com/groups/dfwkpop", members: "5k+" },
+      ],
+      kpopSpots: [
+        { name: "Carrollton Koreatown", type: "District", description: "DFW's Korean cultural center with K-pop shops and restaurants." },
+      ],
+    },
+    "tampa": {
+      name: "Tampa", country: "US", flag: "🇺🇸", color: "#d50032",
+      timezone: "EST (UTC-5)", currency: "USD",
+      description: "Tampa's Amalie Arena draws K-pop tours on the US Southeast circuit. Growing fan community in the Bay Area.",
+      concerts: [
+        { title: "Multiple", venue: "Amalie Arena", eventDate: "2025 various", ticketUrl: "https://seatgeek.com/search#?q=kpop+tampa" },
+      ],
+      meetups: [
+        { title: "Tampa Bay K-pop", venue: "Ybor City", eventDate: "Bi-monthly" },
+      ],
+      hotels: [
+        { name: "JW Marriott Tampa Water Street", stars: 5, note: "Premier Tampa hotel near Amalie Arena concert venue", area: "Downtown Tampa" },
+      ],
+      communities: [
+        { name: "Tampa K-pop Fans", platform: "Discord", url: "https://discord.gg", members: "1k+" },
+      ],
+      kpopSpots: [
+        { name: "H Mart Tampa", type: "Shopping", description: "Korean supermarket with K-pop section in the Bay Area." },
+      ],
+    },
+    "boston": {
+      name: "Boston", country: "US", flag: "🇺🇸", color: "#00a0dc",
+      timezone: "EST (UTC-5)", currency: "USD",
+      description: "Boston's TD Garden hosts major K-pop tours, with MIT and Harvard Korean student associations running active fan communities.",
+      concerts: [
+        { title: "Multiple", venue: "TD Garden", eventDate: "2025 various", ticketUrl: "https://seatgeek.com/search#?q=kpop+boston" },
+      ],
+      meetups: [
+        { title: "Harvard Square K-pop", venue: "Harvard Square, Cambridge", eventDate: "Monthly" },
+      ],
+      hotels: [
+        { name: "The Verb Hotel", stars: 4, note: "Music-themed boutique hotel near Fenway", area: "Fenway" },
+      ],
+      communities: [
+        { name: "Boston K-pop Society", platform: "Discord", url: "https://discord.gg", members: "2k+" },
+      ],
+      kpopSpots: [
+        { name: "Allston Korean Restaurants", type: "District", description: "Boston's mini Koreatown with Korean food and informal fan meeting spots." },
+      ],
+    },
+    "scottsdale": {
+      name: "Scottsdale", country: "US", flag: "🇺🇸", color: "#f5a623",
+      timezone: "MST (UTC-7)", currency: "USD",
+      description: "Scottsdale's Desert Diamond Arena and Phoenix-area venues are increasingly on K-pop tour routes in the Southwest.",
+      concerts: [
+        { title: "Multiple", venue: "Footprint Center (Phoenix)", eventDate: "2025 various", ticketUrl: "https://seatgeek.com/search#?q=kpop+phoenix" },
+      ],
+      meetups: [
+        { title: "Arizona K-pop Fans", venue: "Old Town Scottsdale", eventDate: "Quarterly" },
+      ],
+      hotels: [
+        { name: "The Phoenician, Scottsdale", stars: 5, note: "Luxury resort used by touring artists in the Phoenix metro", area: "Camelback Mountain" },
+      ],
+      communities: [
+        { name: "AZ K-pop", platform: "Facebook", url: "https://facebook.com/groups/arizonakpop", members: "3k+" },
+      ],
+      kpopSpots: [
+        { name: "Mitsuwa Marketplace (Tempe)", type: "Shopping", description: "Japanese/Korean market with imported K-pop albums nearby." },
+      ],
+    },
+    "sao-paulo": {
+      name: "São Paulo", country: "BR", flag: "🇧🇷", color: "#009c3b",
+      timezone: "BRT (UTC-3)", currency: "BRL (R$)",
+      description: "Brazil's megacity has the largest K-pop fanbase in Latin America. KCON Brazil draws tens of thousands, and fan clubs here are legendary for energy.",
+      concerts: [
+        { title: "K-pop tours", venue: "Allianz Parque", eventDate: "2025 TBA", ticketUrl: "https://www.songkick.com/search?query=kpop+sao+paulo" },
+      ],
+      meetups: [
+        { title: "São Paulo K-pop Festival", venue: "Parque do Ibirapuera", eventDate: "Annual + monthly" },
+      ],
+      hotels: [
+        { name: "Tivoli Mofarrej São Paulo", stars: 5, note: "Touring acts' top pick in São Paulo", area: "Jardins" },
+      ],
+      communities: [
+        { name: "K-pop Brasil", platform: "Facebook", url: "https://facebook.com/groups/kpopbrasil", members: "200k+" },
+      ],
+      kpopSpots: [
+        { name: "Liberdade (Japanese-Korean District)", type: "District", description: "São Paulo's Asian cultural district with K-pop shops, Korean restaurants, and fan events." },
+      ],
+    },
+    "buenos-aires": {
+      name: "Buenos Aires", country: "AR", flag: "🇦🇷", color: "#74acdf",
+      timezone: "ART (UTC-3)", currency: "ARS ($)",
+      description: "BA's passionate K-pop fans fill Movistar Arena and organize some of South America's most creative fan art and choreography projects.",
+      concerts: [
+        { title: "Multiple", venue: "Movistar Arena", eventDate: "2025 TBA", ticketUrl: "https://www.songkick.com/search?query=kpop+buenos+aires" },
+      ],
+      meetups: [
+        { title: "Buenos Aires Stan Night", venue: "Palermo Soho", eventDate: "Monthly" },
+      ],
+      hotels: [
+        { name: "Alvear Palace Hotel", stars: 5, note: "Buenos Aires grand palace, major touring acts' accommodation", area: "Recoleta" },
+      ],
+      communities: [
+        { name: "K-pop Argentina", platform: "Twitter/X", url: "https://x.com/kpoparg", members: "15k+" },
+      ],
+      kpopSpots: [
+        { name: "Once District K-pop Store", type: "Store", description: "Leading K-pop import shop serving the Argentine fan community." },
+      ],
+    },
+    "madrid": {
+      name: "Madrid", country: "ES", flag: "🇪🇸", color: "#aa151b",
+      timezone: "CET (UTC+1)", currency: "EUR (€)",
+      description: "Spain's K-pop scene is booming with the Wizink Center hosting tours and a passionate Spanish ARMY community.",
+      concerts: [
+        { title: "Multiple", venue: "WiZink Center", eventDate: "2025 TBA", ticketUrl: "https://www.songkick.com/search?query=kpop+madrid" },
+      ],
+      meetups: [
+        { title: "Madrid K-pop Fans", venue: "Retiro Park", eventDate: "Monthly" },
+      ],
+      hotels: [
+        { name: "Rosewood Villa Magna", stars: 5, note: "Madrid luxury hotel used by international touring acts", area: "Paseo de la Castellana" },
+      ],
+      communities: [
+        { name: "K-pop España", platform: "Discord", url: "https://discord.gg/kpopes", members: "8k+" },
+      ],
+      kpopSpots: [
+        { name: "K-pop Music Madrid (Gran Vía)", type: "Store", description: "Dedicated K-pop store with albums, lightsticks, and fan goods." },
+      ],
+    },
+    "milan": {
+      name: "Milan", country: "IT", flag: "🇮🇹", color: "#009246",
+      timezone: "CET (UTC+1)", currency: "EUR (€)",
+      description: "Milan's fashion week draws K-pop artists as brand ambassadors, and the Mediolanum Forum hosts major tours.",
+      concerts: [
+        { title: "Multiple", venue: "Mediolanum Forum", eventDate: "2025 TBA", ticketUrl: "https://www.songkick.com/search?query=kpop+milan" },
+      ],
+      meetups: [
+        { title: "Milan K-pop Night", venue: "Navigli District", eventDate: "Quarterly" },
+      ],
+      hotels: [
+        { name: "Bulgari Hotel Milan", stars: 5, note: "Fashion-week hotel where K-pop brand ambassadors stay for Milan shows", area: "Montenapoleone" },
+      ],
+      communities: [
+        { name: "K-pop Italia", platform: "Facebook", url: "https://facebook.com/groups/kpopitalia", members: "12k+" },
+      ],
+      kpopSpots: [
+        { name: "K-pop Store Milano (Duomo)", type: "Store", description: "Central Milan K-pop import shop near the famous cathedral." },
+      ],
+    },
+    "dubai": {
+      name: "Dubai", country: "AE", flag: "🇦🇪", color: "#009a44",
+      timezone: "GST (UTC+4)", currency: "AED (د.إ)",
+      description: "Dubai is the Middle East's K-pop hub with Coca-Cola Arena hosting major acts and a large Korean expat and fan community.",
+      concerts: [
+        { title: "Multiple", venue: "Coca-Cola Arena", eventDate: "2025 TBA", ticketUrl: "https://www.songkick.com/search?query=kpop+dubai" },
+      ],
+      meetups: [
+        { title: "Dubai K-pop Fans", venue: "Dubai Mall", eventDate: "Monthly" },
+      ],
+      hotels: [
+        { name: "Burj Al Arab", stars: 5, note: "Iconic ultra-luxury resort where K-pop acts filming in Dubai stay", area: "Jumeirah Beach" },
+        { name: "Atlantis The Palm", stars: 5, note: "Fan-favorite K-pop artist accommodation in Dubai", area: "Palm Jumeirah" },
+      ],
+      communities: [
+        { name: "UAE K-pop", platform: "Facebook", url: "https://facebook.com/groups/uaekpop", members: "8k+" },
+      ],
+      kpopSpots: [
+        { name: "Korea Plaza, Dubai", type: "Cultural Center", description: "Korean cultural center with K-pop events and Korean food." },
+      ],
+    },
+    "manila": {
+      name: "Manila", country: "PH", flag: "🇵🇭", color: "#0038a8",
+      timezone: "PHT (UTC+8)", currency: "PHP (₱)",
+      description: "Philippine fans are among K-pop's most dedicated. Manila's MOA Arena and Philippine Arena draw massive sell-out crowds.",
+      concerts: [
+        { title: "Multiple", venue: "Mall of Asia Arena", eventDate: "Year-round", ticketUrl: "https://www.songkick.com/search?query=kpop+manila" },
+      ],
+      meetups: [
+        { title: "Manila Fan Assembly", venue: "BGC, Taguig", eventDate: "Monthly" },
+      ],
+      hotels: [
+        { name: "Conrad Manila", stars: 5, note: "Bay-view luxury hotel near SMX Convention Center and MOA Arena", area: "Pasay" },
+      ],
+      communities: [
+        { name: "Philippines K-pop", platform: "Facebook", url: "https://facebook.com/groups/philippineskpop", members: "500k+" },
+      ],
+      kpopSpots: [
+        { name: "SM Mall of Asia K-pop Section", type: "Shopping", description: "Dedicated K-pop album and merchandise sections in the massive mall." },
+      ],
+    },
+    "kuala-lumpur": {
+      name: "Kuala Lumpur", country: "MY", flag: "🇲🇾", color: "#cc0001",
+      timezone: "MYT (UTC+8)", currency: "MYR (RM)",
+      description: "KL's Axiata Arena is Southeast Asia's premier concert venue, hosting dozens of K-pop acts annually. Malaysia's fan community is highly organized.",
+      concerts: [
+        { title: "Multiple", venue: "Axiata Arena", eventDate: "Year-round", ticketUrl: "https://www.songkick.com/search?query=kpop+kuala+lumpur" },
+      ],
+      meetups: [
+        { title: "KL K-pop Community", venue: "KLCC Park", eventDate: "Monthly" },
+      ],
+      hotels: [
+        { name: "Mandarin Oriental KL", stars: 5, note: "KLCC luxury hotel, K-pop acts' go-to during Malaysian shows", area: "KLCC" },
+      ],
+      communities: [
+        { name: "Malaysia K-pop", platform: "Facebook", url: "https://facebook.com/groups/mykpop", members: "80k+" },
+      ],
+      kpopSpots: [
+        { name: "Pavilion KL K-pop Section", type: "Shopping", description: "K-pop merchandise and album stores in the premium Pavilion Mall." },
+      ],
+    },
+    "shanghai": {
+      name: "Shanghai", country: "CN", flag: "🇨🇳", color: "#de2910",
+      timezone: "CST (UTC+8)", currency: "CNY (¥)",
+      description: "Shanghai hosts major K-pop concerts at Mercedes-Benz Arena, and China's enormous fanbase makes it one of the most commercially significant K-pop markets.",
+      concerts: [
+        { title: "Multiple", venue: "Mercedes-Benz Arena", eventDate: "Various", ticketUrl: "https://www.songkick.com/search?query=kpop+shanghai" },
+      ],
+      meetups: [
+        { title: "Shanghai K-pop Fan Day", venue: "People's Square", eventDate: "Monthly" },
+      ],
+      hotels: [
+        { name: "The Peninsula Shanghai", stars: 5, note: "Iconic Bund hotel, K-pop artists' top choice in Shanghai", area: "The Bund" },
+      ],
+      communities: [
+        { name: "China K-pop Station", platform: "Weibo", url: "https://weibo.com", members: "1M+" },
+      ],
+      kpopSpots: [
+        { name: "Gubei Korean Town", type: "District", description: "Shanghai's Korean expatriate community with K-pop shops and restaurants." },
+      ],
+    },
+  };
+
+  for (const [slug, data] of Object.entries(CITIES)) {
+    const { concerts, meetups, hotels, communities, kpopSpots, ...core } = data;
+    const city = await prisma.city.upsert({
+      where: { slug },
+      update: { ...core, metadata: JSON.stringify({ hotels, communities, kpopSpots }) },
+      create: { slug, ...core, metadata: JSON.stringify({ hotels, communities, kpopSpots }) },
+    });
+    // Seed events (idempotent via delete+recreate per city)
+    await prisma.cityEvent.deleteMany({ where: { cityId: city.id } });
+    for (const c of concerts) {
+      await prisma.cityEvent.create({ data: { cityId: city.id, title: c.title, venue: c.venue, eventDate: c.eventDate, ticketUrl: c.ticketUrl, type: "concert" } });
+    }
+    for (const m of meetups) {
+      await prisma.cityEvent.create({ data: { cityId: city.id, title: m.title, venue: m.venue, eventDate: m.eventDate, type: "meetup" } });
+    }
+  }
+
+  // ── Seed TrendingCache with initial scores based on viewCount ──────────────
+  const topSongs = await prisma.song.findMany({
+    orderBy: { viewCount: "desc" },
+    take: 20,
+    select: { id: true, viewCount: true },
+  });
+  for (const song of topSongs) {
+    for (const period of ["daily", "weekly", "monthly"] as const) {
+      await prisma.trendingCache.upsert({
+        where: { entityType_entityId_period: { entityType: "song", entityId: song.id, period } },
+        update: { score: song.viewCount, computedAt: new Date() },
+        create: { entityType: "song", entityId: song.id, period, score: song.viewCount },
+      });
+    }
+  }
+
+  // ── Seed initial ContentSignals (cross-entity: songs + terms + cities) ─────
+  const signalSeeds = [
+    { entityType: "city", entityId: "seoul",    headline: "Seoul Dominates Global K-pop Tourism in 2025", body: "South Korea's capital welcomed over 12 million K-pop tourists in 2024, with HYBE INSIGHT and SM TOWN COEX reporting record visitor numbers. The government's 'K-content' initiative is expanding Hongdae's fan infrastructure.", category: "community", source: "Visit Korea", publishedAt: new Date("2025-01-10") },
+    { entityType: "city", entityId: "los-angeles", headline: "HYBE America Opens Expanded LA Campus", body: "HYBE's US headquarters in Los Angeles has expanded to include a 50,000 sq ft creative hub in Culver City, cementing LA as the West Coast center for K-pop production and artist development.", category: "release", source: "Billboard", publishedAt: new Date("2025-02-15") },
+    { entityType: "city", entityId: "tokyo",    headline: "Tokyo Dome Runs K-pop Exclusive Series", body: "Japan's iconic Tokyo Dome has announced a dedicated K-pop summer series, hosting TWICE, aespa, and NewJeans for consecutive weekends — the first time a western-style idol series has held the venue across multiple consecutive acts.", category: "tour", source: "Oricon", publishedAt: new Date("2025-03-01") },
+  ];
+  for (const s of signalSeeds) {
+    // Find city id by slug for proper entityId
+    const city = await prisma.city.findUnique({ where: { slug: s.entityId } });
+    if (!city) continue;
+    await prisma.contentSignal.upsert({
+      where: { id: `signal-city-${s.entityId}` },
+      update: {},
+      create: { id: `signal-city-${s.entityId}`, entityType: s.entityType, entityId: city.id, headline: s.headline, body: s.body, category: s.category, source: s.source, publishedAt: s.publishedAt },
+    });
+  }
+
   console.log("✅ Seed complete");
-  console.log(`   Labels: 12 | Groups: 30+ new | Artists fully seeded with lyrics`);
+  console.log(`   Labels: 12 | Groups: 30+ | Artists seeded with lyrics | 21 Cities in DB`);
 }
 
 main().catch(console.error).finally(() => prisma.$disconnect());
