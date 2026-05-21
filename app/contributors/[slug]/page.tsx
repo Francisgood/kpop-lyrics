@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getSession } from "@/lib/auth";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 export default async function ContributorPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

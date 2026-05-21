@@ -3,7 +3,7 @@ import Link from "next/link";
 import CollabNetwork, { type GraphNode, type GraphLink } from "@/components/CollabNetwork";
 import QuizButton from "@/components/QuizButton";
 
-export const revalidate = 1800;
+export const dynamic = "force-dynamic";
 
 // Known western markets — artists with slug containing these are "western"
 const WESTERN_SLUGS = new Set([

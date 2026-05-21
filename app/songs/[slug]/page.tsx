@@ -23,7 +23,7 @@ const getSong = cache(async (slug: string) => {
 });
 
 // ISR: re-generate every 10 minutes. View counts update async via /api/view.
-export const revalidate = 600;
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }

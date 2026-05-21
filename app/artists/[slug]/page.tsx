@@ -5,7 +5,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import CommentsSection from "@/components/CommentsSection";
 import { getSession } from "@/lib/auth";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 const CATEGORY_STYLES: Record<string, { label: string; bg: string; color: string }> = {
   milestone: { label: "MILESTONE", bg: "#FFFF64", color: "#000" },

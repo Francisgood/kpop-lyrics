@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 // Re-generate the homepage every 5 minutes so trending & news stay fresh
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Aegyo Arena — K-pop Lyrics, Translations & Fan Wiki",

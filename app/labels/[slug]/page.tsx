@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export default async function LabelPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
