@@ -14,6 +14,13 @@ function lyrics(lines: [string, string, string][]): { lyricsKo: string; lyricsRo
 }
 
 async function main() {
+  // ── Guard: skip if already seeded (idempotent for Railway deploys) ──────────
+  const labelCount = await prisma.label.count();
+  if (labelCount > 0) {
+    console.log(`⏩ DB already seeded (${labelCount} labels found) — skipping.`);
+    return;
+  }
+
   // ── Labels ─────────────────────────────────────────────────────────────────
   const hybe = await prisma.label.create({ data: {
     slug: "hybe-entertainment", name: "HYBE Entertainment", country: "South Korea",
