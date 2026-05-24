@@ -3,7 +3,10 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import FavoriteButton from "@/components/FavoriteButton";
 import CommentsSection from "@/components/CommentsSection";
+import EditableWrapper from "@/components/EditableWrapper";
+import AuditLogPanel from "@/components/AuditLogPanel";
 import { getSession } from "@/lib/auth";
+import { canDirectEdit as checkDirectEdit, canSeeAuditLog } from "@/lib/permissions";
 
 export const dynamic = "force-dynamic";
 
@@ -42,16 +45,40 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
         },
         memberships: { include: { group: true } },
         news: { orderBy: { publishedAt: "desc" } },
-        songs: { include: { song: { include: { album: true } } } },
+        songs: {
+          include: {
+            song: {
+              include: {
+                album: {
+                  include: { artist: { select: { stageName: true, slug: true } } },
+                },
+              },
+            },
+          },
+        },
       },
     }),
   ]);
 
   if (!artist) notFound();
   const isLoggedIn = !!session;
+  const userCanDirectEdit = session ? checkDirectEdit(session.user) : false;
+  const userCanSeeAudit   = session ? canSeeAuditLog(session.user)  : false;
   const isGroup = artist.type === "GROUP";
   const members = artist.groupOf;
   const totalSongs = artist.albums.reduce((n, a) => n + a.songs.length, 0);
+
+  const CREDIT_ROLES = ["songwriter", "lyricist", "producer", "remix", "arranger"];
+  const creditedSongs = artist.songs.filter((c) => CREDIT_ROLES.includes(c.role));
+  // Deduplicate by song ID (same song may appear on multiple albums/releases)
+  const seen = new Set<string>();
+  const uniqueCreditedSongs = creditedSongs
+    .sort((a, b) => (b.song.album?.releaseYear ?? 0) - (a.song.album?.releaseYear ?? 0))
+    .filter((c) => {
+      if (seen.has(c.song.id)) return false;
+      seen.add(c.song.id);
+      return true;
+    });
 
   return (
     <main>
@@ -78,7 +105,9 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
               <div style={{ fontSize: "0.7rem", color: "var(--genius-yellow)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 8 }}>
                 {isGroup ? "K-pop Group" : artist.type === "SOLOIST" ? "Solo Artist" : "K-pop Artist"}
               </div>
-              <h1 style={{ fontSize: "3rem", fontWeight: 800, margin: "0 0 8px", color: "#fff" }}>{artist.stageName}</h1>
+              <EditableWrapper field="stageName" entityType="artist" entityId={artist.id} currentVal={artist.stageName} isLoggedIn={isLoggedIn} canDirectEdit={userCanDirectEdit}>
+                <h1 style={{ fontSize: "3rem", fontWeight: 800, margin: "0 0 8px", color: "#fff" }}>{artist.stageName}</h1>
+              </EditableWrapper>
               {artist.realName && <div style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.95rem", marginBottom: 8 }}>{artist.realName}</div>}
               <div style={{ display: "flex", gap: 16, fontSize: "0.85rem", color: "rgba(255,255,255,0.5)", flexWrap: "wrap" }}>
                 {artist.debutYear && <span>Debut {artist.debutYear}</span>}
@@ -109,9 +138,11 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
           </div>
 
           {artist.bio && (
-            <div style={{ marginTop: 16, color: "rgba(255,255,255,0.8)", maxWidth: 780, lineHeight: 1.85, fontSize: "0.95rem", whiteSpace: "pre-line" }}>
-              {artist.bio}
-            </div>
+            <EditableWrapper field="bio" entityType="artist" entityId={artist.id} currentVal={artist.bio} isLoggedIn={isLoggedIn} canDirectEdit={userCanDirectEdit}>
+              <div style={{ marginTop: 16, color: "rgba(255,255,255,0.8)", maxWidth: 780, lineHeight: 1.85, fontSize: "0.95rem", whiteSpace: "pre-line" }}>
+                {artist.bio}
+              </div>
+            </EditableWrapper>
           )}
         </div>
       </section>
@@ -184,6 +215,52 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                 </div>
               ))}
             </section>
+
+            {/* Production / Writing Credits */}
+            {uniqueCreditedSongs.length > 0 && (
+              <section style={{ marginBottom: 48 }}>
+                <div className="section-header">Production &amp; Writing Credits</div>
+                <div style={{ borderLeft: "3px solid var(--genius-border)", paddingLeft: 20, marginLeft: 8 }}>
+                  {uniqueCreditedSongs.map((credit) => {
+                    const song = credit.song;
+                    const mainArtist = song.album?.artist;
+                    const roleBadgeColor: Record<string, { bg: string; color: string }> = {
+                      songwriter: { bg: "#FFFF64", color: "#000" },
+                      lyricist:   { bg: "#e0e0ff", color: "#000" },
+                      producer:   { bg: "#ACFA52", color: "#000" },
+                      remix:      { bg: "#1DB954", color: "#fff" },
+                      arranger:   { bg: "#f0f0f0", color: "#333" },
+                    };
+                    const badge = roleBadgeColor[credit.role] ?? { bg: "#eee", color: "#333" };
+                    return (
+                      <Link key={`${credit.songId}-${credit.role}`} href={`/songs/${song.slug}`} style={{ textDecoration: "none" }}>
+                        <div className="song-row" style={{ alignItems: "center" }}>
+                          <div style={{ flex: 1 }}>
+                            <span style={{ fontWeight: 600, fontSize: "0.92rem", color: "#000" }}>{song.title}</span>
+                            {mainArtist && (
+                              <span style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginLeft: 8 }}>
+                                by{" "}
+                                <Link href={`/artists/${mainArtist.slug}`} style={{ color: "var(--genius-gray)", textDecoration: "underline" }}>
+                                  {mainArtist.stageName}
+                                </Link>
+                              </span>
+                            )}
+                            {song.album?.releaseYear && (
+                              <span style={{ fontSize: "0.75rem", color: "var(--genius-gray)", marginLeft: 6 }}>
+                                ({song.album.releaseYear})
+                              </span>
+                            )}
+                          </div>
+                          <span style={{ background: badge.bg, color: badge.color, fontSize: "0.65rem", fontWeight: 700, padding: "2px 8px", borderRadius: 999, letterSpacing: "0.06em", textTransform: "uppercase", whiteSpace: "nowrap" }}>
+                            {credit.role}
+                          </span>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
 
             {/* Gossip & News */}
             {artist.news.length > 0 && (
@@ -270,6 +347,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                 { label: "Label", value: artist.label?.name ?? "Independent" },
                 { label: "Albums", value: artist.albums.length },
                 { label: "Songs", value: totalSongs },
+                ...(uniqueCreditedSongs.length > 0 ? [{ label: "Credits", value: uniqueCreditedSongs.length }] : []),
                 { label: "News Items", value: artist.news.length },
               ].map(({ label, value }) => (
                 <div key={label} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid var(--genius-border)", fontSize: "0.83rem" }}>
@@ -294,6 +372,11 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
           isLoggedIn={isLoggedIn}
           currentUserName={session?.user.displayName ?? session?.user.email.split("@")[0]}
         />
+
+        {/* Audit log — visible to moderators/admins/owner only */}
+        {userCanSeeAudit && (
+          <AuditLogPanel entityType="artist" entityId={artist.id} currentUser={session!.user} />
+        )}
       </div>
     </main>
   );

@@ -1,0 +1,213 @@
+{
+  "artist": "BTS",
+  "slug": "bts",
+  "pulled_at": "2026-05-23T00:00:00Z",
+  "window_days": 30,
+
+  "dominant_sentiment": "triumphant_return",
+  "sentiment_score": 0.92,
+
+  "trending_themes": [
+    {
+      "theme": "Military service reunion / group wholeness restored",
+      "sentiment": "euphoric",
+      "evidence": "All seven members fulfilled mandatory military service and reunited for the ARIRANG comeback. J-hope's world tour finale saw Jin and Jungkook appear onstage while the other five watched from the audience — the first full-group public gathering post-service. RM stated the group wanted to 'show who we are and how we can come together,' with album themes of separation and reunion resonating deeply with the fandom.",
+      "sources": [
+        "https://www.billboard.com/photos/j-hope-tour-finale-photos-bts-reunion-jin-jung-kook-1235999540/",
+        "https://lasvegassun.com/news/2026/may/23/bts-takes-over-las-vegas-how-the-bangtan-boys-are/"
+      ]
+    },
+    {
+      "theme": "ARIRANG album as cultural identity statement",
+      "sentiment": "proud / reflective",
+      "evidence": "Album title references a centuries-old Korean folk tradition (arirang). Despite Westernized production surprising some fans, the cultural symbolism drove massive engagement: 110M Spotify streams in 24 hours (record), nearly 4M copies sold day one, free Seoul concert at Gwanghwamun Square drew 100,000 live attendees and 18.4M Netflix global viewers in 80 countries.",
+      "sources": [
+        "https://lasvegassun.com/news/2026/may/23/bts-takes-over-las-vegas-how-the-bangtan-boys-are/",
+        "https://www.rollingstone.com/p/bts-covers/"
+      ]
+    },
+    {
+      "theme": "SWIM declining / Hooligan ascending — dual chart momentum",
+      "sentiment": "bittersweet / competitive",
+      "evidence": "Per Obsidian K-pop Signals (Week 15 2026): SWIM dropped from #1 to #33 on the tracked chart while Hooligan surged from #16 to #5 (↑↑). Billboard data confirms SWIM held No. 1 for at least 3 weeks before slipping to No. 5 then further. Fan discourse around which track is the 'true' comeback anthem is active. Hooligan debuted at No. 3 on Global 200 (50.2M streams, 21K sales).",
+      "sources": [
+        "https://respawn.outlookindia.com/pop-culture/pop-culture-news/bts-swim-drops-to-no-5-on-billboard",
+        "https://www.billboard.com/music/chart-beat/bts-swim-global-charts-april-11-1236215973/"
+      ]
+    },
+    {
+      "theme": "Solo member era culminating in historic Billboard sweep",
+      "sentiment": "celebratory / milestone",
+      "evidence": "Every BTS member has now charted as a solo artist on the Billboard Hot 100 — a first for any K-pop group. Jimin's 'Who' hit 2.4B Spotify streams (May 8, 2026), first solo by an Asian artist without a feature to reach that mark. Jungkook 'Seven' at 2.76B; Jimin total 7.94B. LE SSERAFIM × j-hope 'SPAGHETTI' charting fast (#36→#22, Week 15).",
+      "sources": [
+        "https://www.power103.com/2026/05/19/bts-members-complete-full-group-solo-sweep-on-the-billboard-hot-100/",
+        "https://respawn.outlookindia.com/pop-culture/pop-culture-news/bts-billboard-arirang-global-chart-dominance-2026-jimin-spotify-records"
+      ]
+    },
+    {
+      "theme": "Stadium-scale live return / ARMY devotion",
+      "sentiment": "fervent / celebratory",
+      "evidence": "ARIRANG World Tour: 80+ dates, 34 cities, 23 countries through March 2027 — described as the largest stadium tour in K-pop history. Las Vegas: four sold-out Allegiant Stadium nights (May 23-24, 27-28), 260,000 total attendees. Citywide activation includes the Sphere Exosphere (first K-pop display), Caesars Palace pop-up, monorail branding. Ticket secondary market reached $3,000+.",
+      "sources": [
+        "https://lasvegassun.com/news/2026/may/23/bts-takes-over-las-vegas-how-the-bangtan-boys-are/",
+        "https://www.allegiantstadium.com/events/detail/bts_world_tour_2026"
+      ]
+    },
+    {
+      "theme": "Critical / commercial tension — Westernized production vs. folk title",
+      "sentiment": "mixed / debated",
+      "evidence": "Critics noted the album's Westernized production surprised fans given the traditional Korean folk title 'Arirang.' HYBE stock dropped 15.5% post-release despite historic streaming and sales. Signals a fandom discourse around authenticity vs. global crossover ambition.",
+      "sources": [
+        "https://lasvegassun.com/news/2026/may/23/bts-takes-over-las-vegas-how-the-bangtan-boys-are/"
+      ]
+    }
+  ],
+
+  "chart_signals": {
+    "spotify_monthly_listeners": 23700000,
+    "spotify_monthly_listeners_note": "December 2025 figure; likely significantly higher post-March 2026 comeback",
+    "charting_songs": [
+      {
+        "title": "SWIM",
+        "chart": "Billboard Hot 100",
+        "peak_position": 1,
+        "current_position": 5,
+        "trend": "declining",
+        "notes": "Debuted #1, held 3+ weeks at #1; 83.3M peak weekly streams; still #1 Digital Song Sales"
+      },
+      {
+        "title": "SWIM",
+        "chart": "Obsidian K-pop Signals (Week 15 2026)",
+        "peak_position": 1,
+        "current_position": 33,
+        "trend": "sharp_decline"
+      },
+      {
+        "title": "Hooligan",
+        "chart": "Obsidian K-pop Signals (Week 15 2026)",
+        "peak_position": 5,
+        "current_position": 5,
+        "trend": "rising",
+        "previous_position": 16,
+        "notes": "↑↑ from #16 to #5; debuted #3 Global 200 (50.2M streams, 21K sales)"
+      },
+      {
+        "title": "ARIRANG (album)",
+        "chart": "Spotify Weekly Top Albums Global",
+        "position": 1,
+        "consecutive_weeks_top3": 9,
+        "notes": "110M Spotify streams in first 24h (K-pop record); 641K album-equivalent units week 1"
+      },
+      {
+        "title": "ARIRANG (album)",
+        "chart": "Billboard 200",
+        "peak_position": 1,
+        "current_position": 7,
+        "notes": "7-week residency; peaked #1 for 3 consecutive weeks"
+      }
+    ],
+    "notable_movements": [
+      "SWIM: longest-charting #1 K-pop debut on Hot 100 in 2026",
+      "Hooligan surging as the album's second-wave single",
+      "LE SSERAFIM x j-hope 'SPAGHETTI' rising fast (#36→#22, Week 15)",
+      "Jimin 'Who' now 2.4B Spotify streams — all-time #37 on platform",
+      "All 7 members now individually charted on Billboard Hot 100 (historic first for any K-pop group)",
+      "Boy With Luv crossed 1.9B YouTube views (Jan 4, 2026)",
+      "SWIM first K-pop MV of 2026 to reach 100M YouTube views (26 days)"
+    ]
+  },
+
+  "key_phrases": [
+    "We waited 4 years for this",
+    "Hooligan is the real era",
+    "SWIM to Hooligan era transition",
+    "Arirang is their most personal album",
+    "BTS did it again — Hot 100 kings",
+    "The reunion we deserved",
+    "Purple ocean Las Vegas",
+    "ARMY never left",
+    "All 7 together again",
+    "Separation made them stronger",
+    "Back and better — no hiatus could stop them",
+    "Jimin 2.4B who could have predicted this"
+  ],
+
+  "annotation_hooks": [
+    {
+      "hook": "SWIM → Hooligan arc mirrors lyrical shedding of identity",
+      "connection": "SWIM's themes of floating, letting go, and drifting resonate with the post-military aimlessness many fans projected. Hooligan's surge represents reclaiming chaos and edge — a lyrical assertion of self after quiet years. The chart inversion (SWIM falling, Hooligan rising) maps onto the emotional arc from surrender to reclamation.",
+      "suggested_lyric_tags": ["identity", "floating", "reclamation", "chaos", "edge"]
+    },
+    {
+      "hook": "Arirang folk title vs. Westernized production — authenticity tension",
+      "connection": "BTS lyrics across discography (esp. 'N.O', 'No More Dream', 'Idol') have repeatedly interrogated the cost of global ambition vs. Korean roots. The ARIRANG album title invoking ancient folk music while sounding Western reopens that exact debate — the songs are a live document of that negotiation.",
+      "suggested_lyric_tags": ["roots", "identity", "global_vs_local", "authenticity", "idol"]
+    },
+    {
+      "hook": "Separation and reunion as the album's emotional spine",
+      "connection": "RM's statement that the group wanted to 'show how we can come together' after four years apart gives every lyric on ARIRANG a reunion subtext. Songs about distance, longing, and return (common across BTS catalog — 'Spring Day', 'Life Goes On') now carry the weight of actual lived military separation.",
+      "suggested_lyric_tags": ["reunion", "distance", "longing", "return", "spring_day_echo"]
+    },
+    {
+      "hook": "Solo sweep as seven individual stories converging back to one",
+      "connection": "Every member charting solo on Hot 100 before the group album dropped means the group comeback represents a literal convergence of seven fully-realized individual narratives. Lyrics about individual identity vs. collective belonging (e.g. 'Mikrokosmos', 'DNA') have a new layer: the solo era proved each member stands alone, making the group reunion a conscious choice, not a default.",
+      "suggested_lyric_tags": ["individuality", "collective", "seven", "mikrokosmos", "choice"]
+    },
+    {
+      "hook": "Las Vegas as ARMY homecoming ritual — the city as mirror",
+      "connection": "BTS's previous Las Vegas PERMISSION TO DANCE ON STAGE was the first post-pandemic reunion concert (April 2022). Now returning to Vegas in May 2026 with the ARIRANG tour closes a symbolic loop. Lyrics about finding home in ARMY, about cities and stadiums as emotional landmarks, connect directly to the fanbase's sense that Las Vegas is 'their' city.",
+      "suggested_lyric_tags": ["home", "army", "live_performance", "stadium", "purple", "permissions"]
+    }
+  ],
+
+  "raw_headlines": [
+    "BTS 'Arirang' Spends 9th Consecutive Week in Spotify Weekly Album Chart Top 3 — STARNEWS (2026-05-23)",
+    "BTS Billboard & Spotify Win: ARIRANG & Jimin's 2.4B Record! — Outlook India Respawn",
+    "BTS 'Arirang' Continues Upward Trend.. Spots #1 on Spotify Weekly Album Chart Again — STARNEWS (2026-05-16)",
+    "BTS takes over Las Vegas: How the Bangtan boys are turning the Strip purple — and red — again — Las Vegas Sun (2026-05-23)",
+    "BTS Members Complete Full-Group Solo Sweep on the Billboard Hot 100 — multiple outlets (2026-05-19)",
+    "BTS's 'SWIM' achieves milestone as first K-Pop MV of 2026 to reach 100 million views — Pannchoa",
+    "'Arirang' by the numbers: BTS's epic comeback milestones so far — Tatler Asia",
+    "BTS Unveil Highly Anticipated Comeback World Tour Dates — Rolling Stone",
+    "BTS: Back on Top — Rolling Stone (May 2026 cover story, 8 editions)",
+    "BTS' 'Swim' Debuts at No. 1 on Billboard Global Charts — Billboard",
+    "BTS' 'SWIM' Is No. 1 on Billboard's Global Charts for a Third Week — Billboard",
+    "BTS SWIM Slips to No. 5, But Is the Chart Reign Over At All? — Outlook India Respawn",
+    "Jin & Jung Kook Make Surprise Appearance Onstage at j-hope World Tour Finale as BTS Reunites — Billboard",
+    "Run BTS 2026: New Episodes comeback — Outlook India Respawn",
+    "BTS is poised for a huge 2026, reuniting after an almost four-year hiatus — CNN (via Facebook)",
+    "BTS WORLD TOUR 'ARIRANG' IN LAS VEGAS — Allegiant Stadium (May 23-24, 27-28)"
+  ],
+
+  "data_sources": {
+    "obsidian_signals": {
+      "note": "Pre-loaded K-pop Signals file (Week 15 2026)",
+      "data_points": [
+        "Hooligan: #16→#5 (↑↑)",
+        "SWIM: #1→#33 (↓↓)",
+        "BTS group monthly Spotify listeners: 23.7M (Dec 2025)",
+        "Jungkook 'Seven': 2.76B Spotify plays",
+        "Jungkook GOLDEN album: 6.2B streams",
+        "Jimin total: 7.94B streams",
+        "Jimin 'Who': 2.25B plays",
+        "Jimin 'Like Crazy': #1 Billboard Hot 100",
+        "LE SSERAFIM × j-hope 'SPAGHETTI': #36→#22 (↑↑)"
+      ]
+    },
+    "web_searches": [
+      "BTS Spotify chart May 2026",
+      "BTS news comeback May 2026",
+      "BTS reddit kpop 2026 fan reaction",
+      "BTS milestone achievement 2026",
+      "j-hope Jungkook Jimin V Suga Jin RM solo 2026",
+      "BTS 2026 news",
+      "BTS Hooligan SWIM chart 2026"
+    ],
+    "web_fetches": [
+      "https://respawn.outlookindia.com/pop-culture/pop-culture-news/bts-billboard-arirang-global-chart-dominance-2026-jimin-spotify-records",
+      "https://lasvegassun.com/news/2026/may/23/bts-takes-over-las-vegas-how-the-bangtan-boys-are/",
+      "https://www.usbtsarmy.com/notable-achievements/category/2026",
+      "https://respawn.outlookindia.com/pop-culture/pop-culture-news/bts-swim-drops-to-no-5-on-billboard"
+    ]
+  }
+}

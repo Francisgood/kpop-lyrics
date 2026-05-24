@@ -1,0 +1,10 @@
+{
+  "bts": {
+    "latest": "bts-2026-05-23.json",
+    "pulled_at": "2026-05-23T00:00:00Z"
+  },
+  "lisa": {
+    "latest": "lisa-2026-05-23.json",
+    "pulled_at": "2026-05-23T00:00:00Z"
+  }
+}

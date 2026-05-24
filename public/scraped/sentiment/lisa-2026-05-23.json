@@ -1,0 +1,184 @@
+{
+  "artist": "Lisa",
+  "slug": "lisa",
+  "pulled_at": "2026-05-23T00:00:00Z",
+  "window_days": 30,
+  "dominant_sentiment": "triumphant momentum — Lisa is in a sustained peak of global cultural dominance, with each new project exceeding the last in scope and historical first status",
+  "sentiment_score": 0.91,
+  "trending_themes": [
+    {
+      "theme": "FIFA World Cup 2026 — 'Goals' release & opening ceremony headliner",
+      "sentiment": "euphoric / historic",
+      "evidence": "On May 21, 2026 Lisa released 'Goals' with Anitta and Rema as part of the Official FIFA World Cup 2026 Album. The track debuted #3 globally on Spotify on May 22 with 479,579 day-one streams. Lisa is confirmed to perform at the opening ceremony in Los Angeles on June 12 at SoFi Stadium — becoming the first female K-pop act and first Thai artist to headline a FIFA World Cup opening ceremony in history.",
+      "sources": [
+        "https://www.gmanetwork.com/news/lifestyle/hobbiesandactivities/988569/blackpink-s-lisa-anitta-and-rema-drop-new-world-cup-song-goals/story/",
+        "https://www.koreaherald.com/article/10734543",
+        "https://en.tempo.co/read/2105021/blackpinks-lisa-drops-new-single-for-2026-fifa-world-cup"
+      ]
+    },
+    {
+      "theme": "Las Vegas residency — first K-pop artist on the Strip",
+      "sentiment": "celebratory / milestone",
+      "evidence": "'Viva La Lisa' residency at The Colosseum at Caesars Palace announced for November 13–28, 2026. Universally framed as a landmark: no K-pop act, solo or group, has previously headlined a Las Vegas Strip residency. Positions Lisa alongside legacy acts (Adele, Celine Dion, Katy Perry) who have held the same venue.",
+      "sources": [
+        "https://www.cilfm.com/2026/05/05/blackpinks-lisa-becomes-first-k-pop-star-to-launch-las-vegas-residency/",
+        "https://www.pinkvilla.com/entertainment/is-lisa-planning-to-go-on-solo-tour-in-2026-blackpink-member-partners-with-known-live-gig-label-for-concerts-1397904"
+      ]
+    },
+    {
+      "theme": "LLOUD-era multi-hyphenate dominance — music + acting + fashion + business",
+      "sentiment": "admiration / aspirational",
+      "evidence": "Across April–May 2026 Lisa is simultaneously: host-committee member at Met Gala 2026 (custom Robert Wun four-armed look, viral); Nike global partner; Louis Vuitton House Ambassador; LLOUD gym collection launch with Tokyo pop-ups; post-White Lotus Season 3 acting buzz; Coachella 2026 solo headliner with 'Bad Angel' (Anyma collab, 36.7M streams). Fan discourse consistently frames her as having transcended K-pop to become a global pop institution.",
+      "sources": [
+        "https://www.billboard.com/music/music-news/blackpink-lisa-met-gala-2026-costume-transformation-video-1236239902/",
+        "https://kcontenthub.com/en/blackpink-lisas-2026-global-projects-a-comprehensive-guide-to-her-summer-activities-and-new-music/",
+        "https://inmusicblog.com/stories/lisa-blackpink-solo-career-timeline/"
+      ]
+    },
+    {
+      "theme": "Second solo album anticipation — cryptic signals from Lisa",
+      "sentiment": "excited speculation / constructive suspense",
+      "evidence": "February 28, 2026 Instagram Live: Lisa gave a playful laugh and smile in response to a fan comment about a follow-up to 'Alter Ego,' igniting 'Lilies' theories. Fan communities report cryptic teasers. No official confirmation; sentiment is positively charged anticipatory rather than frustrated.",
+      "sources": [
+        "https://www.allkpop.com/article/2026/02/blackpinks-lisa-hints-at-releasing-a-new-solo-album-soon",
+        "https://backyarddrunkard.com/k-pop/lisa-blackpink-solo-album-2026-tease-update/"
+      ]
+    },
+    {
+      "theme": "Record-breaking social reach — 107M Instagram followers as global benchmark",
+      "sentiment": "awe / pride",
+      "evidence": "Lisa (@lalalalisa_m) holds 107M Instagram followers as of Jan–Mar 2026, making her #1 most-followed K-pop artist and a figure who commands a larger online audience than the entire population of South Korea (51.7M) by a factor of 2×. Fan discourse uses this stat as shorthand for her irreducible cultural weight.",
+      "sources": [
+        "https://wikipedia.org/wiki/Lisa_(rapper)",
+        "https://sociallifemagazine.com/the-archive/lisa-lalisa-net-worth/"
+      ]
+    }
+  ],
+  "chart_signals": {
+    "spotify_monthly_listeners": "~24–26M estimated (BLACKPINK group: 25.7M Dec 2025; Lisa solo trending upward with 'Goals' release spike)",
+    "total_catalog_streams": "5.2 billion lifetime (as of May 22, 2026)",
+    "daily_average_streams": "~3 million",
+    "charting_songs": [
+      {
+        "title": "Goals (feat. Anitta & Rema)",
+        "streams": 602750,
+        "global_peak": 3,
+        "peak_date": "2026-05-22",
+        "notes": "FIFA World Cup 2026 official track — day-one debut"
+      },
+      {
+        "title": "MONEY",
+        "streams": 1411895123,
+        "global_peak": 5,
+        "notes": "All-time catalog peak; sustains ~239K daily streams"
+      },
+      {
+        "title": "Rockstar",
+        "streams": 592579678,
+        "global_peak": 14,
+        "notes": "Highest daily rate in catalog at ~526K/day — still in active chart cycle"
+      },
+      {
+        "title": "Moonlit Floor (Kiss Me)",
+        "streams": 422907531,
+        "global_peak": 13,
+        "notes": "~218K daily streams"
+      },
+      {
+        "title": "New Woman (feat. ROSALÍA)",
+        "streams": 404396225,
+        "global_peak": null,
+        "notes": "~199K daily streams"
+      },
+      {
+        "title": "Born Again (feat. Doja Cat & RAYE)",
+        "streams": 365644380,
+        "global_peak": null,
+        "notes": "~387K daily streams — strong sustained performance"
+      },
+      {
+        "title": "FXCK UP THE WORLD (feat. Future)",
+        "streams": 107000000,
+        "global_peak": null,
+        "notes": "Released March 2025; 107M streams lifetime; ongoing cultural reference"
+      },
+      {
+        "title": "Bad Angel (with Anyma)",
+        "streams": 36700000,
+        "global_peak": null,
+        "notes": "Coachella 2026 debut track; still accumulating"
+      }
+    ],
+    "notable_movements": "Sharp uptick in daily streams expected from 'Goals' FIFA release (May 21–22). 'Rockstar' anomalously high daily rate (~526K) suggests active playlist/editorial push. Catalog total crossed 5B milestone in the window."
+  },
+  "key_phrases": [
+    "first K-pop artist to headline FIFA World Cup opening ceremony",
+    "first K-pop artist on the Las Vegas Strip",
+    "107 million Instagram followers — 2× South Korea's population",
+    "Viva La Lisa",
+    "Goals — three continents, one song",
+    "LLOUD mogul era",
+    "Alter Ego follow-up rumors",
+    "Lilies",
+    "four-armed Met Gala look",
+    "5 billion streams",
+    "Bad Angel at Coachella",
+    "transcended K-pop",
+    "White Lotus effect"
+  ],
+  "annotation_hooks": [
+    {
+      "hook_id": 1,
+      "lyric_anchor": "세상을 뒤집어 놓을게 (I'm gonna turn the world upside down)",
+      "connection": "Lisa headlining the FIFA World Cup opening ceremony makes this lyric literal geopolitics. The World Cup is watched by ~5 billion people — she is not performing for a niche; she is the opening act for the planet. The Thai girl who moved to Seoul at 14 will now be the first image billions see of the 2026 World Cup. '세상을 뒤집어 놓을게' is not hyperbole: it is her career arc compressed into one stage entrance.",
+      "relevance_score": 0.97
+    },
+    {
+      "hook_id": 2,
+      "lyric_anchor": "규칙이 없어 내 세상에 (There are no rules in my world)",
+      "connection": "The Las Vegas Strip residency is the most rule-free statement Lisa has made. The Strip's residency culture had an unspoken rule: classic Western pop royalty only. Lisa didn't break that rule — she proved it had never existed for someone operating at her scale. 'Viva La Lisa' at Caesars, alongside the Coachella headline, the FIFA slot, and the LLOUD business empire, describes a creative and commercial sovereign who writes her own terms.",
+      "relevance_score": 0.93
+    },
+    {
+      "hook_id": 3,
+      "lyric_anchor": "Pluto vibes",
+      "connection": "Pluto was reclassified — told it didn't belong in the canonical solar system — yet its gravitational pull on the outer planets never changed. Lisa left the traditional K-pop label system (YG) and moved to LLOUD, a structure that mainstream industry observers questioned. Her Pluto moment was post-BLACKPINK independence. The 2026 data shows: her streaming numbers (5.2B lifetime, 3M daily), social reach (107M followers), and headline bookings (FIFA, Coachella, Vegas) are larger than her group-era numbers. She has more pull now that she's been 'reclassified.'",
+      "relevance_score": 0.88
+    },
+    {
+      "hook_id": 4,
+      "lyric_anchor": "세상이 우릴 따라와 (The world follows us)",
+      "connection": "'Goals' is the world literally following Lisa — FIFA, the most globally watched sporting institution, commissioned her song. This is the inverse of a K-pop artist chasing Western validation: the Western institution came to her with a co-write slot and a primary performance at the opening. Combine with Louis Vuitton ambassadorship, Nike partnership, and Met Gala host committee: the world's biggest fashion, sport, and luxury brands are aligning to Lisa's orbit, not the reverse.",
+      "relevance_score": 0.95
+    },
+    {
+      "hook_id": 5,
+      "lyric_anchor": "FXCK UP THE WORLD — the title as structural metaphor",
+      "connection": "The song title now reads as autobiography. 'FXCK UP THE WORLD' was released March 2025 with Future — itself a cross-genre statement. By May 2026 the title is a record: first Thai artist at a FIFA opening, first K-pop residency on the Strip, 107M followers eclipsing a nation-state, a four-armed Met Gala transformation that became the image of the night. The FXCK UP THE WORLD era is not a single era anymore — it is a governing thesis for everything Lisa is doing in 2026. Each new first is another verse of the same song.",
+      "relevance_score": 0.96
+    }
+  ],
+  "raw_headlines": [
+    "BLACKPINK's Lisa Drops New Single for 2026 FIFA World Cup — en.tempo.co, May 2026",
+    "Lisa joins 2026 World Cup opening lineup alongside Katy Perry — Korea Herald, May 2026",
+    "Watch How LISA of BLACKPINK Became a Four-Armed Work of Art for the 2026 Met Gala — Billboard, May 2026",
+    "Blackpink's Lisa, Anitta, and Rema drop new World Cup song 'Goals' — GMA News Online, May 21 2026",
+    "BLACKPINK Lisa's 2026 Global Projects: A Comprehensive Guide — KcontentHub, 2026",
+    "Blackpink's LISA becomes first K-pop star to launch Las Vegas residency — CILFM/Dailyfly, May 5 2026",
+    "BLACKPINK's Lisa Partners With Wasserman Music to Launch Global Solo Tours — Indigo Music, 2026",
+    "BLACKPINK's Lisa hints at releasing a new solo album soon — allkpop, February 2026",
+    "Lisa accidentally confirms BLACKPINK's comeback for January 2026 — musicmundial.com",
+    "Where Are All 4 BLACKPINK Members Now in 2026? — kpopstarz.com, May 19 2026",
+    "BLACKPINK's LISA To Headline FIFA World Cup 2026 Opening — Chiang Rai Times",
+    "How LISA Built One of Pop's Most Remarkable Solo Careers — InMusic Blog, 2026",
+    "LALISA's discography received 94.5 million streams on Spotify in January — forlisanations Facebook",
+    "BLACKPINK debuts on Spotify's Weekly Global Chart with 447.5 million streams — MTV UK Facebook",
+    "Goals peaks at #3 globally on Spotify day-one — kworb.net, May 22 2026"
+  ],
+  "data_sources": {
+    "streaming_data": "kworb.net/spotify (last updated May 22, 2026)",
+    "news_aggregation": "Korea Herald, Billboard, GMA News, Tempo.co, allkpop, KcontentHub, InMusic Blog",
+    "social_data": "Obsidian scraped knowledge (107M IG followers, Jan–Mar 2026)",
+    "group_baseline": "BLACKPINK: 25.7M Spotify monthly listeners (Dec 2025)"
+  }
+}

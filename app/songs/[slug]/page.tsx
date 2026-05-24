@@ -8,7 +8,11 @@ import ShareButtons from "@/components/ShareButtons";
 import MukbangSection from "@/components/MukbangSection";
 import FavoriteButton from "@/components/FavoriteButton";
 import CommentsSection from "@/components/CommentsSection";
+import EditableWrapper from "@/components/EditableWrapper";
+import AuditLogPanel from "@/components/AuditLogPanel";
+import LyricsSection from "@/components/LyricsSection";
 import { getSession } from "@/lib/auth";
+import { canDirectEdit as checkDirectEdit, canSeeAuditLog, canAnnotate as checkCanAnnotate } from "@/lib/permissions";
 
 // Cache the DB fetch so generateMetadata and the page share one query per request
 const getSong = cache(async (slug: string) => {
@@ -17,7 +21,13 @@ const getSong = cache(async (slug: string) => {
     include: {
       album: { include: { artist: true } },
       credits: { include: { artist: true } },
-      annotations: { include: { term: { include: { definitions: { orderBy: { votesUp: "desc" }, take: 1 } } } } },
+      annotations: {
+        include: {
+          term: { include: { definitions: { orderBy: { votesUp: "desc" }, take: 1 } } },
+          user: { select: { id: true, displayName: true, avatarUrl: true } },
+        },
+        orderBy: { createdAt: "asc" },
+      },
     },
   });
 });
@@ -61,6 +71,9 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
   const [song, session] = await Promise.all([getSong(slug), getSession()]);
   if (!song) notFound();
   const isLoggedIn = !!session;
+  const userCanDirectEdit = session ? checkDirectEdit(session.user) : false;
+  const userCanSeeAudit   = session ? canSeeAuditLog(session.user)  : false;
+  const userCanAnnotate   = session ? checkCanAnnotate(session.user) : false;
 
   // ── Gather all artist IDs for news lookup ─────────────────────────────────
   const songArtistIds = [
@@ -79,11 +92,23 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
   const enLines = (song.lyricsEn ?? "").split("\n");
   const roLines = (song.lyricsRomanized ?? "").split("\n");
 
-  // Build annotation lookup: lineIndex → annotations[]
-  const annotationsByLine = new Map<number, typeof song.annotations>();
+  // Build annotation lookup: lineIndex → annotations[] (plain object for client)
+  type SerializedAnnotation = {
+    id: string; word: string; note: string; createdAt: string;
+    user: { id: string; displayName: string | null; avatarUrl: string | null } | null;
+    term: { slug: string; term: string } | null;
+  };
+  const annotationsByLine: Record<number, SerializedAnnotation[]> = {};
   for (const ann of song.annotations) {
-    if (!annotationsByLine.has(ann.lineIndex)) annotationsByLine.set(ann.lineIndex, []);
-    annotationsByLine.get(ann.lineIndex)!.push(ann);
+    if (!annotationsByLine[ann.lineIndex]) annotationsByLine[ann.lineIndex] = [];
+    annotationsByLine[ann.lineIndex].push({
+      id: ann.id,
+      word: ann.word,
+      note: ann.note,
+      createdAt: ann.createdAt.toISOString(),
+      user: ann.user ?? null,
+      term: ann.term ? { slug: ann.term.slug, term: ann.term.term } : null,
+    });
   }
 
   const performers = song.credits.filter((c) => ["performer", "PRIMARY"].includes(c.role));
@@ -105,15 +130,19 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
           </div>
 
           <div style={{ display: "flex", gap: 32, alignItems: "flex-start", flexWrap: "wrap" }}>
-            {(song.coverArt || song.album?.coverArt) ? (
-              <img src={song.coverArt || song.album?.coverArt || ""} alt={song.album?.title ?? song.title} style={{ width: 140, height: 140, borderRadius: 6, objectFit: "cover", flexShrink: 0, boxShadow: "0 4px 24px rgba(0,0,0,0.5)" }} />
-            ) : (
-              <div style={{ width: 140, height: 140, borderRadius: 6, flexShrink: 0, background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "3rem" }}>
-                🎵
-              </div>
-            )}
+            <EditableWrapper field="coverArt" entityType="song" entityId={song.id} currentVal={song.coverArt ?? ""} isLoggedIn={isLoggedIn} canDirectEdit={userCanDirectEdit}>
+              {(song.coverArt || song.album?.coverArt) ? (
+                <img src={song.coverArt || song.album?.coverArt || ""} alt={song.album?.title ?? song.title} style={{ width: 140, height: 140, borderRadius: 6, objectFit: "cover", flexShrink: 0, boxShadow: "0 4px 24px rgba(0,0,0,0.5)" }} />
+              ) : (
+                <div style={{ width: 140, height: 140, borderRadius: 6, flexShrink: 0, background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "3rem" }}>
+                  🎵
+                </div>
+              )}
+            </EditableWrapper>
             <div>
-              <h1 style={{ fontSize: "2.4rem", fontWeight: 800, margin: "0 0 8px" }}>{song.title}</h1>
+              <EditableWrapper field="title" entityType="song" entityId={song.id} currentVal={song.title} isLoggedIn={isLoggedIn} canDirectEdit={userCanDirectEdit}>
+                <h1 style={{ fontSize: "2.4rem", fontWeight: 800, margin: "0 0 8px" }}>{song.title}</h1>
+              </EditableWrapper>
               {mainArtist && (
                 <Link href={`/artists/${mainArtist.slug}`} style={{ fontSize: "1.1rem", color: "rgba(255,255,255,0.85)", textDecoration: "none", fontWeight: 600 }}>
                   {mainArtist.stageName}
@@ -167,60 +196,23 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
 
           <section>
             {song.annotations.length > 0 && (
-              <div style={{ background: "rgba(255,255,100,0.12)", border: "1px solid var(--genius-yellow)", borderRadius: 4, padding: "10px 16px", marginBottom: 20, fontSize: "0.82rem", color: "#555" }}>
-                <strong style={{ color: "#000" }}>Annotated lyrics</strong> — highlighted lines contain K-pop slang or cultural annotations. Scroll to explore.
+              <div style={{ background: "#f4f4f4", border: "1px solid #e0e0e0", borderRadius: 4, padding: "10px 16px", marginBottom: 20, fontSize: "0.82rem", color: "#555" }}>
+                <strong style={{ color: "#000" }}>Annotated lyrics</strong> — grey-highlighted lines have fan annotations. Click any highlighted line to read them.
               </div>
             )}
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 12, paddingBottom: 8, borderBottom: "2px solid #000" }}>
-              <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--genius-gray)" }}>한국어 (Korean)</div>
-              <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--genius-gray)" }}>English Translation</div>
-            </div>
-
-            {koLines.map((line, i) => {
-              const isEmpty = !line.trim() && !enLines[i]?.trim();
-              if (isEmpty) return <div key={i} style={{ height: 20 }} />;
-              const lineAnnotations = annotationsByLine.get(i) ?? [];
-              return (
-                <div key={i} className="lyric-line" style={{ borderBottom: "1px solid var(--genius-border)", padding: "10px 0" }}>
-                  <div>
-                    <div className="lyric-line-ko" style={{ fontWeight: 500 }}>
-                      {line || "\u00a0"}
-                    </div>
-                    {roLines[i] && <div className="lyric-romanized">{roLines[i]}</div>}
-                    {lineAnnotations.length > 0 && (
-                      <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
-                        {lineAnnotations.map((ann) => (
-                          <div key={ann.id} style={{ background: "rgba(255,255,100,0.2)", borderLeft: "3px solid var(--genius-yellow)", padding: "8px 12px", borderRadius: "0 4px 4px 0", fontSize: "0.8rem" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                              {(song.coverArt || song.album?.coverArt) && (
-                                <img src={song.coverArt || song.album?.coverArt || ""} alt="" style={{ width: 24, height: 24, borderRadius: 3, objectFit: "cover", flexShrink: 0, opacity: 0.7 }} />
-                              )}
-                            </div>
-                            <div style={{ fontWeight: 700, color: "#000", marginBottom: 2 }}>
-                              {ann.term ? (
-                                <Link href={`/define/${ann.term.slug}`} style={{ color: "#000", textDecoration: "underline", textDecorationColor: "var(--genius-yellow)" }}>
-                                  &ldquo;{ann.word}&rdquo;
-                                </Link>
-                              ) : (
-                                <>&ldquo;{ann.word}&rdquo;</>
-                              )}
-                            </div>
-                            <div style={{ color: "#555", lineHeight: 1.6 }}>{ann.note}</div>
-                            {ann.term?.definitions[0] && (
-                              <div style={{ marginTop: 4, fontSize: "0.75rem", color: "var(--genius-gray)" }}>
-                                See: <Link href={`/define/${ann.term.slug}`} style={{ color: "var(--genius-gray)" }}>{ann.term.term}</Link>
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <div className="lyric-line-en" style={{ color: "#444" }}>{enLines[i] || "\u00a0"}</div>
-                </div>
-              );
-            })}
+            <LyricsSection
+              koLines={koLines}
+              enLines={enLines}
+              roLines={roLines}
+              annotationsByLine={annotationsByLine}
+              songId={song.id}
+              songTitle={song.title}
+              songSlug={song.slug}
+              isLoggedIn={isLoggedIn}
+              canAnnotate={userCanAnnotate}
+              currentUserId={session?.user.id}
+            />
           </section>
 
           {/* Sidebar */}
@@ -374,6 +366,11 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
           isLoggedIn={isLoggedIn}
           currentUserName={session?.user.displayName ?? session?.user.email.split("@")[0]}
         />
+
+        {/* Audit log — visible to moderators/admins/owner only */}
+        {userCanSeeAudit && (
+          <AuditLogPanel entityType="song" entityId={song.id} currentUser={session!.user} />
+        )}
       </div>
     </main>
   );

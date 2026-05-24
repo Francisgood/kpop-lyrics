@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [trendingSongs, groups, latestNews] = await Promise.all([
+  const [trendingSongs, groups, latestNews, soloistRows] = await Promise.all([
     prisma.song.findMany({
       orderBy: { viewCount: "desc" },
       take: 8,
@@ -34,7 +34,21 @@ export default async function HomePage() {
       take: 5,
       include: { artist: true },
     }),
+    // Featured soloists — SOLOIST type artists plus Doja Cat (COLLAB type) with images
+    prisma.artist.findMany({
+      where: {
+        imageUrl: { not: null },
+        OR: [
+          { type: "SOLOIST" },
+          { slug: "doja-cat" },
+        ],
+      },
+      take: 6,
+      orderBy: { stageName: "asc" },
+    }),
   ]);
+
+  const soloists = soloistRows.filter(a => a.imageUrl);
 
   // Top 3 by viewCount get a 🔥 Trending badge
   const trendingIds = new Set(trendingSongs.slice(0, 3).map(s => s.id));
@@ -159,10 +173,10 @@ export default async function HomePage() {
         </section>
 
         <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 48 }}>
-          {/* Featured Groups */}
+          {/* Featured Groups + Soloists */}
           <section>
             <div className="section-header">Featured Groups</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 16 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 16, marginBottom: soloists.length > 0 ? 40 : 0 }}>
               {groups.map((group) => (
                 <Link key={group.id} href={`/artists/${group.slug}`} style={{ textDecoration: "none" }}>
                   <div className="member-card" style={{ aspectRatio: "1", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, overflow: "hidden", position: "relative" }}>
@@ -177,6 +191,22 @@ export default async function HomePage() {
                 </Link>
               ))}
             </div>
+
+            {soloists.length > 0 && (
+              <>
+                <div className="section-header">Featured Soloists</div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 16 }}>
+                  {soloists.map((artist) => (
+                    <Link key={artist.id} href={`/artists/${artist.slug}`} style={{ textDecoration: "none" }}>
+                      <div className="member-card" style={{ aspectRatio: "1", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, overflow: "hidden", position: "relative" }}>
+                        <img src={artist.imageUrl!} alt={artist.stageName} style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "3px solid #fff", boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }} />
+                        <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "#000" }}>{artist.stageName}</div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </>
+            )}
           </section>
 
           {/* Labels Sidebar */}

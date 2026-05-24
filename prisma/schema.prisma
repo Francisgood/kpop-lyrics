@@ -127,18 +127,50 @@ model SongCredit {
 }
 
 model LyricAnnotation {
-  id        String     @id @default(cuid())
+  id        String              @id @default(cuid())
   songId    String
-  song      Song       @relation(fields: [songId], references: [id])
+  song      Song                @relation(fields: [songId], references: [id])
   termId    String?
-  term      CodedTerm? @relation(fields: [termId], references: [id])
+  term      CodedTerm?          @relation(fields: [termId], references: [id])
+  userId    String?
+  user      User?               @relation(fields: [userId], references: [id])
   lineIndex Int
   word      String
   note      String
-  createdAt DateTime   @default(now())
+  createdAt DateTime            @default(now())
+  votes     AnnotationVote[]
+  comments  AnnotationComment[]
 
   @@index([songId])
   @@index([termId])
+  @@index([userId])
+}
+
+model AnnotationVote {
+  id           String          @id @default(cuid())
+  annotationId String
+  annotation   LyricAnnotation @relation(fields: [annotationId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User            @relation(fields: [userId], references: [id])
+  value        Int             // 1 = upvote, -1 = downvote
+  createdAt    DateTime        @default(now())
+
+  @@unique([annotationId, userId])
+  @@index([annotationId])
+  @@index([userId])
+}
+
+model AnnotationComment {
+  id           String          @id @default(cuid())
+  annotationId String
+  annotation   LyricAnnotation @relation(fields: [annotationId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User            @relation(fields: [userId], references: [id])
+  body         String
+  createdAt    DateTime        @default(now())
+
+  @@index([annotationId])
+  @@index([userId])
 }
 
 model CodedTerm {
@@ -174,11 +206,18 @@ model User {
   bio            String?
   passwordHash   String
   emailVerified  Boolean         @default(false)
+  role           String          @default("user") // "user" | "editor" | "moderator" | "admin"
+  is_owner       Boolean         @default(false)
   createdAt      DateTime        @default(now())
   sessions       Session[]
   favorites      Favorite[]
-  suggestedEdits SuggestedEdit[]
-  comments       Comment[]
+  suggestedEdits SuggestedEdit[] @relation("EditorEdits")
+  reviewedEdits  SuggestedEdit[] @relation("ReviewedEdits")
+  comments           Comment[]
+  auditLogs          AuditLog[]
+  lyricAnnotations   LyricAnnotation[]
+  annotationVotes    AnnotationVote[]
+  annotationComments AnnotationComment[]
 }
 
 model Session {
@@ -206,20 +245,41 @@ model Favorite {
 }
 
 model SuggestedEdit {
-  id           String   @id @default(cuid())
-  userId       String
-  user         User     @relation(fields: [userId], references: [id])
-  entityType   String   // "song" | "artist" | "album" | "term" | "annotation"
-  entityId     String
-  field        String   // which field is being edited
-  currentVal   String?
-  suggestedVal String
-  reason       String?
-  status       String   @default("pending") // "pending" | "approved" | "rejected"
-  createdAt    DateTime @default(now())
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation("EditorEdits", fields: [userId], references: [id])
+  entityType     String    // "song" | "artist" | "album" | "term" | "annotation"
+  entityId       String
+  field          String    // which field is being edited
+  currentVal     String?
+  suggestedVal   String
+  reason         String?
+  status         String    @default("pending") // "pending" | "approved" | "rejected" | "reverted"
+  reviewedById   String?
+  reviewedBy     User?     @relation("ReviewedEdits", fields: [reviewedById], references: [id])
+  reviewedAt     DateTime?
+  createdAt      DateTime  @default(now())
 
   @@index([userId])
   @@index([status])
+  @@index([entityType, entityId])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  action     String   // "approve" | "reject" | "revert" | "direct_edit"
+  entityType String
+  entityId   String
+  editId     String?
+  detail     String?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([editId])
+  @@index([createdAt])
 }
 
 model Comment {
