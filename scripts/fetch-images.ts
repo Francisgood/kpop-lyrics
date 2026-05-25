@@ -19,7 +19,7 @@ export const ARTIST_WIKI: Record<string, string> = {
   "twice":            "Twice (group)",
   "aespa":            "Aespa",
   "newjeans":         "NewJeans",
-  "seventeen":        "Seventeen (band)",
+  "seventeen":        "Seventeen (South Korean band)",
   "kiiikiii":         "Kiiikiii",
   "ive":              "IVE (group)",
   "itzy":             "Itzy",
@@ -60,6 +60,9 @@ export const ARTIST_WIKI: Record<string, string> = {
   "future":              "Future (rapper)",
   "megan-thee-stallion": "Megan Thee Stallion",
   "tyla":                "Tyla (singer)",
+  // ── COLLAB producers with Wikipedia pages ────────────────────────────────────
+  "pharrell":            "Pharrell Williams",
+  "diplo":               "Diplo",
   // ── BTS solos ────────────────────────────────────────────────────────────────
   "rm-bts":        "RM (rapper)",
   "jin-bts":       "Jin (singer)",
@@ -91,7 +94,7 @@ export const ARTIST_WIKI: Record<string, string> = {
   "tzuyu-twice":     "Chou Tzu-yu",
   "dahyun-twice":    "Kim Da-hyun",
   // aespa
-  "karina-aespa":  "Karina (singer)",
+  "karina-aespa":  "Karina (South Korean singer)",
   "winter-aespa":  "Winter (singer)",
   "giselle-aespa": "Giselle (singer)",
   // NewJeans
@@ -103,7 +106,7 @@ export const ARTIST_WIKI: Record<string, string> = {
   "seulgi-rv": "Seulgi",
   "wendy-rv":  "Wendy (singer)",
   "joy-rv":    "Joy (singer)",
-  "yeri-rv":   "Yeri",
+  "yeri-rv":   "Yeri (singer)",
   // IVE
   "wonyoung-ive": "Jang Won-young",
   "yujin-ive":    "An Yu-jin",
@@ -121,7 +124,7 @@ export const ARTIST_WIKI: Record<string, string> = {
   "moonbyul-mamamoo": "Moonbyul",
   "wheein-mamamoo":   "Wheein",
   // (G)I-DLE
-  "soyeon-gidle": "Soyeon (rapper)",
+  "soyeon-gidle": "Jeon Soyeon",
   "miyeon-gidle": "Miyeon",
   "minnie-gidle": "Minnie (singer)",
 };
@@ -206,6 +209,10 @@ export const ALBUM_ITUNES: Record<string, string> = {
   "seventeen-face-the-sun":  "SEVENTEEN Face the Sun",
   // ITZY
   "itzy-checkmate":          "ITZY CHECKMATE",
+  // Doja Cat
+  "doja-cat-hot-pink":       "Doja Cat Hot Pink",
+  // Lady Gaga
+  "lady-gaga-chromatica":    "Lady Gaga Chromatica",
   // Girls' Generation
   "snsd-the-boys":           "Girls Generation The Boys",
   // SHINee
