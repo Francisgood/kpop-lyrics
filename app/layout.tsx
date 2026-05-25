@@ -1,20 +1,27 @@
-// Build: 2026-05-21
+// Build: 2026-05-25
 import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
 import FooterNewsletter from "@/components/FooterNewsletter";
+import HamburgerMenu from "@/components/HamburgerMenu";
+import { getSession } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Aegyo Arena — K-pop Lyrics & Fan Wiki",
   description: "K-pop lyrics, translations, and fan annotations",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await getSession();
+  const isLoggedIn  = !!session;
+  const displayName = session?.user.displayName ?? session?.user.email.split("@")[0];
+  const userId      = session?.user.id;
+
   return (
     <html lang="en">
       <body>
         <nav className="genius-nav" style={{ position: "sticky", top: 0, zIndex: 100 }}>
-          {/* Primary row: logo + search + explore */}
+          {/* Primary row: logo + search + hamburger */}
           <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px", display: "flex", alignItems: "center", gap: 16, height: 52 }}>
             <Link href="/" style={{ fontWeight: 700, fontSize: "1.25rem", letterSpacing: "0.04em", color: "var(--genius-yellow)", textDecoration: "none", fontFamily: "monospace", whiteSpace: "nowrap", flexShrink: 0 }}>
               Aegyo Arena
@@ -29,12 +36,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               />
             </form>
 
-            <Link href="/dashboard" style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--genius-yellow)", textDecoration: "none", flexShrink: 0, whiteSpace: "nowrap", letterSpacing: "0.06em" }}>
-              REWARDS
-            </Link>
-            <Link href="/search" style={{ fontSize: "0.78rem", fontWeight: 700, color: "rgba(255,255,255,0.5)", textDecoration: "none", flexShrink: 0, whiteSpace: "nowrap", letterSpacing: "0.06em", marginLeft: "auto" }}>
-              EXPLORE
-            </Link>
+            <div style={{ marginLeft: "auto", flexShrink: 0 }}>
+              <HamburgerMenu
+                isLoggedIn={isLoggedIn}
+                displayName={displayName}
+                userId={userId}
+              />
+            </div>
           </div>
         </nav>
         {children}
