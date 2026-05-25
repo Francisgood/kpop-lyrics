@@ -214,11 +214,25 @@ body {
   gap: 48px;
 }
 
+/* News page: fixed 340px sidebar on desktop, stacks on mobile */
+.news-content-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 48px;
+  align-items: start;
+}
+
 @media (max-width: 900px) {
   .responsive-sidebar-grid,
-  .song-content-grid {
+  .song-content-grid,
+  .news-content-grid {
     grid-template-columns: 1fr;
     gap: 32px;
+  }
+
+  /* Remove sticky sidebar on mobile */
+  .news-content-grid aside {
+    position: static !important;
   }
 }
 
