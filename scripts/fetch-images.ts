@@ -63,6 +63,9 @@ export const ARTIST_WIKI: Record<string, string> = {
   // ── COLLAB producers with Wikipedia pages ────────────────────────────────────
   "pharrell":            "Pharrell Williams",
   "diplo":               "Diplo",
+  "ryan-tedder":         "Ryan Tedder",
+  "nile-rodgers":        "Nile Rodgers",
+  "slushii":             "Slushii",
   // ── BTS solos ────────────────────────────────────────────────────────────────
   "rm-bts":        "RM (rapper)",
   "jin-bts":       "Jin (singer)",
@@ -111,10 +114,15 @@ export const ARTIST_WIKI: Record<string, string> = {
   "wonyoung-ive": "Jang Won-young",
   "yujin-ive":    "An Yu-jin",
   // SEVENTEEN
-  "s-coups-svt":   "S.Coups",
-  "woozi-svt":     "Woozi",
-  "hoshi-svt":     "Hoshi (singer)",
-  "mingyu-svt":    "Mingyu (singer)",
+  "s-coups-svt":    "S.Coups",
+  "woozi-svt":      "Woozi",
+  "hoshi-svt":      "Hoshi (singer)",
+  "mingyu-svt":     "Mingyu (singer)",
+  "jeonghan-svt":   "Yoon Jeong-han",
+  "joshua-svt":     "Joshua Hong",
+  "wonwoo-svt":     "Jeon Won-woo",
+  "dokyeom-svt":    "Lee Seok-min",
+  "seungkwan-svt":  "Boo Seung-kwan",
   // LE SSERAFIM
   "sakura-lsf":  "Miyawaki Sakura",
   "chaewon-lsf": "Kim Chae-won",
