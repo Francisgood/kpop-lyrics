@@ -199,25 +199,48 @@ model TermDefinition {
 // ── Auth & Community ──────────────────────────────────────────────────────────
 
 model User {
-  id             String          @id @default(cuid())
-  email          String          @unique
-  displayName    String?
-  avatarUrl      String?
-  bio            String?
-  passwordHash   String
-  emailVerified  Boolean         @default(false)
-  role           String          @default("user") // "user" | "editor" | "moderator" | "admin"
-  is_owner       Boolean         @default(false)
-  createdAt      DateTime        @default(now())
-  sessions       Session[]
-  favorites      Favorite[]
-  suggestedEdits SuggestedEdit[] @relation("EditorEdits")
-  reviewedEdits  SuggestedEdit[] @relation("ReviewedEdits")
-  comments           Comment[]
-  auditLogs          AuditLog[]
-  lyricAnnotations   LyricAnnotation[]
-  annotationVotes    AnnotationVote[]
-  annotationComments AnnotationComment[]
+  id              String          @id @default(cuid())
+  email           String          @unique
+  displayName     String?
+  avatarUrl       String?
+  bio             String?
+  passwordHash    String
+  emailVerified   Boolean         @default(false)
+  role            String          @default("user") // "user" | "editor" | "moderator" | "admin"
+  is_owner        Boolean         @default(false)
+  // Daebak Rewards progressive profile
+  rewardsEnrolled Boolean         @default(false)
+  phone           String?
+  zipCode         String?
+  mailingAddress  String?
+  webPushEnabled  Boolean         @default(false)
+  createdAt       DateTime        @default(now())
+  sessions        Session[]
+  favorites       Favorite[]
+  suggestedEdits  SuggestedEdit[] @relation("EditorEdits")
+  reviewedEdits   SuggestedEdit[] @relation("ReviewedEdits")
+  comments            Comment[]
+  auditLogs           AuditLog[]
+  lyricAnnotations    LyricAnnotation[]
+  annotationVotes     AnnotationVote[]
+  annotationComments  AnnotationComment[]
+  pointEvents         PointEvent[]
+}
+
+model PointEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  // "signup_bonus" | "comment" | "annotation" | "edit_approved" | "annotation_upvoted"
+  type      String
+  points    Int
+  reason    String
+  refId     String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([userId, type])
 }
 
 model Session {

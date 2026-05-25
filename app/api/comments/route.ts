@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { awardPoints } from "@/lib/points";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -35,5 +36,7 @@ export async function POST(req: NextRequest) {
     data: { userId: session.userId, entityType, entityId, body: body.trim() },
     include: { user: { select: { displayName: true, avatarUrl: true, id: true } } },
   });
+  // Award points (fire-and-forget — don't block the response)
+  awardPoints(session.userId, "comment", `Commented on ${entityType}`, comment.id).catch(() => null);
   return NextResponse.json({ comment });
 }

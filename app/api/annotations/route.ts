@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { awardPoints } from "@/lib/points";
 
 export async function POST(req: NextRequest) {
   const session = await getSession();
@@ -29,5 +30,6 @@ export async function POST(req: NextRequest) {
       userId: session.userId,
     },
   });
+  awardPoints(session.userId, "annotation", `Annotated "${word.trim()}"`, annotation.id).catch(() => null);
   return NextResponse.json({ annotation });
 }

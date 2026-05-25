@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { canReview } from "@/lib/permissions";
 import { applyFieldEdit } from "@/lib/applyEdit";
+import { awardPoints } from "@/lib/points";
 
 // PATCH /api/edits/review?id=xxx  body: { action: "approve" | "reject" | "revert" }
 export async function PATCH(req: NextRequest) {
@@ -63,6 +64,11 @@ export async function PATCH(req: NextRequest) {
       },
     });
   });
+
+  // Award points to the original submitter on approval
+  if (action === "approve") {
+    awardPoints(edit.userId, "edit_approved", `Edit approved: ${edit.field} on ${edit.entityType}`, editId).catch(() => null);
+  }
 
   return NextResponse.json({ ok: true });
 }

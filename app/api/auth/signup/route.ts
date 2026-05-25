@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, generateToken } from "@/lib/auth";
+import { awardPoints } from "@/lib/points";
 
 export async function POST(req: NextRequest) {
   const { email, password, displayName } = await req.json().catch(() => ({})) as {
@@ -35,6 +36,9 @@ export async function POST(req: NextRequest) {
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
     },
   });
+
+  // Award signup bonus (fire-and-forget)
+  awardPoints(user.id, "signup_bonus", "Welcome to Aegyo Arena!").catch(() => null);
 
   const res = NextResponse.json({ ok: true, user: { id: user.id, email: user.email, displayName: user.displayName } });
   res.cookies.set("session", token, {

@@ -29,6 +29,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               />
             </form>
 
+            <Link href="/dashboard" style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--genius-yellow)", textDecoration: "none", flexShrink: 0, whiteSpace: "nowrap", letterSpacing: "0.06em" }}>
+              REWARDS
+            </Link>
             <Link href="/search" style={{ fontSize: "0.78rem", fontWeight: 700, color: "rgba(255,255,255,0.5)", textDecoration: "none", flexShrink: 0, whiteSpace: "nowrap", letterSpacing: "0.06em", marginLeft: "auto" }}>
               EXPLORE
             </Link>
@@ -61,6 +64,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <div style={{ fontWeight: 700, fontSize: "0.72rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 12 }}>Labels</div>
               {[["HYBE", "/labels/hybe-entertainment"], ["SM Entertainment", "/labels/sm-entertainment"], ["YG Entertainment", "/labels/yg-entertainment"], ["JYP Entertainment", "/labels/jyp-entertainment"]].map(([label, href]) => (
                 <Link key={href} href={href} style={{ display: "block", fontSize: "0.82rem", color: "rgba(255,255,255,0.5)", textDecoration: "none", marginBottom: 8, lineHeight: 1 }}>
+                  {label}
+                </Link>
+              ))}
+            </div>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: "0.72rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 12 }}>Community</div>
+              {[["Daebak Rewards", "/dashboard"], ["Contribute", "/signup"], ["Leaderboard", "/dashboard"]].map(([label, href]) => (
+                <Link key={label} href={href} style={{ display: "block", fontSize: "0.82rem", color: "rgba(255,255,255,0.5)", textDecoration: "none", marginBottom: 8, lineHeight: 1 }}>
                   {label}
                 </Link>
               ))}
