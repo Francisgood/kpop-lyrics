@@ -191,7 +191,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
       <ViewTracker songId={song.id} />
 
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 24px" }}>
-        <div className="responsive-sidebar-grid" style={{ gridTemplateColumns: "1fr 300px" }}>
+        <div className="song-content-grid">
           {/* Lyrics */}
 
           <section>
