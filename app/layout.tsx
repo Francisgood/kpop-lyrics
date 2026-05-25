@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               />
             </form>
 
-            <Link href="/search" style={{ fontSize: "0.78rem", fontWeight: 700, color: "rgba(255,255,255,0.5)", textDecoration: "none", flexShrink: 0, whiteSpace: "nowrap", letterSpacing: "0.06em" }}>
+            <Link href="/search" style={{ fontSize: "0.78rem", fontWeight: 700, color: "rgba(255,255,255,0.5)", textDecoration: "none", flexShrink: 0, whiteSpace: "nowrap", letterSpacing: "0.06em", marginLeft: "auto" }}>
               EXPLORE
             </Link>
           </div>

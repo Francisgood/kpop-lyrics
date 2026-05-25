@@ -173,6 +173,31 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
               </section>
             )}
 
+            {/* Quick Stats + Collab button — mobile only, sits above discography */}
+            <div className="mobile-only" style={{ marginBottom: 32 }}>
+              <div className="genius-card" style={{ padding: 20 }}>
+                <div className="section-header" style={{ margin: "0 0 14px" }}>Quick Stats</div>
+                {[
+                  { label: "Debut Year", value: artist.debutYear ?? "—" },
+                  { label: "Label", value: artist.label?.name ?? "Independent" },
+                  { label: "Albums", value: artist.albums.length },
+                  { label: "Songs", value: totalSongs },
+                  ...(uniqueCreditedSongs.length > 0 ? [{ label: "Credits", value: uniqueCreditedSongs.length }] : []),
+                  { label: "News Items", value: artist.news.length },
+                ].map(({ label, value }) => (
+                  <div key={label} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid var(--genius-border)", fontSize: "0.83rem" }}>
+                    <span style={{ color: "var(--genius-gray)" }}>{label}</span>
+                    <span style={{ fontWeight: 700, color: "#000" }}>{value}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ marginTop: 16 }}>
+                <Link href="/collabs" style={{ display: "block" }}>
+                  <span className="btn-yellow" style={{ display: "block", textAlign: "center" }}>VIEW COLLAB NETWORK</span>
+                </Link>
+              </div>
+            </div>
+
             {/* Full Discography with every song */}
             <section style={{ marginBottom: 48 }}>
               <div className="section-header">Discography</div>
@@ -339,8 +364,8 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
               </div>
             )}
 
-            {/* Quick stats */}
-            <div className="genius-card" style={{ padding: 20 }}>
+            {/* Quick stats — desktop only; mobile version sits above discography */}
+            <div className="desktop-only genius-card" style={{ padding: 20 }}>
               <div className="section-header" style={{ margin: "0 0 14px" }}>Quick Stats</div>
               {[
                 { label: "Debut Year", value: artist.debutYear ?? "—" },
@@ -357,7 +382,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
               ))}
             </div>
 
-            <div style={{ marginTop: 16 }}>
+            <div className="desktop-only" style={{ marginTop: 16 }}>
               <Link href="/collabs" style={{ display: "block" }}>
                 <span className="btn-yellow" style={{ display: "block", textAlign: "center" }}>VIEW COLLAB NETWORK</span>
               </Link>

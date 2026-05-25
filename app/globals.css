@@ -217,6 +217,19 @@ body {
 /* Force network canvas to stay within screen */
 canvas { max-width: 100% !important; }
 
+/* ── Visibility helpers (breakpoint matches responsive-sidebar-grid) ──────── */
+.mobile-only { display: none !important; }
+.desktop-only { display: block !important; }
+
+@media (max-width: 900px) {
+  .mobile-only { display: block !important; }
+  .desktop-only { display: none !important; }
+}
+
+/* On desktop the search form (flex:1) fills the space, so marginLeft:auto on
+   EXPLORE is a no-op. On mobile the form is hidden, so auto pushes EXPLORE
+   to the far right. No extra rule needed — handled by the inline style. */
+
 /* Collabs network: limit height on mobile */
 @media (max-width: 768px) {
   canvas { height: 300px !important; }

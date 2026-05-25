@@ -64,8 +64,8 @@ export default async function HomePage() {
           <h1 style={{ fontSize: "clamp(2.5rem, 6vw, 4rem)", fontWeight: 800, lineHeight: 1.1, margin: "0 0 20px" }}>
             Every lyric.<br />Every meaning.
           </h1>
-          <p style={{ fontSize: "1.15rem", color: "rgba(255,255,255,0.7)", maxWidth: 520, marginBottom: 32 }}>
-            Korean lyrics with romanization and English translation. Fan-edited annotations, K-pop slang, and artist deep-dives.
+          <p style={{ fontSize: "1.15rem", color: "rgba(255,255,255,0.7)", maxWidth: 580, marginBottom: 32 }}>
+            Aegyo Arena is the fan-powered home for everything K-pop: the artists, the groups, the songs, and the stories behind them — documented and celebrated by the community that knows them best.
           </p>
           <form action="/search" style={{ display: "flex", gap: 8, maxWidth: 480 }}>
             <input name="q" type="search" placeholder="Search for a song or artist..." className="search-input" style={{ flex: 1 }} />
