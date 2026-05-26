@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useRef } from "react";
 import AnnotationPanel from "./AnnotationPanel";
 import AnnotationSignUpModal from "./AnnotationSignUpModal";
 
@@ -26,11 +26,6 @@ interface Props {
   currentUserId?:     string;
 }
 
-interface SelectionTooltip {
-  x:         number;  // viewport-relative (fixed positioning)
-  y:         number;
-  lineIndex: number;
-}
 
 export default function LyricsSection({
   koLines,
@@ -56,64 +51,9 @@ export default function LyricsSection({
   // ── hover state (logged-in annotate-on-hover) ───────────────────────────
   const [hoveredLine, setHoveredLine] = useState<number | null>(null);
 
-  // ── text-selection tooltip (not logged-in) ──────────────────────────────
-  const [selTooltip,     setSelTooltip]     = useState<SelectionTooltip | null>(null);
+  // ── sign-up modal ───────────────────────────────────────────────────────
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const lyricsRef = useRef<HTMLDivElement>(null);
-
-  // Listen for text selection events — only for non-logged-in users
-  useEffect(() => {
-    if (isLoggedIn) return;
-
-    function handleMouseUp(e: MouseEvent) {
-      // Small delay so the selection is finalized
-      setTimeout(() => {
-        const sel = window.getSelection();
-        if (!sel || sel.isCollapsed || !sel.toString().trim()) {
-          setSelTooltip(null);
-          return;
-        }
-
-        // Only trigger inside the lyrics container
-        if (!lyricsRef.current) return;
-        const range    = sel.getRangeAt(0);
-        const node     = range.commonAncestorContainer as Node;
-        if (!lyricsRef.current.contains(node)) {
-          setSelTooltip(null);
-          return;
-        }
-
-        // Find which lyric row was selected via data-lineindex attribute
-        const el  = node.nodeType === Node.TEXT_NODE ? node.parentElement : node as Element;
-        const row = el?.closest?.("[data-lineindex]") as HTMLElement | null;
-        const li  = row ? parseInt(row.dataset.lineindex ?? "-1", 10) : -1;
-
-        const rect = range.getBoundingClientRect();
-        if (rect.width === 0) { setSelTooltip(null); return; }
-
-        setSelTooltip({
-          x:         rect.left + rect.width / 2,
-          y:         rect.bottom + 10,
-          lineIndex: li,
-        });
-      }, 10);
-    }
-
-    function handleMouseDown(e: MouseEvent) {
-      // Clear tooltip when clicking elsewhere (unless clicking the tooltip itself)
-      const target = e.target as HTMLElement;
-      if (!target.closest?.("[data-annotate-tooltip]")) {
-        setSelTooltip(null);
-      }
-    }
-
-    document.addEventListener("mouseup",   handleMouseUp);
-    document.addEventListener("mousedown", handleMouseDown);
-    return () => {
-      document.removeEventListener("mouseup",   handleMouseUp);
-      document.removeEventListener("mousedown", handleMouseDown);
-    };
-  }, [isLoggedIn]);
 
   // ── panel helpers ───────────────────────────────────────────────────────
   const openLine = useCallback((i: number) => {
@@ -182,11 +122,11 @@ export default function LyricsSection({
               onMouseEnter={() => setHoveredLine(i)}
               onMouseLeave={() => setHoveredLine(null)}
             >
-              {/* Hover "Annotate" button for logged-in users (any line) */}
-              {isLoggedIn && isHovered && !panelOpen && (
+              {/* Hover "Annotate" button — visible to all; non-logged-in get sign-up modal */}
+              {isHovered && !panelOpen && (
                 <button
                   onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => openLine(i)}
+                  onClick={() => isLoggedIn ? openLine(i) : setShowSignUpModal(true)}
                   style={{
                     position:   "absolute",
                     right:      0,
@@ -214,18 +154,18 @@ export default function LyricsSection({
               <div
                 className="lyric-line"
                 style={{
-                  cursor:     hasAnns || (isLoggedIn && isHovered) ? "pointer" : "text",
+                  cursor:     isHovered || hasAnns ? "pointer" : "default",
                   background: isActive
                     ? "#000"
                     : hasAnns
                     ? "rgba(0,0,0,0.055)"
-                    : isHovered && isLoggedIn
+                    : isHovered
                     ? "rgba(255,255,100,0.12)"
                     : "transparent",
                   borderRadius: 4,
                   transition:  "background 0.15s",
                   padding:     "10px 8px",
-                  userSelect:  isLoggedIn ? "none" : "text",
+                  userSelect:  "none",
                 }}
                 onClick={() => hasAnns && openLine(i)}
                 title={hasAnns
@@ -279,53 +219,6 @@ export default function LyricsSection({
           );
         })}
       </div>
-
-      {/* ── Selection tooltip (non-logged-in) ─────────────────────────────── */}
-      {selTooltip && (
-        <div
-          data-annotate-tooltip="true"
-          style={{
-            position:     "fixed",
-            left:         selTooltip.x,
-            top:          selTooltip.y,
-            transform:    "translateX(-50%)",
-            zIndex:       300,
-            pointerEvents: "auto",
-          }}
-        >
-          {/* Arrow pointing up */}
-          <div style={{
-            width:       0,
-            height:      0,
-            borderLeft:  "7px solid transparent",
-            borderRight: "7px solid transparent",
-            borderBottom: "7px solid #000",
-            margin:      "0 auto",
-          }} />
-          <button
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => {
-              setSelTooltip(null);
-              setShowSignUpModal(true);
-            }}
-            style={{
-              background:   "#000",
-              color:        "#fff",
-              border:       "none",
-              borderRadius: 6,
-              padding:      "8px 16px",
-              fontSize:     "0.82rem",
-              fontWeight:   700,
-              cursor:       "pointer",
-              whiteSpace:   "nowrap",
-              letterSpacing: "0.02em",
-              boxShadow:    "0 4px 16px rgba(0,0,0,0.35)",
-            }}
-          >
-            Sign Up to Start Annotating
-          </button>
-        </div>
-      )}
 
       {/* ── Sign-up modal ─────────────────────────────────────────────────── */}
       {showSignUpModal && (
