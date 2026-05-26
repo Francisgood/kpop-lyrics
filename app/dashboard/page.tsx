@@ -250,11 +250,13 @@ export default async function DashboardPage() {
                 )}
               </div>
 
-              {/* Step 4: Mailing address (teaser — coming soon) */}
-              <div className="genius-card" style={{ padding: 20, opacity: 0.4 }}>
-                <StepHeader n={4} done={false} label="Mailing address" />
-                <div style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginTop: 8 }}>
-                  Unlocks after step 3 · Required for physical prize redemption
+              {/* Points legal disclaimer */}
+              <div style={{ marginTop: 16, padding: "12px 14px", background: "#f8f8f8", border: "1px solid var(--genius-border)", borderRadius: 6 }}>
+                <div style={{ fontSize: "0.68rem", color: "var(--genius-gray)", lineHeight: 1.65 }}>
+                  Points are non-transferable to other accounts you have or to friends and family.
+                  Each point has a cash value of $0.0000001 USD.
+                  Offers across promotions cannot be combined.
+                  Points expire within 1 year of earning them through approved actions on Aegyo Arena.
                 </div>
               </div>
             </div>
@@ -362,10 +364,11 @@ function PrizeTiersSection({ points, teaser = false }: { points: number; teaser?
 // ── How to Earn ───────────────────────────────────────────────────────────────
 function HowToEarnSection() {
   const actions = [
-    { emoji: "🎤", label: "Post a comment",     pts: POINT_VALUES.comment,        desc: "Comment on any song, artist, or album" },
-    { emoji: "✍️", label: "Add an annotation",  pts: POINT_VALUES.annotation,     desc: "Explain a lyric line on any song page" },
-    { emoji: "✅", label: "Get an edit approved", pts: POINT_VALUES.edit_approved, desc: "Suggest an edit that gets approved by a moderator" },
-    { emoji: "⭐", label: "Sign up bonus",       pts: POINT_VALUES.signup_bonus,  desc: "One-time bonus when you create your account" },
+    { emoji: "🎤", label: "Post a comment",        pts: POINT_VALUES.comment,       desc: "Comment on any song, artist, or album" },
+    { emoji: "✍️", label: "Add an annotation",     pts: POINT_VALUES.annotation,    desc: "Explain a lyric line on any song page" },
+    { emoji: "✅", label: "Get an edit approved",  pts: POINT_VALUES.edit_approved, desc: "Suggest an edit that gets approved by a moderator" },
+    { emoji: "⭐", label: "Sign up bonus",          pts: POINT_VALUES.signup_bonus,  desc: "One-time bonus when you create your account" },
+    { emoji: "🔗", label: "Link a social profile", pts: 10,                         desc: "Earn 10 pts per verified social media profile on your Aegyo Arena profile — up to 3 channels (30 pts max)" },
   ];
 
   return (
