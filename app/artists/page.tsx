@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import ArtistsAlphaIndex from "@/components/ArtistsAlphaIndex";
 
 export const dynamic = "force-dynamic";
 
@@ -42,8 +43,24 @@ export default async function ArtistsPage() {
 
   const total = groups.length + soloists.length + collabs.length;
 
+  // ── A-Z index — compute which artist gets each letter anchor ────────────────
+  // We walk groups → soloists → collabs in order; first artist per letter wins.
+  const letterAnchorIds = new Set<string>(); // artist.id values that get an anchor
+  const lettersSeen     = new Set<string>();
+  for (const a of [...groups, ...soloists, ...collabs]) {
+    const ch = a.stageName[0]?.toUpperCase() ?? "";
+    if (/[A-Z]/.test(ch) && !lettersSeen.has(ch)) {
+      lettersSeen.add(ch);
+      letterAnchorIds.add(a.id);
+    }
+  }
+  const activeLetters = [...lettersSeen].sort();
+
   return (
     <main>
+      {/* Fixed A–Z sidebar */}
+      <ArtistsAlphaIndex activeLetters={activeLetters} />
+
       <section style={{ background: "#000", color: "#fff", padding: "60px 24px 40px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div style={{ fontSize: "0.7rem", color: "var(--genius-yellow)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>
@@ -70,37 +87,50 @@ export default async function ArtistsPage() {
         <section style={{ marginBottom: 56 }}>
           <div className="section-header">K-pop Groups</div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 }}>
-            {groups.map((group) => (
-              <Link key={group.id} href={`/artists/${group.slug}`} style={{ textDecoration: "none" }}>
-                <div className="genius-card" style={{ padding: 20 }}>
-                  <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-                    {group.imageUrl ? (
-                      <img src={group.imageUrl} alt={group.stageName} style={{ width: 56, height: 56, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} />
-                    ) : (
-                      <div style={{ width: 56, height: 56, borderRadius: 8, background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.6rem", flexShrink: 0 }}>
-                        🎤
-                      </div>
-                    )}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#000" }}>{group.stageName}</div>
-                      <div style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginTop: 3 }}>
-                        {group.label?.name} &middot; Debut {group.debutYear}
-                      </div>
-                      <div style={{ display: "flex", gap: 10, marginTop: 8, fontSize: "0.75rem", color: "var(--genius-gray)" }}>
-                        <span>{group.groupOf.length} members</span>
-                        <span>{group.albums.length} albums</span>
-                        <span>{totalSongs(group)} songs</span>
-                      </div>
-                    </div>
-                  </div>
-                  {group.albums[0] && (
-                    <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--genius-border)", fontSize: "0.78rem", color: "var(--genius-gray)" }}>
-                      Latest: <span style={{ color: "#000", fontWeight: 600 }}>{group.albums[0].title}</span> ({group.albums[0].releaseYear})
-                    </div>
+            {groups.map((group) => {
+              const letter = group.stageName[0]?.toUpperCase() ?? "";
+              const needsAnchor = letterAnchorIds.has(group.id);
+              return (
+                <div key={group.id} style={{ position: "relative" }}>
+                  {needsAnchor && (
+                    <span
+                      id={`az-${letter}`}
+                      aria-hidden="true"
+                      style={{ position: "absolute", top: -80, visibility: "hidden" }}
+                    />
                   )}
+                  <Link href={`/artists/${group.slug}`} style={{ textDecoration: "none" }}>
+                    <div className="genius-card" style={{ padding: 20 }}>
+                      <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+                        {group.imageUrl ? (
+                          <img src={group.imageUrl} alt={group.stageName} style={{ width: 56, height: 56, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} />
+                        ) : (
+                          <div style={{ width: 56, height: 56, borderRadius: 8, background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.6rem", flexShrink: 0 }}>
+                            🎤
+                          </div>
+                        )}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#000" }}>{group.stageName}</div>
+                          <div style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginTop: 3 }}>
+                            {group.label?.name} &middot; Debut {group.debutYear}
+                          </div>
+                          <div style={{ display: "flex", gap: 10, marginTop: 8, fontSize: "0.75rem", color: "var(--genius-gray)" }}>
+                            <span>{group.groupOf.length} members</span>
+                            <span>{group.albums.length} albums</span>
+                            <span>{totalSongs(group)} songs</span>
+                          </div>
+                        </div>
+                      </div>
+                      {group.albums[0] && (
+                        <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--genius-border)", fontSize: "0.78rem", color: "var(--genius-gray)" }}>
+                          Latest: <span style={{ color: "#000", fontWeight: 600 }}>{group.albums[0].title}</span> ({group.albums[0].releaseYear})
+                        </div>
+                      )}
+                    </div>
+                  </Link>
                 </div>
-              </Link>
-            ))}
+              );
+            })}
           </div>
         </section>
 
@@ -109,40 +139,53 @@ export default async function ArtistsPage() {
           <section style={{ marginBottom: 56 }}>
             <div className="section-header">Solo Artists</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 }}>
-              {soloists.map((artist) => (
-                <Link key={artist.id} href={`/artists/${artist.slug}`} style={{ textDecoration: "none" }}>
-                  <div className="genius-card" style={{ padding: 20 }}>
-                    <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-                      {artist.imageUrl ? (
-                        <img src={artist.imageUrl} alt={artist.stageName} style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
-                      ) : (
-                        <div style={{ width: 56, height: 56, borderRadius: "50%", background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.6rem", flexShrink: 0 }}>
-                          ⭐
+              {soloists.map((artist) => {
+                const letter = artist.stageName[0]?.toUpperCase() ?? "";
+                const needsAnchor = letterAnchorIds.has(artist.id);
+                return (
+                  <div key={artist.id} style={{ position: "relative" }}>
+                    {needsAnchor && (
+                      <span
+                        id={`az-${letter}`}
+                        aria-hidden="true"
+                        style={{ position: "absolute", top: -80, visibility: "hidden" }}
+                      />
+                    )}
+                    <Link href={`/artists/${artist.slug}`} style={{ textDecoration: "none" }}>
+                      <div className="genius-card" style={{ padding: 20 }}>
+                        <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+                          {artist.imageUrl ? (
+                            <img src={artist.imageUrl} alt={artist.stageName} style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
+                          ) : (
+                            <div style={{ width: 56, height: 56, borderRadius: "50%", background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.6rem", flexShrink: 0 }}>
+                              ⭐
+                            </div>
+                          )}
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#000" }}>{artist.stageName}</div>
+                            {artist.realName && (
+                              <div style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginTop: 2 }}>{artist.realName}</div>
+                            )}
+                            <div style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginTop: 3 }}>
+                              {artist.label?.name} &middot; Debut {artist.debutYear}
+                            </div>
+                            {artist.memberships.length > 0 && (
+                              <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginTop: 4 }}>
+                                Also in: {artist.memberships.map((m) => m.group.stageName).join(", ")}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      )}
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#000" }}>{artist.stageName}</div>
-                        {artist.realName && (
-                          <div style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginTop: 2 }}>{artist.realName}</div>
-                        )}
-                        <div style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginTop: 3 }}>
-                          {artist.label?.name} &middot; Debut {artist.debutYear}
-                        </div>
-                        {artist.memberships.length > 0 && (
-                          <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginTop: 4 }}>
-                            Also in: {artist.memberships.map((m) => m.group.stageName).join(", ")}
+                        {artist.albums[0] && (
+                          <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--genius-border)", fontSize: "0.78rem", color: "var(--genius-gray)" }}>
+                            Latest: <span style={{ color: "#000", fontWeight: 600 }}>{artist.albums[0].title}</span> ({artist.albums[0].releaseYear})
                           </div>
                         )}
                       </div>
-                    </div>
-                    {artist.albums[0] && (
-                      <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--genius-border)", fontSize: "0.78rem", color: "var(--genius-gray)" }}>
-                        Latest: <span style={{ color: "#000", fontWeight: 600 }}>{artist.albums[0].title}</span> ({artist.albums[0].releaseYear})
-                      </div>
-                    )}
+                    </Link>
                   </div>
-                </Link>
-              ))}
+                );
+              })}
             </div>
           </section>
         )}
@@ -161,44 +204,55 @@ export default async function ArtistsPage() {
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 }}>
               {collabs.map((artist) => {
+                const letter = artist.stageName[0]?.toUpperCase() ?? "";
+                const needsAnchor = letterAnchorIds.has(artist.id);
                 const kpopCollabs = artist.songs
                   .map((c) => c.song.album?.artist?.stageName)
                   .filter((v): v is string => Boolean(v))
                   .filter((v, i, a) => a.indexOf(v) === i)
                   .slice(0, 3);
                 return (
-                  <Link key={artist.id} href={`/artists/${artist.slug}`} style={{ textDecoration: "none" }}>
-                    <div className="genius-card" style={{ padding: 20, borderTop: "3px solid #e879f9" }}>
-                      <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-                        {artist.imageUrl ? (
-                          <img src={artist.imageUrl} alt={artist.stageName} style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid #e879f9" }} />
-                        ) : (
-                          <div style={{ width: 56, height: 56, borderRadius: "50%", background: "linear-gradient(135deg, #581c87, #1a1a2e)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.6rem", flexShrink: 0 }}>
-                            🌍
+                  <div key={artist.id} style={{ position: "relative" }}>
+                    {needsAnchor && (
+                      <span
+                        id={`az-${letter}`}
+                        aria-hidden="true"
+                        style={{ position: "absolute", top: -80, visibility: "hidden" }}
+                      />
+                    )}
+                    <Link href={`/artists/${artist.slug}`} style={{ textDecoration: "none" }}>
+                      <div className="genius-card" style={{ padding: 20, borderTop: "3px solid #e879f9" }}>
+                        <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+                          {artist.imageUrl ? (
+                            <img src={artist.imageUrl} alt={artist.stageName} style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid #e879f9" }} />
+                          ) : (
+                            <div style={{ width: 56, height: 56, borderRadius: "50%", background: "linear-gradient(135deg, #581c87, #1a1a2e)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.6rem", flexShrink: 0 }}>
+                              🌍
+                            </div>
+                          )}
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#000" }}>{artist.stageName}</div>
+                            {artist.realName && (
+                              <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginTop: 1 }}>{artist.realName}</div>
+                            )}
+                            <div style={{ fontSize: "0.75rem", color: "#e879f9", fontWeight: 700, marginTop: 4 }}>
+                              {totalSongs(artist)} crossover track{totalSongs(artist) !== 1 ? "s" : ""}
+                            </div>
+                          </div>
+                        </div>
+                        {kpopCollabs.length > 0 && (
+                          <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--genius-border)", fontSize: "0.75rem", color: "var(--genius-gray)" }}>
+                            Collaborated with: <span style={{ color: "#000", fontWeight: 600 }}>{kpopCollabs.join(", ")}</span>
                           </div>
                         )}
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#000" }}>{artist.stageName}</div>
-                          {artist.realName && (
-                            <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginTop: 1 }}>{artist.realName}</div>
-                          )}
-                          <div style={{ fontSize: "0.75rem", color: "#e879f9", fontWeight: 700, marginTop: 4 }}>
-                            {totalSongs(artist)} crossover track{totalSongs(artist) !== 1 ? "s" : ""}
+                        {artist.albums[0] && kpopCollabs.length === 0 && (
+                          <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--genius-border)", fontSize: "0.75rem", color: "var(--genius-gray)" }}>
+                            Latest: <span style={{ color: "#000", fontWeight: 600 }}>{artist.albums[0].title}</span>
                           </div>
-                        </div>
+                        )}
                       </div>
-                      {kpopCollabs.length > 0 && (
-                        <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--genius-border)", fontSize: "0.75rem", color: "var(--genius-gray)" }}>
-                          Collaborated with: <span style={{ color: "#000", fontWeight: 600 }}>{kpopCollabs.join(", ")}</span>
-                        </div>
-                      )}
-                      {artist.albums[0] && kpopCollabs.length === 0 && (
-                        <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--genius-border)", fontSize: "0.75rem", color: "var(--genius-gray)" }}>
-                          Latest: <span style={{ color: "#000", fontWeight: 600 }}>{artist.albums[0].title}</span>
-                        </div>
-                      )}
-                    </div>
-                  </Link>
+                    </Link>
+                  </div>
                 );
               })}
             </div>
