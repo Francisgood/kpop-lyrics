@@ -32,38 +32,8 @@ const MIN_TRACKS = 2;
 // Max masters to process per artist (keeps runtime sane on debut-heavy artists)
 const MAX_MASTERS_PER_ARTIST = 40;
 
-// ── Artist slug → Discogs artist ID ──────────────────────────────────────────
-// slug must match Artist.slug in the DB exactly.
+// New artists only — added 2025-05-26 from kpop-groups-2010-2025.xlsx cross-reference
 const DISCOGS_ARTIST_MAP: Record<string, number> = {
-  "bts":            5034422,
-  "blackpink":      5210284,
-  "twice":          4786543,
-  "aespa":          8724412,
-  "newjeans":       11594273,
-  "seventeen":      5071504,
-  "ive":            7122521,
-  "itzy":           7296238,
-  "stray-kids":     6838809,
-  "enhypen":        8303009,
-  "le-sserafim":    11171795,
-  "txt":            7164941,
-  "g-i-dle":        6605933,
-  "ateez":          7164694,
-  "red-velvet":     4390346,
-  "nct-127":        5181064,
-  "nct-dream":      6284600,
-  "mamamoo":        4722103,
-  "babymonster":    14457941,
-  "zerobaseone":    13233045,
-  "riize":          13421259,
-  "nmixx":          10946579,
-  "illit":          14486810,
-  "girls-generation": 1584084,
-  "exo":            4038105,
-  "shinee":         1882255,
-  "katseye":        14911211,
-
-  // Added 2025-05-26 — from kpop-groups-2010-2025.xlsx cross-reference
   "dreamcatcher":   5644676,
   "everglow":       8274255,
   "boynextdoor":    13051656,

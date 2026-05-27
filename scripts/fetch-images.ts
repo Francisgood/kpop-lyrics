@@ -8,6 +8,8 @@
  */
 
 import { PrismaClient } from "@prisma/client";
+import * as fs from "fs";
+import * as path from "path";
 const prisma = new PrismaClient();
 
 // ── Wikipedia title mapping ───────────────────────────────────────────────────
@@ -52,6 +54,35 @@ export const ARTIST_WIKI: Record<string, string> = {
   "miss-a":           "Miss A",
   "apink":            "Apink",
   "nmixx":            "Nmixx",
+  // ── Groups added 2025-05-26 ──────────────────────────────────────────────────
+  "dreamcatcher":   "Dreamcatcher (group)",
+  "everglow":       "Everglow (group)",
+  "boynextdoor":    "BOYNEXTDOOR",
+  "kiss-of-life":   "Kiss of Life (girl group)",
+  "tws":            "TWS (South Korean band)",
+  "nuest":          "Nu'est",
+  "gfriend":        "GFriend",
+  "lovelyz":        "Lovelyz",
+  "izone":          "IZ*ONE",
+  "wanna-one":      "Wanna One",
+  "fromis-9":       "Fromis 9",
+  "block-b":        "Block B (group)",
+  "exid":           "EXID",
+  "btob":           "BTOB",
+  "ladies-code":    "Ladies' Code",
+  "akmu":           "Akdong Musician",
+  "oh-my-girl":     "Oh My Girl",
+  "cravity":        "Cravity (group)",
+  "stayc":          "STAYC",
+  "bap":            "B.A.P (group)",
+  "pentagon":       "Pentagon (South Korean band)",
+  "the-boyz":       "The Boyz",
+  "treasure":       "Treasure (group)",
+  "plave":          "PLAVE",
+  "hearts2hearts":  "Hearts2Hearts",
+  // ── New collaborators ────────────────────────────────────────────────────────
+  "zico":           "Zico (rapper)",
+  "hyuna":          "HyunA",
   // ── Western / international acts ────────────────────────────────────────────
   "lisa":                "Lisa (rapper)",
   "rosalia":             "Rosalía",
@@ -136,6 +167,64 @@ export const ARTIST_WIKI: Record<string, string> = {
   "miyeon-gidle": "Miyeon",
   "minnie-gidle": "Minnie (singer)",
 };
+
+// ── Fandom K-pop Wiki ─────────────────────────────────────────────────────────
+// Fallback when Wikipedia has no image. Same MediaWiki API protocol as Wikipedia.
+// Full map is maintained in fetch-images-scrape.py (ARTIST_FANDOM dict).
+// Inline here only for artists confirmed missing from Wikipedia.
+export const ARTIST_FANDOM: Record<string, string> = {
+  // Groups with no Wikipedia pageimage
+  "boynextdoor":   "BOYNEXTDOOR",
+  "kiss-of-life":  "KISS OF LIFE",
+  "tws":           "TWS",
+  "block-b":       "Block B",
+  "cravity":       "CRAVITY",
+  "bap":           "B.A.P",
+  "the-boyz":      "THE BOYZ",
+  "plave":         "PLAVE",
+  // SEVENTEEN members with no Wikipedia pageimage
+  "mingyu-svt":    "Mingyu_(SEVENTEEN)",
+  "jeonghan-svt":  "Jeonghan",
+  "wonwoo-svt":    "Wonwoo_(SEVENTEEN)",
+  "dokyeom-svt":   "DK_(SEVENTEEN)",
+};
+
+// ── Scrapling cache (written by fetch-images-scrape.py) ───────────────────────
+// Maps slug → image URL for any artist/album that neither Wikipedia nor
+// the Fandom API resolved. Loaded once at startup.
+function loadScraplingCache(): Record<string, string> {
+  const cachePath = path.join(__dirname, "scrapling-images-cache.json");
+  try {
+    if (fs.existsSync(cachePath)) {
+      return JSON.parse(fs.readFileSync(cachePath, "utf8"));
+    }
+  } catch { /* cache missing or malformed — silently skip */ }
+  return {};
+}
+
+// ── Fandom API fetch ──────────────────────────────────────────────────────────
+export async function fetchFandomImage(title: string, size = 600): Promise<string | null> {
+  const url =
+    `https://kpop.fandom.com/api.php` +
+    `?action=query&titles=${encodeURIComponent(title)}` +
+    `&prop=pageimages&format=json&pithumbsize=${size}&redirects=1`;
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": "AegyoArena/1.0 (https://aegyoarena.com)" },
+    });
+    if (!res.ok) return null;
+    const data = await res.json() as Record<string, unknown>;
+    const query = data.query as Record<string, unknown>;
+    const pages = query?.pages as Record<string, Record<string, unknown>>;
+    if (!pages) return null;
+    const page = Object.values(pages)[0];
+    if (page.missing !== undefined) return null;
+    const thumb = page.thumbnail as { source?: string } | undefined;
+    return thumb?.source ?? null;
+  } catch {
+    return null;
+  }
+}
 
 // Album slug → Wikipedia page title (for album art)
 export const ALBUM_WIKI: Record<string, string> = {
@@ -275,37 +364,81 @@ export async function fetchAllImages(): Promise<{ updated: number; skipped: numb
   let updated = 0;
   let skipped = 0;
 
-  // Artists
+  // Load Scrapling cache (written by fetch-images-scrape.py)
+  const scraplingCache = loadScraplingCache();
+  const hasScraping = Object.keys(scraplingCache).length > 0;
+  if (hasScraping) {
+    console.log(`  (Scrapling cache loaded — ${Object.keys(scraplingCache).length} entries)\n`);
+  }
+
+  // ── Artists ────────────────────────────────────────────────────────────────
+  // Priority: Wikipedia → Fandom API → Scrapling cache
   const artists = await prisma.artist.findMany();
   for (const artist of artists) {
-    const wikiTitle = ARTIST_WIKI[artist.slug];
-    if (!wikiTitle) { skipped++; continue; }
+    const wikiTitle   = ARTIST_WIKI[artist.slug];
+    const fandomTitle = ARTIST_FANDOM[artist.slug];
+    const hasAnySource = wikiTitle || fandomTitle || scraplingCache[artist.slug];
+
+    if (!hasAnySource) { skipped++; continue; }
 
     process.stdout.write(`  artist: ${artist.stageName} … `);
-    const imageUrl = await fetchWikipediaImage(wikiTitle);
+
+    let imageUrl: string | null = null;
+    let source = "";
+
+    if (wikiTitle) {
+      imageUrl = await fetchWikipediaImage(wikiTitle);
+      if (imageUrl) source = "wiki";
+    }
+    if (!imageUrl && fandomTitle) {
+      imageUrl = await fetchFandomImage(fandomTitle);
+      if (imageUrl) source = "fandom";
+    }
+    if (!imageUrl && scraplingCache[artist.slug]) {
+      imageUrl = scraplingCache[artist.slug];
+      source = "scrapling";
+    }
+
     if (!imageUrl) { console.log("no image"); skipped++; continue; }
 
     await prisma.artist.update({ where: { id: artist.id }, data: { imageUrl } });
-    console.log("✓");
+    console.log(`✓ [${source}]`);
     updated++;
   }
 
-  // Albums — try iTunes first (best quality), fallback to Wikipedia
+  // ── Albums ─────────────────────────────────────────────────────────────────
+  // Priority: iTunes → Wikipedia → Scrapling cache
   const albums = await prisma.album.findMany();
   for (const album of albums) {
     const itunesTerm = ALBUM_ITUNES[album.slug];
     const wikiTitle  = ALBUM_WIKI[album.slug];
-    if (!itunesTerm && !wikiTitle) { skipped++; continue; }
+    const hasAnySource = itunesTerm || wikiTitle || scraplingCache[album.slug];
+
+    if (!hasAnySource) { skipped++; continue; }
 
     process.stdout.write(`  album:  ${album.title} … `);
+
     let imageUrl: string | null = null;
-    if (itunesTerm) imageUrl = await fetchItunesAlbumArt(itunesTerm);
-    if (!imageUrl && wikiTitle) imageUrl = await fetchWikipediaImage(wikiTitle);
+    let source = "";
+
+    if (itunesTerm) {
+      imageUrl = await fetchItunesAlbumArt(itunesTerm);
+      if (imageUrl) source = "itunes";
+    }
+    if (!imageUrl && wikiTitle) {
+      imageUrl = await fetchWikipediaImage(wikiTitle);
+      if (imageUrl) source = "wiki";
+    }
+    if (!imageUrl && scraplingCache[album.slug]) {
+      imageUrl = scraplingCache[album.slug];
+      source = "scrapling";
+    }
+
     if (!imageUrl) { console.log("no image"); skipped++; continue; }
 
     await prisma.album.update({ where: { id: album.id }, data: { coverArt: imageUrl } });
     await prisma.song.updateMany({ where: { albumId: album.id }, data: { coverArt: imageUrl } });
-    console.log("✓");
+    console.log(`✓ [${source}]`);
     updated++;
   }
 
