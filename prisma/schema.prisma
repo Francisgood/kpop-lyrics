@@ -399,6 +399,19 @@ model TrendingCache {
   @@index([entityType, period, score])
 }
 
+// ── Search Analytics ─────────────────────────────────────────────────────────
+
+model SearchMiss {
+  id        String   @id @default(cuid())
+  query     String
+  // ERROR_SEARCH_NO_RESULTS
+  errorCode String   @default("ERROR_SEARCH_NO_RESULTS")
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([query])
+}
+
 model ContentSignal {
   id          String    @id @default(cuid())
   // "song" | "artist" | "album" | "term" | "city" | "collab"
