@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { awardPoints } from "@/lib/points";
+import { translateToEnglish } from "@/lib/translate";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -32,8 +33,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "entityType, entityId, and body required" }, { status: 400 });
   }
 
+  const bodyEn = await translateToEnglish(body.trim());
+
   const comment = await prisma.comment.create({
-    data: { userId: session.userId, entityType, entityId, body: body.trim() },
+    data: { userId: session.userId, entityType, entityId, body: bodyEn },
     include: { user: { select: { displayName: true, avatarUrl: true, id: true } } },
   });
   // Award points (fire-and-forget — don't block the response)

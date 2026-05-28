@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { awardPoints } from "@/lib/points";
+import { translateToEnglish } from "@/lib/translate";
 
 export async function POST(req: NextRequest) {
   const session = await getSession();
@@ -21,12 +22,14 @@ export async function POST(req: NextRequest) {
   const song = await prisma.song.findUnique({ where: { id: songId }, select: { id: true } });
   if (!song) return NextResponse.json({ error: "Song not found" }, { status: 404 });
 
+  const noteEn = await translateToEnglish(note.trim());
+
   const annotation = await prisma.lyricAnnotation.create({
     data: {
       songId,
       lineIndex,
       word: word.trim(),
-      note: note.trim(),
+      note: noteEn,
       userId: session.userId,
     },
   });
