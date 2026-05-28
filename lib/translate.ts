@@ -3,23 +3,13 @@
  * Requires ANTHROPIC_API_KEY in environment.
  *
  * - Returns original text unchanged if the API key is missing or the call fails.
- * - Skips translation for short ASCII-only strings (already English).
+ * - Always calls the API; Claude detects language and returns unchanged if already English.
  * - Uses Claude Haiku for minimal latency + cost.
  */
-
-/** Returns true if the text is very likely already plain English (ASCII-only, no CJK/extended chars). */
-function looksLikeEnglish(text: string): boolean {
-  // If >85% of characters are plain ASCII printable, treat as English
-  const ascii = (text.match(/[\x20-\x7E]/g) ?? []).length;
-  return ascii / text.length > 0.85;
-}
 
 export async function translateToEnglish(text: string): Promise<string> {
   const trimmed = text.trim();
   if (!trimmed) return text;
-
-  // Skip if already looks English
-  if (looksLikeEnglish(trimmed)) return text;
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return text; // graceful degradation — no key, pass through
