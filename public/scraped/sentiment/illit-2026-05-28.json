@@ -1,0 +1,18 @@
+{
+  "artist": "ILLIT",
+  "slug": "illit",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "positive",
+  "sentiment_score": 0.89,
+  "trending_themes": [
+    { "theme": "MAMIHLAPINATAPAI Album April 30", "sentiment": "positive", "evidence": "4th mini album; 'It's Me' title track reached No.1 China Apple Music, No.11 YouTube global; 410,000+ week-one sales", "sources": ["Wikipedia", "Seoul Economic Daily"] },
+    { "theme": "Magnetic 800M Spotify Milestone", "sentiment": "positive", "evidence": "Debut single 'Magnetic' hit 800M Spotify streams as of May 28, 2026 — fastest K-pop debut song to reach this milestone", "sources": ["allkpop"] },
+    { "theme": "Instiz Chart Dominance", "sentiment": "positive", "evidence": "Topped Instiz chart for 2nd and 3rd weeks of May 2026; most streamed 5th gen K-pop group on Spotify 2026 (419M+)", "sources": ["allkpop"] },
+    { "theme": "Seoul Children's Grand Park Festival", "sentiment": "positive", "evidence": "Hosted festival May 5 with 24,000 attendees; pop-up at HYBE May 3-8", "sources": ["allkpop"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": null, "charting_songs": ["It's Me", "Magnetic", "Sunday Morning"], "notable_movements": ["800M Spotify streams Magnetic", "410K week-one sales", "5.2M Japan plays week 1"] },
+  "key_phrases": ["Magnetic legacy", "MAMIHLAPINATAPAI album", "It's Me charting", "5th gen leader", "HYBE trajectory"],
+  "annotation_hooks": ["'Magnetic' as a metaphor for irresistible attraction mirrors their chart performance — the song literally pulls listeners in", "The album title MAMIHLAPINATAPAI (an untranslatable Yaghan word for a wordless mutual longing) makes for extraordinary annotation material about cross-cultural lyrical concepts", "ILLIT's ascent within HYBE parallels BTS's early growth — annotations can draw parallels to BTS's 'No More Dream' ambition-under-constraint themes"],
+  "raw_headlines": ["ILLIT releases MAMIHLAPINATAPAI April 30", "Magnetic hits 800M Spotify streams May 2026", "ILLIT tops Instiz chart 2nd and 3rd weeks May 2026", "ILLIT Seoul Children's Grand Park Festival 24,000 attendees"]
+}

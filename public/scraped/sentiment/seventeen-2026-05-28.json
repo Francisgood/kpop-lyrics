@@ -1,0 +1,17 @@
+{
+  "artist": "SEVENTEEN",
+  "slug": "seventeen",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "mixed",
+  "sentiment_score": 0.55,
+  "trending_themes": [
+    { "theme": "Military enlistment and 2028 hiatus", "sentiment": "negative", "evidence": "S.Coups confirmed members will enlist before end of 2026; group enters hiatus until 2028 reunion. Sparked disbandment fears among CARAT fandom.", "sources": ["Koreaboo", "Sportskeeda"] },
+    { "theme": "V8 unit debut June 29", "sentiment": "positive", "evidence": "The 8 & Vernon sub-unit debut announced for June 29, 2026 with Goyang and Hong Kong performances.", "sources": ["Korea Herald"] },
+    { "theme": "Streaming milestones", "sentiment": "positive", "evidence": "Achieved 300M+ streams with 'Super'; 'LOVE, MONEY, FAME' joined billion-stream catalog; 19 songs total above 1B streams.", "sources": ["allkpop"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": null, "charting_songs": ["Super (300M+)", "LOVE, MONEY, FAME (1B)", "Hot (200M+)", "Don't Wanna Cry (200M+)"], "notable_movements": ["19 songs crossed 1B streams", "11th anniversary milestone", "Transition to subunit focus pre-hiatus"] },
+  "key_phrases": ["2028 reunion promise", "military hiatus", "V8 unit", "11-year legacy", "CARAT loyalty"],
+  "annotation_hooks": ["Bittersweet hiatus sentiment: '13th member' (CARAT) loyalty narrative challenged by enlistment reality — parallels BTS ARMY waiting through military service", "LOVE, MONEY, FAME joining billion-stream tier validates decade of work even as group pauses", "V8 sub-unit creative opportunity during pause mirrors J-Hope solo activities during BTS hiatus"],
+  "raw_headlines": ["S.Coups Confirms Members Enlistment SEVENTEEN Hiatus Until 2028", "SEVENTEEN V8 Unit Debut June 29 2026", "SEVENTEEN Super Achieves 300M Spotify Streams", "SEVENTEEN 11th Anniversary Celebration"]
+}

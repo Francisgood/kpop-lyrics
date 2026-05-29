@@ -1,0 +1,18 @@
+{
+  "artist": "Hearts2Hearts",
+  "slug": "hearts2hearts",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "positive",
+  "sentiment_score": 0.78,
+  "trending_themes": [
+    { "theme": "First Anniversary and RUDE! Single", "sentiment": "positive", "evidence": "Marked first debut anniversary Feb 24, 2026; released 'RUDE!' digital single Feb 20", "sources": ["allkpop"] },
+    { "theme": "First Inkigayo Win", "sentiment": "positive", "evidence": "Won 1st-ever Inkigayo award with 'RUDE' on March 22, 2026", "sources": ["allkpop"] },
+    { "theme": "North American Showcases", "sentiment": "positive", "evidence": "Held showcases in New York (March 19) and Los Angeles (March 22)", "sources": ["allkpop"] },
+    { "theme": "Charitable Donation", "sentiment": "positive", "evidence": "Donated 50 million won to G-Foundation to support vulnerable female adolescents under official fan club name", "sources": ["allkpop"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": null, "charting_songs": ["RUDE!", "The Chase"], "notable_movements": ["First Inkigayo win March 22, 2026"] },
+  "key_phrases": ["first anniversary", "RUDE! single", "Inkigayo victory", "North American expansion", "SM Entertainment newcomer"],
+  "annotation_hooks": ["SM Entertainment's newest group carrying the label's legacy of polished, emotionally layered pop", "First-year momentum mirrors early Girls' Generation and Red Velvet arcs", "Social responsibility positioning distinguishes them from peer groups"],
+  "raw_headlines": ["Hearts2Hearts releases RUDE!", "Hearts2Hearts wins first Inkigayo award March 22", "Hearts2Hearts North American showcase tour March 2026", "Hearts2Hearts donates 50M won to G-Foundation"]
+}

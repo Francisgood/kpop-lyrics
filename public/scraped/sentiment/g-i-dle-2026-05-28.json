@@ -1,0 +1,18 @@
+{
+  "artist": "(G)I-DLE",
+  "slug": "g-i-dle",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "positive",
+  "sentiment_score": 0.81,
+  "trending_themes": [
+    { "theme": "Multi-comeback strategy: Mono single + July album", "sentiment": "positive", "evidence": "Released digital single 'Mono' (feat. skaiwater) January 27, 2026. CUBE confirmed July 2026 album release April 13.", "sources": ["Deccan Chronicle", "CUBE Entertainment"] },
+    { "theme": "Historic Taipei Dome — first K-pop girl group", "sentiment": "positive", "evidence": "During 'Syncopation' World Tour (Feb 27 onward), became first K-pop girl group to perform at Taipei Dome.", "sources": ["Kpop Wiki"] },
+    { "theme": "Soyeon rebranding as 'icebluerabbit'", "sentiment": "positive", "evidence": "February 21, 2026 solo persona unveiled with 'Ice Blue Rabbit' — deliberately contradicts known traits to challenge herself artistically.", "sources": ["NME", "Soompi"] },
+    { "theme": "Lollapalooza Chicago debut July 31", "sentiment": "positive", "evidence": "Confirmed for Lollapalooza Chicago July 31-August 2, 2026. Positions group alongside Jennie as leading K-pop act at mainstream US festivals.", "sources": ["K-Pop Concerts", "TenAsia"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": null, "charting_songs": ["Mono (feat. skaiwater)", "Queencard", "IKonics"], "notable_movements": ["'We Are' EP million-seller 2025", "Syncopation World Tour Feb-Dec 2026", "Lollapalooza booking"] },
+  "key_phrases": ["Syncopation World Tour", "Soyeon icebluerabbit", "Taipei Dome historic", "Lollapalooza debut", "July album", "sustained momentum"],
+  "annotation_hooks": ["Soyeon's 'icebluerabbit' parallels BTS RM's introspective solo work — leader using nom de plume to explore vulnerability contradicting public persona; 'ice' vs 'hot' binary inversion echoes Queencard's 'I'm a queen' sophistication", "First K-pop girl group at Taipei Dome + Lollapalooza debut = global spatial expansion vs. NewJeans' stationary legal battles — movement equals momentum", "Sustained output (January single → July album) during world tour demonstrates production capacity rivaling BTS"],
+  "raw_headlines": ["(G)I-DLE Releases Mono feat. skaiwater January 2026", "(G)I-DLE First K-pop Girl Group at Taipei Dome", "Soyeon Unveils icebluerabbit Persona February 21", "(G)I-DLE Confirmed for Lollapalooza Chicago July 2026", "(G)I-DLE CUBE Confirms July Album Release"]
+}

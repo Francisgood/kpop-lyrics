@@ -1,0 +1,18 @@
+{
+  "artist": "BTS",
+  "slug": "bts",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "positive",
+  "sentiment_score": 0.78,
+  "trending_themes": [
+    { "theme": "ARIRANG comeback after full military discharge", "sentiment": "positive", "evidence": "ARIRANG album released March 20, 2026 with 4M first-day sales and 110M Spotify streams in 24 hours — K-pop record. All seven members discharged by June 2025.", "sources": ["Rolling Stone", "Billboard"] },
+    { "theme": "2026 AMAs Artist of the Year", "sentiment": "positive", "evidence": "Won Artist of the Year at 2026 American Music Awards on May 25. All 7 members achieved Hot 100 chart positions simultaneously.", "sources": ["Billboard"] },
+    { "theme": "ARIRANG World Tour — largest stadium tour in K-pop history", "sentiment": "positive", "evidence": "82+ dates through March 2027. Four sold-out nights at Allegiant Stadium Las Vegas.", "sources": ["Las Vegas Sun", "Billboard"] },
+    { "theme": "Mixed critical reception despite commercial dominance", "sentiment": "mixed", "evidence": "ARIRANG scores ranged from 90 (AllMusic) to 53 (Pitchfork) to 30 (Needle Drop). Experimental direction drew debate.", "sources": ["Pitchfork", "NME"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": null, "charting_songs": ["SWIM (14.6M daily global streams)", "ARIRANG (multiple weeks #1 global)", "Hooligan", "Like Animals"], "notable_movements": ["110M Spotify streams 24hrs", "All 7 members on Hot 100 simultaneously", "Jimin's 'Who' — 2.4B streams, first solo K-pop w/o feature at milestone"] },
+  "key_phrases": ["post-military reunion", "ARIRANG World Tour", "Artist of the Year", "full group comeback", "hotteok Oreos collab"],
+  "annotation_hooks": ["Military service as thematic throughline — BTS lyrics about identity and sacrifice now deeply personal as all members return from duty; 'ARIRANG' (Korean folk anthem) as album title symbolizes homecoming and national identity", "Member interdependence showcased through solo success — individual Hot 100 placements prove autonomous artistry, making group return feel like chosen reunion not obligation", "Post-hiatus vulnerability: critical split (90→30) reflects discourse on whether groups maintain relevance after extended military breaks"],
+  "raw_headlines": ["BTS Takes Over Las Vegas After Military Reunions", "BTS Wins Artist of the Year at 2026 AMAs", "ARIRANG Breaks Spotify K-pop Record — 110M Streams in 24 Hours", "All Seven BTS Members Now on Billboard Hot 100 Simultaneously", "Limited Edition Hotteok Oreos with BTS"]
+}

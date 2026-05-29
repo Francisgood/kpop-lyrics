@@ -1,0 +1,18 @@
+{
+  "artist": "NewJeans",
+  "slug": "newjeans",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "negative",
+  "sentiment_score": 0.38,
+  "trending_themes": [
+    { "theme": "Danielle contract termination and $31M lawsuit", "sentiment": "negative", "evidence": "ADOR terminated Danielle's contract December 2025; filed 43.1 billion KRW lawsuit. ADOR's full legal team (Kim & Chang) resigned. Danielle's reps claim ADOR's withdrawal is 'malicious.' Trial ongoing May 2026.", "sources": ["allkpop", "Billboard", "Korea Times"] },
+    { "theme": "Trio comeback in H2 2026", "sentiment": "mixed", "evidence": "Hanni, Haerin, Hyein spotted in Copenhagen April 2026 for preproduction. ADOR confirms 3-member comeback. Minji status uncertain; Danielle dropped.", "sources": ["Korea Herald", "STARNEWS"] },
+    { "theme": "Danielle charitable acts amid lawsuit", "sentiment": "positive", "evidence": "Donated 10M KRW to single-parent families during lunar new year despite $31M lawsuit. Church appearance while smiling praised by netizens as resilience.", "sources": ["Koreaboo", "allkpop"] },
+    { "theme": "Streaming legacy holding strong", "sentiment": "positive", "evidence": "'New Jeans' track exceeded 500M Spotify streams February 2026. Total discography 7.3B+ streams. 15 tracks with 100M+ each. No new releases since 2024 'How Sweet.'", "sources": ["STARNEWS"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": null, "charting_songs": ["New Jeans (500M+ Feb 2026)", "15 tracks with 100M+ each", "Total: 7.3B+ cumulative"], "notable_movements": ["No new music since 2024", "Extended activity hiatus", "Streaming legacy maintained despite inactivity"] },
+  "key_phrases": ["Danielle lawsuit", "trio comeback", "streaming legacy", "Min Hee-jin HYBE legal battle", "ADOR legal team resignation", "NewJeans hiatus"],
+  "annotation_hooks": ["Structural breakdown mirroring lyrical themes: 'Super Shy,' 'Attention,' 'Hype Boy' celebrated youthful freedom — 2024-2026 legal fracturing inverts those into involuntary separation and control loss", "Songs created under Min Hee-jin's direction now read differently post-controversy: are the newtro aesthetics genuine artistry or calculated branding?", "Danielle's arc as tragedy-to-resilience: teenage artist isolated by label, now showing grace her label lacks. 500M streams proves commercial viability HYBE's mismanagement couldn't extinguish"],
+  "raw_headlines": ["NewJeans ADOR Confirms Group Preparing for Comeback", "Danielle's Side Claims ADOR Legal Team Withdrawal Is Malicious", "ADOR Has Lost Its Entire Legal Team in Danielle Lawsuit", "NewJeans Reaches 500M Spotify Streams with 'New Jeans'", "Danielle Spotted Smiling at Church Amid $31M Lawsuit"]
+}

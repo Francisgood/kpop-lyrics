@@ -1,0 +1,18 @@
+{
+  "artist": "BLACKPINK",
+  "slug": "blackpink",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "positive",
+  "sentiment_score": 0.76,
+  "trending_themes": [
+    { "theme": "Full group Met Gala 2026 reunion", "sentiment": "positive", "evidence": "All four members at Met Gala May 5, 2026 — Jisoo's debut. Iconic bathroom selfie broke Met Gala rules and dominated social media.", "sources": ["Billboard", "E! Online"] },
+    { "theme": "DEADLINE EP — biggest female Spotify album debut 2026", "sentiment": "positive", "evidence": "Released Feb 27, 2026; 16.9M Spotify streams first day. 'GO' at #9 daily global; 'Champion' praised as empowerment anthem.", "sources": ["InMusicBlog", "Rolling Stone"] },
+    { "theme": "Member solo success feeding group identity", "sentiment": "positive", "evidence": "Jennie: first Hot 100 top 10 ('Dracula' w/ Tame Impala). Rosé: Grammy performance, first K-pop Brit Award winner. Lisa: FIFA World Cup opening ceremony + Vegas residency.", "sources": ["Billboard", "Hollywood Reporter"] },
+    { "theme": "DEADLINE World Tour announced May 16", "sentiment": "positive", "evidence": "Major worldwide tour kicking off summer 2026.", "sources": ["BLACKPINK official"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": 23700000, "charting_songs": ["GO (4.67M daily streams, #9 global)", "Champion", "Me and My (#22 global)", "Jump (#29 global)", "Fxxxboy (#37 global)"], "notable_movements": ["DEADLINE: biggest female album debut Spotify 2026", "58.9M Spotify followers May 2026", "Jennie first solo Hot 100 top 10", "Rosé first K-pop Grammy performer + Brit Award winner"] },
+  "key_phrases": ["four-member reunion", "Met Gala bathroom selfie", "DEADLINE World Tour", "solo ventures enriching group", "Champion empowerment anthem"],
+  "annotation_hooks": ["Group identity reinforced through individual autonomy — members' solo success (Grammy/Brits/Vegas) feeds group confidence; DEADLINE positions them as artists choosing to reunite, not contractually obligated", "Fashion moments as cultural currency: Met Gala bathroom selfie generated more engagement than chart metrics — reflects evolved K-pop consumption", "'Champion' thematic shift toward resilience aligns with members' individual autonomy narratives — less party K-pop, more professional independence"],
+  "raw_headlines": ["BLACKPINK Complete at Met Gala 2026 as Jisoo Makes Event Debut", "DEADLINE Scores Biggest Female Album Debut on Spotify 2026", "Jennie Joins Rosé as Second BLACKPINK Member to Score Solo Hot 100 Top 10", "Rosé Makes History as First K-pop Soloist at Grammy Awards 2026", "Lisa Performs at 2026 FIFA World Cup Opening Ceremony", "BLACKPINK Announces Deadline World Tour May 16"]
+}

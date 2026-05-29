@@ -1,0 +1,17 @@
+{
+  "artist": "Slushii",
+  "slug": "slushii",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "positive",
+  "sentiment_score": 0.75,
+  "trending_themes": [
+    { "theme": "Global Asia tour + Begin Again / Should've Known Better singles", "sentiment": "positive", "evidence": "Begin Again with Mokita (Feb 2026); Should've Known Better feat. KENNEDY (April 2026). Global Asia tour underway.", "sources": ["Caesar Live n Loud", "EDM Nomad"] },
+    { "theme": "Chrysalis Grammy ballot consideration", "sentiment": "positive", "evidence": "2025 Chrysalis album (with sapientdream) placed on Grammy ballot for Best Dance/Electronic Album.", "sources": ["EDM.com"] },
+    { "theme": "HYO collab bridges K-pop/EDM", "sentiment": "positive", "evidence": "Early 2025 'Money' collab with Girls' Generation's HYO demonstrated K-pop crossover potential.", "sources": ["Nocturnal Times"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": null, "charting_songs": ["Begin Again (feat. Mokita)", "Should've Known Better (feat. KENNEDY)", "HYO - Money collab"], "notable_movements": ["Chrysalis Grammy ballot placement", "5th EP planned before end 2026"] },
+  "key_phrases": ["melodic bass", "future bass", "K-pop EDM bridge", "sapientdream ambient project", "global tour 2026"],
+  "annotation_hooks": ["Slushii's K-pop adjacency (HYO collab) reflects broader EDM-K-pop convergence narrative; his melodic emotional storytelling shares DNA with K-pop's cathartic listening culture", "Dual identity (commercial EDM / ambient sapientdream) mirrors K-pop's idol/human split — producer version of the persona vs. shadow dichotomy"],
+  "raw_headlines": ["Slushii Drops Begin Again with Mokita", "Should've Known Better Feat. KENNEDY Arrives April 2026", "Chrysalis Earns Grammy Ballot Placement", "Slushii + HYO Money K-pop Collab 2025"]
+}

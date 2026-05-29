@@ -1,0 +1,17 @@
+{
+  "artist": "KiiiKiii",
+  "slug": "kiiikiii",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "positive",
+  "sentiment_score": 0.75,
+  "trending_themes": [
+    { "theme": "Rapid debut-to-mainstream trajectory", "sentiment": "positive", "evidence": "Debuted March 24, 2025; released second EP 'Delulu Pack' January 26, 2026 with title track '404 (New Era)'; won K-POP Girl Group at NYLON NEXT 2026 Awards January 28.", "sources": ["STARNEWS", "Kpop.exchange"] },
+    { "theme": "HEAD IN THE CLOUDS Tokyo — sole K-pop girl group at 88rising event", "sentiment": "positive", "evidence": "Performed March 28, 2026 at 88rising's hip-hop-focused festival in Tokyo — validates crossover appeal beyond K-pop circuit.", "sources": ["allkpop", "STARNEWS"] },
+    { "theme": "First fan concert KiiiKiii Festiiival", "sentiment": "positive", "evidence": "Held May 16-17, 2026 — marks early-stage fandom monetization and community building within 14 months of debut.", "sources": ["Kpop Wiki", "allkpop"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": null, "charting_songs": ["404 (New Era)", "I DO ME", "UNCUT GEM", "DANCING ALONE"], "notable_movements": ["NYLON award within 10 months of debut", "88rising booking validates market position", "First fan concert May 2026"] },
+  "key_phrases": ["new girl group momentum", "Starship Entertainment 2025", "88rising crossover", "TiiiKiii fandom", "city pop aesthetic"],
+  "annotation_hooks": ["KiiiKiii represents post-HYBE era where Starship can compete for cultural relevance; NYLON award within 10 months reflects accelerated K-pop industry timeline", "88rising connection positions them in trendy cosmopolitan hip-hop-adjacent space, differentiating from BP/NewJeans/TWICE legacy groups", "'Uncut gem' concept (authenticity over polish) directly contrasts with NewJeans' curated newtro — two competing visions of what K-pop 'rawness' looks like in 2025"],
+  "raw_headlines": ["KiiiKiii Sole K-pop Girl Group at HEAD IN THE CLOUDS Tokyo 2026", "KiiiKiii Wins K-POP Girl Group at NYLON NEXT 2026", "KiiiKiii First Fan Concert Festiiival May 16-17 2026", "Delulu Pack Second EP January 26 2026"]
+}

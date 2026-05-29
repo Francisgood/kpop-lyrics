@@ -1,0 +1,17 @@
+{
+  "artist": "ITZY",
+  "slug": "itzy",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "positive",
+  "sentiment_score": 0.85,
+  "trending_themes": [
+    { "theme": "MOTTO Comeback May 18", "sentiment": "positive", "evidence": "Released 12th mini album 'MOTTO' May 18; title track about devotion and diving in; 8 tracks with 5 member solo tracks", "sources": ["Soompi", "allkpop"] },
+    { "theme": "Tunnel Vision World Tour", "sentiment": "positive", "evidence": "Tokyo concerts May 9-10; Seoul shows Feb 13-15; Australia/New Zealand expansion confirmed", "sources": ["allkpop"] },
+    { "theme": "Mawazine Festival Morocco Headliner", "sentiment": "positive", "evidence": "Confirmed headliners for Morocco's Mawazine music festival June 23, 2026 — first K-pop headliner at this festival", "sources": ["allkpop"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": 5680920, "charting_songs": ["Motto", "Glitch", "You And I"], "notable_movements": ["Peak monthly listeners 7.5M July 2026"] },
+  "key_phrases": ["MOTTO comeback", "Tunnel Vision tour", "member solo tracks", "Mawazine headliner", "Yeji leadership"],
+  "annotation_hooks": ["JYP's self-confidence ethos (introduced with 'DALLA DALLA') reaches maturation in MOTTO — annotations can trace this lyrical through-line", "Individual member solo tracks create rich annotation territory for personality-specific interpretations", "Mawazine headlining reflects K-pop's penetration into global music festival circuit"],
+  "raw_headlines": ["ITZY releases MOTTO 12th mini album May 18", "ITZY Tunnel Vision World Tour Tokyo May 2026", "ITZY confirmed Mawazine Festival Morocco June 23 headliner"]
+}

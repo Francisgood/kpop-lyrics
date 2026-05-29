@@ -1,0 +1,18 @@
+{
+  "artist": "2NE1",
+  "slug": "2ne1",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "mixed",
+  "sentiment_score": 0.55,
+  "trending_themes": [
+    { "theme": "Reunion and Anniversary Celebration", "sentiment": "positive", "evidence": "All four members reunited on May 17 for their 17th debut anniversary with a sweet group photo shared on social media", "sources": ["allkpop"] },
+    { "theme": "Internal Group Tensions", "sentiment": "negative", "evidence": "In March 2026, Park Bom posted claims about being falsely blamed for drug use to cover for Sandara Park, though Sandara quickly refuted this", "sources": ["allkpop"] },
+    { "theme": "Trio Format Performances", "sentiment": "neutral", "evidence": "Minzy confirmed the group would perform as a trio for select stages, with scheduled appearances including Special Live in Japan 2026", "sources": ["allkpop"] },
+    { "theme": "Legacy and Lasting Influence", "sentiment": "positive", "evidence": "2NE1 recognized as iconic K-pop group that helped push K-pop beyond traditional boundaries; CL appeared on Forbes 30 Under 30 Asia", "sources": ["kpopping"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": null, "charting_songs": ["I Am The Best"], "notable_movements": [] },
+  "key_phrases": ["17th anniversary", "reunion concert", "internal controversy", "legacy impact", "Japan performances", "trio format"],
+  "annotation_hooks": ["Nostalgia-driven reunion after 10-year hiatus connects to themes of endurance in their catalog", "Disbandment/reformation narrative mirrors 'Come Back Home' themes of returning after loss", "CL's solo persistence mirrors the defiant energy of 'I Am The Best'"],
+  "raw_headlines": ["2NE1 reunites for 17th anniversary", "2NE1 performing at Kpop Masterz Japan May 2026", "Minzy confirms trio format for select 2026 stages", "Park Bom makes shocking claims about Sandara Park — Sandara refutes"]
+}

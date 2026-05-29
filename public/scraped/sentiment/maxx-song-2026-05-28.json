@@ -1,0 +1,16 @@
+{
+  "artist": "Maxx Song",
+  "slug": "maxx-song",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "neutral",
+  "sentiment_score": 0.50,
+  "trending_themes": [
+    { "theme": "Backend producer with limited public profile", "sentiment": "neutral", "evidence": "Operating in background of K-pop production landscape; credits on tracks including Red Velvet 'Bad Boy'; limited mainstream 2026 documentation.", "sources": ["Wikipedia", "Music VF"] },
+    { "theme": "Iconic Sounds LLC production infrastructure", "sentiment": "neutral", "evidence": "Associated with Iconic Sounds LLC for music production and publishing; Asia market focus; professional infrastructure present but low public visibility.", "sources": ["ZoomInfo"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": null, "charting_songs": ["Red Velvet - Bad Boy (production credit)"], "notable_movements": ["No major documented activity May 2026"] },
+  "key_phrases": ["backend K-pop producer", "Red Velvet Bad Boy", "Asia market publishing", "Iconic Sounds LLC", "anonymous producer"],
+  "annotation_hooks": ["Maxx Song represents K-pop's invisible labor ecosystem — producers rarely credited in fan culture despite shaping sonic identity", "Producer anonymity in K-pop mirrors the idol-system's front-of-house/back-of-house split; Maxx Song contrasts with Teddy Park's newly visible Grammy trajectory"],
+  "raw_headlines": ["Maxx Song Production Credits — Red Velvet Bad Boy", "Iconic Sounds LLC Asia Music Production Operations"]
+}

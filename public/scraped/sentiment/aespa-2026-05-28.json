@@ -1,0 +1,18 @@
+{
+  "artist": "aespa",
+  "slug": "aespa",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "positive",
+  "sentiment_score": 0.88,
+  "trending_themes": [
+    { "theme": "LEMONADE Album Release May 29", "sentiment": "positive", "evidence": "Released 'LEMONADE' 2nd full album May 29; features WDA pre-release and title track; press conference May 28", "sources": ["Soompi", "allkpop"] },
+    { "theme": "Karina's Met Gala Debut", "sentiment": "positive", "evidence": "Karina made Met Gala 2026 debut in custom Prada; appointed brand ambassador for luxury golf brand MARK & LONA", "sources": ["Hollywood Reporter"] },
+    { "theme": "SYNK COMPLæXITY World Tour", "sentiment": "positive", "evidence": "2026-27 tour kicks off August 7 Seoul; North America September-October including UBS Arena NY Sept 18, LA Intuit Dome Oct 3", "sources": ["Live Nation"] },
+    { "theme": "Billboard Women in Music Group of the Year", "sentiment": "positive", "evidence": "Won Billboard Women in Music 2025 'Group of the Year'; AMAs 2026 'Best Female K-Pop Artist' nomination", "sources": ["Live Nation"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": 10500000, "charting_songs": ["LEMONADE", "WDA", "Attitude"], "notable_movements": ["Japanese dome tour April 2026", "10.5M Spotify monthly listeners"] },
+  "key_phrases": ["LEMONADE sophomore album", "SYNK COMPLæXITY tour", "Karina Met Gala", "AI-human duality", "futuristic identity"],
+  "annotation_hooks": ["AI-avatar concept (æ) makes aespa songs unique territory for annotations about digital identity and the boundary between real and virtual", "LEMONADE title invokes transformation from bitterness to sweetness — connects to their journey from debut controversy to global dominance", "Karina's luxury positioning reflects SM's premium artist-as-brand strategy"],
+  "raw_headlines": ["aespa releases LEMONADE 2nd full album May 29", "Karina makes Met Gala 2026 debut in Prada", "aespa SYNK COMPLæXITY world tour 2026-27", "aespa wins Billboard Women in Music Group of Year"]
+}

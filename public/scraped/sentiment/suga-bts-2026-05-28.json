@@ -1,0 +1,17 @@
+{
+  "artist": "Suga",
+  "slug": "suga-bts",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "positive",
+  "sentiment_score": 0.79,
+  "trending_themes": [
+    { "theme": "Final BTS member to complete military service", "sentiment": "positive", "evidence": "Suga completed alternative social service (exemption due to shoulder surgery) June 21, 2025. Wrote emotional message to ARMY: 'I really missed you.'", "sources": ["Rolling Stone", "Billboard"] },
+    { "theme": "Hot 100 as part of historic 7-member sweep", "sentiment": "positive", "evidence": "Achieved Hot 100 placement as part of full simultaneous group entry May 2026 — historic first.", "sources": ["Billboard"] },
+    { "theme": "Agust D brand and producer identity continuing", "sentiment": "positive", "evidence": "Agust D solo identity established through prior releases continues to define artistry alongside group contribution. Min Yoongi (Suga) maintains producer role in ARIRANG.", "sources": ["BTS Wiki"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": null, "charting_songs": ["Hot 100 group entry May 2026", "Agust D legacy catalog ongoing"], "notable_movements": ["Final member to discharge (June 2025)", "Emotional ARMY message marking end of service", "First 7-member simultaneous Hot 100"] },
+  "key_phrases": ["alternative military service", "last member discharged", "Agust D duality", "shoulder injury exemption", "'I really missed you' to ARMY"],
+  "annotation_hooks": ["Suga's shoulder injury exemption (alternative social service) structured his military narrative differently — he served without the physical danger of active duty, which ARMY debate about sacrifice and contribution", "Agust D duality (introspective, experimental, darker solo work) was held in suspension during service — 2026 reunion lets him synthesize solo sophistication back into BTS, similar to how RM's Indigo fed ARIRANG", "His message 'I really missed you' inverts the typical artist-to-ARMY power dynamic — vulnerability as brand-building, emotional honesty as connection"],
+  "raw_headlines": ["Suga Completes Military Service as Last BTS Member", "Suga Pens Letter to Fans Marking End of Service: 'I Really Missed You'", "All Seven BTS Members on Billboard Hot 100 Simultaneously — Including Suga"]
+}

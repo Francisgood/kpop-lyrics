@@ -1,0 +1,17 @@
+{
+  "artist": "Teddy Park",
+  "slug": "teddy-park",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "positive",
+  "sentiment_score": 0.85,
+  "trending_themes": [
+    { "theme": "Historic Grammy win — first K-pop producer", "sentiment": "positive", "evidence": "Won Grammy Award for production on 'Golden'; also won Academy Award and Golden Globe for Best Original Song. First K-pop producer to achieve Grammy.", "sources": ["Korea Herald", "Backyard Drunkard"] },
+    { "theme": "The Black Label Series B — 1 trillion won valuation", "sentiment": "positive", "evidence": "Completed 120B won ($79.8M) Series B funding May 20, 2026. Post-valuation: 1 trillion won. Investors: Tencent Music Entertainment, Krafton.", "sources": ["Korea Herald"] },
+    { "theme": "930+ songwriting credits across 25+ years", "sentiment": "positive", "evidence": "229 production credits, 688 tracks written. Produced for YG artists: Big Bang, 2NE1, BLACKPINK, Lee Hi, Somi, Sunmi.", "sources": ["Music VF"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": null, "charting_songs": ["Golden (Grammy/Oscar/Golden Globe)", "BLACKPINK DEADLINE tracks", "BLACKPINK legacy catalog"], "notable_movements": ["First K-pop Grammy Award", "Series B at 1T won valuation", "Netflix KPop Demon Hunters soundtrack"] },
+  "key_phrases": ["K-pop's first Grammy", "The Black Label independence", "930+ songwriting credits", "BLACKPINK architect", "Tencent Music investment"],
+  "annotation_hooks": ["Teddy Park's Grammy win represents K-pop production crossing into Western awards infrastructure — validates a production style built on K-pop's melodic hooks, rap breaks, and empowerment framing that he helped define with 2NE1 and BLACKPINK", "The Black Label's 1 trillion won valuation signals institutional validation of K-pop production excellence beyond idol marketing", "BLACKPINK songs annotated as 'produced by Teddy' carry extra weight: DDU-DU, Kill This Love, Pink Venom are all his sonic signature"],
+  "raw_headlines": ["Teddy Park Wins First K-pop Grammy for Golden", "The Black Label Completes Series B at 1T Won Valuation", "Academy Award and Golden Globe for Best Original Song", "The Black Label Series B — Tencent and Krafton as Investors"]
+}

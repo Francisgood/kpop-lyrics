@@ -1,0 +1,18 @@
+{
+  "artist": "RIIZE",
+  "slug": "riize",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "positive",
+  "sentiment_score": 0.82,
+  "trending_themes": [
+    { "theme": "Second mini album 'II' — Do Your Dance, June 15", "sentiment": "positive", "evidence": "6 tracks led by 'Do Your Dance'. Eunseok solo trailer released May 26. First comeback in 7 months since 'Fame'.", "sources": ["allkpop", "Korea Herald"] },
+    { "theme": "First K-pop group at Lollapalooza South America", "sentiment": "positive", "evidence": "Performed March 2026 in Argentina, Chile, Brazil. Also Austin City Limits debut.", "sources": ["allkpop"] },
+    { "theme": "Fastest K-pop boy group to Tokyo Dome — 120K attendees over 3 nights", "sentiment": "positive", "evidence": "~2.5 years post-debut; 'All of You' Japan single earned Platinum certification.", "sources": ["allkpop"] },
+    { "theme": "RIIZING LOUD World Tour — 420K fans, 21 regions", "sentiment": "positive", "evidence": "Tour concluded March 2026. Cinema livestreaming of finale. Fastest-rising SM act.", "sources": ["allkpop"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": null, "charting_songs": ["All of You (Japan Platinum)", "Do Your Dance (lead single)", "KILL SHOT (anime tie-in April 2026)"], "notable_movements": ["Fastest K-pop boy group to Tokyo Dome", "420K tour attendees 21 regions", "Platinum Japan certification"] },
+  "key_phrases": ["rise and realize", "emotional pop", "Tokyo Dome record", "Lollapalooza South America first", "KILL SHOT anime tie-in"],
+  "annotation_hooks": ["RIIZE embodies post-pandemic K-pop's Western festival integration — their rapid trajectory (2023 debut → 2026 Lollapalooza) reflects SM's intentional global-first positioning", "'Emotional pop' label signals genre maturation: K-pop moving from high-energy performance toward introspective, accessible emotional expression", "Tokyo Dome record within 2.5 years mirrors the compressed growth timeline that BTS took 5+ years to achieve — industry has accelerated"],
+  "raw_headlines": ["RIIZE Announces Second Mini Album II June 15", "RIIZE First K-pop Group at Lollapalooza South America", "RIIZE Tokyo Dome Record Fastest K-pop Boy Group", "RIIZING LOUD Tour 420K Fans 21 Regions", "KILL SHOT Anime Tie-in Single April 2026"]
+}

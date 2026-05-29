@@ -1,0 +1,17 @@
+{
+  "artist": "BABYMONSTER",
+  "slug": "babymonster",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "positive",
+  "sentiment_score": 0.82,
+  "trending_themes": [
+    { "theme": "CHOOM May Comeback", "sentiment": "positive", "evidence": "Released 'CHOOM' 3rd mini album May 4 with Comeback Special Live on YouTube/Weverse/TikTok", "sources": ["allkpop", "UPI"] },
+    { "theme": "World Tour Expansion", "sentiment": "positive", "evidence": "Announced 2026-2027 world tour covering South America, Europe, Australia; Asia/Oceania dates confirmed for 11 cities", "sources": ["Soompi"] },
+    { "theme": "Debut Album October 2026", "sentiment": "positive", "evidence": "Full-length debut album planned for October 2026 release, marking significant milestone for group", "sources": ["allkpop"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": null, "charting_songs": ["CHOOM", "MOON", "I Like It", "LOCKED IN"], "notable_movements": ["2B total Spotify streams week of June 2-12, 2026"] },
+  "key_phrases": ["CHOOM comeback", "world tour June 2026", "debut album October 2026", "5th gen rising"],
+  "annotation_hooks": ["YG's new flagship girl group carrying BLACKPINK's legacy forward — 'CHOOM' connects to YG's tradition of dance-heavy title tracks", "World tour ambition mirrors BLACKPINK's global blueprint", "Ruka's precision mirrors Teddy Park's production exactness"],
+  "raw_headlines": ["BABYMONSTER releases CHOOM 3rd mini album May 4", "BABYMONSTER announces 2026-2027 World Tour", "BABYMONSTER full debut album planned October 2026"]
+}

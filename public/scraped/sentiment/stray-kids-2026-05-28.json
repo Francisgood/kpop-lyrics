@@ -1,0 +1,17 @@
+{
+  "artist": "Stray Kids",
+  "slug": "stray-kids",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "positive",
+  "sentiment_score": 0.80,
+  "trending_themes": [
+    { "theme": "Historic Rock in Rio headlining + STRAYCITY Latin tour", "sentiment": "positive", "evidence": "First K-pop group to headline Rock in Rio. STRAYCITY tour announced Sept 2026 across Bogotá, Buenos Aires, Mexico City.", "sources": ["Pollstar"] },
+    { "theme": "SKZ-PLAYER solo series: Han's Back to Life", "sentiment": "positive", "evidence": "Han dropped 'Back to Life' May 8 2026. Hyunjin's 'LOVER' released March. Members releasing individual solo tracks throughout 2026.", "sources": ["Just Jared"] },
+    { "theme": "KARMA Golden Disc Album of Year + 40M shipments", "sentiment": "positive", "evidence": "Won Album of Year (KARMA) at 2026 Golden Disc Awards; 8 consecutive #1 Billboard 200 debuts — historic first; 40M+ album shipments Korea/Japan.", "sources": ["STARNEWS", "allkpop"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": 10300000, "charting_songs": ["KARMA (Album of Year)", "8 consecutive #1 Billboard 200 debuts"], "notable_movements": ["40M+ cumulative shipments", "Record for #1 Billboard 200 debuting albums", "19 total Daesang awards"] },
+  "key_phrases": ["Rock in Rio headliner", "STRAYCITY tour", "Bang Chan production 237 KOMCA credits", "KARMA domination", "Latin America K-pop gateway"],
+  "annotation_hooks": ["STRAYCITY Latin America tour reflects K-pop's structural shift into global festival circuit — SKZ bridging gap between K-pop and rock festival cultures pioneered by few", "Bang Chan's 237 KOMCA production credits + Fendi collaboration signals member-as-creator narrative that BTS pioneered and SKZ now occupies in 4th gen", "Rock in Rio headlining = K-pop claiming mainstream Western cultural spaces that were historically rock/pop monopolies"],
+  "raw_headlines": ["Stray Kids First K-pop Group to Headline Rock in Rio", "STRAYCITY Latin America Tour September 2026", "Han Releases Back to Life Solo", "KARMA Wins Golden Disc Album of Year", "40M Album Shipments Milestone"]
+}

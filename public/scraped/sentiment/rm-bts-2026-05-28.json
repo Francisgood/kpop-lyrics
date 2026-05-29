@@ -1,0 +1,17 @@
+{
+  "artist": "RM",
+  "slug": "rm-bts",
+  "pulled_at": "2026-05-28",
+  "window_days": 30,
+  "dominant_sentiment": "positive",
+  "sentiment_score": 0.82,
+  "trending_themes": [
+    { "theme": "Creative leader of ARIRANG comeback", "sentiment": "positive", "evidence": "RM flew solo to US in early 2026 to finalize production on ARIRANG. Positioned as primary creative architect of group's post-military return.", "sources": ["Weverse", "PINKVILLA"] },
+    { "theme": "Hot 100 as part of full BTS sweep", "sentiment": "positive", "evidence": "Part of historic simultaneous 7-member Hot 100 entry May 2026. Group creative lead also charting individually.", "sources": ["Billboard"] },
+    { "theme": "Bottega Veneta and Samsung Art TV ambassadorships", "sentiment": "positive", "evidence": "Maintains luxury brand positioning alongside group activities in 2026. Intellectual artist-as-brand strategy continues.", "sources": ["Tatler Asia"] }
+  ],
+  "chart_signals": { "spotify_monthly_listeners": null, "charting_songs": ["Right Place Wrong Person (2024, ongoing streams)", "Indigo project catalog", "ARIRANG group songs"], "notable_movements": ["Solo US trip to 'set everything' for ARIRANG album", "First group Hot 100 entry of 2026"] },
+  "key_phrases": ["group creative leader", "Indigo legacy", "solo album introspection", "luxury ambassador", "post-military production focus"],
+  "annotation_hooks": ["RM's Indigo (2022) established him as introspective, museum-visiting, art-referencing lyricist — now his creative direction shapes the entire group's post-military narrative", "Bottega Veneta + Samsung partnerships reflect RM's intellectual positioning, distinguishing him from pure performer-idols — parallels sophistication in tracks like 'Mono'", "Leadership through production: solo US trip symbolizes responsibility to 'set everything' for collective reunion — the 방탄 (bulletproof) leader metaphor made literal"],
+  "raw_headlines": ["RM Jets to US Solo to Set Everything for BTS 2026 Album", "RM and BTS Complete Military-Era Solo Sweep on Hot 100", "RM Continues Bottega Veneta and Samsung Ambassador Roles in 2026"]
+}
