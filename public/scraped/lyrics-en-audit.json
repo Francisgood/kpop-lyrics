@@ -1,0 +1,32 @@
+{
+  "generated": "2026-06-02T15:44:44.587Z",
+  "stats": {
+    "dry_run": 3
+  },
+  "entries": [
+    {
+      "songSlug": "kiss-of-life-224-tell-me",
+      "songTitle": "Tell Me",
+      "artist": "Kiss of Life",
+      "status": "dry_run",
+      "geniusUrl": "https://genius.com/Genius-english-translations-kiss-of-life-tell-me-english-translation-lyrics",
+      "lines": 53
+    },
+    {
+      "songSlug": "kiss-of-life-224-painting",
+      "songTitle": "Painting",
+      "artist": "Kiss of Life",
+      "status": "dry_run",
+      "geniusUrl": "https://genius.com/Genius-english-translations-kiss-of-life-painting-english-translation-lyrics",
+      "lines": 48
+    },
+    {
+      "songSlug": "kiss-of-life-224-lips-hips-kiss",
+      "songTitle": "Lips Hips Kiss",
+      "artist": "Kiss of Life",
+      "status": "dry_run",
+      "geniusUrl": "https://genius.com/Genius-english-translations-kiss-of-life-lips-hips-kiss-english-translation-lyrics",
+      "lines": 66
+    }
+  ]
+}
