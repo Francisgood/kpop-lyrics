@@ -252,6 +252,11 @@ canvas { max-width: 100% !important; }
    EXPLORE is a no-op. On mobile the form is hidden, so auto pushes EXPLORE
    to the far right. No extra rule needed — handled by the inline style. */
 
+/* ── Kimchi Rating icons ──────────────────────────────────────────────────── */
+.kimchi-icon { width: 44px; height: 44px; }
+@media (min-width: 400px) { .kimchi-icon { width: 56px; height: 56px; } }
+@media (min-width: 640px) { .kimchi-icon { width: 80px; height: 80px; } }
+
 /* Collabs network: limit height on mobile */
 @media (max-width: 768px) {
   canvas { height: 300px !important; }

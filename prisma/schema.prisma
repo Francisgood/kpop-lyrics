@@ -225,6 +225,7 @@ model User {
   annotationVotes     AnnotationVote[]
   annotationComments  AnnotationComment[]
   pointEvents         PointEvent[]
+  kimchiRatings       KimchiRating[]
 }
 
 model PointEvent {
@@ -397,6 +398,23 @@ model TrendingCache {
 
   @@unique([entityType, entityId, period])
   @@index([entityType, period, score])
+}
+
+// ── Kimchi Ratings ────────────────────────────────────────────────────────────
+
+model KimchiRating {
+  id         String   @id @default(cuid())
+  entityType String   // "song" | "artist"
+  entityId   String
+  userId     String
+  rating     Int      // 1–5
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([entityType, entityId, userId])
+  @@index([entityType, entityId])
+  @@index([userId])
 }
 
 // ── Search Analytics ─────────────────────────────────────────────────────────

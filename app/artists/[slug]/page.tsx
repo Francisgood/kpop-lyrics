@@ -5,6 +5,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import CommentsSection from "@/components/CommentsSection";
 import EditableWrapper from "@/components/EditableWrapper";
 import AuditLogPanel from "@/components/AuditLogPanel";
+import KimchiRating from "@/components/KimchiRating";
 import { getSession } from "@/lib/auth";
 import { canDirectEdit as checkDirectEdit, canSeeAuditLog } from "@/lib/permissions";
 
@@ -61,6 +62,21 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
   ]);
 
   if (!artist) notFound();
+
+  const [kimchiAgg, kimchiUserRow] = await Promise.all([
+    prisma.kimchiRating.aggregate({
+      where: { entityType: "artist", entityId: artist.id },
+      _avg: { rating: true },
+      _count: { rating: true },
+    }),
+    session
+      ? prisma.kimchiRating.findUnique({
+          where: { entityType_entityId_userId: { entityType: "artist", entityId: artist.id, userId: session.user.id } },
+          select: { rating: true },
+        })
+      : null,
+  ]);
+
   const isLoggedIn = !!session;
   const userCanDirectEdit = session ? checkDirectEdit(session.user) : false;
   const userCanSeeAudit   = session ? canSeeAuditLog(session.user)  : false;
@@ -94,13 +110,25 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
           </div>
 
           <div style={{ display: "flex", gap: 32, alignItems: "flex-end", flexWrap: "wrap" }}>
-            {artist.imageUrl ? (
-              <img src={artist.imageUrl} alt={artist.stageName} style={{ width: 160, height: 160, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid rgba(255,255,100,0.3)" }} />
-            ) : (
-              <div style={{ width: 160, height: 160, borderRadius: "50%", flexShrink: 0, background: "linear-gradient(135deg, rgba(255,255,100,0.2), rgba(255,255,100,0.05))", border: "2px solid rgba(255,255,100,0.3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "4rem" }}>
-                {isGroup ? "🎤" : artist.type === "SOLOIST" ? "⭐" : "👤"}
-              </div>
-            )}
+            {/* Artist image + Kimchi Rating stacked beneath it */}
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14, flexShrink: 0 }}>
+              {artist.imageUrl ? (
+                <img src={artist.imageUrl} alt={artist.stageName} style={{ width: 160, height: 160, borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(255,255,100,0.3)" }} />
+              ) : (
+                <div style={{ width: 160, height: 160, borderRadius: "50%", background: "linear-gradient(135deg, rgba(255,255,100,0.2), rgba(255,255,100,0.05))", border: "2px solid rgba(255,255,100,0.3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "4rem" }}>
+                  {isGroup ? "🎤" : artist.type === "SOLOIST" ? "⭐" : "👤"}
+                </div>
+              )}
+              <KimchiRating
+                entityType="artist"
+                entityId={artist.id}
+                isLoggedIn={isLoggedIn}
+                initialAvg={Number((kimchiAgg._avg.rating ?? 0).toFixed(2))}
+                initialCount={kimchiAgg._count.rating}
+                initialUserRating={kimchiUserRow?.rating ?? null}
+                onDark
+              />
+            </div>
             <div>
               <div style={{ fontSize: "0.7rem", color: "var(--genius-yellow)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 8 }}>
                 {isGroup ? "K-pop Group" : artist.type === "SOLOIST" ? "Solo Artist" : "K-pop Artist"}

@@ -11,6 +11,7 @@ import CommentsSection from "@/components/CommentsSection";
 import EditableWrapper from "@/components/EditableWrapper";
 import AuditLogPanel from "@/components/AuditLogPanel";
 import LyricsSection from "@/components/LyricsSection";
+import KimchiRating from "@/components/KimchiRating";
 import { getSession } from "@/lib/auth";
 import { canDirectEdit as checkDirectEdit, canSeeAuditLog, canAnnotate as checkCanAnnotate } from "@/lib/permissions";
 
@@ -70,6 +71,21 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const [song, session] = await Promise.all([getSong(slug), getSession()]);
   if (!song) notFound();
+
+  const [kimchiAgg, kimchiUserRow] = await Promise.all([
+    prisma.kimchiRating.aggregate({
+      where: { entityType: "song", entityId: song.id },
+      _avg: { rating: true },
+      _count: { rating: true },
+    }),
+    session
+      ? prisma.kimchiRating.findUnique({
+          where: { entityType_entityId_userId: { entityType: "song", entityId: song.id, userId: session.user.id } },
+          select: { rating: true },
+        })
+      : null,
+  ]);
+
   const isLoggedIn = !!session;
   const userCanDirectEdit = session ? checkDirectEdit(session.user) : false;
   const userCanSeeAudit   = session ? canSeeAuditLog(session.user)  : false;
@@ -130,15 +146,27 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
           </div>
 
           <div style={{ display: "flex", gap: 32, alignItems: "flex-start", flexWrap: "wrap" }}>
-            <EditableWrapper field="coverArt" entityType="song" entityId={song.id} currentVal={song.coverArt ?? ""} isLoggedIn={isLoggedIn} canDirectEdit={userCanDirectEdit}>
-              {(song.coverArt || song.album?.coverArt) ? (
-                <img src={song.coverArt || song.album?.coverArt || ""} alt={song.album?.title ?? song.title} style={{ width: 140, height: 140, borderRadius: 6, objectFit: "cover", flexShrink: 0, boxShadow: "0 4px 24px rgba(0,0,0,0.5)" }} />
-              ) : (
-                <div style={{ width: 140, height: 140, borderRadius: 6, flexShrink: 0, background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "3rem" }}>
-                  🎵
-                </div>
-              )}
-            </EditableWrapper>
+            {/* Cover art + Kimchi Rating stacked beneath it */}
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14, flexShrink: 0 }}>
+              <EditableWrapper field="coverArt" entityType="song" entityId={song.id} currentVal={song.coverArt ?? ""} isLoggedIn={isLoggedIn} canDirectEdit={userCanDirectEdit}>
+                {(song.coverArt || song.album?.coverArt) ? (
+                  <img src={song.coverArt || song.album?.coverArt || ""} alt={song.album?.title ?? song.title} style={{ width: 140, height: 140, borderRadius: 6, objectFit: "cover", boxShadow: "0 4px 24px rgba(0,0,0,0.5)" }} />
+                ) : (
+                  <div style={{ width: 140, height: 140, borderRadius: 6, background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "3rem" }}>
+                    🎵
+                  </div>
+                )}
+              </EditableWrapper>
+              <KimchiRating
+                entityType="song"
+                entityId={song.id}
+                isLoggedIn={isLoggedIn}
+                initialAvg={Number((kimchiAgg._avg.rating ?? 0).toFixed(2))}
+                initialCount={kimchiAgg._count.rating}
+                initialUserRating={kimchiUserRow?.rating ?? null}
+                onDark
+              />
+            </div>
             <div>
               <EditableWrapper field="title" entityType="song" entityId={song.id} currentVal={song.title} isLoggedIn={isLoggedIn} canDirectEdit={userCanDirectEdit}>
                 <h1 style={{ fontSize: "2.4rem", fontWeight: 800, margin: "0 0 8px" }}>{song.title}</h1>
