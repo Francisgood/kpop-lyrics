@@ -129,12 +129,10 @@ export default async function BtsGiveawayPage({
               </div>
 
               {[
-                { emoji: '🎫', title: '2 Concert Tickets', sub: 'Next BTS world tour — any city' },
-                { emoji: '💿', title: 'Signed PROOF Album', sub: 'Hand-signed by all 7 members' },
                 {
-                  emoji: '💡',
-                  title: 'Official ARMY Bomb',
-                  sub: 'Ver. 3 limited edition lightstick',
+                  emoji: '🎫',
+                  title: '2 Luxury Box Seat Tickets',
+                  sub: 'BTS Arirang World Tour · MetLife Stadium, East Rutherford NJ · August 1, 2026',
                 },
                 {
                   emoji: '🛍️',
