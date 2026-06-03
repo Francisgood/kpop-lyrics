@@ -417,6 +417,28 @@ model KimchiRating {
   @@index([userId])
 }
 
+// ── Sweepstakes ────────────────────────────────────────────────────────────────
+
+model SweepstakesEntry {
+  id            String   @id @default(cuid())
+  firstName     String
+  lastName      String
+  phone         String
+  dateOfBirth   DateTime
+  streetAddress String
+  email         String   @unique
+  gender        String
+  newsletter    Boolean  @default(false)
+  referralCode  String   @unique
+  referredBy    String?
+  referralCount Int      @default(0)
+  totalEntries  Int      @default(1)
+  createdAt     DateTime @default(now())
+
+  @@index([referralCode])
+  @@index([email])
+}
+
 // ── Search Analytics ─────────────────────────────────────────────────────────
 
 model SearchMiss {
