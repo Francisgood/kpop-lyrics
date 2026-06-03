@@ -1,9 +1,14 @@
 export default function EmbedLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body style={{ margin: 0, padding: 0, background: '#fff', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
-        {children}
-      </body>
-    </html>
+    <>
+      {/* Hide root layout nav/footer for all iframe-embedded pages */}
+      <style>{`
+        nav.genius-nav, .genius-nav { display: none !important; }
+        footer { display: none !important; }
+        body { padding: 0 !important; margin: 0 !important; }
+        main { padding: 0 !important; }
+      `}</style>
+      {children}
+    </>
   );
 }

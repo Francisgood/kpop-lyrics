@@ -653,13 +653,7 @@ function GiveawayForm() {
 
 export default function BtsGiveawayFormPage() {
   return (
-    <>
-      <style>{`
-        nav, header, footer, .genius-nav { display: none !important; }
-        body { padding: 0 !important; margin: 0 !important; background: #fff !important; }
-        main { padding: 0 !important; }
-      `}</style>
-      <Suspense
+    <Suspense
         fallback={
           <div
             style={{
@@ -677,6 +671,5 @@ export default function BtsGiveawayFormPage() {
       >
         <GiveawayForm />
       </Suspense>
-    </>
   );
 }
