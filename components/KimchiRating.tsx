@@ -57,7 +57,7 @@ export default function KimchiRating({
   const loginColor  = onDark ? "var(--genius-yellow)"   : "#0066cc";
 
   return (
-    <div style={{ textAlign: "center" }}>
+    <div style={{ textAlign: "left" }}>
       {/* Section label */}
       <div style={{
         fontSize: "0.6rem",
@@ -67,12 +67,12 @@ export default function KimchiRating({
         color: labelColor,
         marginBottom: 6,
       }}>
-        Kimchi Rating
+        Fan Rating
       </div>
 
       {/* 5-icon row */}
       <div
-        style={{ display: "flex", gap: 4, justifyContent: "center", alignItems: "center" }}
+        style={{ display: "flex", gap: 4, justifyContent: "flex-start", alignItems: "center" }}
         onMouseLeave={() => setHovered(null)}
       >
         {[1, 2, 3, 4, 5].map((n) => {
