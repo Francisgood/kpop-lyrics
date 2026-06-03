@@ -653,23 +653,30 @@ function GiveawayForm() {
 
 export default function BtsGiveawayFormPage() {
   return (
-    <Suspense
-      fallback={
-        <div
-          style={{
-            maxWidth: 480,
-            margin: '0 auto',
-            padding: '80px 40px',
-            textAlign: 'center',
-            color: '#888',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-          }}
-        >
-          Loading…
-        </div>
-      }
-    >
-      <GiveawayForm />
-    </Suspense>
+    <>
+      <style>{`
+        nav, header, footer, .genius-nav { display: none !important; }
+        body { padding: 0 !important; margin: 0 !important; background: #fff !important; }
+        main { padding: 0 !important; }
+      `}</style>
+      <Suspense
+        fallback={
+          <div
+            style={{
+              maxWidth: 480,
+              margin: '0 auto',
+              padding: '80px 40px',
+              textAlign: 'center',
+              color: '#888',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            }}
+          >
+            Loading…
+          </div>
+        }
+      >
+        <GiveawayForm />
+      </Suspense>
+    </>
   );
 }
