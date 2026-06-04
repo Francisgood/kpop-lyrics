@@ -78,7 +78,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </div>
             <div>
               <div style={{ fontWeight: 700, fontSize: "0.72rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 12 }}>Community</div>
-              {[["Daebak Rewards", "/dashboard"], ["Leaderboard", "/leaderboard"], ["Contribute", "/signup"]].map(([label, href]) => (
+              {[["Daebak Rewards", "/dashboard"], ["Leaderboard", "/leaderboard"], ["Contribute", "/signup"], ["BTS Giveaway", "/bts-giveaway"]].map(([label, href]) => (
                 <Link key={label} href={href} style={{ display: "block", fontSize: "0.82rem", color: "rgba(255,255,255,0.5)", textDecoration: "none", marginBottom: 8, lineHeight: 1 }}>
                   {label}
                 </Link>
