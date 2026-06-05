@@ -103,6 +103,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {/* Bottom bar */}
           <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "16px 24px", textAlign: "center", fontSize: "0.72rem", color: "rgba(255,255,255,0.25)" }}>
             © {new Date().getFullYear()} Aegyo Arena · Fan-made K-pop resource · Not affiliated with any artist, label, or agency
+          {" · "}
+          <Link href="/privacy-policy" style={{ color: "inherit", textDecoration: "underline" }}>Privacy Policy</Link>
           </div>
         </footer>
       </body>

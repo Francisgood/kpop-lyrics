@@ -312,8 +312,19 @@ function PrizeTiersSection({ points, teaser = false }: { points: number; teaser?
                   <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: tier.color, borderRadius: "10px 10px 0 0" }} />
                 )}
 
-                {/* Emoji + label */}
-                <div style={{ fontSize: "2rem", marginBottom: 8 }}>{tier.emoji}</div>
+                {/* Emoji (or plushie thumbnail) + label */}
+                <div style={{ fontSize: "2rem", marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
+                  {tier.key === "plushie" ? (
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src="/images/bts-plushie-1.png" alt="BTS plushie" style={{ width: 32, height: 32, objectFit: "cover", borderRadius: "50%" }} />
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src="/images/bts-plushie-2.png" alt="BTS plushie" style={{ width: 32, height: 32, objectFit: "cover", borderRadius: "50%" }} />
+                    </>
+                  ) : (
+                    tier.emoji
+                  )}
+                </div>
                 <div style={{ fontWeight: 800, color: "#fff", fontSize: "0.95rem", marginBottom: 4 }}>
                   {tier.label}
                 </div>
@@ -355,6 +366,30 @@ function PrizeTiersSection({ points, teaser = false }: { points: number; teaser?
               </div>
             );
           })}
+        </div>
+
+        {/* Plushie examples */}
+        <div style={{ marginTop: 32, paddingTop: 28, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+          <div style={{ fontSize: "0.68rem", color: "var(--genius-yellow)", letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 700, marginBottom: 14 }}>
+            Example Plushies · 2,000 pts tier
+          </div>
+          <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+            {["/images/bts-plushie-1.png", "/images/bts-plushie-2.png"].map((src, i) => (
+              <div key={i} style={{ background: "#1a1a1a", borderRadius: 12, overflow: "hidden", border: "1px solid rgba(139,92,246,0.3)", width: 160 }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={src} alt={`BTS plushie ${i + 1}`} style={{ width: "100%", aspectRatio: "1", objectFit: "cover", display: "block" }} />
+                <div style={{ padding: "10px 12px", fontSize: "0.72rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.4 }}>
+                  Aegyo Arena<br />
+                  <span style={{ color: "#8b5cf6", fontWeight: 700 }}>BTS Character Plushie</span>
+                </div>
+              </div>
+            ))}
+            <div style={{ display: "flex", alignItems: "center", padding: "0 8px" }}>
+              <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.3)", lineHeight: 1.6, maxWidth: 180 }}>
+                Reach <span style={{ color: "#8b5cf6", fontWeight: 700 }}>2,000 pts</span> to unlock your choice of K-pop character plushie.
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

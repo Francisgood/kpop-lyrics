@@ -228,7 +228,13 @@ export default async function BtsGiveawayPage({
                 }}
               >
                 Must be 18+ to enter. Giveaway ends when winner is drawn. No purchase necessary.
-                Void where prohibited.
+                Void where prohibited.{' '}
+                <a
+                  href="/bts-giveaway-sweepstakes-terms"
+                  style={{ color: '#B47FFF', textDecoration: 'underline' }}
+                >
+                  Full promotional terms &amp; conditions.
+                </a>
               </div>
             </div>
           </div>
