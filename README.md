@@ -7,6 +7,8 @@ Aegyo Arena is a comprehensive K-pop lyrics, annotations, and artist collaborati
 - Node.js (v22+)
 - npm
 - Git
+- PostgreSQL (Production)
+- SQLite (Development)
 
 ## Local Development Setup
 
@@ -23,12 +25,9 @@ cp .env.example .env
 ```
 2. Edit `.env` and replace placeholder values with your specific configurations
 
-### 3. Install Dependencies
-```bash
-npm install
-```
+### 3. Database Setup
 
-### 4. Database Setup
+#### Development (SQLite)
 ```bash
 # Generate Prisma Client
 npx prisma generate
@@ -38,6 +37,41 @@ npx prisma migrate deploy
 
 # Seed Initial Database
 npx prisma db seed
+```
+
+#### Production (PostgreSQL)
+1. Create a PostgreSQL database
+2. Update `.env` with your database credentials
+3. Set environment variables:
+```bash
+export DATABASE_PROVIDER=postgresql
+export DATABASE_URL="postgresql://username:password@host:port/database"
+```
+
+4. Run production database setup
+```bash
+# Generate Prisma Client
+npx prisma generate
+
+# Run Migrations
+npx prisma migrate deploy
+
+# Seed Production Database
+npx prisma db seed
+
+# Verify Database
+npx prisma migrate status
+```
+
+##### Production Database Best Practices
+- Use connection pooling
+- Enable SSL for database connections
+- Implement connection retry logic
+- Use environment-specific migration strategies
+
+### 4. Install Dependencies
+```bash
+npm install
 ```
 
 ### 5. Development Server
@@ -54,14 +88,15 @@ npm run start
 
 ## Deployment Considerations
 - Ensure all environment variables are properly configured
-- Use a production-ready database (consider PostgreSQL for scaling)
 - Set up proper security headers and CORS configurations
+- Use PostgreSQL for production scalability
+- Implement robust error logging and monitoring
 
 ## Tech Stack
 - Next.js 15
 - React 19
 - Prisma ORM
-- SQLite (development)
+- PostgreSQL
 - TypeScript
 
 ## Contributing
