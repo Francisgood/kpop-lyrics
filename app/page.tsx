@@ -1,8 +1,8 @@
-import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { CONTRIBUTORS } from "./leaderboard/data";
+import HomeInteractions from "@/components/HomeInteractions";
 
-// Re-generate the homepage every 5 minutes so trending & news stay fresh
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
@@ -16,223 +16,285 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image" },
 };
 
+const MARQUEE_ITEMS = [
+  "HYBE Entertainment", "SM Entertainment", "YG Entertainment", "JYP Entertainment",
+  "Aegyo Rewards", "K-Pop Lyrics", "Fan Annotations", "Slang Dictionary",
+  "Concert Tickets", "Signed Memorabilia", "240,000 Members",
+];
+
+const REWARDS = [
+  { cls: "rc-sakura",    badge: "Tier 1",  icon: "👕", name: "Merch Drop",        pts: "1,000 pts" },
+  { cls: "rc-volt",      badge: "Tier 2",  icon: "🧸", name: "K-pop Plushie",     pts: "2,000 pts" },
+  { cls: "rc-sky",       badge: "Tier 3",  icon: "✨", name: "Desk Toy",          pts: "3,000 pts" },
+  { cls: "rc-tangerine", badge: "Tier 4",  icon: "🎫", name: "Concert Ticket",    pts: "4,000 pts" },
+  { cls: "rc-lavender",  badge: "Auction", icon: "✍️", name: "Signed Memorabilia", pts: "Bid-based" },
+];
+
+const EARN_WAYS = [
+  { icon: "🎤", iconCls: "ewi-1", name: "Post a Comment",      desc: "Share your thoughts on any song, artist, or album", pts: "+10 pts" },
+  { icon: "✍️", iconCls: "ewi-2", name: "Add an Annotation",    desc: "Decode a lyric line for the community",             pts: "+30 pts" },
+  { icon: "✅", iconCls: "ewi-3", name: "Get an Edit Approved", desc: "Submit corrections a moderator validates",          pts: "+50 pts" },
+  { icon: "⭐", iconCls: "ewi-4", name: "Sign-up Bonus",        desc: "One-time reward when you create your account",      pts: "+100 pts" },
+  { icon: "🔗", iconCls: "ewi-5", name: "Link Social Profiles", desc: "Verify up to 3 social media accounts",              pts: "+10 each" },
+];
+
+const MERCH = [
+  { img: "/images/redesign/merch-01.png", size: "wide", tag: "Drop 01", text: "\u201cHwaiting !!!\u201d — Neon Seoul" },
+  { img: "/images/redesign/merch-02.png", size: "wide", tag: "Drop 02", text: "\u201cI Learned Korean For This\u201d" },
+  { img: "/images/redesign/merch-03.png", size: "tall", tag: "Drop 03", text: "\u201cMy Parents Think It's A Phase\u201d" },
+  { img: "/images/redesign/merch-04.png", size: "tall", tag: "Drop 04", text: "\u201cUnboxed 12 Albums. Got His Unit.\u201d" },
+  { img: "/images/redesign/merch-05.png", size: "tall", tag: "Drop 05", text: "\u201cMukbang Made Me Do It\u201d" },
+  { img: "/images/redesign/merch-06.png", size: "tall", tag: "Drop 06", text: "\u201cKilling Part Survivor\u201d" },
+];
+
+const AVATAR_TINTS = [
+  { bg: "rgba(255,111,168,0.2)", color: "var(--sakura)" },
+  { bg: "var(--lavender-dim)",   color: "var(--lavender)" },
+  { bg: "var(--sky-dim)",        color: "var(--sky)" },
+  { bg: "var(--volt-dim)",       color: "var(--volt)" },
+  { bg: "rgba(255,140,66,0.18)", color: "var(--tangerine)" },
+  { bg: "rgba(255,111,168,0.2)", color: "var(--sakura)" },
+];
+
 export default async function HomePage() {
-  const [trendingSongs, groups, latestNews, soloistRows] = await Promise.all([
-    prisma.song.findMany({
-      orderBy: { viewCount: "desc" },
-      take: 8,
-      include: { album: { include: { artist: true } } },
-    }),
-    prisma.artist.findMany({
-      where: { type: "GROUP" },
-      take: 6,
-      include: { label: true },
-      orderBy: { stageName: "asc" },
-    }),
-    prisma.artistNews.findMany({
-      orderBy: { publishedAt: "desc" },
-      take: 5,
-      include: { artist: true },
-    }),
-    // Featured soloists — SOLOIST type artists plus Doja Cat (COLLAB type) with images
-    prisma.artist.findMany({
-      where: {
-        imageUrl: { not: null },
-        OR: [
-          { type: "SOLOIST" },
-          { slug: "doja-cat" },
-        ],
-      },
-      take: 6,
-      orderBy: { stageName: "asc" },
-    }),
-  ]);
-
-  const soloists = soloistRows.filter(a => a.imageUrl);
-
-  // Top 3 by viewCount get a 🔥 Trending badge
-  const trendingIds = new Set(trendingSongs.slice(0, 3).map(s => s.id));
+  const topContributors = CONTRIBUTORS.slice(0, 6);
 
   return (
     <main>
-      {/* Hero */}
-      <section style={{ background: "linear-gradient(135deg, #000 0%, #1a1a2e 60%, #0f3460 100%)", color: "#fff", padding: "80px 24px 60px" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.2em", color: "var(--genius-yellow)", marginBottom: 12, textTransform: "uppercase" }}>
-            The Ultimate K-pop Wiki
+      {/* ── HERO ─────────────────────────────────────────────────────────── */}
+      <section className="hero">
+        <div className="hero-image-bg">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/redesign/hero-plush.png" alt="Aegyo Arena Plush Collection — all seven chibi characters holding hands" />
+        </div>
+
+        <div className="hero-content">
+          <div className="fade-up fade-up-1">
+            <div style={{ marginBottom: 28 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/aegyo-logo.png" alt="Aegyo Arena" style={{ height: 88, width: "auto", display: "block", maxWidth: "100%" }} />
+            </div>
+            <div className="hero-eyebrow">Fan-made · Fandom-powered</div>
+            <p className="hero-body">
+              The K-pop universe built by fans, for fans. Annotate lyrics, decode slang, and earn real rewards — including our iconic chibi plush collection.
+            </p>
+            <div className="hero-actions">
+              <Link href="/signup" className="btn-primary">
+                Start Earning
+                <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+              </Link>
+              <Link href="/artists" className="btn-ghost">Explore Artists</Link>
+            </div>
           </div>
-          <h1 style={{ fontSize: "clamp(2.5rem, 6vw, 4rem)", fontWeight: 800, lineHeight: 1.1, margin: "0 0 20px" }}>
-            Every lyric.<br />Every meaning.
-          </h1>
-          <p style={{ fontSize: "1.15rem", color: "rgba(255,255,255,0.7)", maxWidth: 580, marginBottom: 32 }}>
-            Aegyo Arena is the fan-powered home for everything K-pop: the artists, the groups, the songs, and the stories behind them — documented and celebrated by the community that knows them best.
-          </p>
-          <form action="/search" style={{ display: "flex", gap: 8, maxWidth: 480 }}>
-            <input name="q" type="search" placeholder="Search for a song or artist..." className="search-input" style={{ flex: 1 }} />
-            <button type="submit" className="btn-yellow">SEARCH</button>
-          </form>
+
+          <div className="hero-right-block fade-up fade-up-2">
+            <div className="hero-collection-tag">
+              <span style={{ width: 6, height: 6, background: "#fff", borderRadius: "50%", display: "inline-block", flexShrink: 0 }} />
+              Limited Collection · 490 units
+            </div>
+            <div className="hero-stat-grid">
+              <div className="hsg-cell"><span className="hsg-num">240k+</span><span className="hsg-label">Fan Members</span></div>
+              <div className="hsg-cell"><span className="hsg-num">18k+</span><span className="hsg-label">Songs Annotated</span></div>
+              <div className="hsg-cell"><span className="hsg-num">7</span><span className="hsg-label">Plush Characters</span></div>
+              <div className="hsg-cell"><span className="hsg-num">4</span><span className="hsg-label">Major Labels</span></div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 24px" }}>
-
-        {/* Today in K-pop — latest news strip */}
-        {latestNews.length > 0 && (
-          <section style={{ marginBottom: 56 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-              <div className="section-header" style={{ margin: 0 }}>Today in K-pop</div>
-              <span style={{ fontSize: "0.68rem", background: "#FFFF64", color: "#000", fontWeight: 800, padding: "3px 8px", borderRadius: 999, letterSpacing: "0.08em", textTransform: "uppercase" }}>
-                LIVE
-              </span>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
-              {latestNews.map(item => {
-                const catColors: Record<string, { bg: string; color: string }> = {
-                  milestone: { bg: "#FFFF64", color: "#000" },
-                  comeback:  { bg: "#000",    color: "#FFFF64" },
-                  award:     { bg: "#ACFA52", color: "#000" },
-                  collab:    { bg: "#e0e0ff", color: "#000" },
-                  label:     { bg: "#1a1a2e", color: "#fff" },
-                  legal:     { bg: "#FF2A38", color: "#fff" },
-                  member:    { bg: "#f0f0f0", color: "#000" },
-                };
-                const cat = catColors[item.category] ?? { bg: "#f0f0f0", color: "#000" };
-                return (
-                  <Link key={item.id} href={`/artists/${item.artist.slug}`} style={{ textDecoration: "none" }}>
-                    <div className="genius-card" style={{ padding: 16, display: "flex", gap: 12, alignItems: "flex-start", position: "relative", overflow: "hidden" }}>
-                      {item.artist.imageUrl && (
-                        <img src={item.artist.imageUrl} alt="" style={{ position: "absolute", top: 0, right: 0, height: "100%", width: 70, objectFit: "cover", opacity: 0.07 }} />
-                      )}
-                      {item.artist.imageUrl ? (
-                        <img src={item.artist.imageUrl} alt={item.artist.stageName} style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid #eee" }} />
-                      ) : (
-                        <div style={{ width: 40, height: 40, borderRadius: "50%", background: "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.1rem", flexShrink: 0 }}>🎤</div>
-                      )}
-                      <div style={{ minWidth: 0, position: "relative" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4, flexWrap: "wrap" }}>
-                          <span style={{ fontWeight: 700, fontSize: "0.75rem", color: "#000" }}>{item.artist.stageName}</span>
-                          <span style={{ fontSize: "0.62rem", background: cat.bg, color: cat.color, padding: "2px 6px", borderRadius: 999, fontWeight: 700, textTransform: "uppercase" }}>{item.category}</span>
-                        </div>
-                        <div style={{ fontWeight: 700, fontSize: "0.84rem", color: "#000", lineHeight: 1.4, marginBottom: 3 }}>{item.headline}</div>
-                        {item.publishedAt && (
-                          <div style={{ fontSize: "0.68rem", color: "var(--genius-gray)" }}>
-                            {new Date(item.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                            {item.source ? ` · ${item.source}` : ""}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
-        )}
-
-        {/* Trending Songs */}
-        <section style={{ marginBottom: 56 }}>
-          <div className="section-header">Trending Songs</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
-            {trendingSongs.map((song) => (
-              <Link key={song.id} href={`/songs/${song.slug}`} style={{ textDecoration: "none" }}>
-                <div className="genius-card" style={{ padding: "16px", display: "flex", gap: 14, alignItems: "center", position: "relative" }}>
-                  {trendingIds.has(song.id) && (
-                    <span style={{ position: "absolute", top: 8, right: 10, fontSize: "0.62rem", background: "#FF2A38", color: "#fff", fontWeight: 800, padding: "2px 6px", borderRadius: 999, letterSpacing: "0.06em" }}>
-                      🔥 HOT
-                    </span>
-                  )}
-                  {(song.coverArt || song.album?.coverArt) ? (
-                    <img
-                      src={song.coverArt || song.album?.coverArt || ""}
-                      alt={song.title}
-                      style={{ width: 56, height: 56, borderRadius: 4, objectFit: "cover", flexShrink: 0 }}
-                    />
-                  ) : (
-                    <div style={{
-                      width: 56, height: 56, borderRadius: 4, flexShrink: 0,
-                      background: "linear-gradient(135deg, #1a1a2e, #0f3460)",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: "1.4rem",
-                    }}>🎵</div>
-                  )}
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "#000", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {song.title}
-                    </div>
-                    <div style={{ fontSize: "0.8rem", color: "var(--genius-gray)", marginTop: 2 }}>
-                      {song.album?.artist?.stageName ?? "Unknown Artist"}
-                    </div>
-                    <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginTop: 2 }}>
-                      {song.viewCount.toLocaleString()} views
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 48 }}>
-          {/* Featured Groups + Soloists */}
-          <section>
-            <div className="section-header">Featured Groups</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 16, marginBottom: soloists.length > 0 ? 40 : 0 }}>
-              {groups.map((group) => (
-                <Link key={group.id} href={`/artists/${group.slug}`} style={{ textDecoration: "none" }}>
-                  <div className="member-card" style={{ aspectRatio: "1", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, overflow: "hidden", position: "relative" }}>
-                    {group.imageUrl ? (
-                      <img src={group.imageUrl} alt={group.stageName} style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "3px solid #fff", boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }} />
-                    ) : (
-                      <div style={{ fontSize: "2.5rem" }}>🎤</div>
-                    )}
-                    <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "#000" }}>{group.stageName}</div>
-                    <div style={{ fontSize: "0.75rem", color: "var(--genius-gray)" }}>{group.label?.name ?? ""}</div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            {soloists.length > 0 && (
-              <>
-                <div className="section-header">Featured Soloists</div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 16 }}>
-                  {soloists.map((artist) => (
-                    <Link key={artist.id} href={`/artists/${artist.slug}`} style={{ textDecoration: "none" }}>
-                      <div className="member-card" style={{ aspectRatio: "1", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, overflow: "hidden", position: "relative" }}>
-                        <img src={artist.imageUrl!} alt={artist.stageName} style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "3px solid #fff", boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }} />
-                        <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "#000" }}>{artist.stageName}</div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </>
-            )}
-          </section>
-
-          {/* Labels Sidebar */}
-          <section>
-            <div className="section-header">Labels</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {[
-                ["HYBE Entertainment", "/labels/hybe-entertainment"],
-                ["SM Entertainment",  "/labels/sm-entertainment"],
-                ["YG Entertainment",  "/labels/yg-entertainment"],
-                ["JYP Entertainment", "/labels/jyp-entertainment"],
-                ["Starship Entertainment", "/labels/starship-entertainment"],
-              ].map(([name, href]) => (
-                <Link key={href} href={href} style={{ textDecoration: "none" }}>
-                  <div className="genius-card" style={{ padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "#000" }}>{name}</div>
-                    <div style={{ color: "var(--genius-gray)", fontSize: "1.2rem" }}>›</div>
-                  </div>
-                </Link>
-              ))}
-              <Link href="/define" className="btn-yellow" style={{ textAlign: "center", marginTop: 8 }}>
-                EXPLORE K-POP TERMS
-              </Link>
-            </div>
-          </section>
+      {/* ── MARQUEE ──────────────────────────────────────────────────────── */}
+      <div className="marquee-wrap">
+        <div className="marquee-track">
+          {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
+            <span className="marquee-item" key={i}><span className="marquee-dot" />{item}</span>
+          ))}
         </div>
+      </div>
+
+      {/* ── LEADERBOARD: TOP CONTRIBUTORS ────────────────────────────────── */}
+      <section className="section section-dark">
+        <div className="lb-layout">
+          <div className="lb-intro">
+            <div className="section-eyebrow">Hall of Fame</div>
+            <h2 className="section-title">Top<br /><em>Contributors</em><br />This Month</h2>
+            <p>The community champions who shape the wiki. Annotate lyrics, correct translations, decode slang — and climb the ranks to earn exclusive rewards.</p>
+            <Link href="/leaderboard" className="btn-primary" style={{ display: "inline-flex" }}>View Full Leaderboard</Link>
+          </div>
+
+          <div className="leaderboard-list">
+            {topContributors.map((c, i) => {
+              const rankCls = i === 0 ? "lb-rank-gold" : i === 1 ? "lb-rank-silver" : i === 2 ? "lb-rank-bronze" : "";
+              const tint = AVATAR_TINTS[i] ?? AVATAR_TINTS[0];
+              return (
+                <Link href="/leaderboard" className="lb-item" key={c.username}>
+                  <span className={`lb-rank ${rankCls}`}>#{i + 1}</span>
+                  <div className="lb-avatar" style={{ background: tint.bg, color: tint.color }}>{c.initial}</div>
+                  <span className="lb-name">{c.username}</span>
+                  <span>{i === 0 ? <span className="pill"><span className="pill-dot" />Top Fan</span> : null}</span>
+                  <span className="lb-pts">{c.points.toLocaleString()} pts</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── REWARDS ──────────────────────────────────────────────────────── */}
+      <section className="section section-mid">
+        <div className="section-head-row">
+          <div>
+            <div className="section-eyebrow">Aegyo Rewards</div>
+            <h2 className="section-title">Collect Points.<br /><em>Win the Dream.</em></h2>
+          </div>
+          <p className="section-sub">Every annotation, comment, and approved edit brings you closer to your idol.</p>
+        </div>
+
+        <div className="rewards-grid">
+          {REWARDS.map((r) => (
+            <Link href="/dashboard" className={`reward-card ${r.cls}`} key={r.name}>
+              <span className="reward-badge">{r.badge}</span>
+              <span className="reward-icon">{r.icon}</span>
+              <div className="reward-name">{r.name}</div>
+              <div className="reward-pts">{r.pts}</div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ── EARN ─────────────────────────────────────────────────────────── */}
+      <section className="section section-dark">
+        <div className="earn-grid">
+          <div>
+            <div className="earn-card-stack">
+              <div className="earn-card ec1">
+                <div className="earn-card-label">Top Action</div>
+                <div className="earn-card-pts">+50</div>
+                <div className="earn-card-desc">Approved Edit — your knowledge shapes the wiki</div>
+              </div>
+              <div className="earn-card ec2">
+                <div className="earn-card-label">Annotation</div>
+                <div className="earn-card-pts">+30</div>
+                <div className="earn-card-desc">Explain a lyric. Help the fandom understand.</div>
+              </div>
+              <div className="earn-card ec3">
+                <div className="earn-card-label">Comment</div>
+                <div className="earn-card-pts">+10</div>
+                <div className="earn-card-desc">Join the conversation on any song page.</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div className="section-eyebrow">How to Earn</div>
+            <h2 className="section-title" style={{ marginBottom: 40 }}>Five Ways<br /><em>to Win Points</em></h2>
+            <ul className="earn-ways">
+              {EARN_WAYS.map((w) => (
+                <li className="earn-way" key={w.name}>
+                  <div className="earn-way-left">
+                    <div className={`earn-way-icon ${w.iconCls}`}>{w.icon}</div>
+                    <div>
+                      <span className="earn-way-name">{w.name}</span>
+                      <span className="earn-way-desc">{w.desc}</span>
+                    </div>
+                  </div>
+                  <span className="earn-pts-badge">{w.pts}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* ── MERCH ────────────────────────────────────────────────────────── */}
+      <section className="merch-section section-mid">
+        <div className="merch-header">
+          <div>
+            <div className="section-eyebrow">Aegyo Merch</div>
+            <h2 className="section-title">Wear the<br /><em>Culture.</em></h2>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <p className="section-sub">Earned through points. Worn in the streets of Seoul.</p>
+            <Link href="/dashboard" className="btn-primary" style={{ display: "inline-flex", marginTop: 20 }}>Shop the Merch</Link>
+          </div>
+        </div>
+
+        <div className="merch-scroll" id="merchScroll">
+          {MERCH.map((m) => (
+            <div className={`merch-card ${m.size}`} key={m.tag}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={m.img} alt={m.text} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center", display: "block" }} />
+              <div className="merch-caption">
+                <div className="merch-caption-tag">{m.tag}</div>
+                <div className="merch-caption-text">{m.text}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── EXPLORE ──────────────────────────────────────────────────────── */}
+      <section className="section section-dark">
+        <div className="section-head-row">
+          <div>
+            <div className="section-eyebrow">The Universe</div>
+            <h2 className="section-title">Explore<br /><em>Everything.</em></h2>
+          </div>
+          <p className="section-sub">Artists, lyrics, slang, collaborations, cities and sounds.</p>
+        </div>
+
+        <div className="featured-grid">
+          <Link href="/artists" className="feat-card feat-main" style={{ backgroundImage: "url('/images/redesign/explore-artists.png')", backgroundSize: "cover", backgroundPosition: "center top", gridColumn: 1, gridRow: "1/3", minHeight: 500 }}>
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(30,35,45,0.95) 0%,rgba(30,35,45,0.4) 50%,rgba(30,35,45,0.1) 100%)" }} />
+            <div style={{ position: "relative", zIndex: 2 }}>
+              <div className="feat-tag" style={{ color: "var(--sakura)" }}>Artists</div>
+              <div className="feat-title">Discover Every<br />Artist &amp; Group</div>
+            </div>
+          </Link>
+
+          <Link href="/songs" className="feat-card feat-small" style={{ backgroundImage: "url('/images/redesign/explore-lyrics.png')", backgroundSize: "cover", backgroundPosition: "center 20%", border: "none" }}>
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(20,15,35,0.92) 0%,rgba(20,15,35,0.3) 60%,transparent 100%)" }} />
+            <div style={{ position: "relative", zIndex: 2 }}>
+              <div className="feat-tag" style={{ color: "var(--lavender)" }}>Lyrics</div>
+              <div className="feat-title">18k+ Songs Annotated</div>
+            </div>
+          </Link>
+
+          <Link href="/define" className="feat-card feat-small-alt" style={{ backgroundImage: "url('/images/redesign/explore-slang.png')", backgroundSize: "cover", backgroundPosition: "center 30%", border: "none" }}>
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(25,20,45,0.92) 0%,rgba(25,20,45,0.3) 60%,transparent 100%)" }} />
+            <div style={{ position: "relative", zIndex: 2 }}>
+              <div className="feat-tag" style={{ color: "var(--sky)" }}>Slang</div>
+              <div className="feat-title">K-pop Slang Dictionary</div>
+            </div>
+          </Link>
+
+          <Link href="/collabs" className="feat-card feat-small-volt" style={{ backgroundImage: "url('/images/redesign/explore-collabs.png')", backgroundSize: "cover", backgroundPosition: "center top", border: "none" }}>
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(20,30,25,0.92) 0%,rgba(20,30,25,0.25) 60%,transparent 100%)" }} />
+            <div style={{ position: "relative", zIndex: 2 }}>
+              <div className="feat-tag" style={{ color: "var(--volt)" }}>Collabs</div>
+              <div className="feat-title">Artist Collaborations</div>
+            </div>
+          </Link>
+
+          <Link href="/cities" className="feat-card feat-small-sky" style={{ backgroundImage: "url('/images/redesign/explore-cities.png')", backgroundSize: "cover", backgroundPosition: "center 40%", border: "none" }}>
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(15,25,35,0.92) 0%,rgba(15,25,35,0.25) 60%,transparent 100%)" }} />
+            <div style={{ position: "relative", zIndex: 2 }}>
+              <div className="feat-tag" style={{ color: "var(--sky)" }}>Cities</div>
+              <div className="feat-title">Global K-pop Cities</div>
+            </div>
+          </Link>
+        </div>
+      </section>
+
+      {/* ── NEWSLETTER ───────────────────────────────────────────────────── */}
+      <div className="newsletter">
+        <div className="nl-blob nl-b1" />
+        <div className="nl-blob nl-b2" />
+        <div style={{ position: "relative", zIndex: 2 }}>
+          <div className="nl-eyebrow">Stay in the Loop</div>
+          <h2 className="nl-title">K-pop news,<br /><em>straight to you.</em></h2>
+          <p className="nl-sub">New lyrics, artist breakdowns, slang drops, and chart alerts. No spam. Just K-pop.</p>
+        </div>
+        <HomeInteractions />
       </div>
     </main>
   );
