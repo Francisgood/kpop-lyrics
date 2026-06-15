@@ -23,10 +23,10 @@ const MARQUEE_ITEMS = [
 ];
 
 const REWARDS = [
-  { cls: "rc-sakura",    badge: "Tier 1",  icon: "👕", name: "Merch Drop",        pts: "1,000 pts" },
-  { cls: "rc-volt",      badge: "Tier 2",  icon: "🧸", name: "K-pop Plushie",     pts: "2,000 pts" },
-  { cls: "rc-sky",       badge: "Tier 3",  icon: "✨", name: "Desk Toy",          pts: "3,000 pts" },
-  { cls: "rc-tangerine", badge: "Tier 4",  icon: "🎫", name: "Concert Ticket",    pts: "4,000 pts" },
+  { cls: "rc-sakura",    badge: "Tier 1",  icon: "👕", name: "Merch Drop",        pts: "2,000 pts" },
+  { cls: "rc-volt",      badge: "Tier 2",  icon: "🧸", name: "K-pop Plushie",     pts: "3,000 pts" },
+  { cls: "rc-sky",       badge: "Tier 3",  icon: "✨", name: "Desk Toy",          pts: "4,000 pts" },
+  { cls: "rc-tangerine", badge: "Tier 4",  icon: "🎫", name: "Concert Ticket",    pts: "5,000 pts" },
   { cls: "rc-lavender",  badge: "Auction", icon: "✍️", name: "Signed Memorabilia", pts: "Bid-based" },
 ];
 
@@ -151,7 +151,7 @@ export default async function HomePage() {
 
         <div className="rewards-grid">
           {REWARDS.map((r) => (
-            <Link href="/dashboard" className={`reward-card ${r.cls}`} key={r.name}>
+            <Link href="/daebak-rewards" className={`reward-card ${r.cls}`} key={r.name}>
               <span className="reward-badge">{r.badge}</span>
               <span className="reward-icon">{r.icon}</span>
               <div className="reward-name">{r.name}</div>

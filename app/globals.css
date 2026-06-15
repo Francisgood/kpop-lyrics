@@ -529,3 +529,8 @@ canvas { max-width: 100% !important; }
 /* All content hyperlinks in sakura pink for emphasis (2026-06-15) */
 a { color: #ff6fa8; }
 .genius-nav a { color: #2C3340; }   /* keep header links dark on the white bar */
+
+/* Daebak Rewards hero: stack text + video on mobile */
+@media (max-width: 768px) {
+  .dr-hero { grid-template-columns: 1fr !important; }
+}
