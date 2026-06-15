@@ -214,7 +214,7 @@ export default async function HomePage() {
           </div>
           <div style={{ textAlign: "right" }}>
             <p className="section-sub">Earned through points. Worn in the streets of Seoul.</p>
-            <Link href="/dashboard" className="btn-primary" style={{ display: "inline-flex", marginTop: 20 }}>Shop the Merch</Link>
+            <Link href="/merch" className="btn-primary" style={{ display: "inline-flex", marginTop: 20 }}>Shop the Merch</Link>
           </div>
         </div>
 
