@@ -64,21 +64,21 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
         {/* Animate bars into X when open */}
         <span style={{
           display: "block", width: 20, height: 2,
-          background: open ? "var(--genius-yellow)" : "rgba(255,255,255,0.8)",
+          background: open ? "var(--genius-yellow)" : "#2C3340",
           borderRadius: 2,
           transform:   open ? "translateY(7px) rotate(45deg)" : "none",
           transition:  "transform 0.2s, background 0.15s",
         }} />
         <span style={{
           display: "block", width: 20, height: 2,
-          background: "rgba(255,255,255,0.8)",
+          background: "#2C3340",
           borderRadius: 2,
           opacity:    open ? 0 : 1,
           transition: "opacity 0.15s",
         }} />
         <span style={{
           display: "block", width: 20, height: 2,
-          background: open ? "var(--genius-yellow)" : "rgba(255,255,255,0.8)",
+          background: open ? "var(--genius-yellow)" : "#2C3340",
           borderRadius: 2,
           transform:   open ? "translateY(-7px) rotate(-45deg)" : "none",
           transition:  "transform 0.2s, background 0.15s",
