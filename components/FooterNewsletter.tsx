@@ -82,7 +82,7 @@ export default function FooterNewsletter() {
             disabled={status === "loading"}
             style={{
               background: "var(--genius-yellow)",
-              color: "#000",
+              color: "var(--on-accent)",
               border: "none",
               borderRadius: 4,
               padding: "10px 20px",
