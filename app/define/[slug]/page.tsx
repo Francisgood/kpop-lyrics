@@ -158,7 +158,7 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
               <div style={{
                 background: i === 0 ? "var(--genius-yellow)" : "#f0f0f0",
-                color: "#000",
+                color: "var(--on-accent)",
                 fontWeight: 700,
                 fontSize: "0.75rem",
                 padding: "4px 12px",
@@ -177,7 +177,7 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
               </div>
             </div>
 
-            <p style={{ fontSize: "1.05rem", lineHeight: 1.8, color: "#212121", margin: "0 0 16px" }}>
+            <p style={{ fontSize: "1.05rem", lineHeight: 1.8, color: "var(--ink)", margin: "0 0 16px" }}>
               {def.body}
             </p>
 
@@ -192,7 +192,7 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
                 <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--genius-gray)", marginBottom: 6 }}>
                   Example
                 </div>
-                <div style={{ fontSize: "0.95rem", fontStyle: "italic", color: "#444" }}>
+                <div style={{ fontSize: "0.95rem", fontStyle: "italic", color: "var(--ink-dim)" }}>
                   &ldquo;{def.example}&rdquo;
                 </div>
               </div>
@@ -224,7 +224,7 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
                         />
                       )}
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "#000", marginBottom: 2 }}>
+                        <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "var(--ink)", marginBottom: 2 }}>
                           {song.title}
                         </div>
                         {artist && (
@@ -239,7 +239,7 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
                             padding: "8px 12px",
                             borderRadius: "0 4px 4px 0",
                             fontSize: "0.85rem",
-                            color: "#333",
+                            color: "var(--ink)",
                             lineHeight: 1.65,
                             fontStyle: "italic",
                             whiteSpace: "pre-line",
@@ -268,16 +268,16 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
                     <div style={{ flex: 1 }}>
                       {sig.sourceUrl ? (
                         <a href={sig.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
-                          <div style={{ fontWeight: 700, fontSize: "0.92rem", color: "#000", marginBottom: 4, lineHeight: 1.4 }}>
+                          <div style={{ fontWeight: 700, fontSize: "0.92rem", color: "var(--ink)", marginBottom: 4, lineHeight: 1.4 }}>
                             {sig.headline}
                           </div>
                         </a>
                       ) : (
-                        <div style={{ fontWeight: 700, fontSize: "0.92rem", color: "#000", marginBottom: 4, lineHeight: 1.4 }}>
+                        <div style={{ fontWeight: 700, fontSize: "0.92rem", color: "var(--ink)", marginBottom: 4, lineHeight: 1.4 }}>
                           {sig.headline}
                         </div>
                       )}
-                      <div style={{ fontSize: "0.8rem", color: "#555", lineHeight: 1.6, marginBottom: 6 }}>
+                      <div style={{ fontSize: "0.8rem", color: "var(--ink-dim)", lineHeight: 1.6, marginBottom: 6 }}>
                         {sig.body.slice(0, 180)}{sig.body.length > 180 ? "…" : ""}
                       </div>
                       <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
@@ -296,10 +296,10 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
                           fontWeight: 700,
                           letterSpacing: "0.08em",
                           textTransform: "uppercase",
-                          background: "#f0f0f0",
+                          background: "var(--surface)",
                           padding: "2px 8px",
                           borderRadius: 999,
-                          color: "#555",
+                          color: "var(--ink-dim)",
                         }}>
                           {sig.category}
                         </span>
@@ -347,14 +347,14 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
                 }}>
                   YOUTUBE
                 </span>
-                <span style={{ fontSize: "0.82rem", fontWeight: 600, color: "#000" }}>{video.idol}</span>
+                <span style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--ink)" }}>{video.idol}</span>
                 <span style={{ fontSize: "0.78rem", color: "var(--genius-gray)" }}>—</span>
                 <span style={{ fontSize: "0.78rem", color: "var(--genius-gray)", fontStyle: "italic" }}>{video.caption}</span>
               </div>
             </div>
           ) : (
             <div className="genius-card" style={{ padding: 24 }}>
-              <div style={{ fontSize: "0.88rem", color: "#444", marginBottom: 16, lineHeight: 1.6 }}>
+              <div style={{ fontSize: "0.88rem", color: "var(--ink-dim)", marginBottom: 16, lineHeight: 1.6 }}>
                 No curated clip yet for <strong>&ldquo;{term.term}&rdquo;</strong>. Search YouTube to find idols using this term in interviews, vlogs, and variety shows.
               </div>
               <a

@@ -92,7 +92,7 @@ export default async function DashboardPage() {
 
           <div style={{ display: "flex", gap: 32, alignItems: "flex-start", flexWrap: "wrap" }}>
             {/* Avatar */}
-            <div style={{ width: 88, height: 88, borderRadius: "50%", background: "var(--genius-yellow)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: "2.2rem", color: "#000", flexShrink: 0, boxShadow: "0 0 0 4px rgba(255,255,100,0.2)" }}>
+            <div style={{ width: 88, height: 88, borderRadius: "50%", background: "var(--genius-yellow)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: "2.2rem", color: "var(--on-accent)", flexShrink: 0, boxShadow: "0 0 0 4px rgba(255,255,100,0.2)" }}>
               {displayName[0].toUpperCase()}
             </div>
 
@@ -163,16 +163,16 @@ export default async function DashboardPage() {
               {recentEvents.length === 0 ? (
                 <div style={{ color: "var(--genius-gray)", fontSize: "0.9rem", padding: "24px 0" }}>
                   No activity yet —{" "}
-                  <Link href="/artists" style={{ color: "#000", fontWeight: 700, textDecoration: "none" }}>browse artists</Link>,
+                  <Link href="/artists" style={{ color: "var(--ink)", fontWeight: 700, textDecoration: "none" }}>browse artists</Link>,
                   leave a comment, or annotate a lyric to start earning!
                 </div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {recentEvents.map((event) => (
-                    <div key={event.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 16px", background: "#fff", border: "1px solid var(--genius-border)", borderRadius: 6 }}>
+                    <div key={event.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 16px", background: "var(--surface)", border: "1px solid var(--genius-border)", borderRadius: 6 }}>
                       <div style={{ fontSize: "1.4rem", flexShrink: 0 }}>{eventEmoji(event.type)}</div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: "0.85rem", color: "#222", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        <div style={{ fontSize: "0.85rem", color: "var(--ink)", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                           {event.reason}
                         </div>
                         <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginTop: 2 }}>
@@ -206,10 +206,10 @@ export default async function DashboardPage() {
                   </div>
                 ) : (
                   <div style={{ marginTop: 12 }}>
-                    <p style={{ fontSize: "0.82rem", color: "#444", lineHeight: 1.6, marginBottom: 14 }}>
+                    <p style={{ fontSize: "0.82rem", color: "var(--ink-dim)", lineHeight: 1.6, marginBottom: 14 }}>
                       Get notified by email when you unlock a prize tier.
                       We&apos;ll use{" "}
-                      <strong style={{ color: "#000" }}>{user.email}</strong> as your rewards email.
+                      <strong style={{ color: "var(--ink)" }}>{user.email}</strong> as your rewards email.
                     </p>
                     <EnrollButton enrolled={stepEnrolled} />
                   </div>
@@ -222,7 +222,7 @@ export default async function DashboardPage() {
                 {stepEnrolled ? (
                   <div style={{ marginTop: 12 }}>
                     {!stepPhone && (
-                      <p style={{ fontSize: "0.82rem", color: "#444", lineHeight: 1.6, marginBottom: 12 }}>
+                      <p style={{ fontSize: "0.82rem", color: "var(--ink-dim)", lineHeight: 1.6, marginBottom: 12 }}>
                         Get SMS alerts when you&apos;re close to a prize — and exclusive early drop notifications.
                       </p>
                     )}
@@ -239,7 +239,7 @@ export default async function DashboardPage() {
                 {stepPhone ? (
                   <div style={{ marginTop: 12 }}>
                     {!stepZip && (
-                      <p style={{ fontSize: "0.82rem", color: "#444", lineHeight: 1.6, marginBottom: 12 }}>
+                      <p style={{ fontSize: "0.82rem", color: "var(--ink-dim)", lineHeight: 1.6, marginBottom: 12 }}>
                         We&apos;ll alert you about K-pop events, fan meets, and prize drop-offs in your area.
                       </p>
                     )}
@@ -251,7 +251,7 @@ export default async function DashboardPage() {
               </div>
 
               {/* Points legal disclaimer */}
-              <div style={{ marginTop: 16, padding: "12px 14px", background: "#f8f8f8", border: "1px solid var(--genius-border)", borderRadius: 6 }}>
+              <div style={{ marginTop: 16, padding: "12px 14px", background: "var(--surface)", border: "1px solid var(--genius-border)", borderRadius: 6 }}>
                 <div style={{ fontSize: "0.68rem", color: "var(--genius-gray)", lineHeight: 1.65 }}>
                   Points are non-transferable to other accounts you have or to friends and family.
                   Each point has a cash value of $0.0000001 USD.

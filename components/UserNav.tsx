@@ -12,7 +12,7 @@ export default async function UserNav() {
         <Link href="/login" style={{ color: "rgba(255,255,255,0.65)", fontSize: "0.78rem", fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap" }}>
           SIGN IN
         </Link>
-        <Link href="/signup" className="btn-yellow" style={{ fontSize: "0.72rem", color: "#000", padding: "6px 14px" }}>
+        <Link href="/signup" className="btn-yellow" style={{ fontSize: "0.72rem", color: "var(--ink)", padding: "6px 14px" }}>
           JOIN
         </Link>
       </div>

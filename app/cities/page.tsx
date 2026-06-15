@@ -122,7 +122,7 @@ export default async function CitiesPage() {
                   {/* Card content — sits above the photo */}
                   <div style={{ position: "relative", zIndex: 1 }}>
                     <div style={{ fontSize: "1.8rem", marginBottom: 8 }}>{city.flag}</div>
-                    <div style={{ fontWeight: 800, fontSize: "1rem", color: "#000" }}>{city.name}</div>
+                    <div style={{ fontWeight: 800, fontSize: "1rem", color: "var(--ink)" }}>{city.name}</div>
                     <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginTop: 4 }}>{city.country} · View events</div>
                   </div>
                 </div>
@@ -135,8 +135,8 @@ export default async function CitiesPage() {
       {/* From the Vault */}
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "64px 24px 80px" }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 6 }}>
-          <h2 style={{ fontSize: "1.6rem", fontWeight: 900, color: "#000", margin: 0 }}>From the Vault</h2>
-          <span style={{ fontSize: "0.65rem", background: "var(--genius-yellow)", color: "#000", padding: "2px 8px", borderRadius: 999, fontWeight: 800 }}>4 ARTICLES</span>
+          <h2 style={{ fontSize: "1.6rem", fontWeight: 900, color: "var(--ink)", margin: 0 }}>From the Vault</h2>
+          <span style={{ fontSize: "0.65rem", background: "var(--genius-yellow)", color: "var(--on-accent)", padding: "2px 8px", borderRadius: 999, fontWeight: 800 }}>4 ARTICLES</span>
         </div>
         <p style={{ fontSize: "0.82rem", color: "var(--genius-gray)", marginBottom: 32 }}>
           Deep dives on K-pop streaming, social media, and fandom — customized for each of the 21 cities above.
@@ -173,7 +173,7 @@ export default async function CitiesPage() {
                       left: 10,
                       fontSize: "0.6rem",
                       background: article.color,
-                      color: "#000",
+                      color: "var(--on-accent)",
                       padding: "2px 8px",
                       borderRadius: 999,
                       fontWeight: 800,
@@ -186,16 +186,16 @@ export default async function CitiesPage() {
 
                 {/* Text */}
                 <div style={{ padding: "16px 16px 18px" }}>
-                  <div style={{ fontWeight: 800, fontSize: "0.92rem", color: "#000", lineHeight: 1.4, marginBottom: 8 }}>
+                  <div style={{ fontWeight: 800, fontSize: "0.92rem", color: "var(--ink)", lineHeight: 1.4, marginBottom: 8 }}>
                     {article.label}
                   </div>
-                  <div style={{ fontSize: "0.76rem", color: "#555", lineHeight: 1.6, marginBottom: 12 }}>
+                  <div style={{ fontSize: "0.76rem", color: "var(--ink-dim)", lineHeight: 1.6, marginBottom: 12 }}>
                     {article.description}
                   </div>
                   <div
                     style={{
                       fontSize: "0.68rem",
-                      color: article.color === "#FFFF64" ? "#000" : article.color,
+                      color: article.color === "#FFFF64" ? "var(--sakura)" : article.color,
                       fontWeight: 700,
                       letterSpacing: "0.06em",
                       textTransform: "uppercase",

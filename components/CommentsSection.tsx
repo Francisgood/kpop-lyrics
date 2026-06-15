@@ -75,19 +75,19 @@ export default function CommentsSection({ entityType, entityId, isLoggedIn, curr
               <div style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--genius-yellow)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "0.75rem", flexShrink: 0 }}>
                 {(c.user.displayName ?? "?")[0].toUpperCase()}
               </div>
-              <span style={{ fontWeight: 700, fontSize: "0.82rem", color: "#000" }}>{c.user.displayName ?? "Fan"}</span>
+              <span style={{ fontWeight: 700, fontSize: "0.82rem", color: "var(--ink)" }}>{c.user.displayName ?? "Fan"}</span>
               <span style={{ fontSize: "0.72rem", color: "var(--genius-gray)" }}>
                 {new Date(c.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
               </span>
             </div>
-            <div style={{ fontSize: "0.9rem", color: "#333", lineHeight: 1.6 }}>{c.body}</div>
+            <div style={{ fontSize: "0.9rem", color: "var(--ink)", lineHeight: 1.6 }}>{c.body}</div>
           </div>
         ))}
       </div>
 
       {isLoggedIn ? (
         <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "#000" }}>
+          <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--ink)" }}>
             Comment as {currentUserName}
           </div>
           {error && <div style={{ fontSize: "0.82rem", color: "#c62828" }}>{error}</div>}
@@ -108,10 +108,10 @@ export default function CommentsSection({ entityType, entityId, isLoggedIn, curr
           </button>
         </form>
       ) : (
-        <div style={{ background: "#f8f8f8", border: "1px solid var(--genius-border)", borderRadius: 4, padding: "16px 20px", fontSize: "0.88rem", color: "var(--genius-gray)" }}>
-          <Link href="/login" style={{ color: "#000", fontWeight: 700, textDecoration: "none" }}>Sign in</Link>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--genius-border)", borderRadius: 4, padding: "16px 20px", fontSize: "0.88rem", color: "var(--genius-gray)" }}>
+          <Link href="/login" style={{ color: "var(--ink)", fontWeight: 700, textDecoration: "none" }}>Sign in</Link>
           {" or "}
-          <Link href="/signup" style={{ color: "#000", fontWeight: 700, textDecoration: "none" }}>create an account</Link>
+          <Link href="/signup" style={{ color: "var(--ink)", fontWeight: 700, textDecoration: "none" }}>create an account</Link>
           {" to leave a comment."}
         </div>
       )}

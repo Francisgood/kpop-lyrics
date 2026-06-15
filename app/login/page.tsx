@@ -39,7 +39,7 @@ export default function LoginPage() {
           <Link href="/" style={{ fontFamily: "monospace", fontSize: "1.5rem", fontWeight: 800, color: "var(--genius-yellow)", textDecoration: "none", background: "#000", padding: "4px 14px", borderRadius: 4 }}>
             Aegyo Arena
           </Link>
-          <h1 style={{ fontSize: "1.6rem", fontWeight: 800, marginTop: 20, marginBottom: 6, color: "#000" }}>Welcome back</h1>
+          <h1 style={{ fontSize: "1.6rem", fontWeight: 800, marginTop: 20, marginBottom: 6, color: "var(--ink)" }}>Welcome back</h1>
           <p style={{ color: "var(--genius-gray)", fontSize: "0.88rem" }}>Sign in to save favorites, comment, and more</p>
         </div>
 
@@ -51,26 +51,26 @@ export default function LoginPage() {
           )}
 
           <div>
-            <label style={{ fontSize: "0.78rem", fontWeight: 700, color: "#000", letterSpacing: "0.06em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Email</label>
+            <label style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--ink)", letterSpacing: "0.06em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="you@example.com"
-              style={{ width: "100%", padding: "10px 14px", border: "1px solid var(--genius-border)", borderRadius: 4, fontSize: "0.95rem", outline: "none", background: "#fff" }}
+              style={{ width: "100%", padding: "10px 14px", border: "1px solid var(--genius-border)", borderRadius: 4, fontSize: "0.95rem", outline: "none", background: "var(--surface)" }}
             />
           </div>
 
           <div>
-            <label style={{ fontSize: "0.78rem", fontWeight: 700, color: "#000", letterSpacing: "0.06em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Password</label>
+            <label style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--ink)", letterSpacing: "0.06em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="••••••••"
-              style={{ width: "100%", padding: "10px 14px", border: "1px solid var(--genius-border)", borderRadius: 4, fontSize: "0.95rem", outline: "none", background: "#fff" }}
+              style={{ width: "100%", padding: "10px 14px", border: "1px solid var(--genius-border)", borderRadius: 4, fontSize: "0.95rem", outline: "none", background: "var(--surface)" }}
             />
           </div>
 
@@ -86,7 +86,7 @@ export default function LoginPage() {
 
         <div style={{ textAlign: "center", marginTop: 24, fontSize: "0.85rem", color: "var(--genius-gray)" }}>
           No account?{" "}
-          <Link href="/signup" style={{ color: "#000", fontWeight: 700, textDecoration: "none" }}>
+          <Link href="/signup" style={{ color: "var(--ink)", fontWeight: 700, textDecoration: "none" }}>
             Create one free
           </Link>
         </div>

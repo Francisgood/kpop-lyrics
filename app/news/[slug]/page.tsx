@@ -324,7 +324,7 @@ export default async function ArticlePage({
               display: "inline-block",
               fontSize: "0.65rem",
               background: article.accentColor,
-              color: "#000",
+              color: "var(--ink)",
               padding: "3px 10px",
               borderRadius: 999,
               fontWeight: 800,
@@ -374,7 +374,7 @@ export default async function ArticlePage({
           style={{
             fontSize: "1.05rem",
             lineHeight: 1.8,
-            color: "#333",
+            color: "var(--ink)",
             marginBottom: 40,
             fontStyle: "italic",
             borderLeft: `4px solid ${article.accentColor}`,
@@ -390,7 +390,7 @@ export default async function ArticlePage({
               style={{
                 fontSize: "1.25rem",
                 fontWeight: 800,
-                color: "#000",
+                color: "var(--ink)",
                 marginBottom: 12,
                 borderBottom: "2px solid #f0f0f0",
                 paddingBottom: 8,
@@ -402,7 +402,7 @@ export default async function ArticlePage({
               style={{
                 fontSize: "0.95rem",
                 lineHeight: 1.8,
-                color: "#444",
+                color: "var(--ink-dim)",
               }}
             >
               {section.body}
@@ -425,7 +425,7 @@ export default async function ArticlePage({
             style={{
               fontSize: "1.5rem",
               fontWeight: 900,
-              color: "#000",
+              color: "var(--ink)",
               margin: 0,
             }}
           >
@@ -435,7 +435,7 @@ export default async function ArticlePage({
             style={{
               fontSize: "0.65rem",
               background: article.accentColor,
-              color: "#000",
+              color: "var(--ink)",
               padding: "2px 8px",
               borderRadius: 999,
               fontWeight: 800,
@@ -483,7 +483,7 @@ export default async function ArticlePage({
                   >
                     <span style={{ fontSize: "1.4rem" }}>{city.flag}</span>
                     <div>
-                      <div style={{ fontWeight: 800, fontSize: "0.9rem", color: "#000" }}>
+                      <div style={{ fontWeight: 800, fontSize: "0.9rem", color: "var(--ink)" }}>
                         {city.name}
                       </div>
                       <div style={{ fontSize: "0.65rem", color: "var(--genius-gray)" }}>
@@ -496,7 +496,7 @@ export default async function ArticlePage({
                           marginLeft: "auto",
                           fontSize: "0.62rem",
                           background: article.accentColor,
-                          color: "#000",
+                          color: "var(--ink)",
                           padding: "2px 7px",
                           borderRadius: 999,
                           fontWeight: 800,
@@ -511,7 +511,7 @@ export default async function ArticlePage({
                     style={{
                       fontSize: "0.82rem",
                       fontWeight: 700,
-                      color: "#000",
+                      color: "var(--ink)",
                       marginBottom: 6,
                     }}
                   >
@@ -520,7 +520,7 @@ export default async function ArticlePage({
                   <div
                     style={{
                       fontSize: "0.76rem",
-                      color: "#555",
+                      color: "var(--ink-dim)",
                       lineHeight: 1.6,
                     }}
                   >

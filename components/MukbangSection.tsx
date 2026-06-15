@@ -82,7 +82,7 @@ export default function MukbangSection() {
       {/* Header */}
       <div style={{ display: "flex", alignItems: "baseline", gap: 16, marginBottom: 6 }}>
         <div className="section-header" style={{ margin: 0 }}>Mukbang Corner</div>
-        <span style={{ fontSize: "0.68rem", background: "#000", color: "#FFFF64", padding: "2px 9px", borderRadius: 999, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+        <span style={{ fontSize: "0.68rem", background: "#000", color: "var(--sakura)", padding: "2px 9px", borderRadius: 999, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}>
           Stan Food Cam
         </span>
       </div>
@@ -109,7 +109,7 @@ export default function MukbangSection() {
               }}
             >
               {/* Thumbnail row */}
-              <div style={{ position: "relative", height: 120, background: "#f0f0f0", overflow: "hidden" }}>
+              <div style={{ position: "relative", height: 120, background: "var(--surface)", overflow: "hidden" }}>
                 <img
                   src={clip.artistImg}
                   alt={clip.artistName}
@@ -135,7 +135,7 @@ export default function MukbangSection() {
                 {/* Badge */}
                 <div style={{
                   position: "absolute", top: 8, left: 8,
-                  background: clip.color, color: "#000",
+                  background: clip.color, color: "var(--on-accent)",
                   fontSize: "0.58rem", fontWeight: 800, letterSpacing: "0.08em",
                   padding: "2px 7px", borderRadius: 999, textTransform: "uppercase",
                 }}>
@@ -163,10 +163,10 @@ export default function MukbangSection() {
                 <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 5 }}>
                   {clip.artistName}
                 </div>
-                <div style={{ fontWeight: 800, fontSize: "0.9rem", color: "#000", lineHeight: 1.3, marginBottom: 7 }}>
+                <div style={{ fontWeight: 800, fontSize: "0.9rem", color: "var(--ink)", lineHeight: 1.3, marginBottom: 7 }}>
                   {clip.title}
                 </div>
-                <div style={{ fontSize: "0.78rem", color: "#555", lineHeight: 1.55, marginBottom: 10 }}>
+                <div style={{ fontSize: "0.78rem", color: "var(--ink-dim)", lineHeight: 1.55, marginBottom: 10 }}>
                   {clip.description}
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -179,7 +179,7 @@ export default function MukbangSection() {
                     </svg>
                     Find on YouTube
                   </span>
-                  <span style={{ fontSize: "0.65rem", color: "#bbb", marginLeft: "auto" }}>
+                  <span style={{ fontSize: "0.65rem", color: "var(--ink-dim)", marginLeft: "auto" }}>
                     {clip.foods.join(" · ")}
                   </span>
                 </div>

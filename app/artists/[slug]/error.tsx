@@ -40,16 +40,16 @@ export default function ArtistError({
           {code}
         </div>
         <h1 style={{ fontSize: "1.5rem", fontWeight: 800, marginBottom: 12 }}>{title}</h1>
-        <p style={{ color: "#666", fontSize: "0.95rem", marginBottom: 8, lineHeight: 1.6 }}>{message}</p>
+        <p style={{ color: "var(--ink-dim)", fontSize: "0.95rem", marginBottom: 8, lineHeight: 1.6 }}>{message}</p>
         {error.digest && (
-          <p style={{ color: "#aaa", fontSize: "0.72rem", fontFamily: "monospace", marginBottom: 24 }}>
+          <p style={{ color: "var(--ink-dim)", fontSize: "0.72rem", fontFamily: "monospace", marginBottom: 24 }}>
             Error ID: {error.digest}
           </p>
         )}
         <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
           <button
             onClick={reset}
-            style={{ background: "#FFFF64", border: "none", fontWeight: 700, fontSize: "0.8rem", letterSpacing: "0.05em", textTransform: "uppercase", padding: "8px 20px", borderRadius: 4, cursor: "pointer" }}
+            style={{ background: "var(--sakura)", border: "none", fontWeight: 700, fontSize: "0.8rem", letterSpacing: "0.05em", textTransform: "uppercase", padding: "8px 20px", borderRadius: 4, cursor: "pointer" }}
           >
             Try again
           </button>

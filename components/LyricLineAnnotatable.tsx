@@ -202,7 +202,7 @@ export default function LyricLineAnnotatable({
             left: 0,
             top: "calc(100% + 4px)",
             zIndex: 100,
-            background: "#fff",
+            background: "var(--surface)",
             border: "2px solid var(--genius-yellow)",
             borderRadius: 8,
             boxShadow: "0 4px 20px rgba(0,0,0,0.14)",
@@ -216,10 +216,10 @@ export default function LyricLineAnnotatable({
             </div>
             {annotations.map((ann, idx) => (
               <div key={ann.id} style={{ marginBottom: idx < annotations.length - 1 ? 8 : 0, paddingBottom: idx < annotations.length - 1 ? 8 : 0, borderBottom: idx < annotations.length - 1 ? "1px solid #f0f0f0" : "none" }}>
-                <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "#000", marginBottom: 2 }}>
+                <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "var(--ink)", marginBottom: 2 }}>
                   &ldquo;{ann.word}&rdquo;
                 </div>
-                <div style={{ fontSize: "0.78rem", color: "#555", lineHeight: 1.5 }}>
+                <div style={{ fontSize: "0.78rem", color: "var(--ink-dim)", lineHeight: 1.5 }}>
                   {ann.note.length > 120 ? ann.note.slice(0, 120) + "…" : ann.note}
                 </div>
               </div>
@@ -232,16 +232,16 @@ export default function LyricLineAnnotatable({
           <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
             {annotations.map((ann) => (
               <div key={ann.id} style={{ background: "rgba(255,255,100,0.2)", borderLeft: "3px solid var(--genius-yellow)", padding: "8px 12px", borderRadius: "0 4px 4px 0", fontSize: "0.8rem" }}>
-                <div style={{ fontWeight: 700, color: "#000", marginBottom: 2 }}>
+                <div style={{ fontWeight: 700, color: "var(--ink)", marginBottom: 2 }}>
                   {ann.term ? (
-                    <Link href={`/define/${ann.term.slug}`} style={{ color: "#000", textDecoration: "underline", textDecorationColor: "var(--genius-yellow)" }}>
+                    <Link href={`/define/${ann.term.slug}`} style={{ color: "var(--ink)", textDecoration: "underline", textDecorationColor: "var(--genius-yellow)" }}>
                       &ldquo;{ann.word}&rdquo;
                     </Link>
                   ) : (
                     <>&ldquo;{ann.word}&rdquo;</>
                   )}
                 </div>
-                <div style={{ color: "#555", lineHeight: 1.6 }}>{ann.note}</div>
+                <div style={{ color: "var(--ink-dim)", lineHeight: 1.6 }}>{ann.note}</div>
                 {ann.term && ann.term.definitions.length > 0 && (
                   <div style={{ marginTop: 4, fontSize: "0.75rem", color: "var(--genius-gray)" }}>
                     See: <Link href={`/define/${ann.term.slug}`} style={{ color: "var(--genius-gray)" }}>{ann.term.term}</Link>
@@ -255,7 +255,7 @@ export default function LyricLineAnnotatable({
         {/* Ko edit form */}
         {editingKo && (
           <div style={{ marginTop: 8, background: "#fffde7", border: "2px solid var(--genius-yellow)", borderRadius: 6, padding: "12px 14px" }}>
-            <div style={{ fontSize: "0.72rem", fontWeight: 700, marginBottom: 6, color: "#666", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            <div style={{ fontSize: "0.72rem", fontWeight: 700, marginBottom: 6, color: "var(--ink-dim)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
               {canDirectEdit ? "Edit Korean line" : "Suggest Korean line correction"}
             </div>
             <textarea
@@ -345,7 +345,7 @@ export default function LyricLineAnnotatable({
         {/* En edit form */}
         {editingEn && (
           <div style={{ marginTop: 8, background: "#fffde7", border: "2px solid var(--genius-yellow)", borderRadius: 6, padding: "12px 14px" }}>
-            <div style={{ fontSize: "0.72rem", fontWeight: 700, marginBottom: 6, color: "#666", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            <div style={{ fontSize: "0.72rem", fontWeight: 700, marginBottom: 6, color: "var(--ink-dim)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
               {canDirectEdit ? "Edit English line" : "Suggest English line correction"}
             </div>
             <textarea
@@ -353,7 +353,7 @@ export default function LyricLineAnnotatable({
               onChange={(e) => setEditEnVal(e.target.value)}
               rows={2}
               autoFocus
-              style={{ width: "100%", padding: "6px 8px", border: "1px solid #e5e5e5", borderRadius: 4, fontSize: "1rem", resize: "none", fontFamily: "inherit", boxSizing: "border-box", lineHeight: 1.6, color: "#444" }}
+              style={{ width: "100%", padding: "6px 8px", border: "1px solid #e5e5e5", borderRadius: 4, fontSize: "1rem", resize: "none", fontFamily: "inherit", boxSizing: "border-box", lineHeight: 1.6, color: "var(--ink-dim)" }}
             />
             {!canDirectEdit && (
               <input

@@ -46,7 +46,7 @@ export default async function ContributorPage({ params }: { params: Promise<{ sl
             {displayName}
           </div>
           <div style={{ display: "flex", gap: 24, alignItems: "center", flexWrap: "wrap" }}>
-            <div style={{ width: 80, height: 80, borderRadius: "50%", background: "var(--genius-yellow)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: "2rem", color: "#000", flexShrink: 0 }}>
+            <div style={{ width: 80, height: 80, borderRadius: "50%", background: "var(--genius-yellow)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: "2rem", color: "var(--on-accent)", flexShrink: 0 }}>
               {displayName[0].toUpperCase()}
             </div>
             <div>
@@ -89,7 +89,7 @@ export default async function ContributorPage({ params }: { params: Promise<{ sl
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {profileUser.comments.map((c) => (
                     <div key={c.id} className="genius-card" style={{ padding: 16 }}>
-                      <div style={{ fontSize: "0.82rem", color: "#333", lineHeight: 1.65 }}>{c.body}</div>
+                      <div style={{ fontSize: "0.82rem", color: "var(--ink)", lineHeight: 1.65 }}>{c.body}</div>
                       <div style={{ marginTop: 6, fontSize: "0.72rem", color: "var(--genius-gray)" }}>
                         on {c.entityType} · {new Date(c.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                       </div>
@@ -116,7 +116,7 @@ export default async function ContributorPage({ params }: { params: Promise<{ sl
                         </span>
                         <span style={{ fontSize: "0.72rem", color: "var(--genius-gray)" }}>{e.entityType} · {e.field}</span>
                       </div>
-                      <div style={{ fontSize: "0.85rem", color: "#333" }}>{e.suggestedVal.slice(0, 120)}{e.suggestedVal.length > 120 ? "…" : ""}</div>
+                      <div style={{ fontSize: "0.85rem", color: "var(--ink)" }}>{e.suggestedVal.slice(0, 120)}{e.suggestedVal.length > 120 ? "…" : ""}</div>
                       {e.reason && <div style={{ marginTop: 4, fontSize: "0.75rem", color: "var(--genius-gray)", fontStyle: "italic" }}>{e.reason}</div>}
                     </div>
                   ))}
@@ -128,7 +128,7 @@ export default async function ContributorPage({ params }: { params: Promise<{ sl
               <div style={{ color: "var(--genius-gray)", fontSize: "0.9rem" }}>
                 No public activity yet.
                 {isOwn && (
-                  <> <Link href="/artists" style={{ color: "#000", fontWeight: 700, textDecoration: "none" }}>Browse artists</Link> and leave a comment to get started!</>
+                  <> <Link href="/artists" style={{ color: "var(--ink)", fontWeight: 700, textDecoration: "none" }}>Browse artists</Link> and leave a comment to get started!</>
                 )}
               </div>
             )}
@@ -144,7 +144,7 @@ export default async function ContributorPage({ params }: { params: Promise<{ sl
                   {profileUser.favorites.slice(0, 12).map((f) => (
                     <div key={f.id} className="genius-card" style={{ padding: "10px 14px" }}>
                       <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>{f.entityType}</div>
-                      <div style={{ fontSize: "0.82rem", color: "#000", fontWeight: 600 }}>{f.entityId.slice(0, 20)}…</div>
+                      <div style={{ fontSize: "0.82rem", color: "var(--ink)", fontWeight: 600 }}>{f.entityId.slice(0, 20)}…</div>
                     </div>
                   ))}
                 </div>

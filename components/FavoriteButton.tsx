@@ -35,7 +35,7 @@ export default function FavoriteButton({ entityType, entityId, isLoggedIn, initi
   if (!isLoggedIn) {
     return (
       <Link href="/login" style={{ textDecoration: "none" }}>
-        <button style={{ background: "#f8f8f8", border: "1px solid var(--genius-border)", borderRadius: 999, padding: "6px 14px", fontSize: "0.78rem", fontWeight: 700, cursor: "pointer", color: "var(--genius-gray)", display: "flex", alignItems: "center", gap: 5 }}>
+        <button style={{ background: "var(--surface)", border: "1px solid var(--genius-border)", borderRadius: 999, padding: "6px 14px", fontSize: "0.78rem", fontWeight: 700, cursor: "pointer", color: "var(--genius-gray)", display: "flex", alignItems: "center", gap: 5 }}>
           ♡ Save
         </button>
       </Link>
@@ -54,7 +54,7 @@ export default function FavoriteButton({ entityType, entityId, isLoggedIn, initi
         fontSize: "0.78rem",
         fontWeight: 700,
         cursor: "pointer",
-        color: "#000",
+        color: "var(--on-accent)",
         display: "flex",
         alignItems: "center",
         gap: 5,

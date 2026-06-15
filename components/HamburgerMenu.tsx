@@ -105,7 +105,7 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
               <div style={{
                 width: 32, height: 32, borderRadius: "50%",
                 background: "var(--genius-yellow)",
-                color: "#000", fontWeight: 900, fontSize: "0.9rem",
+                color: "var(--on-accent)", fontWeight: 900, fontSize: "0.9rem",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 flexShrink: 0,
               }}>

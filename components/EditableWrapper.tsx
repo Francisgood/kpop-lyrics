@@ -96,7 +96,7 @@ export default function EditableWrapper({
             height: 26,
             borderRadius: "50%",
             background: "var(--genius-yellow)",
-            color: "#000",
+            color: "var(--on-accent)",
             border: "none",
             cursor: "pointer",
             fontSize: "0.75rem",
@@ -119,7 +119,7 @@ export default function EditableWrapper({
 
       {/* Edit forms */}
       {formOpen && (
-        <div style={{ marginTop: 10, background: "#f8f8f8", border: "1px solid var(--genius-border)", borderRadius: 6, padding: 16, zIndex: 20, position: "relative" }}>
+        <div style={{ marginTop: 10, background: "var(--surface)", border: "1px solid var(--genius-border)", borderRadius: 6, padding: 16, zIndex: 20, position: "relative" }}>
           {directMode ? (
             /* Admin / owner — direct edit form */
             <>

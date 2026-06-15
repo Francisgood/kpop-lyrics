@@ -63,8 +63,8 @@ export default function SuggestEditButton({ entityType, entityId, field, current
       </button>
 
       {open && (
-        <div style={{ marginTop: 10, background: "#f8f8f8", border: "1px solid var(--genius-border)", borderRadius: 6, padding: 16 }}>
-          <div style={{ fontSize: "0.78rem", fontWeight: 700, marginBottom: 8, color: "#000" }}>
+        <div style={{ marginTop: 10, background: "var(--surface)", border: "1px solid var(--genius-border)", borderRadius: 6, padding: 16 }}>
+          <div style={{ fontSize: "0.78rem", fontWeight: 700, marginBottom: 8, color: "var(--ink)" }}>
             Suggest a correction for "{field}"
           </div>
           {status === "error" && <div style={{ fontSize: "0.78rem", color: "#c62828", marginBottom: 8 }}>{errorMsg}</div>}

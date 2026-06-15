@@ -102,7 +102,7 @@ export default async function NewsPage() {
             <section style={{ marginBottom: 56 }}>
               <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 6 }}>
                 <div className="section-header" style={{ margin: 0 }}>K-pop Chart — Week 15, 2026</div>
-                <span style={{ fontSize: "0.65rem", background: "var(--genius-yellow)", color: "#000", padding: "2px 8px", borderRadius: 999, fontWeight: 800 }}>APRIL 12</span>
+                <span style={{ fontSize: "0.65rem", background: "var(--genius-yellow)", color: "var(--on-accent)", padding: "2px 8px", borderRadius: 999, fontWeight: 800 }}>APRIL 12</span>
               </div>
               <p style={{ fontSize: "0.8rem", color: "var(--genius-gray)", marginBottom: 16 }}>Source: onlyhit.us</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -111,6 +111,7 @@ export default async function NewsPage() {
                     <div style={{
                       width: 36, height: 36, borderRadius: "50%", flexShrink: 0,
                       background: entry.rank <= 5 ? "var(--genius-yellow)" : "#f0f0f0",
+                      color: "var(--on-accent)",
                       display: "flex", alignItems: "center", justifyContent: "center",
                       fontWeight: 900, fontSize: "0.88rem",
                     }}>
@@ -118,11 +119,11 @@ export default async function NewsPage() {
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       {entry.slug ? (
-                        <Link href={`/artists/${entry.slug}`} style={{ fontWeight: 700, fontSize: "0.92rem", color: "#000", textDecoration: "none" }}>
+                        <Link href={`/artists/${entry.slug}`} style={{ fontWeight: 700, fontSize: "0.92rem", color: "var(--ink)", textDecoration: "none" }}>
                           {entry.artist}
                         </Link>
                       ) : (
-                        <span style={{ fontWeight: 700, fontSize: "0.92rem", color: "#000" }}>{entry.artist}</span>
+                        <span style={{ fontWeight: 700, fontSize: "0.92rem", color: "var(--ink)" }}>{entry.artist}</span>
                       )}
                       <span style={{ marginLeft: 8, fontSize: "0.82rem", color: "var(--genius-gray)", fontStyle: "italic" }}>
                         "{entry.song}"
@@ -198,6 +199,7 @@ export default async function NewsPage() {
                     <div style={{
                       width: 22, height: 22, borderRadius: "50%", flexShrink: 0,
                       background: entry.rank <= 3 ? "var(--genius-yellow)" : "#f0f0f0",
+                      color: "var(--on-accent)",
                       display: "flex", alignItems: "center", justifyContent: "center",
                       fontWeight: 800, fontSize: "0.65rem",
                     }}>
@@ -205,11 +207,11 @@ export default async function NewsPage() {
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       {entry.slug ? (
-                        <Link href={`/artists/${entry.slug}`} style={{ fontWeight: 700, fontSize: "0.78rem", color: "#000", textDecoration: "none", display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        <Link href={`/artists/${entry.slug}`} style={{ fontWeight: 700, fontSize: "0.78rem", color: "var(--ink)", textDecoration: "none", display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                           {entry.artist}
                         </Link>
                       ) : (
-                        <div style={{ fontWeight: 700, fontSize: "0.78rem", color: "#000", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{entry.artist}</div>
+                        <div style={{ fontWeight: 700, fontSize: "0.78rem", color: "var(--ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{entry.artist}</div>
                       )}
                       <div style={{ fontSize: "0.65rem", color: "var(--genius-gray)" }}>{entry.handle}</div>
                     </div>
@@ -232,6 +234,7 @@ export default async function NewsPage() {
                     <div style={{
                       width: 22, height: 22, borderRadius: "50%", flexShrink: 0,
                       background: i < 3 ? "#ACFA52" : "#f0f0f0",
+                      color: "var(--on-accent)",
                       display: "flex", alignItems: "center", justifyContent: "center",
                       fontWeight: 800, fontSize: "0.65rem",
                     }}>
@@ -239,11 +242,11 @@ export default async function NewsPage() {
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       {entry.slug ? (
-                        <Link href={`/artists/${entry.slug}`} style={{ fontWeight: 700, fontSize: "0.8rem", color: "#000", textDecoration: "none" }}>
+                        <Link href={`/artists/${entry.slug}`} style={{ fontWeight: 700, fontSize: "0.8rem", color: "var(--ink)", textDecoration: "none" }}>
                           {entry.artist}
                         </Link>
                       ) : (
-                        <span style={{ fontWeight: 700, fontSize: "0.8rem", color: "#000" }}>{entry.artist}</span>
+                        <span style={{ fontWeight: 700, fontSize: "0.8rem", color: "var(--ink)" }}>{entry.artist}</span>
                       )}
                     </div>
                     <div style={{ fontSize: "0.72rem", fontWeight: 800, color: "#ACFA52", background: "#000", padding: "1px 7px", borderRadius: 999, whiteSpace: "nowrap" }}>
@@ -270,7 +273,7 @@ export default async function NewsPage() {
                   <Link key={src} href={`/news/${slug}`} style={{ textDecoration: "none", display: "block" }}>
                     <div style={{ borderRadius: 6, overflow: "hidden", border: `1px solid ${color}`, transition: "box-shadow 0.15s" }}>
                       <img src={src} alt={label} style={{ width: "100%", display: "block", objectFit: "cover", maxHeight: 140 }} />
-                      <div style={{ padding: "7px 10px", fontSize: "0.68rem", color: "#000", background: "#fafafa", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <div style={{ padding: "7px 10px", fontSize: "0.68rem", color: "var(--ink)", background: "var(--surface)", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                         <span>{label}</span>
                         <span style={{ fontSize: "0.62rem", color, fontWeight: 800 }}>Read →</span>
                       </div>
@@ -303,13 +306,13 @@ function NewsCard({ item }: {
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
         <Link href={`/artists/${item.artist.slug}`} style={{ textDecoration: "none", flexShrink: 0 }}>
           {item.artist.imageUrl ? (
-            <img src={item.artist.imageUrl} alt={item.artist.stageName} style={{ width: 30, height: 30, borderRadius: "50%", objectFit: "cover", border: "1px solid #eee" }} />
+            <img src={item.artist.imageUrl} alt={item.artist.stageName} style={{ width: 30, height: 30, borderRadius: "50%", objectFit: "cover", border: "1px solid var(--border)" }} />
           ) : (
-            <div style={{ width: 30, height: 30, borderRadius: "50%", background: "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.85rem" }}>🎤</div>
+            <div style={{ width: 30, height: 30, borderRadius: "50%", background: "var(--surface)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.85rem" }}>🎤</div>
           )}
         </Link>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <Link href={`/artists/${item.artist.slug}`} style={{ fontWeight: 700, fontSize: "0.78rem", color: "#000", textDecoration: "none" }}>
+          <Link href={`/artists/${item.artist.slug}`} style={{ fontWeight: 700, fontSize: "0.78rem", color: "var(--ink)", textDecoration: "none" }}>
             {item.artist.stageName}
           </Link>
           <div style={{ fontSize: "0.67rem", color: "var(--genius-gray)" }}>
@@ -328,12 +331,12 @@ function NewsCard({ item }: {
             )}
           </div>
         </div>
-        <span style={{ fontSize: "0.62rem", background: color, color: "#000", padding: "2px 7px", borderRadius: 999, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", whiteSpace: "nowrap" }}>
+        <span style={{ fontSize: "0.62rem", background: color, color: "var(--on-accent)", padding: "2px 7px", borderRadius: 999, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", whiteSpace: "nowrap" }}>
           {item.category}
         </span>
       </div>
-      <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "#000", lineHeight: 1.4, marginBottom: 6 }}>{item.headline}</div>
-      <div style={{ fontSize: "0.78rem", color: "#555", lineHeight: 1.6 }}>
+      <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--ink)", lineHeight: 1.4, marginBottom: 6 }}>{item.headline}</div>
+      <div style={{ fontSize: "0.78rem", color: "var(--ink-dim)", lineHeight: 1.6 }}>
         {item.body.slice(0, 180)}{item.body.length > 180 ? "…" : ""}
       </div>
       {item.sourceUrl && (
@@ -341,7 +344,7 @@ function NewsCard({ item }: {
           href={item.sourceUrl}
           target="_blank"
           rel="noopener noreferrer"
-          style={{ display: "inline-block", marginTop: 10, fontSize: "0.7rem", fontWeight: 700, color: "#000", textDecoration: "none", borderBottom: `1px solid ${color}` }}
+          style={{ display: "inline-block", marginTop: 10, fontSize: "0.7rem", fontWeight: 700, color: "var(--ink)", textDecoration: "none", borderBottom: `1px solid ${color}` }}
         >
           Read at {item.source ?? "source"} →
         </a>

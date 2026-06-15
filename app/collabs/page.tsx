@@ -200,7 +200,7 @@ export default async function CollabsPage() {
           <h1 style={{ fontSize: "2.8rem", fontWeight: 800, margin: "0 0 12px" }}>How Artists Connect</h1>
           <p style={{ color: "rgba(255,255,255,0.6)", maxWidth: 600, fontSize: "0.95rem", lineHeight: 1.6 }}>
             An interactive web of every collaboration — K-pop artists connected to their western features, group members, and cross-cultural song credits.
-            <span style={{ color: "#FFFF64" }}> Lisa sits at the center</span> of the western collab network.
+            <span style={{ color: "var(--sakura)" }}> Lisa sits at the center</span> of the western collab network.
           </p>
         </div>
       </section>
@@ -227,14 +227,14 @@ export default async function CollabsPage() {
                   {collabEdges.map((edge, i) => (
                     <div key={i} className="genius-card" style={{ padding: 16 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                        <Link href={`/artists/${edge.aSlug}`} style={{ fontWeight: 700, fontSize: "0.9rem", color: "#000", textDecoration: "none", display: "flex", alignItems: "center", gap: 7 }}>
+                        <Link href={`/artists/${edge.aSlug}`} style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--ink)", textDecoration: "none", display: "flex", alignItems: "center", gap: 7 }}>
                           {edge.aImg && <img src={edge.aImg} alt={edge.a} style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />}
                           {edge.a}
                         </Link>
-                        <span style={{ fontSize: "0.68rem", background: isWestern(edge.aSlug) || isWestern(edge.bSlug) ? "#e879f9" : "var(--genius-yellow)", color: "#000", padding: "2px 8px", borderRadius: 999, fontWeight: 700 }}>
+                        <span style={{ fontSize: "0.68rem", background: isWestern(edge.aSlug) || isWestern(edge.bSlug) ? "#e879f9" : "var(--genius-yellow)", color: "var(--on-accent)", padding: "2px 8px", borderRadius: 999, fontWeight: 700 }}>
                           {isWestern(edge.aSlug) || isWestern(edge.bSlug) ? "CROSSOVER" : "COLLAB"}
                         </span>
-                        <Link href={`/artists/${edge.bSlug}`} style={{ fontWeight: 700, fontSize: "0.9rem", color: "#000", textDecoration: "none", display: "flex", alignItems: "center", gap: 7 }}>
+                        <Link href={`/artists/${edge.bSlug}`} style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--ink)", textDecoration: "none", display: "flex", alignItems: "center", gap: 7 }}>
                           {edge.bImg && <img src={edge.bImg} alt={edge.b} style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />}
                           {edge.b}
                         </Link>
@@ -254,14 +254,14 @@ export default async function CollabsPage() {
               <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                 {memberEdges.map((g) => (
                   <div key={g.groupSlug} className="genius-card" style={{ padding: 18 }}>
-                    <Link href={`/artists/${g.groupSlug}`} style={{ fontWeight: 800, fontSize: "0.95rem", color: "#000", textDecoration: "none", display: "block", marginBottom: 10 }}>
+                    <Link href={`/artists/${g.groupSlug}`} style={{ fontWeight: 800, fontSize: "0.95rem", color: "var(--ink)", textDecoration: "none", display: "block", marginBottom: 10 }}>
                       {g.groupName}
                     </Link>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                       {g.members.map((m) => (
                         <Link key={m.slug} href={`/artists/${m.slug}`} style={{ textDecoration: "none" }}>
-                          <div style={{ background: "#f8f8f8", border: "1px solid var(--genius-border)", borderRadius: 999, padding: "3px 10px", fontSize: "0.78rem" }}>
-                            <span style={{ fontWeight: 600, color: "#000" }}>{m.name}</span>
+                          <div style={{ background: "var(--surface)", border: "1px solid var(--genius-border)", borderRadius: 999, padding: "3px 10px", fontSize: "0.78rem" }}>
+                            <span style={{ fontWeight: 600, color: "var(--ink)" }}>{m.name}</span>
                             {m.role && <span style={{ color: "var(--genius-gray)", marginLeft: 3 }}>· {m.role}</span>}
                           </div>
                         </Link>
@@ -283,7 +283,7 @@ export default async function CollabsPage() {
                   <Link key={p.slug} href={`/artists/${p.slug}`} style={{ textDecoration: "none" }}>
                     <div className="genius-card" style={{ padding: 14, borderLeft: "3px solid #e879f9" }}>
                       <div style={{ display: "flex", gap: 6, alignItems: "flex-start", flexWrap: "wrap", marginBottom: 4 }}>
-                        <span style={{ fontWeight: 800, fontSize: "0.9rem", color: "#000" }}>{p.name}</span>
+                        <span style={{ fontWeight: 800, fontSize: "0.9rem", color: "var(--ink)" }}>{p.name}</span>
                         <span style={{ background: "#e879f9", color: "#fff", fontSize: "0.62rem", fontWeight: 700, padding: "2px 7px", borderRadius: 999, whiteSpace: "nowrap" }}>
                           {p.role.toUpperCase()}
                         </span>
@@ -291,10 +291,10 @@ export default async function CollabsPage() {
                       <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginBottom: 4 }}>
                         → {p.groups.join(", ")}
                       </div>
-                      <div style={{ fontSize: "0.78rem", color: "#444", lineHeight: 1.55 }}>{p.note}</div>
+                      <div style={{ fontSize: "0.78rem", color: "var(--ink-dim)", lineHeight: 1.55 }}>{p.note}</div>
                       <div style={{ marginTop: 6, display: "flex", flexWrap: "wrap", gap: 4 }}>
                         {p.songs.map((s) => (
-                          <span key={s} style={{ background: "#f0f0f0", fontSize: "0.65rem", padding: "1px 7px", borderRadius: 999, color: "#555" }}>{s}</span>
+                          <span key={s} style={{ background: "var(--surface)", fontSize: "0.65rem", padding: "1px 7px", borderRadius: 999, color: "var(--ink-dim)" }}>{s}</span>
                         ))}
                       </div>
                     </div>
@@ -308,14 +308,14 @@ export default async function CollabsPage() {
               {topArtists.map((a, i) => (
                 <Link key={a.slug} href={`/artists/${a.slug}`} style={{ textDecoration: "none" }}>
                   <div className="genius-card" style={{ padding: "11px 14px", display: "flex", alignItems: "center", gap: 10 }}>
-                    <div style={{ width: 26, height: 26, borderRadius: "50%", background: i < 3 ? "var(--genius-yellow)" : "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "0.72rem", flexShrink: 0 }}>
+                    <div style={{ width: 26, height: 26, borderRadius: "50%", background: i < 3 ? "var(--genius-yellow)" : "#f0f0f0", color: "var(--on-accent)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "0.72rem", flexShrink: 0 }}>
                       {i + 1}
                     </div>
                     {a.imageUrl && (
-                      <img src={a.imageUrl} alt={a.name} style={{ width: 34, height: 34, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid #eee" }} />
+                      <img src={a.imageUrl} alt={a.name} style={{ width: 34, height: 34, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid var(--border)" }} />
                     )}
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#000", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{a.name}</div>
+                      <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "var(--ink)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{a.name}</div>
                       <div style={{ fontSize: "0.7rem", color: "var(--genius-gray)" }}>
                         {a.count} credit{a.count !== 1 ? "s" : ""}
                         {isWestern(a.slug) && <span style={{ marginLeft: 4, color: "#e879f9", fontWeight: 700 }}>· western</span>}
@@ -336,7 +336,7 @@ export default async function CollabsPage() {
                   { label: "🇪🇺 Europe", desc: "BTS, BLACKPINK, Rosalía×Lisa", color: "#e879f9" },
                 ].map(({ label, desc, color }) => (
                   <div key={label} className="genius-card" style={{ padding: "10px 14px", borderLeft: `3px solid ${color}` }}>
-                    <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "#000" }}>{label}</div>
+                    <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "var(--ink)" }}>{label}</div>
                     <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginTop: 2 }}>{desc}</div>
                   </div>
                 ))}

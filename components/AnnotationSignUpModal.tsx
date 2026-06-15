@@ -97,10 +97,10 @@ export default function AnnotationSignUpModal({ onClose }: Props) {
         </button>
 
         {/* Heading */}
-        <h2 style={{ fontSize: "clamp(2rem, 6vw, 2.6rem)", fontWeight: 900, margin: "0 0 6px", color: "#000", textAlign: "center" }}>
+        <h2 style={{ fontSize: "clamp(2rem, 6vw, 2.6rem)", fontWeight: 900, margin: "0 0 6px", color: "var(--ink)", textAlign: "center" }}>
           {tab === "signup" ? "Sign Up" : "Sign In"}
         </h2>
-        <p style={{ textAlign: "center", color: "#333", fontSize: "0.9rem", margin: "0 0 24px", lineHeight: 1.5 }}>
+        <p style={{ textAlign: "center", color: "var(--ink)", fontSize: "0.9rem", margin: "0 0 24px", lineHeight: 1.5 }}>
           {tab === "signup"
             ? "Create an Aegyo Arena account to annotate lyrics"
             : "Welcome back — sign in to keep annotating"}
@@ -143,7 +143,7 @@ export default function AnnotationSignUpModal({ onClose }: Props) {
         {/* Divider */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "0 0 20px" }}>
           <div style={{ flex: 1, height: 1, background: "rgba(0,0,0,0.2)" }} />
-          <span style={{ fontSize: "0.82rem", color: "#555", whiteSpace: "nowrap" }}>Or {tab === "signup" ? "Sign Up" : "Sign In"} with Email</span>
+          <span style={{ fontSize: "0.82rem", color: "var(--ink-dim)", whiteSpace: "nowrap" }}>Or {tab === "signup" ? "Sign Up" : "Sign In"} with Email</span>
           <div style={{ flex: 1, height: 1, background: "rgba(0,0,0,0.2)" }} />
         </div>
 
@@ -188,9 +188,9 @@ export default function AnnotationSignUpModal({ onClose }: Props) {
           )}
 
           {tab === "signup" && (
-            <p style={{ fontSize: "0.72rem", color: "#555", textAlign: "center", margin: 0 }}>
+            <p style={{ fontSize: "0.72rem", color: "var(--ink-dim)", textAlign: "center", margin: 0 }}>
               By clicking &ldquo;Sign Up&rdquo; you agree to our{" "}
-              <Link href="/terms" style={{ color: "#000", fontWeight: 700 }}>Terms of Service</Link>.
+              <Link href="/terms" style={{ color: "var(--ink)", fontWeight: 700 }}>Terms of Service</Link>.
             </p>
           )}
 
@@ -216,16 +216,16 @@ export default function AnnotationSignUpModal({ onClose }: Props) {
         </form>
 
         {/* Toggle */}
-        <p style={{ textAlign: "center", marginTop: 20, fontSize: "0.88rem", color: "#333" }}>
+        <p style={{ textAlign: "center", marginTop: 20, fontSize: "0.88rem", color: "var(--ink)" }}>
           {tab === "signup" ? (
             <>Already have an account?{" "}
-              <button onClick={() => { setTab("login"); setError(""); }} style={{ background: "none", border: "none", fontWeight: 700, color: "#000", cursor: "pointer", textDecoration: "underline", fontSize: "inherit" }}>
+              <button onClick={() => { setTab("login"); setError(""); }} style={{ background: "none", border: "none", fontWeight: 700, color: "var(--ink)", cursor: "pointer", textDecoration: "underline", fontSize: "inherit" }}>
                 Sign in
               </button>
             </>
           ) : (
             <>Don&apos;t have an account?{" "}
-              <button onClick={() => { setTab("signup"); setError(""); }} style={{ background: "none", border: "none", fontWeight: 700, color: "#000", cursor: "pointer", textDecoration: "underline", fontSize: "inherit" }}>
+              <button onClick={() => { setTab("signup"); setError(""); }} style={{ background: "none", border: "none", fontWeight: 700, color: "var(--ink)", cursor: "pointer", textDecoration: "underline", fontSize: "inherit" }}>
                 Sign up
               </button>
             </>

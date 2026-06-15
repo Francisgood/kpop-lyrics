@@ -71,7 +71,7 @@ export default async function ArtistsPage() {
             {total} artists &middot; {groups.length} K-pop groups &middot; {soloists.length} soloists &middot; {collabs.length} western collaborators
           </p>
           <div style={{ marginTop: 20, display: "flex", gap: 12 }}>
-            <Link href="/collabs" style={{ background: "var(--genius-yellow)", color: "#000", fontWeight: 700, fontSize: "0.78rem", padding: "8px 18px", borderRadius: 4, textDecoration: "none", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+            <Link href="/collabs" style={{ background: "var(--genius-yellow)", color: "var(--on-accent)", fontWeight: 700, fontSize: "0.78rem", padding: "8px 18px", borderRadius: 4, textDecoration: "none", letterSpacing: "0.06em", textTransform: "uppercase" }}>
               Collab Network
             </Link>
             <Link href="/define" style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.7)", fontWeight: 600, fontSize: "0.78rem", padding: "8px 18px", borderRadius: 4, textDecoration: "none" }}>
@@ -110,7 +110,7 @@ export default async function ArtistsPage() {
                           </div>
                         )}
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#000" }}>{group.stageName}</div>
+                          <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "var(--ink)" }}>{group.stageName}</div>
                           <div style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginTop: 3 }}>
                             {group.label?.name} &middot; Debut {group.debutYear}
                           </div>
@@ -123,7 +123,7 @@ export default async function ArtistsPage() {
                       </div>
                       {group.albums[0] && (
                         <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--genius-border)", fontSize: "0.78rem", color: "var(--genius-gray)" }}>
-                          Latest: <span style={{ color: "#000", fontWeight: 600 }}>{group.albums[0].title}</span> ({group.albums[0].releaseYear})
+                          Latest: <span style={{ color: "var(--ink)", fontWeight: 600 }}>{group.albums[0].title}</span> ({group.albums[0].releaseYear})
                         </div>
                       )}
                     </div>
@@ -162,7 +162,7 @@ export default async function ArtistsPage() {
                             </div>
                           )}
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#000" }}>{artist.stageName}</div>
+                            <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "var(--ink)" }}>{artist.stageName}</div>
                             {artist.realName && (
                               <div style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginTop: 2 }}>{artist.realName}</div>
                             )}
@@ -178,7 +178,7 @@ export default async function ArtistsPage() {
                         </div>
                         {artist.albums[0] && (
                           <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--genius-border)", fontSize: "0.78rem", color: "var(--genius-gray)" }}>
-                            Latest: <span style={{ color: "#000", fontWeight: 600 }}>{artist.albums[0].title}</span> ({artist.albums[0].releaseYear})
+                            Latest: <span style={{ color: "var(--ink)", fontWeight: 600 }}>{artist.albums[0].title}</span> ({artist.albums[0].releaseYear})
                           </div>
                         )}
                       </div>
@@ -231,7 +231,7 @@ export default async function ArtistsPage() {
                             </div>
                           )}
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#000" }}>{artist.stageName}</div>
+                            <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "var(--ink)" }}>{artist.stageName}</div>
                             {artist.realName && (
                               <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginTop: 1 }}>{artist.realName}</div>
                             )}
@@ -242,12 +242,12 @@ export default async function ArtistsPage() {
                         </div>
                         {kpopCollabs.length > 0 && (
                           <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--genius-border)", fontSize: "0.75rem", color: "var(--genius-gray)" }}>
-                            Collaborated with: <span style={{ color: "#000", fontWeight: 600 }}>{kpopCollabs.join(", ")}</span>
+                            Collaborated with: <span style={{ color: "var(--ink)", fontWeight: 600 }}>{kpopCollabs.join(", ")}</span>
                           </div>
                         )}
                         {artist.albums[0] && kpopCollabs.length === 0 && (
                           <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--genius-border)", fontSize: "0.75rem", color: "var(--genius-gray)" }}>
-                            Latest: <span style={{ color: "#000", fontWeight: 600 }}>{artist.albums[0].title}</span>
+                            Latest: <span style={{ color: "var(--ink)", fontWeight: 600 }}>{artist.albums[0].title}</span>
                           </div>
                         )}
                       </div>

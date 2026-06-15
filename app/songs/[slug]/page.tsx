@@ -224,8 +224,8 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
 
           <section>
             {song.annotations.length > 0 && (
-              <div style={{ background: "#f4f4f4", border: "1px solid #e0e0e0", borderRadius: 4, padding: "10px 16px", marginBottom: 20, fontSize: "0.82rem", color: "#555" }}>
-                <strong style={{ color: "#000" }}>Annotated lyrics</strong> — grey-highlighted lines have fan annotations. Click any highlighted line to read them.
+              <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 4, padding: "10px 16px", marginBottom: 20, fontSize: "0.82rem", color: "var(--ink-dim)" }}>
+                <strong style={{ color: "var(--ink)" }}>Annotated lyrics</strong> — grey-highlighted lines have fan annotations. Click any highlighted line to read them.
               </div>
             )}
 
@@ -252,7 +252,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                 {featured.map((c) => (
                   <Link key={c.id} href={`/artists/${c.artist.slug}`} style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10, padding: "6px 0" }}>
                     <span style={{ fontSize: "1.2rem" }}>⭐</span>
-                    <span style={{ fontWeight: 600, fontSize: "0.88rem", color: "#000" }}>{c.artist.stageName}</span>
+                    <span style={{ fontWeight: 600, fontSize: "0.88rem", color: "var(--ink)" }}>{c.artist.stageName}</span>
                   </Link>
                 ))}
               </div>
@@ -265,7 +265,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                 {producers.map((c) => (
                   <div key={c.id} style={{ marginBottom: 10 }}>
                     <div style={{ fontSize: "0.7rem", color: "var(--genius-gray)", textTransform: "uppercase", letterSpacing: "0.08em" }}>{c.role}</div>
-                    <Link href={`/artists/${c.artist.slug}`} style={{ fontWeight: 600, fontSize: "0.88rem", color: "#000", textDecoration: "none" }}>{c.artist.stageName}</Link>
+                    <Link href={`/artists/${c.artist.slug}`} style={{ fontWeight: 600, fontSize: "0.88rem", color: "var(--ink)", textDecoration: "none" }}>{c.artist.stageName}</Link>
                   </div>
                 ))}
               </div>
@@ -277,8 +277,8 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                 <div className="section-header" style={{ margin: "0 0 12px" }}>Annotations ({song.annotations.length})</div>
                 {song.annotations.map((ann) => (
                   <div key={ann.id} style={{ marginBottom: 10, paddingBottom: 10, borderBottom: "1px solid var(--genius-border)" }}>
-                    <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "#000" }}>&ldquo;{ann.word}&rdquo; — line {ann.lineIndex + 1}</div>
-                    <div style={{ fontSize: "0.78rem", color: "#555", marginTop: 2 }}>{ann.note.slice(0, 80)}{ann.note.length > 80 ? "…" : ""}</div>
+                    <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "var(--ink)" }}>&ldquo;{ann.word}&rdquo; — line {ann.lineIndex + 1}</div>
+                    <div style={{ fontSize: "0.78rem", color: "var(--ink-dim)", marginTop: 2 }}>{ann.note.slice(0, 80)}{ann.note.length > 80 ? "…" : ""}</div>
                     {ann.term && (
                       <Link href={`/define/${ann.term.slug}`} style={{ fontSize: "0.72rem", color: "var(--genius-gray)", textDecoration: "none", marginTop: 4, display: "block" }}>
                         → See: {ann.term.term}
@@ -330,12 +330,12 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                   <Link key={a.id} href={`/artists/${a.slug}`} style={{ textDecoration: "none" }}>
                     <div className="genius-card" style={{ padding: "14px 18px", display: "flex", alignItems: "center", gap: 14, minWidth: 200 }}>
                       {a.imageUrl ? (
-                        <img src={a.imageUrl} alt={a.name} style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid #eee" }} />
+                        <img src={a.imageUrl} alt={a.name} style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid var(--border)" }} />
                       ) : (
                         <div style={{ width: 52, height: 52, borderRadius: "50%", background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem", flexShrink: 0 }}>🎤</div>
                       )}
                       <div>
-                        <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "#000" }}>{a.name}</div>
+                        <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "var(--ink)" }}>{a.name}</div>
                         <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 2 }}>{a.role}</div>
                       </div>
                     </div>
@@ -360,23 +360,23 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                     <div style={{ position: "relative" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                         {item.artist.imageUrl ? (
-                          <img src={item.artist.imageUrl} alt={item.artist.stageName} style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "1px solid #eee" }} />
+                          <img src={item.artist.imageUrl} alt={item.artist.stageName} style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "1px solid var(--border)" }} />
                         ) : (
-                          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.9rem", flexShrink: 0 }}>🎤</div>
+                          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "var(--surface)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.9rem", flexShrink: 0 }}>🎤</div>
                         )}
                         <div>
-                          <div style={{ fontWeight: 700, fontSize: "0.78rem", color: "#000" }}>{item.artist.stageName}</div>
+                          <div style={{ fontWeight: 700, fontSize: "0.78rem", color: "var(--ink)" }}>{item.artist.stageName}</div>
                           <div style={{ fontSize: "0.68rem", color: "var(--genius-gray)" }}>
                             {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""}
                             {item.source ? ` · ${item.source}` : ""}
                           </div>
                         </div>
-                        <span style={{ marginLeft: "auto", fontSize: "0.64rem", background: "var(--genius-yellow)", color: "#000", padding: "2px 7px", borderRadius: 999, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                        <span style={{ marginLeft: "auto", fontSize: "0.64rem", background: "var(--genius-yellow)", color: "var(--on-accent)", padding: "2px 7px", borderRadius: 999, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>
                           {item.category}
                         </span>
                       </div>
-                      <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "#000", marginBottom: 6, lineHeight: 1.4 }}>{item.headline}</div>
-                      <div style={{ fontSize: "0.78rem", color: "#555", lineHeight: 1.6 }}>{item.body.slice(0, 140)}{item.body.length > 140 ? "…" : ""}</div>
+                      <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--ink)", marginBottom: 6, lineHeight: 1.4 }}>{item.headline}</div>
+                      <div style={{ fontSize: "0.78rem", color: "var(--ink-dim)", lineHeight: 1.6 }}>{item.body.slice(0, 140)}{item.body.length > 140 ? "…" : ""}</div>
                     </div>
                   </div>
                 </Link>

@@ -67,11 +67,11 @@ export default async function AdminPendingPage() {
               <div key={edit.id} className="genius-card" style={{ padding: "16px 20px" }}>
                 {/* Header row */}
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", marginBottom: 10 }}>
-                  <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "#f3f4f6", padding: "2px 8px", borderRadius: 4, textTransform: "uppercase" }}>
+                  <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "var(--surface)", padding: "2px 8px", borderRadius: 4, textTransform: "uppercase" }}>
                     {edit.entityType}
                   </span>
                   {entity ? (
-                    <a href={entity.slug} style={{ fontSize: "0.85rem", fontWeight: 700, color: "#000", textDecoration: "none" }}>
+                    <a href={entity.slug} style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--ink)", textDecoration: "none" }}>
                       {entity.name}
                     </a>
                   ) : (
@@ -89,7 +89,7 @@ export default async function AdminPendingPage() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12, fontSize: "0.82rem" }}>
                   <div>
                     <div style={{ fontSize: "0.68rem", fontWeight: 700, color: "var(--genius-gray)", marginBottom: 4 }}>CURRENT</div>
-                    <div style={{ fontFamily: "monospace", background: "#f8f8f8", padding: "6px 10px", borderRadius: 4, whiteSpace: "pre-wrap", maxHeight: 80, overflow: "hidden" }}>
+                    <div style={{ fontFamily: "monospace", background: "var(--surface)", padding: "6px 10px", borderRadius: 4, whiteSpace: "pre-wrap", maxHeight: 80, overflow: "hidden" }}>
                       {edit.currentVal?.slice(0, 200) ?? <em style={{ color: "var(--genius-gray)" }}>empty</em>}
                     </div>
                   </div>

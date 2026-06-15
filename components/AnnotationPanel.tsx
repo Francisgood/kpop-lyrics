@@ -122,15 +122,15 @@ function AnnotationCard({ ann, isLoggedIn, currentUserId }: AnnotationCardProps)
           </div>
         )}
         <div>
-          <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "#000" }}>{authorLabel}</div>
-          <div style={{ fontSize: "0.68rem", color: "#999" }}>{fmtDate(ann.createdAt)}</div>
+          <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--ink)" }}>{authorLabel}</div>
+          <div style={{ fontSize: "0.68rem", color: "var(--ink-dim)" }}>{fmtDate(ann.createdAt)}</div>
         </div>
       </div>
 
       {/* Annotated word */}
       <div style={{ marginBottom: 8 }}>
         {ann.term ? (
-          <Link href={`/define/${ann.term.slug}`} style={{ fontWeight: 800, fontSize: "0.88rem", color: "#000", background: "rgba(255,255,100,0.5)", padding: "2px 6px", borderRadius: 3, textDecoration: "none" }}>
+          <Link href={`/define/${ann.term.slug}`} style={{ fontWeight: 800, fontSize: "0.88rem", color: "var(--ink)", background: "rgba(255,255,100,0.5)", padding: "2px 6px", borderRadius: 3, textDecoration: "none" }}>
             &ldquo;{ann.word}&rdquo;
           </Link>
         ) : (
@@ -141,13 +141,13 @@ function AnnotationCard({ ann, isLoggedIn, currentUserId }: AnnotationCardProps)
       </div>
 
       {/* Note */}
-      <div style={{ fontSize: "0.88rem", color: "#333", lineHeight: 1.7, marginBottom: 14 }}>
+      <div style={{ fontSize: "0.88rem", color: "var(--ink)", lineHeight: 1.7, marginBottom: 14 }}>
         {ann.note}
       </div>
 
       {ann.term && (
         <div style={{ marginBottom: 12, fontSize: "0.75rem" }}>
-          <Link href={`/define/${ann.term.slug}`} style={{ color: "#555", textDecoration: "underline" }}>
+          <Link href={`/define/${ann.term.slug}`} style={{ color: "var(--ink-dim)", textDecoration: "underline" }}>
             → See full definition: {ann.term.term}
           </Link>
         </div>
@@ -188,7 +188,7 @@ function AnnotationCard({ ann, isLoggedIn, currentUserId }: AnnotationCardProps)
         {/* Comments toggle */}
         <button
           onClick={showComments ? () => setShowComments(false) : loadComments}
-          style={{ display: "flex", alignItems: "center", gap: 5, background: "none", border: "none", color: "#555", fontSize: "0.78rem", cursor: "pointer", padding: "5px 6px" }}
+          style={{ display: "flex", alignItems: "center", gap: 5, background: "none", border: "none", color: "var(--ink-dim)", fontSize: "0.78rem", cursor: "pointer", padding: "5px 6px" }}
         >
           💬 {commentCount !== null ? commentCount : "…"}
         </button>
@@ -196,7 +196,7 @@ function AnnotationCard({ ann, isLoggedIn, currentUserId }: AnnotationCardProps)
         {/* Share */}
         <button
           onClick={shareAnnotation}
-          style={{ display: "flex", alignItems: "center", gap: 5, background: "none", border: "none", color: "#555", fontSize: "0.78rem", cursor: "pointer", padding: "5px 6px", marginLeft: "auto" }}
+          style={{ display: "flex", alignItems: "center", gap: 5, background: "none", border: "none", color: "var(--ink-dim)", fontSize: "0.78rem", cursor: "pointer", padding: "5px 6px", marginLeft: "auto" }}
         >
           ↗ Share
         </button>
@@ -214,13 +214,13 @@ function AnnotationCard({ ann, isLoggedIn, currentUserId }: AnnotationCardProps)
                   </div>
                   <div>
                     <span style={{ fontWeight: 700, marginRight: 6, fontSize: "0.72rem" }}>{c.user.displayName ?? "Anonymous"}</span>
-                    <span style={{ color: "#333" }}>{c.body}</span>
+                    <span style={{ color: "var(--ink)" }}>{c.body}</span>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div style={{ fontSize: "0.78rem", color: "#999", marginBottom: 10 }}>No comments yet. Be first!</div>
+            <div style={{ fontSize: "0.78rem", color: "var(--ink-dim)", marginBottom: 10 }}>No comments yet. Be first!</div>
           )}
 
           {isLoggedIn ? (
@@ -241,7 +241,7 @@ function AnnotationCard({ ann, isLoggedIn, currentUserId }: AnnotationCardProps)
               </button>
             </div>
           ) : (
-            <Link href="/login" style={{ fontSize: "0.78rem", color: "#555", textDecoration: "underline" }}>
+            <Link href="/login" style={{ fontSize: "0.78rem", color: "var(--ink-dim)", textDecoration: "underline" }}>
               Sign in to comment
             </Link>
           )}
@@ -311,7 +311,7 @@ export default function AnnotationPanel({
           right: 0,
           bottom: 0,
           width: "min(420px, 100vw)",
-          background: "#fff",
+          background: "var(--surface)",
           zIndex: 201,
           boxShadow: "-4px 0 32px rgba(0,0,0,0.18)",
           transform: isOpen ? "translateX(0)" : "translateX(100%)",
@@ -322,10 +322,10 @@ export default function AnnotationPanel({
         }}
       >
         {/* Panel header */}
-        <div style={{ padding: "16px 20px", borderBottom: "2px solid #000", flexShrink: 0, background: "#fff" }}>
+        <div style={{ padding: "16px 20px", borderBottom: "2px solid #000", flexShrink: 0, background: "var(--surface)" }}>
           <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: "0.68rem", fontWeight: 700, color: "#999", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>
+              <div style={{ fontSize: "0.68rem", fontWeight: 700, color: "var(--ink-dim)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>
                 {songTitle} · Line {lineIndex + 1}
               </div>
               <blockquote style={{ margin: 0, padding: "8px 12px", background: "#000", color: "#fff", borderRadius: 4, fontSize: "0.95rem", fontWeight: 600, lineHeight: 1.5, wordBreak: "break-word" }}>
@@ -334,7 +334,7 @@ export default function AnnotationPanel({
             </div>
             <button
               onClick={onClose}
-              style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#333", padding: "2px 4px", lineHeight: 1, flexShrink: 0, marginTop: 2 }}
+              style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "var(--ink)", padding: "2px 4px", lineHeight: 1, flexShrink: 0, marginTop: 2 }}
               aria-label="Close"
             >
               ×
@@ -345,7 +345,7 @@ export default function AnnotationPanel({
         {/* Annotations list */}
         <div style={{ flex: 1, overflowY: "auto", padding: "20px 20px 0" }}>
           {annotations.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "40px 0", color: "#999", fontSize: "0.88rem" }}>
+            <div style={{ textAlign: "center", padding: "40px 0", color: "var(--ink-dim)", fontSize: "0.88rem" }}>
               No annotations yet for this line.
             </div>
           ) : (
@@ -361,7 +361,7 @@ export default function AnnotationPanel({
         </div>
 
         {/* Footer */}
-        <div style={{ padding: "16px 20px", borderTop: "1px solid #eee", flexShrink: 0, background: "#fafafa" }}>
+        <div style={{ padding: "16px 20px", borderTop: "1px solid var(--border)", flexShrink: 0, background: "var(--surface)" }}>
           {canAnnotate ? (
             <button
               onClick={onAddAnnotation}
@@ -370,13 +370,13 @@ export default function AnnotationPanel({
               + Add Annotation
             </button>
           ) : isLoggedIn ? (
-            <div style={{ fontSize: "0.75rem", color: "#999", textAlign: "center" }}>
+            <div style={{ fontSize: "0.75rem", color: "var(--ink-dim)", textAlign: "center" }}>
               Contributor status required to add annotations
             </div>
           ) : (
             <Link
               href="/login"
-              style={{ display: "block", textAlign: "center", background: "#f4f4f4", padding: "10px 0", borderRadius: 4, fontSize: "0.82rem", fontWeight: 700, color: "#000", textDecoration: "none" }}
+              style={{ display: "block", textAlign: "center", background: "var(--surface)", padding: "10px 0", borderRadius: 4, fontSize: "0.82rem", fontWeight: 700, color: "var(--ink)", textDecoration: "none" }}
             >
               Sign in to annotate
             </Link>

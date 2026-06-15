@@ -66,13 +66,13 @@ export default async function AuditLogPanel({ entityType, entityId, currentUser 
             {pendingEdits.map((edit) => {
               const badge = STATUS_BADGE.pending;
               return (
-                <div key={edit.id} style={{ background: "#fafafa", border: "1px solid var(--genius-border)", borderRadius: 6, padding: "12px 16px" }}>
+                <div key={edit.id} style={{ background: "var(--surface)", border: "1px solid var(--genius-border)", borderRadius: 6, padding: "12px 16px" }}>
                   <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 8 }}>
                     <span style={{ fontSize: "0.72rem", fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: badge.bg, color: badge.color }}>
                       {badge.label}
                     </span>
                     <span style={{ fontSize: "0.78rem", color: "var(--genius-gray)" }}>
-                      field: <strong style={{ color: "#000" }}>{edit.field}</strong>
+                      field: <strong style={{ color: "var(--ink)" }}>{edit.field}</strong>
                     </span>
                     <span style={{ fontSize: "0.72rem", color: "var(--genius-gray)" }}>
                       by {label(edit.user)} · {fmtDate(edit.createdAt)}

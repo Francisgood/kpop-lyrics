@@ -379,7 +379,7 @@ export default function QuizModal({ onClose }: QuizModalProps) {
           <div style={{ padding: "36px 32px 32px" }}>
             <div style={{ fontSize: "0.65rem", color: "var(--genius-yellow)", letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 8 }}>Aegyo Arena</div>
             <h2 style={{ fontSize: "1.6rem", fontWeight: 800, margin: "0 0 8px" }}>K-pop Quiz</h2>
-            <p style={{ color: "#777", fontSize: "0.88rem", marginBottom: 28 }}>
+            <p style={{ color: "var(--ink-dim)", fontSize: "0.88rem", marginBottom: 28 }}>
               5 questions · Pick a category to start
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -389,7 +389,7 @@ export default function QuizModal({ onClose }: QuizModalProps) {
                   onClick={() => startCategory(cat)}
                   style={{
                     display: "flex", alignItems: "center", gap: 16,
-                    background: "#f8f8f8", border: "2px solid #eee",
+                    background: "var(--surface)", border: "2px solid var(--border)",
                     borderRadius: 10, padding: "18px 20px",
                     cursor: "pointer", textAlign: "left", width: "100%",
                     transition: "border-color 0.15s, background 0.15s",
@@ -399,8 +399,8 @@ export default function QuizModal({ onClose }: QuizModalProps) {
                 >
                   <span style={{ fontSize: "2rem", flexShrink: 0 }}>{cat.emoji}</span>
                   <div>
-                    <div style={{ fontWeight: 800, fontSize: "1rem", color: "#000" }}>{cat.label}</div>
-                    <div style={{ fontSize: "0.78rem", color: "#777", marginTop: 2 }}>{cat.questions.length} questions</div>
+                    <div style={{ fontWeight: 800, fontSize: "1rem", color: "var(--ink)" }}>{cat.label}</div>
+                    <div style={{ fontSize: "0.78rem", color: "var(--ink-dim)", marginTop: 2 }}>{cat.questions.length} questions</div>
                   </div>
                   <span style={{ marginLeft: "auto", color: "#ccc", fontSize: "1.2rem" }}>›</span>
                 </button>
@@ -421,7 +421,7 @@ export default function QuizModal({ onClose }: QuizModalProps) {
           <button style={closeBtn} onClick={onClose} aria-label="Close">✕</button>
 
           {/* Progress bar */}
-          <div style={{ height: 4, background: "#eee", borderRadius: "12px 12px 0 0", overflow: "hidden" }}>
+          <div style={{ height: 4, background: "var(--surface)", borderRadius: "12px 12px 0 0", overflow: "hidden" }}>
             <div style={{ height: "100%", width: `${((qIndex) / total) * 100}%`, background: accent, transition: "width 0.3s" }} />
           </div>
 
@@ -430,8 +430,8 @@ export default function QuizModal({ onClose }: QuizModalProps) {
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
               <span style={{ fontSize: "1.4rem" }}>{category!.emoji}</span>
               <div>
-                <div style={{ fontWeight: 700, fontSize: "0.78rem", color: "#000" }}>{category!.label}</div>
-                <div style={{ fontSize: "0.72rem", color: "#aaa" }}>Question {qIndex + 1} of {total}</div>
+                <div style={{ fontWeight: 700, fontSize: "0.78rem", color: "var(--ink)" }}>{category!.label}</div>
+                <div style={{ fontSize: "0.72rem", color: "var(--ink-dim)" }}>Question {qIndex + 1} of {total}</div>
               </div>
               <div style={{ marginLeft: "auto", fontWeight: 800, fontSize: "0.85rem", color: accent }}>
                 {score}/{qIndex}
@@ -439,7 +439,7 @@ export default function QuizModal({ onClose }: QuizModalProps) {
             </div>
 
             {/* Question */}
-            <div style={{ fontWeight: 800, fontSize: "1.05rem", lineHeight: 1.5, marginBottom: 20, color: "#000" }}>
+            <div style={{ fontWeight: 800, fontSize: "1.05rem", lineHeight: 1.5, marginBottom: 20, color: "var(--ink)" }}>
               {current.q}
             </div>
 
@@ -477,7 +477,7 @@ export default function QuizModal({ onClose }: QuizModalProps) {
 
             {/* Explanation */}
             {confirmed && (
-              <div style={{ marginTop: 18, background: "#f9f9f9", borderLeft: `4px solid ${accent}`, borderRadius: "0 6px 6px 0", padding: "12px 16px", fontSize: "0.82rem", color: "#555", lineHeight: 1.6 }}>
+              <div style={{ marginTop: 18, background: "var(--surface)", borderLeft: `4px solid ${accent}`, borderRadius: "0 6px 6px 0", padding: "12px 16px", fontSize: "0.82rem", color: "var(--ink-dim)", lineHeight: 1.6 }}>
                 {current.explanation}
               </div>
             )}
@@ -495,7 +495,7 @@ export default function QuizModal({ onClose }: QuizModalProps) {
               ) : (
                 <button
                   onClick={handleNext}
-                  style={{ flex: 1, background: accent, color: "#000", border: "none", borderRadius: 8, padding: "14px", fontWeight: 800, fontSize: "0.9rem", cursor: "pointer", letterSpacing: "0.04em" }}
+                  style={{ flex: 1, background: accent, color: "var(--on-accent)", border: "none", borderRadius: 8, padding: "14px", fontWeight: 800, fontSize: "0.9rem", cursor: "pointer", letterSpacing: "0.04em" }}
                 >
                   {qIndex + 1 < total ? "NEXT QUESTION →" : "SEE RESULTS →"}
                 </button>
@@ -518,21 +518,21 @@ export default function QuizModal({ onClose }: QuizModalProps) {
           <div style={{ fontWeight: 800, fontSize: "2rem", marginBottom: 8 }}>
             {score} / {total}
           </div>
-          <div style={{ width: "100%", height: 8, background: "#eee", borderRadius: 999, marginBottom: 20, overflow: "hidden" }}>
+          <div style={{ width: "100%", height: 8, background: "var(--surface)", borderRadius: 999, marginBottom: 20, overflow: "hidden" }}>
             <div style={{ height: "100%", width: `${pct}%`, background: accent, borderRadius: 999, transition: "width 0.6s ease" }} />
           </div>
-          <p style={{ color: "#555", fontSize: "0.95rem", marginBottom: 28, lineHeight: 1.6 }}>{resultMsg}</p>
+          <p style={{ color: "var(--ink-dim)", fontSize: "0.95rem", marginBottom: 28, lineHeight: 1.6 }}>{resultMsg}</p>
 
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
             <button
               onClick={handleRestart}
-              style={{ background: accent, color: "#000", border: "none", borderRadius: 8, padding: "14px 24px", fontWeight: 800, fontSize: "0.88rem", cursor: "pointer", letterSpacing: "0.04em" }}
+              style={{ background: accent, color: "var(--on-accent)", border: "none", borderRadius: 8, padding: "14px 24px", fontWeight: 800, fontSize: "0.88rem", cursor: "pointer", letterSpacing: "0.04em" }}
             >
               TRY ANOTHER CATEGORY
             </button>
             <button
               onClick={onClose}
-              style={{ background: "#f0f0f0", color: "#000", border: "none", borderRadius: 8, padding: "14px 24px", fontWeight: 700, fontSize: "0.88rem", cursor: "pointer" }}
+              style={{ background: "var(--surface)", color: "var(--ink)", border: "none", borderRadius: 8, padding: "14px 24px", fontWeight: 700, fontSize: "0.88rem", cursor: "pointer" }}
             >
               Back to Site
             </button>
@@ -540,12 +540,12 @@ export default function QuizModal({ onClose }: QuizModalProps) {
 
           {/* Category breakdown */}
           <div style={{ marginTop: 28, textAlign: "left" }}>
-            <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#aaa", marginBottom: 12 }}>Your answers</div>
+            <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-dim)", marginBottom: 12 }}>Your answers</div>
             {questions.map((q, i) => {
               // We don't track per-question answers in result phase — show the score tally
               return null;
             })}
-            <div style={{ fontSize: "0.82rem", color: "#777" }}>
+            <div style={{ fontSize: "0.82rem", color: "var(--ink-dim)" }}>
               {score === total ? "Every answer correct — phenomenal!" : `${total - score} question${total - score !== 1 ? "s" : ""} to revisit. Check the K-pop Dictionary for help.`}
             </div>
           </div>

@@ -98,15 +98,15 @@ export default async function LeaderboardPage({
 
         {/* City context banner when filtered */}
         {activeCity && (
-          <div style={{ background: CITY_META[activeCity].accent, border: `1px solid ${CITY_META[activeCity].color}33`, borderRadius: 8, padding: "14px 18px", marginBottom: 24, display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ background: `${CITY_META[activeCity].color}1A`, border: `1px solid ${CITY_META[activeCity].color}55`, borderRadius: 12, padding: "14px 18px", marginBottom: 24, display: "flex", alignItems: "center", gap: 12 }}>
             <span style={{ fontSize: "1.6rem" }}>{CITY_META[activeCity].flag}</span>
             <div>
-              <div style={{ fontWeight: 800, color: CITY_META[activeCity].color, fontSize: "0.95rem" }}>{activeCity}</div>
-              <div style={{ fontSize: "0.78rem", color: "#444" }}>{CITY_META[activeCity].description}</div>
+              <div style={{ fontWeight: 800, color: "var(--ink)", fontSize: "0.95rem" }}>{activeCity}</div>
+              <div style={{ fontSize: "0.78rem", color: "var(--ink-dim)" }}>{CITY_META[activeCity].description}</div>
             </div>
             <div style={{ marginLeft: "auto", textAlign: "right" }}>
-              <div style={{ fontWeight: 800, color: CITY_META[activeCity].color }}>{CITY_TOTALS[activeCity].totalPoints.toLocaleString()} pts</div>
-              <div style={{ fontSize: "0.72rem", color: "#666" }}>city total</div>
+              <div style={{ fontWeight: 800, color: "var(--ink)" }}>{CITY_TOTALS[activeCity].totalPoints.toLocaleString()} pts</div>
+              <div style={{ fontSize: "0.72rem", color: "var(--ink-dim)" }}>city total</div>
             </div>
           </div>
         )}
@@ -116,9 +116,9 @@ export default async function LeaderboardPage({
             <div
               key={c.username}
               style={{
-                background:   i < 3 && !activeCity ? "linear-gradient(90deg, #111 0%, #1a1400 100%)" : "#fff",
-                border:       `1px solid ${i < 3 && !activeCity ? "rgba(255,215,0,0.15)" : "var(--genius-border)"}`,
-                borderRadius: 8,
+                background:   i < 3 && !activeCity ? "linear-gradient(90deg, rgba(255,215,0,0.10) 0%, var(--surface) 100%)" : "var(--surface)",
+                border:       `1px solid ${i < 3 && !activeCity ? "rgba(255,215,0,0.22)" : "var(--border)"}`,
+                borderRadius: 12,
                 padding:      "16px 20px",
                 display:      "flex",
                 alignItems:   "center",
@@ -148,17 +148,17 @@ export default async function LeaderboardPage({
               {/* Name + city + focus */}
               <div style={{ flex: "1 1 180px", minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                  <span style={{ fontWeight: 800, fontSize: "0.95rem", color: i < 3 && !activeCity ? "#fff" : "#111" }}>
+                  <span style={{ fontWeight: 800, fontSize: "0.95rem", color: "var(--ink)" }}>
                     {c.username}
                   </span>
                   <span style={{ fontSize: "0.68rem", background: `${c.tierColor}22`, color: c.tierColor, fontWeight: 700, padding: "2px 8px", borderRadius: 999, textTransform: "uppercase", letterSpacing: "0.06em" }}>
                     {c.tier}
                   </span>
                 </div>
-                <div style={{ fontSize: "0.75rem", color: i < 3 && !activeCity ? "rgba(255,255,255,0.45)" : "var(--genius-gray)", marginTop: 3, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+                <div style={{ fontSize: "0.75rem", color: "var(--ink-dim)", marginTop: 3, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
                   <span>{c.flag} {c.city}</span>
                   <span style={{ opacity: 0.5 }}>·</span>
-                  <span style={{ background: "#f1f5f9", color: "#475569", padding: "1px 7px", borderRadius: 4, fontSize: "0.68rem", fontWeight: 600 }}>
+                  <span style={{ background: "var(--surface)", color: "var(--ink-dim)", padding: "1px 7px", borderRadius: 4, fontSize: "0.68rem", fontWeight: 600 }}>
                     {c.focusTag}
                   </span>
                   <span style={{ opacity: 0.5 }}>·</span>
@@ -168,7 +168,7 @@ export default async function LeaderboardPage({
 
               {/* Recent activity */}
               <div style={{ flex: "2 1 260px", minWidth: 0 }}>
-                <div style={{ fontSize: "0.78rem", color: i < 3 && !activeCity ? "rgba(255,255,255,0.6)" : "#444", lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                <div style={{ fontSize: "0.78rem", color: "var(--ink-dim)", lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                   {c.recentAct}
                 </div>
               </div>
@@ -181,7 +181,7 @@ export default async function LeaderboardPage({
                   { label: "cmts",   value: c.comments },
                 ].map(({ label, value }) => (
                   <div key={label} style={{ textAlign: "center" }}>
-                    <div style={{ fontWeight: 800, fontSize: "0.9rem", color: i < 3 && !activeCity ? "rgba(255,215,0,0.8)" : "#111" }}>{value}</div>
+                    <div style={{ fontWeight: 800, fontSize: "0.9rem", color: i < 3 && !activeCity ? "#fbbf24" : "var(--ink)" }}>{value}</div>
                     <div style={{ fontSize: "0.62rem", color: "var(--genius-gray)", textTransform: "uppercase", letterSpacing: "0.06em" }}>{label}</div>
                   </div>
                 ))}

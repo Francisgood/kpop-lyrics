@@ -354,7 +354,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                         )}
                       </div>
                       <div style={{ minWidth: 0 }}>
-                        <div style={{ fontWeight: 700, fontSize: "0.92rem", color: "#000", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        <div style={{ fontWeight: 700, fontSize: "0.92rem", color: "var(--ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                           {song.title}
                         </div>
                         <div style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginTop: 2 }}>
@@ -377,7 +377,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               {artists.map((artist) => (
                 <Link key={artist.id} href={`/artists/${artist.slug}`} style={{ textDecoration: "none" }}>
                   <div className="member-card" style={{ padding: 16, textAlign: "center" }}>
-                    <div style={{ width: 64, height: 64, borderRadius: "50%", overflow: "hidden", margin: "0 auto 10px", background: "#f0f0f0" }}>
+                    <div style={{ width: 64, height: 64, borderRadius: "50%", overflow: "hidden", margin: "0 auto 10px", background: "var(--surface)" }}>
                       {artist.imageUrl ? (
                         <img src={artist.imageUrl} alt={artist.stageName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                       ) : (
@@ -386,7 +386,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                         </div>
                       )}
                     </div>
-                    <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#000" }}>{artist.stageName}</div>
+                    <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "var(--ink)" }}>{artist.stageName}</div>
                     <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginTop: 3 }}>{artist.label?.name ?? ""}</div>
                   </div>
                 </Link>
@@ -433,9 +433,9 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               {terms.map((term) => (
                 <Link key={term.id} href={`/define/${term.slug}`} style={{ textDecoration: "none" }}>
                   <div className="genius-card" style={{ padding: 16 }}>
-                    <div style={{ fontWeight: 700, fontSize: "1rem", color: "#000", marginBottom: 6 }}>{term.term}</div>
+                    <div style={{ fontWeight: 700, fontSize: "1rem", color: "var(--ink)", marginBottom: 6 }}>{term.term}</div>
                     {term.definitions[0] && (
-                      <div style={{ fontSize: "0.83rem", color: "#555", lineHeight: 1.5, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                      <div style={{ fontSize: "0.83rem", color: "var(--ink-dim)", lineHeight: 1.5, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                         {term.definitions[0].body}
                       </div>
                     )}
@@ -462,7 +462,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                       )}
                     </div>
                     <div style={{ minWidth: 0 }}>
-                      <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#000", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "var(--ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {album.title}
                       </div>
                       <div style={{ fontSize: "0.75rem", color: "var(--genius-gray)", marginTop: 2 }}>
@@ -497,11 +497,11 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
                   {city.artists.map((ac) => (
                     <Link key={ac.id} href={`/artists/${ac.artist.slug}`} style={{ textDecoration: "none" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, background: "#f9f9f9", border: "1px solid var(--genius-border)", borderRadius: 6, padding: "8px 12px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--surface)", border: "1px solid var(--genius-border)", borderRadius: 6, padding: "8px 12px" }}>
                         {ac.artist.imageUrl && (
                           <img src={ac.artist.imageUrl} alt={ac.artist.stageName} style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover" }} />
                         )}
-                        <span style={{ fontWeight: 700, fontSize: "0.85rem", color: "#000" }}>{ac.artist.stageName}</span>
+                        <span style={{ fontWeight: 700, fontSize: "0.85rem", color: "var(--ink)" }}>{ac.artist.stageName}</span>
                       </div>
                     </Link>
                   ))}
@@ -516,10 +516,10 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {city.songs.map((sc, i) => (
                     <Link key={sc.id} href={`/songs/${sc.song.slug}`} style={{ textDecoration: "none" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 14px", background: "#f9f9f9", border: "1px solid var(--genius-border)", borderRadius: 6 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 14px", background: "var(--surface)", border: "1px solid var(--genius-border)", borderRadius: 6 }}>
                         <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "var(--genius-gray)", width: 18, textAlign: "right" }}>#{i + 1}</span>
                         <div style={{ minWidth: 0 }}>
-                          <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#000" }}>{sc.song.title}</div>
+                          <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "var(--ink)" }}>{sc.song.title}</div>
                           <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)" }}>{sc.song.album?.artist?.stageName}</div>
                         </div>
                       </div>
@@ -533,7 +533,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
         {/* Long-tail fallback notice */}
         {fallbackWord && totalResults > 0 && (
-          <div style={{ padding: "10px 16px", background: "#fffbea", border: "1px solid #ffe566", borderRadius: 6, fontSize: "0.82rem", color: "#555", marginBottom: 32 }}>
+          <div style={{ padding: "10px 16px", background: "#fffbea", border: "1px solid #ffe566", borderRadius: 6, fontSize: "0.82rem", color: "var(--ink-dim)", marginBottom: 32 }}>
             Showing results related to <strong>{fallbackWord}</strong> — no exact match for &ldquo;{query}&rdquo;
           </div>
         )}
@@ -544,7 +544,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             <div style={{ fontSize: "2rem", marginBottom: 16 }}>🔍</div>
             <div style={{ fontSize: "1.1rem", fontWeight: 600 }}>No results for &ldquo;{query}&rdquo;</div>
             <div style={{ marginTop: 8 }}>Try searching for an artist name, song title, album, or K-pop term</div>
-            <div style={{ marginTop: 16, fontFamily: "monospace", fontSize: "0.72rem", color: "#bbb", letterSpacing: "0.05em" }}>
+            <div style={{ marginTop: 16, fontFamily: "monospace", fontSize: "0.72rem", color: "var(--ink-dim)", letterSpacing: "0.05em" }}>
               ERROR_SEARCH_NO_RESULTS
             </div>
           </div>
@@ -560,11 +560,11 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                   <div className="genius-card" style={{ padding: 18, borderTop: `3px solid ${label.color}` }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                       <div style={{ width: 8, height: 8, borderRadius: "50%", background: label.color, flexShrink: 0 }} />
-                      <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "#000" }}>{label.name}</div>
+                      <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "var(--ink)" }}>{label.name}</div>
                     </div>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
                       {label.acts.slice(0, 4).map((act) => (
-                        <span key={act} style={{ background: "#f4f4f4", color: "#444", fontSize: "0.68rem", fontWeight: 600, padding: "2px 8px", borderRadius: 999 }}>
+                        <span key={act} style={{ background: "var(--surface)", color: "var(--ink-dim)", fontSize: "0.68rem", fontWeight: 600, padding: "2px 8px", borderRadius: 999 }}>
                           {act}
                         </span>
                       ))}

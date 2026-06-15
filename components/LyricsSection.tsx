@@ -196,12 +196,12 @@ export default function LyricsSection({
                     </div>
                   )}
                   {hasAnns && !isActive && (
-                    <div style={{ display: "inline-block", marginLeft: 8, fontSize: "0.65rem", background: "rgba(0,0,0,0.12)", color: "#444", borderRadius: 10, padding: "1px 7px", verticalAlign: "middle", fontWeight: 700 }}>
+                    <div style={{ display: "inline-block", marginLeft: 8, fontSize: "0.65rem", background: "rgba(0,0,0,0.12)", color: "var(--ink-dim)", borderRadius: 10, padding: "1px 7px", verticalAlign: "middle", fontWeight: 700 }}>
                       {lineAnns.length}
                     </div>
                   )}
                   {hasAnns && isActive && (
-                    <div style={{ display: "inline-block", marginLeft: 8, fontSize: "0.65rem", background: "var(--genius-yellow)", color: "#000", borderRadius: 10, padding: "1px 7px", verticalAlign: "middle", fontWeight: 700 }}>
+                    <div style={{ display: "inline-block", marginLeft: 8, fontSize: "0.65rem", background: "var(--genius-yellow)", color: "var(--on-accent)", borderRadius: 10, padding: "1px 7px", verticalAlign: "middle", fontWeight: 700 }}>
                       {lineAnns.length}
                     </div>
                   )}
@@ -210,7 +210,7 @@ export default function LyricsSection({
                 {/* English column */}
                 <div
                   className="lyric-line-en"
-                  style={{ color: isActive ? "rgba(255,255,255,0.75)" : "#444" }}
+                  style={{ color: isActive ? "rgba(255,255,255,0.9)" : "var(--ink-dim)" }}
                 >
                   {enLines[i] || "\u00a0"}
                 </div>
@@ -248,7 +248,7 @@ export default function LyricsSection({
           right:          0,
           bottom:         0,
           width:          "min(420px, 100vw)",
-          background:     "#fff",
+          background: "var(--surface)",
           zIndex:         202,
           boxShadow:      "-4px 0 32px rgba(0,0,0,0.25)",
           display:        "flex",
@@ -258,20 +258,20 @@ export default function LyricsSection({
           <div style={{ padding: "16px 20px", borderBottom: "2px solid #000", flexShrink: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: "0.68rem", fontWeight: 700, color: "#999", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>
+                <div style={{ fontSize: "0.68rem", fontWeight: 700, color: "var(--ink-dim)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>
                   New Annotation · Line {activeLine + 1}
                 </div>
                 <blockquote style={{ margin: 0, padding: "8px 12px", background: "#000", color: "#fff", borderRadius: 4, fontSize: "0.88rem", fontWeight: 600 }}>
                   {activeKoLine}
                 </blockquote>
               </div>
-              <button onClick={() => setAddingAnnotation(false)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#333", padding: "2px 4px" }}>×</button>
+              <button onClick={() => setAddingAnnotation(false)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "var(--ink)", padding: "2px 4px" }}>×</button>
             </div>
           </div>
 
           <div style={{ flex: 1, overflowY: "auto", padding: 20 }}>
             <div style={{ marginBottom: 14 }}>
-              <label style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#666", display: "block", marginBottom: 6 }}>
+              <label style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--ink-dim)", display: "block", marginBottom: 6 }}>
                 Phrase being annotated
               </label>
               <input
@@ -286,7 +286,7 @@ export default function LyricsSection({
             </div>
 
             <div style={{ marginBottom: 14 }}>
-              <label style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#666", display: "block", marginBottom: 6 }}>
+              <label style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--ink-dim)", display: "block", marginBottom: 6 }}>
                 Annotation
               </label>
               <textarea
@@ -307,7 +307,7 @@ export default function LyricsSection({
             )}
           </div>
 
-          <div style={{ padding: "16px 20px", borderTop: "1px solid #eee", flexShrink: 0, display: "flex", gap: 10 }}>
+          <div style={{ padding: "16px 20px", borderTop: "1px solid var(--border)", flexShrink: 0, display: "flex", gap: 10 }}>
             <button
               onClick={submitAnnotation}
               disabled={annSaving || !annWord.trim() || !annNote.trim()}
@@ -317,7 +317,7 @@ export default function LyricsSection({
             </button>
             <button
               onClick={() => setAddingAnnotation(false)}
-              style={{ background: "#f4f4f4", border: "none", borderRadius: 4, padding: "10px 16px", fontSize: "0.82rem", cursor: "pointer", fontWeight: 600 }}
+              style={{ background: "var(--surface)", border: "none", borderRadius: 4, padding: "10px 16px", fontSize: "0.82rem", cursor: "pointer", fontWeight: 600 }}
             >
               Back
             </button>

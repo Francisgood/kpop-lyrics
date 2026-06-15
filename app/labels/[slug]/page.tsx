@@ -54,7 +54,7 @@ export default async function LabelPage({ params }: { params: Promise<{ slug: st
                 <Link key={group.id} href={`/artists/${group.slug}`} style={{ textDecoration: "none" }}>
                   <div className="genius-card" style={{ padding: 20, textAlign: "center" }}>
                     <div style={{ fontSize: "2.5rem", marginBottom: 10 }}>🎤</div>
-                    <div style={{ fontWeight: 700, fontSize: "1rem", color: "#000" }}>{group.stageName}</div>
+                    <div style={{ fontWeight: 700, fontSize: "1rem", color: "var(--ink)" }}>{group.stageName}</div>
                     <div style={{ fontSize: "0.75rem", color: "var(--genius-gray)", marginTop: 4 }}>
                       Debut {group.debutYear}
                     </div>
@@ -76,7 +76,7 @@ export default async function LabelPage({ params }: { params: Promise<{ slug: st
                 <Link key={artist.id} href={`/artists/${artist.slug}`} style={{ textDecoration: "none" }}>
                   <div className="genius-card" style={{ padding: 20, textAlign: "center" }}>
                     <div style={{ fontSize: "2.5rem", marginBottom: 10 }}>⭐</div>
-                    <div style={{ fontWeight: 700, fontSize: "1rem", color: "#000" }}>{artist.stageName}</div>
+                    <div style={{ fontWeight: 700, fontSize: "1rem", color: "var(--ink)" }}>{artist.stageName}</div>
                     {artist.realName && (
                       <div style={{ fontSize: "0.75rem", color: "var(--genius-gray)", marginTop: 4 }}>{artist.realName}</div>
                     )}
