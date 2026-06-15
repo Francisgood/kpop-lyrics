@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
 const AGE_ERROR = "Sorry — this giveaway is only open to entrants who are 18 or older.";
 
 export default function BtsGiveawayPage() {
@@ -14,13 +13,22 @@ export default function BtsGiveawayPage() {
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [month, setMonth] = useState("");
   const [day, setDay] = useState("");
   const [year, setYear] = useState("");
-  const [street, setStreet] = useState("");
+  const [zip, setZip] = useState("");
+  const [ref, setRef] = useState<string | null>(null);
   const [error, setError] = useState("");
-  const [done, setDone] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [result, setResult] = useState<{ referralLink: string; referralCount: number; alreadyEntered?: boolean } | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const r = new URLSearchParams(window.location.search).get("ref");
+    if (r) setRef(r);
+  }, []);
 
   function computeAge(): number | null {
     if (!month || !day || !year) return null;
@@ -31,32 +39,69 @@ export default function BtsGiveawayPage() {
     if (md < 0 || (md === 0 && now.getDate() < b.getDate())) age--;
     return age;
   }
-  const age = computeAge();
-  const under18 = age !== null && age < 18;
+  const under18 = (() => { const a = computeAge(); return a !== null && a < 18; })();
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     if (under18) { setError(AGE_ERROR); return; }
-    if (!firstName || !lastName || !phone || !month || !day || !year || !street) {
+    if (!firstName || !lastName || !email || !phone || !month || !day || !year || !zip) {
       setError("Please complete all fields to enter.");
       return;
     }
-    setDone(true);
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/giveaway", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName, lastName, email, phone, zip, birthMonth: month, birthDay: day, birthYear: year, ref }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error ?? "Something went wrong. Please try again."); return; }
+      setResult({ referralLink: data.referralLink, referralCount: data.referralCount ?? 0, alreadyEntered: data.alreadyEntered });
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  function copyLink() {
+    if (!result) return;
+    navigator.clipboard?.writeText(result.referralLink).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
   }
 
   const field: React.CSSProperties = { width: "100%", padding: "13px 16px", border: "1px solid var(--border-strong)", borderRadius: 8, fontSize: "1rem", outline: "none", background: "#fff", color: "#000", boxSizing: "border-box" };
   const sel: React.CSSProperties = { ...field, padding: "13px 8px", flex: 1, minWidth: 0 };
 
-  if (done) {
+  if (result) {
     return (
-      <main style={{ minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 24px" }}>
-        <div style={{ textAlign: "center", maxWidth: 460 }}>
-          <div style={{ fontSize: "3rem", marginBottom: 12 }}>💜</div>
-          <h1 style={{ fontFamily: "var(--serif)", fontSize: "2.2rem", color: "var(--ink)", marginBottom: 12 }}>You&rsquo;re entered!</h1>
-          <p style={{ color: "var(--ink-dim)", fontSize: "1.05rem", lineHeight: 1.6 }}>
-            Good luck, {firstName}. Winners will be contacted using the details you provided. See the{" "}
-            <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>Official Rules</Link> for full details.
+      <main style={{ padding: "56px 24px 80px" }}>
+        <div style={{ maxWidth: 540, margin: "0 auto", textAlign: "center" }}>
+          <div style={{ fontSize: "3rem", marginBottom: 10 }}>💜</div>
+          <h1 style={{ fontFamily: "var(--serif)", fontSize: "2.2rem", color: "var(--ink)", marginBottom: 10 }}>
+            {result.alreadyEntered ? "You’re already entered!" : "You’re entered!"}
+          </h1>
+          <p style={{ color: "var(--ink-dim)", fontSize: "1.05rem", lineHeight: 1.6, marginBottom: 28 }}>
+            Want better odds? Refer friends — every valid referral is an extra shot at the tickets, up to <strong style={{ color: "var(--ink)" }}>50 referrals</strong>.
+          </p>
+
+          <div style={{ background: "var(--bg-card)", border: "1px solid var(--sakura)", borderRadius: 14, padding: 22, textAlign: "left" }}>
+            <div style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 10 }}>Your referral link</div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <input readOnly value={result.referralLink} style={{ ...field, flex: 1, minWidth: 200, fontSize: "0.88rem" }} onFocus={(e) => e.currentTarget.select()} />
+              <button type="button" onClick={copyLink} style={{ padding: "13px 20px", borderRadius: 8, border: "none", background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer" }}>
+                {copied ? "Copied!" : "Copy"}
+              </button>
+            </div>
+            <div style={{ marginTop: 14, fontSize: "0.9rem", color: "var(--ink-dim)" }}>
+              Referrals so far: <strong style={{ color: "var(--sakura)" }}>{result.referralCount}</strong> / 50
+            </div>
+          </div>
+
+          <p style={{ marginTop: 20, fontSize: "0.78rem", color: "var(--ink-faint)", lineHeight: 1.6 }}>
+            Referrals count only when your friend is 18+, a U.S. resident, accepts the rules, and joins the newsletter. See the{" "}
+            <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>Official Rules</Link> (Section 16).
           </p>
         </div>
       </main>
@@ -70,6 +115,7 @@ export default function BtsGiveawayPage() {
           <div style={{ fontFamily: "var(--mono)", fontSize: "0.72rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 12 }}>BTS Concert Sweepstakes</div>
           <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(2rem, 6vw, 2.8rem)", fontWeight: 700, color: "var(--ink)", margin: "0 0 12px", lineHeight: 1.1 }}>Win tickets to see BTS live.</h1>
           <p style={{ color: "var(--ink-dim)", fontSize: "1.02rem", lineHeight: 1.6 }}>MetLife Stadium · East Rutherford, NJ · August 1, 2026. No purchase necessary. Open to U.S. residents 18+.</p>
+          {ref && <p style={{ marginTop: 10, fontSize: "0.85rem", color: "var(--volt)" }}>A friend referred you — enter below so their referral counts!</p>}
         </div>
 
         <form onSubmit={submit} style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 16, padding: "28px 24px" }}>
@@ -78,6 +124,7 @@ export default function BtsGiveawayPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <input style={field} placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} aria-label="First Name" />
             <input style={field} placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} aria-label="Last Name" />
+            <input style={field} type="email" placeholder="Email Address" value={email} onChange={(e) => setEmail(e.target.value)} aria-label="Email Address" />
             <input style={field} type="tel" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} aria-label="Phone Number" />
 
             <div>
@@ -98,7 +145,7 @@ export default function BtsGiveawayPage() {
               </div>
             </div>
 
-            <input style={field} placeholder="Street Address" value={street} onChange={(e) => setStreet(e.target.value)} aria-label="Street Address" />
+            <input style={field} inputMode="numeric" placeholder="Zip Code" value={zip} onChange={(e) => setZip(e.target.value)} aria-label="Zip Code" />
           </div>
 
           {(under18 || error) && (
@@ -107,13 +154,14 @@ export default function BtsGiveawayPage() {
             </div>
           )}
 
-          <button type="submit" disabled={under18} style={{ width: "100%", marginTop: 20, padding: "15px", borderRadius: 10, border: "none", background: under18 ? "var(--border-strong)" : "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.04em", textTransform: "uppercase", cursor: under18 ? "not-allowed" : "pointer" }}>
-            Submit Your Entry →
+          <button type="submit" disabled={under18 || submitting} style={{ width: "100%", marginTop: 20, padding: "15px", borderRadius: 10, border: "none", background: (under18 || submitting) ? "var(--border-strong)" : "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.04em", textTransform: "uppercase", cursor: (under18 || submitting) ? "not-allowed" : "pointer" }}>
+            {submitting ? "Submitting…" : "Submit Your Entry →"}
           </button>
 
           <p style={{ marginTop: 16, fontSize: "0.78rem", color: "var(--ink-faint)", textAlign: "center", lineHeight: 1.6 }}>
-            No purchase necessary. By entering you agree to the{" "}
-            <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>Official Sweepstakes Rules</Link>.
+            No purchase necessary. By submitting your entry, you agree to the{" "}
+            <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>Official Sweepstakes Rules</Link>{" "}
+            and to subscribe to the Aegyo Arena email newsletter.
           </p>
         </form>
       </div>
