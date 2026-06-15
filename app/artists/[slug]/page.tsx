@@ -132,7 +132,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                         ) : (
                           <div style={{ fontSize: "1.8rem", marginBottom: 8 }}>👤</div>
                         )}
-                        <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#000" }}>{member.stageName}</div>
+                        <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#ff6fa8" }}>{member.stageName}</div>
                         {member.realName && <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginTop: 2 }}>{member.realName}</div>}
                         {role && <div style={{ fontSize: "0.68rem", color: "var(--genius-yellow)", background: "#000", borderRadius: 999, padding: "2px 8px", marginTop: 6, display: "inline-block" }}>{role}</div>}
                       </div>
@@ -152,7 +152,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                       💿
                     </div>
                     <div>
-                      <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#000" }}>{album.title}</div>
+                      <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#ff6fa8" }}>{album.title}</div>
                       <div style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginTop: 4 }}>
                         {album.releaseYear} &middot; {album.type} &middot; {album.songs.length} track{album.songs.length !== 1 ? "s" : ""}
                       </div>
@@ -166,7 +166,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                           <div className="song-row">
                             <div style={{ width: 20, textAlign: "center", fontSize: "0.78rem", color: "var(--genius-gray)", fontWeight: 600 }}>{idx + 1}</div>
                             <div style={{ flex: 1 }}>
-                              <span style={{ fontWeight: 600, fontSize: "0.92rem", color: "#000" }}>{song.title}</span>
+                              <span style={{ fontWeight: 600, fontSize: "0.92rem", color: "#ff6fa8" }}>{song.title}</span>
                               {featured.length > 0 && (
                                 <span style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginLeft: 6 }}>
                                   feat. {featured.map((c) => c.artist.stageName).join(", ")}
@@ -209,8 +209,8 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                             </span>
                           )}
                         </div>
-                        <div style={{ fontWeight: 700, fontSize: "1rem", color: "#000", marginBottom: 6 }}>{item.headline}</div>
-                        <div style={{ fontSize: "0.88rem", color: "#444", lineHeight: 1.75 }}>{item.body}</div>
+                        <div style={{ fontWeight: 700, fontSize: "1rem", color: "#ff6fa8", marginBottom: 6 }}>{item.headline}</div>
+                        <div style={{ fontSize: "0.88rem", color: "rgba(255,255,255,0.72)", lineHeight: 1.75 }}>{item.body}</div>
                         {item.source && (
                           <div style={{ marginTop: 10, fontSize: "0.72rem", color: "var(--genius-gray)" }}>
                             Source: {item.sourceUrl ? <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ color: "var(--genius-gray)" }}>{item.source}</a> : item.source}
@@ -252,7 +252,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                 {artist.songs.filter((c) => c.role === "featured").map((c) => (
                   <Link key={c.song.id} href={`/songs/${c.song.slug}`} style={{ textDecoration: "none", display: "block", marginBottom: 8 }}>
                     <div className="genius-card" style={{ padding: "12px 16px" }}>
-                      <div style={{ fontWeight: 600, fontSize: "0.88rem", color: "#000" }}>{c.song.title}</div>
+                      <div style={{ fontWeight: 600, fontSize: "0.88rem", color: "#ff6fa8" }}>{c.song.title}</div>
                       <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginTop: 2 }}>
                         {c.song.album?.title} ({c.song.album?.releaseYear})
                       </div>
@@ -274,7 +274,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
               ].map(({ label, value }) => (
                 <div key={label} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid var(--genius-border)", fontSize: "0.83rem" }}>
                   <span style={{ color: "var(--genius-gray)" }}>{label}</span>
-                  <span style={{ fontWeight: 700, color: "#000" }}>{value}</span>
+                  <span style={{ fontWeight: 700, color: "#ff6fa8" }}>{value}</span>
                 </div>
               ))}
             </div>

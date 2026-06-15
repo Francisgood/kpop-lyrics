@@ -525,3 +525,7 @@ canvas { max-width: 100% !important; }
 }
 .genius-nav .search-input::placeholder { color: rgba(44,51,64,0.55); }
 .genius-nav .search-input:focus { background: #ffffff; border-color: var(--sakura); }
+
+/* All content hyperlinks in sakura pink for emphasis (2026-06-15) */
+a { color: #ff6fa8; }
+.genius-nav a { color: #2C3340; }   /* keep header links dark on the white bar */
