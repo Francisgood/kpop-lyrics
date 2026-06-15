@@ -31,10 +31,10 @@ const REWARDS = [
 ];
 
 const EARN_WAYS = [
-  { icon: "🎤", iconCls: "ewi-1", name: "Post a Comment",      desc: "Share your thoughts on any song, artist, or album", pts: "+10 pts" },
-  { icon: "✍️", iconCls: "ewi-2", name: "Add an Annotation",    desc: "Decode a lyric line for the community",             pts: "+30 pts" },
-  { icon: "✅", iconCls: "ewi-3", name: "Get an Edit Approved", desc: "Submit corrections a moderator validates",          pts: "+50 pts" },
-  { icon: "⭐", iconCls: "ewi-4", name: "Sign-up Bonus",        desc: "One-time reward when you create your account",      pts: "+100 pts" },
+  { icon: "🎤", iconCls: "ewi-1", name: "Post a Comment",      desc: "Share your thoughts on any song, artist, or album", pts: "+1 pt" },
+  { icon: "✍️", iconCls: "ewi-2", name: "Add an Annotation",    desc: "Decode a lyric line for the community",             pts: "+20 pts" },
+  { icon: "✅", iconCls: "ewi-3", name: "Annotation Approved", desc: "An editor accepts it; rejected ones lose 10",          pts: "+10 pts" },
+  { icon: "⭐", iconCls: "ewi-4", name: "Sign-up Bonus",        desc: "One-time reward when you create your account",      pts: "+50 pts" },
   { icon: "🔗", iconCls: "ewi-5", name: "Link Social Profiles", desc: "Verify up to 3 social media accounts",              pts: "+10 each" },
 ];
 
@@ -167,18 +167,18 @@ export default async function HomePage() {
           <div>
             <div className="earn-card-stack">
               <div className="earn-card ec1">
-                <div className="earn-card-label">Top Action</div>
+                <div className="earn-card-label">Sign-Up Bonus</div>
                 <div className="earn-card-pts">+50</div>
-                <div className="earn-card-desc">Approved Edit — your knowledge shapes the wiki</div>
+                <div className="earn-card-desc">One-time reward, just for creating your account.</div>
               </div>
               <div className="earn-card ec2">
                 <div className="earn-card-label">Annotation</div>
-                <div className="earn-card-pts">+30</div>
+                <div className="earn-card-pts">+20</div>
                 <div className="earn-card-desc">Explain a lyric. Help the fandom understand.</div>
               </div>
               <div className="earn-card ec3">
                 <div className="earn-card-label">Comment</div>
-                <div className="earn-card-pts">+10</div>
+                <div className="earn-card-pts">+1</div>
                 <div className="earn-card-desc">Join the conversation on any song page.</div>
               </div>
             </div>
