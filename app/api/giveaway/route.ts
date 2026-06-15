@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { subscribeToBeehiiv } from "@/lib/beehiiv";
 import { randomUUID, randomBytes } from "crypto";
 
 export const dynamic = "force-dynamic";
@@ -99,6 +100,10 @@ export async function POST(req: NextRequest) {
         ("id","firstName","lastName","email","phone","zip","birthDate","newsletterOptIn","referralCode","referredByCode","referralCount")
       VALUES
         (${randomUUID()}, ${firstName}, ${lastName}, ${email}, ${phone}, ${zip}, ${birthDate}, true, ${code}, ${referredByCode}, 0)`;
+
+    // The entrant opted into the newsletter on the form — add them to beehiiv and
+    // send the welcome email. Best-effort: subscribeToBeehiiv never throws.
+    await subscribeToBeehiiv({ email, source: "bts-giveaway" });
 
     return NextResponse.json({ ok: true, referralCode: code, referralLink: linkFor(code), referralCount: 0 });
   } catch (e) {
