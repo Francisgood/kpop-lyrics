@@ -6,3 +6,6 @@ prisma/dev.db-journal
 .env.local
 .env*.local
 *.log
+
+# TS incremental build artifact — never commit
+tsconfig.tsbuildinfo
