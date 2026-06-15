@@ -32,12 +32,14 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
     { label: "Explore",      href: "/search",      prefix: "" },
     { label: "Dashboard",    href: "/dashboard",   prefix: "★ " },
     { label: "Leaderboard",  href: "/leaderboard", prefix: "" },
+    { label: "Contribute",   href: "/contribute",  prefix: "" },
     { label: "Refer",        href: "/refer",       prefix: "" },
   ];
 
   const loggedOutItems = [
     { label: "Explore",      href: "/search",      highlight: false },
     { label: "Leaderboard",  href: "/leaderboard", highlight: false },
+    { label: "Contribute",   href: "/contribute",  highlight: false },
     { label: "Sign Up",      href: "/signup",       highlight: true  },
   ];
 
