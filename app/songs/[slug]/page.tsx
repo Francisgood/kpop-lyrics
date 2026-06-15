@@ -9,6 +9,7 @@ import MukbangSection from "@/components/MukbangSection";
 import FavoriteButton from "@/components/FavoriteButton";
 import CommentsSection from "@/components/CommentsSection";
 import { getSession } from "@/lib/auth";
+import AnnotationLyrics from "@/components/AnnotationLyrics";
 
 // Cache the DB fetch so generateMetadata and the page share one query per request
 const getSong = cache(async (slug: string) => {
@@ -79,12 +80,15 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
   const enLines = (song.lyricsEn ?? "").split("\n");
   const roLines = (song.lyricsRomanized ?? "").split("\n");
 
-  // Build annotation lookup: lineIndex → annotations[]
-  const annotationsByLine = new Map<number, typeof song.annotations>();
-  for (const ann of song.annotations) {
-    if (!annotationsByLine.has(ann.lineIndex)) annotationsByLine.set(ann.lineIndex, []);
-    annotationsByLine.get(ann.lineIndex)!.push(ann);
-  }
+  // Serialize annotations for the client annotation panel
+  const annData = song.annotations.map((ann) => ({
+    id: ann.id,
+    lineIndex: ann.lineIndex,
+    word: ann.word,
+    note: ann.note,
+    termSlug: ann.term?.slug ?? null,
+    termName: ann.term?.term ?? null,
+  }));
 
   const performers = song.credits.filter((c) => ["performer", "PRIMARY"].includes(c.role));
   const featured = song.credits.filter((c) => c.role === "featured");
@@ -163,65 +167,15 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
 
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 24px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 48 }}>
-          {/* Lyrics */}
-
-          <section>
-            {song.annotations.length > 0 && (
-              <div style={{ background: "rgba(255,255,100,0.12)", border: "1px solid var(--genius-yellow)", borderRadius: 4, padding: "10px 16px", marginBottom: 20, fontSize: "0.82rem", color: "#555" }}>
-                <strong style={{ color: "#000" }}>Annotated lyrics</strong> — highlighted lines contain K-pop slang or cultural annotations. Scroll to explore.
-              </div>
-            )}
-
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 12, paddingBottom: 8, borderBottom: "2px solid #000" }}>
-              <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--genius-gray)" }}>한국어 (Korean)</div>
-              <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--genius-gray)" }}>English Translation</div>
-            </div>
-
-            {koLines.map((line, i) => {
-              const isEmpty = !line.trim() && !enLines[i]?.trim();
-              if (isEmpty) return <div key={i} style={{ height: 20 }} />;
-              const lineAnnotations = annotationsByLine.get(i) ?? [];
-              return (
-                <div key={i} className="lyric-line" style={{ borderBottom: "1px solid var(--genius-border)", padding: "10px 0" }}>
-                  <div>
-                    <div className="lyric-line-ko" style={{ fontWeight: 500 }}>
-                      {line || "\u00a0"}
-                    </div>
-                    {roLines[i] && <div className="lyric-romanized">{roLines[i]}</div>}
-                    {lineAnnotations.length > 0 && (
-                      <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
-                        {lineAnnotations.map((ann) => (
-                          <div key={ann.id} style={{ background: "rgba(255,255,100,0.2)", borderLeft: "3px solid var(--genius-yellow)", padding: "8px 12px", borderRadius: "0 4px 4px 0", fontSize: "0.8rem" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                              {(song.coverArt || song.album?.coverArt) && (
-                                <img src={song.coverArt || song.album?.coverArt || ""} alt="" style={{ width: 24, height: 24, borderRadius: 3, objectFit: "cover", flexShrink: 0, opacity: 0.7 }} />
-                              )}
-                            </div>
-                            <div style={{ fontWeight: 700, color: "#000", marginBottom: 2 }}>
-                              {ann.term ? (
-                                <Link href={`/define/${ann.term.slug}`} style={{ color: "#000", textDecoration: "underline", textDecorationColor: "var(--genius-yellow)" }}>
-                                  &ldquo;{ann.word}&rdquo;
-                                </Link>
-                              ) : (
-                                <>&ldquo;{ann.word}&rdquo;</>
-                              )}
-                            </div>
-                            <div style={{ color: "#555", lineHeight: 1.6 }}>{ann.note}</div>
-                            {ann.term?.definitions[0] && (
-                              <div style={{ marginTop: 4, fontSize: "0.75rem", color: "var(--genius-gray)" }}>
-                                See: <Link href={`/define/${ann.term.slug}`} style={{ color: "var(--genius-gray)" }}>{ann.term.term}</Link>
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <div className="lyric-line-en" style={{ color: "#444" }}>{enLines[i] || "\u00a0"}</div>
-                </div>
-              );
-            })}
-          </section>
+          {/* Lyrics + slide-out annotations */}
+          <AnnotationLyrics
+            songId={song.id}
+            koLines={koLines}
+            enLines={enLines}
+            roLines={roLines}
+            annotations={annData}
+            isLoggedIn={isLoggedIn}
+          />
 
           {/* Sidebar */}
           <aside>
@@ -232,7 +186,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                 {featured.map((c) => (
                   <Link key={c.id} href={`/artists/${c.artist.slug}`} style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10, padding: "6px 0" }}>
                     <span style={{ fontSize: "1.2rem" }}>⭐</span>
-                    <span style={{ fontWeight: 600, fontSize: "0.88rem", color: "#000" }}>{c.artist.stageName}</span>
+                    <span style={{ fontWeight: 600, fontSize: "0.88rem", color: "#ff6fa8" }}>{c.artist.stageName}</span>
                   </Link>
                 ))}
               </div>
@@ -245,7 +199,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                 {producers.map((c) => (
                   <div key={c.id} style={{ marginBottom: 10 }}>
                     <div style={{ fontSize: "0.7rem", color: "var(--genius-gray)", textTransform: "uppercase", letterSpacing: "0.08em" }}>{c.role}</div>
-                    <Link href={`/artists/${c.artist.slug}`} style={{ fontWeight: 600, fontSize: "0.88rem", color: "#000", textDecoration: "none" }}>{c.artist.stageName}</Link>
+                    <Link href={`/artists/${c.artist.slug}`} style={{ fontWeight: 600, fontSize: "0.88rem", color: "#ff6fa8", textDecoration: "none" }}>{c.artist.stageName}</Link>
                   </div>
                 ))}
               </div>
@@ -257,8 +211,8 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                 <div className="section-header" style={{ margin: "0 0 12px" }}>Annotations ({song.annotations.length})</div>
                 {song.annotations.map((ann) => (
                   <div key={ann.id} style={{ marginBottom: 10, paddingBottom: 10, borderBottom: "1px solid var(--genius-border)" }}>
-                    <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "#000" }}>&ldquo;{ann.word}&rdquo; — line {ann.lineIndex + 1}</div>
-                    <div style={{ fontSize: "0.78rem", color: "#555", marginTop: 2 }}>{ann.note.slice(0, 80)}{ann.note.length > 80 ? "…" : ""}</div>
+                    <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "#ff6fa8" }}>&ldquo;{ann.word}&rdquo; — line {ann.lineIndex + 1}</div>
+                    <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.72)", marginTop: 2 }}>{ann.note.slice(0, 80)}{ann.note.length > 80 ? "…" : ""}</div>
                     {ann.term && (
                       <Link href={`/define/${ann.term.slug}`} style={{ fontSize: "0.72rem", color: "var(--genius-gray)", textDecoration: "none", marginTop: 4, display: "block" }}>
                         → See: {ann.term.term}
@@ -315,7 +269,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                         <div style={{ width: 52, height: 52, borderRadius: "50%", background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem", flexShrink: 0 }}>🎤</div>
                       )}
                       <div>
-                        <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "#000" }}>{a.name}</div>
+                        <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "#ff6fa8" }}>{a.name}</div>
                         <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 2 }}>{a.role}</div>
                       </div>
                     </div>
@@ -345,7 +299,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                           <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.9rem", flexShrink: 0 }}>🎤</div>
                         )}
                         <div>
-                          <div style={{ fontWeight: 700, fontSize: "0.78rem", color: "#000" }}>{item.artist.stageName}</div>
+                          <div style={{ fontWeight: 700, fontSize: "0.78rem", color: "#ff6fa8" }}>{item.artist.stageName}</div>
                           <div style={{ fontSize: "0.68rem", color: "var(--genius-gray)" }}>
                             {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""}
                             {item.source ? ` · ${item.source}` : ""}
@@ -355,8 +309,8 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                           {item.category}
                         </span>
                       </div>
-                      <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "#000", marginBottom: 6, lineHeight: 1.4 }}>{item.headline}</div>
-                      <div style={{ fontSize: "0.78rem", color: "#555", lineHeight: 1.6 }}>{item.body.slice(0, 140)}{item.body.length > 140 ? "…" : ""}</div>
+                      <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "#ff6fa8", marginBottom: 6, lineHeight: 1.4 }}>{item.headline}</div>
+                      <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.72)", lineHeight: 1.6 }}>{item.body.slice(0, 140)}{item.body.length > 140 ? "…" : ""}</div>
                     </div>
                   </div>
                 </Link>
