@@ -147,7 +147,7 @@ export default function AnnotationLyrics({
                 <div style={{ fontWeight: 700, color: "var(--sakura)", fontSize: "1rem", marginBottom: 6 }}>&ldquo;{a.word}&rdquo;</div>
                 <div style={{ color: "var(--ink)", lineHeight: 1.7, fontSize: "0.95rem" }}>{a.note}</div>
                 {a.termSlug && (
-                  <Link href={`/define/${a.termSlug}`} style={{ display: "inline-block", marginTop: 10, fontSize: "0.8rem", color: "var(--sakura)", fontWeight: 600, textDecoration: "none" }}>
+                  <Link href={`/korean-slang/${a.termSlug}`} style={{ display: "inline-block", marginTop: 10, fontSize: "0.8rem", color: "var(--sakura)", fontWeight: 600, textDecoration: "none" }}>
                     See full definition: {a.termName} →
                   </Link>
                 )}

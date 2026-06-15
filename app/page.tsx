@@ -259,7 +259,7 @@ export default async function HomePage() {
             </div>
           </Link>
 
-          <Link href="/define" className="feat-card feat-small-alt" style={{ backgroundImage: "url('/images/redesign/explore-slang.png')", backgroundSize: "cover", backgroundPosition: "center 30%", border: "none" }}>
+          <Link href="/korean-slang" className="feat-card feat-small-alt" style={{ backgroundImage: "url('/images/redesign/explore-slang.png')", backgroundSize: "cover", backgroundPosition: "center 30%", border: "none" }}>
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(25,20,45,0.92) 0%,rgba(25,20,45,0.3) 60%,transparent 100%)" }} />
             <div style={{ position: "relative", zIndex: 2 }}>
               <div className="feat-tag" style={{ color: "var(--sky)" }}>Slang</div>

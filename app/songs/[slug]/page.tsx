@@ -214,7 +214,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                     <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "#ff6fa8" }}>&ldquo;{ann.word}&rdquo; — line {ann.lineIndex + 1}</div>
                     <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.72)", marginTop: 2 }}>{ann.note.slice(0, 80)}{ann.note.length > 80 ? "…" : ""}</div>
                     {ann.term && (
-                      <Link href={`/define/${ann.term.slug}`} style={{ fontSize: "0.72rem", color: "var(--genius-gray)", textDecoration: "none", marginTop: 4, display: "block" }}>
+                      <Link href={`/korean-slang/${ann.term.slug}`} style={{ fontSize: "0.72rem", color: "var(--genius-gray)", textDecoration: "none", marginTop: 4, display: "block" }}>
                         → See: {ann.term.term}
                       </Link>
                     )}

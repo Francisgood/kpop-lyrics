@@ -31,13 +31,13 @@ export default async function DefinePage() {
           {terms.map((term) => {
             const topDef = term.definitions[0];
             return (
-              <Link key={term.id} href={`/define/${term.slug}`} style={{ textDecoration: "none" }}>
+              <Link key={term.id} href={`/korean-slang/${term.slug}`} style={{ textDecoration: "none" }}>
                 <div className="genius-card" style={{ padding: 20, height: "100%" }}>
-                  <div style={{ fontWeight: 800, fontSize: "1.15rem", color: "#000", marginBottom: 8 }}>
+                  <div style={{ fontWeight: 800, fontSize: "1.15rem", color: "#ff6fa8", marginBottom: 8 }}>
                     {term.term}
                   </div>
                   {topDef && (
-                    <div style={{ fontSize: "0.88rem", color: "#444", lineHeight: 1.6, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                    <div style={{ fontSize: "0.88rem", color: "#fff", lineHeight: 1.6, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                       {topDef.body}
                     </div>
                   )}

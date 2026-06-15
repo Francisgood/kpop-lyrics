@@ -57,7 +57,7 @@ export default async function ArtistsPage() {
             <Link href="/collabs" style={{ background: "var(--genius-yellow)", color: "#000", fontWeight: 700, fontSize: "0.78rem", padding: "8px 18px", borderRadius: 4, textDecoration: "none", letterSpacing: "0.06em", textTransform: "uppercase" }}>
               Collab Network
             </Link>
-            <Link href="/define" style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.7)", fontWeight: 600, fontSize: "0.78rem", padding: "8px 18px", borderRadius: 4, textDecoration: "none" }}>
+            <Link href="/korean-slang" style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.7)", fontWeight: 600, fontSize: "0.78rem", padding: "8px 18px", borderRadius: 4, textDecoration: "none" }}>
               K-pop Dictionary
             </Link>
           </div>

@@ -24,12 +24,12 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
           <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 20 }}>
             <Link href="/" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Aegyo Arena</Link>
             {" / "}
-            <Link href="/define" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>K-POP TERMS</Link>
+            <Link href="/korean-slang" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Korean Slang</Link>
             {" / "}
             {term.term}
           </div>
           <div style={{ fontSize: "0.7rem", color: "var(--genius-yellow)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>
-            K-pop Term
+            Korean Slang
           </div>
           <h1 style={{ fontSize: "3rem", fontWeight: 800, margin: "0 0 8px" }}>{term.term}</h1>
           <div style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.9rem" }}>
@@ -64,13 +64,13 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
               </div>
             </div>
 
-            <p style={{ fontSize: "1.05rem", lineHeight: 1.8, color: "#212121", margin: "0 0 16px" }}>
+            <p style={{ fontSize: "1.05rem", lineHeight: 1.8, color: "#fff", margin: "0 0 16px" }}>
               {def.body}
             </p>
 
             {def.example && (
               <div style={{
-                background: "rgba(255,255,100,0.15)",
+                background: "rgba(255,111,168,0.18)",
                 borderLeft: "3px solid var(--genius-yellow)",
                 padding: "12px 16px",
                 borderRadius: "0 4px 4px 0",
@@ -79,7 +79,7 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
                 <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--genius-gray)", marginBottom: 6 }}>
                   Example
                 </div>
-                <div style={{ fontSize: "0.95rem", fontStyle: "italic", color: "#444" }}>
+                <div style={{ fontSize: "0.95rem", fontStyle: "italic", color: "#fff" }}>
                   &ldquo;{def.example}&rdquo;
                 </div>
               </div>
@@ -88,8 +88,8 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
         ))}
 
         <div style={{ textAlign: "center", marginTop: 32 }}>
-          <Link href="/define" style={{ color: "var(--genius-gray)", textDecoration: "none", fontSize: "0.9rem" }}>
-            ← Back to K-pop Terms
+          <Link href="/korean-slang" style={{ color: "var(--genius-gray)", textDecoration: "none", fontSize: "0.9rem" }}>
+            ← Back to Korean Slang
           </Link>
         </div>
       </div>

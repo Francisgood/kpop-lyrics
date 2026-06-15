@@ -118,10 +118,10 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         {/* Terms */}
         {terms.length > 0 && (
           <section>
-            <div className="section-header">K-pop Terms</div>
+            <div className="section-header">Korean Slang</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
               {terms.map((term) => (
-                <Link key={term.id} href={`/define/${term.slug}`} style={{ textDecoration: "none" }}>
+                <Link key={term.id} href={`/korean-slang/${term.slug}`} style={{ textDecoration: "none" }}>
                   <div className="genius-card" style={{ padding: 16 }}>
                     <div style={{ fontWeight: 700, fontSize: "1rem", color: "#000", marginBottom: 6 }}>{term.term}</div>
                     {term.definitions[0] && (
