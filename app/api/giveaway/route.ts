@@ -124,16 +124,3 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "error" }, { status: 500 });
   }
 }
-
-// Test-data cleanup. Scoped by construction to the reserved `.invalid` test domain
-// (RFC 6761) — it can NEVER delete a real entrant, whose email is a real address.
-// Used to reset the table to zero after end-to-end verification, then removed.
-export async function DELETE() {
-  try {
-    await ensureTable();
-    const deleted = await prisma.$executeRawUnsafe(`DELETE FROM "GiveawayEntry" WHERE "email" LIKE '%@example.invalid'`);
-    return NextResponse.json({ deleted });
-  } catch {
-    return NextResponse.json({ error: "error" }, { status: 500 });
-  }
-}
