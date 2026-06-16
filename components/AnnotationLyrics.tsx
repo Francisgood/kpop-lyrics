@@ -144,7 +144,8 @@ export default function AnnotationLyrics({
       </div>
 
       <div ref={lyricsRef}>
-        {koLines.map((line, i) => {
+        {Array.from({ length: Math.max(koLines.length, enLines.length, roLines.length) }).map((_unused, i) => {
+          const line = koLines[i] ?? "";
           const isEmpty = !line.trim() && !enLines[i]?.trim();
           if (isEmpty) return <div key={i} style={{ height: 20 }} />;
           const annotated = (byLine.get(i)?.length ?? 0) > 0;
