@@ -3,6 +3,20 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAnnotation, type AnnRow } from "@/lib/community-db";
 import { contributorBySlug } from "@/app/leaderboard/data";
+import { prisma } from "@/lib/prisma";
+
+// Resolve the annotation's song title to a published song page, if one exists.
+async function findSongSlug(title: string): Promise<string | null> {
+  if (!title) return null;
+  const exact = await prisma.song.findFirst({ where: { title: { equals: title, mode: "insensitive" } }, select: { slug: true } });
+  if (exact) return exact.slug;
+  const core = title.replace(/\(.*?\)/g, "").trim();
+  if (core && core !== title) {
+    const fuzzy = await prisma.song.findFirst({ where: { title: { contains: core, mode: "insensitive" } }, select: { slug: true } });
+    if (fuzzy) return fuzzy.slug;
+  }
+  return null;
+}
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +42,7 @@ export default async function AnnotationPage({ params }: { params: Promise<{ id:
   const initial = contributor?.initial ?? a.authorName.charAt(0).toUpperCase();
   const color = contributor?.tierColor ?? "#ff6fa8";
   const st = STATUS[a.status];
+  const songSlug = await findSongSlug(a.songTitle);
 
   return (
     <main>
@@ -41,7 +56,11 @@ export default async function AnnotationPage({ params }: { params: Promise<{ id:
           {a.romanization && <span style={{ color: "var(--ink-faint)", fontStyle: "italic", fontSize: "1rem" }}>{a.romanization}</span>}
         </div>
         <div style={{ color: "var(--ink-dim)", fontSize: "0.95rem", marginBottom: 20 }}>
-          on <strong style={{ color: "var(--ink)" }}>{a.songTitle}</strong>
+          on {songSlug ? (
+            <Link href={`/songs/${songSlug}`} style={{ color: "var(--sakura)", fontWeight: 700, textDecoration: "none" }}>{a.songTitle} →</Link>
+          ) : (
+            <strong style={{ color: "var(--ink)" }}>{a.songTitle}</strong>
+          )}
           <span style={{ marginLeft: 10, fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: st.color, background: st.bg, padding: "2px 8px", borderRadius: 100 }}>{st.label}</span>
         </div>
 
