@@ -23,6 +23,7 @@ type SelPrompt = { top: number; left: number; text: string; lineIndex: number };
  */
 export default function AnnotationLyrics({
   songId,
+  songTitle,
   koLines,
   enLines,
   roLines,
@@ -30,6 +31,7 @@ export default function AnnotationLyrics({
   isLoggedIn,
 }: {
   songId: string;
+  songTitle?: string;
   koLines: string[];
   enLines: string[];
   roLines: string[];
@@ -243,7 +245,7 @@ export default function AnnotationLyrics({
 
             <div style={{ borderTop: "1px solid var(--border)", paddingTop: 16, marginTop: 16 }}>
               {contribOpen ? (
-                <ContributeForm songId={songId} lineIndex={activeLine!} selectedText={selText} onClose={() => { setContribOpen(false); setSelText(""); }} />
+                <ContributeForm songId={songId} songTitle={songTitle} lineIndex={activeLine!} selectedText={selText} onClose={() => { setContribOpen(false); setSelText(""); }} />
               ) : (
                 <button type="button" onClick={onContribute} style={{ width: "100%", padding: "11px", borderRadius: 8, border: "1px solid var(--sakura)", background: "transparent", color: "var(--sakura)", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer" }}>
                   + Suggest an annotation
@@ -259,7 +261,7 @@ export default function AnnotationLyrics({
   );
 }
 
-function ContributeForm({ songId, lineIndex, selectedText, onClose }: { songId: string; lineIndex: number; selectedText?: string; onClose: () => void }) {
+function ContributeForm({ songTitle, selectedText, onClose }: { songId: string; songTitle?: string; lineIndex: number; selectedText?: string; onClose: () => void }) {
   const [text, setText] = useState("");
   const [state, setState] = useState<"idle" | "saving" | "done" | "error">("idle");
 
@@ -267,15 +269,13 @@ function ContributeForm({ songId, lineIndex, selectedText, onClose }: { songId: 
     if (!text.trim()) return;
     setState("saving");
     try {
-      const res = await fetch("/api/edits", {
+      const res = await fetch("/api/annotate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          entityType: "song",
-          entityId: songId,
-          field: `annotation:line-${lineIndex + 1}`,
-          suggestedVal: text,
-          reason: selectedText ? `Annotation for: "${selectedText}"` : "Annotation suggestion",
+          songTitle: songTitle ?? "a song",
+          word: selectedText ?? "",
+          note: text,
         }),
       });
       setState(res.ok ? "done" : "error");
@@ -285,7 +285,7 @@ function ContributeForm({ songId, lineIndex, selectedText, onClose }: { songId: 
   }
 
   if (state === "done") {
-    return <div style={{ color: "var(--volt)", fontSize: "0.88rem", textAlign: "center", padding: "10px" }}>✓ Thanks! Your annotation was submitted for review.</div>;
+    return <div style={{ color: "var(--volt)", fontSize: "0.88rem", textAlign: "center", padding: "10px" }}>✓ Thanks! Your annotation was submitted to the moderation queue for review.</div>;
   }
 
   return (

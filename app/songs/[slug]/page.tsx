@@ -170,6 +170,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
           {/* Lyrics + slide-out annotations */}
           <AnnotationLyrics
             songId={song.id}
+            songTitle={song.title}
             koLines={koLines}
             enLines={enLines}
             roLines={roLines}
