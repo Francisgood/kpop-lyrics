@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 export type Ann = {
@@ -12,12 +12,14 @@ export type Ann = {
   termName: string | null;
 };
 
+type SelPrompt = { top: number; left: number; text: string; lineIndex: number };
+
 /**
  * Lyrics + Genius-style annotations.
- * - Annotated lines are pink-highlighted and clickable.
- * - Clicking a line slides an annotation panel out from the right (view = everyone).
- * - Contributing requires sign-up: logged-out users get a sign-up gate; logged-in
- *   users get an inline suggestion form that posts to /api/edits.
+ * - Annotated lines are pink-highlighted and clickable → slide-out panel (view = everyone).
+ * - Highlight ANY lyric text → a floating "Annotate" prompt appears at the selection.
+ *   Logged-out users see "Sign Up to Start Annotating" (sign-up gate); logged-in users
+ *   get the inline suggestion form (prefilled with the highlighted phrase), posting to /api/edits.
  */
 export default function AnnotationLyrics({
   songId,
@@ -44,13 +46,62 @@ export default function AnnotationLyrics({
   const [activeLine, setActiveLine] = useState<number | null>(null);
   const [gateOpen, setGateOpen] = useState(false);
   const [contribOpen, setContribOpen] = useState(false);
+  const [selText, setSelText] = useState("");
+  const [selPrompt, setSelPrompt] = useState<SelPrompt | null>(null);
+  const lyricsRef = useRef<HTMLDivElement>(null);
 
   const activeAnns = activeLine != null ? byLine.get(activeLine) ?? [] : [];
   const open = activeLine != null;
 
+  // Highlight-to-annotate: surface a floating prompt at the current text selection.
+  useEffect(() => {
+    function compute() {
+      const sel = window.getSelection();
+      const container = lyricsRef.current;
+      if (!sel || sel.isCollapsed || sel.rangeCount === 0 || !container) {
+        setSelPrompt(null);
+        return;
+      }
+      const text = sel.toString().trim();
+      const range = sel.getRangeAt(0);
+      if (text.length < 2 || !container.contains(range.commonAncestorContainer)) {
+        setSelPrompt(null);
+        return;
+      }
+      let node: Node | null = sel.anchorNode;
+      let lineIndex = -1;
+      while (node && node !== container) {
+        if (node instanceof HTMLElement && node.dataset.line != null) {
+          lineIndex = Number(node.dataset.line);
+          break;
+        }
+        node = node.parentNode;
+      }
+      const rect = range.getBoundingClientRect();
+      setSelPrompt({ top: rect.top, left: rect.left + rect.width / 2, text, lineIndex });
+    }
+    const onUp = () => setTimeout(compute, 0);
+    const onSelChange = () => {
+      const s = window.getSelection();
+      if (!s || s.isCollapsed) setSelPrompt(null);
+    };
+    const onScroll = () => setSelPrompt(null);
+    document.addEventListener("mouseup", onUp);
+    document.addEventListener("touchend", onUp);
+    document.addEventListener("selectionchange", onSelChange);
+    window.addEventListener("scroll", onScroll, true);
+    return () => {
+      document.removeEventListener("mouseup", onUp);
+      document.removeEventListener("touchend", onUp);
+      document.removeEventListener("selectionchange", onSelChange);
+      window.removeEventListener("scroll", onScroll, true);
+    };
+  }, []);
+
   function close() {
     setActiveLine(null);
     setContribOpen(false);
+    setSelText("");
   }
   function onContribute() {
     if (!isLoggedIn) {
@@ -59,12 +110,29 @@ export default function AnnotationLyrics({
     }
     setContribOpen(true);
   }
+  function startAnnotateFromSelection() {
+    if (!selPrompt) return;
+    const { text, lineIndex } = selPrompt;
+    setSelPrompt(null);
+    window.getSelection()?.removeAllRanges();
+    if (!isLoggedIn) {
+      setGateOpen(true);
+      return;
+    }
+    setSelText(text);
+    setActiveLine(lineIndex >= 0 ? lineIndex : 0);
+    setContribOpen(true);
+  }
 
   return (
     <section>
-      {annotations.length > 0 && (
+      {annotations.length > 0 ? (
         <div style={{ background: "var(--sakura-light)", border: "1px solid var(--sakura)", borderRadius: 8, padding: "10px 16px", marginBottom: 20, fontSize: "0.82rem", color: "var(--ink-dim)" }}>
-          <strong style={{ color: "var(--sakura)" }}>Annotated lyrics</strong> — pink-highlighted lines have K-pop slang &amp; culture notes. Tap a line to read it.
+          <strong style={{ color: "var(--sakura)" }}>Annotated lyrics</strong> — pink lines have K-pop slang &amp; culture notes (tap to read). Or <strong style={{ color: "var(--sakura)" }}>highlight any line</strong> to add your own.
+        </div>
+      ) : (
+        <div style={{ background: "var(--sakura-light)", border: "1px solid var(--sakura)", borderRadius: 8, padding: "10px 16px", marginBottom: 20, fontSize: "0.82rem", color: "var(--ink-dim)" }}>
+          <strong style={{ color: "var(--sakura)" }}>Highlight any lyric</strong> to start an annotation — explain the slang, references, and culture behind the words.
         </div>
       )}
 
@@ -73,39 +141,58 @@ export default function AnnotationLyrics({
         <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-faint)" }}>English Translation</div>
       </div>
 
-      {koLines.map((line, i) => {
-        const isEmpty = !line.trim() && !enLines[i]?.trim();
-        if (isEmpty) return <div key={i} style={{ height: 20 }} />;
-        const annotated = (byLine.get(i)?.length ?? 0) > 0;
-        const isActive = activeLine === i;
-        return (
-          <div key={i} className="lyric-line" style={{ borderBottom: "1px solid var(--border)", padding: "10px 0" }}>
-            <div>
-              {annotated ? (
-                <button
-                  type="button"
-                  onClick={() => setActiveLine(i)}
-                  style={{
-                    display: "block", width: "100%", textAlign: "left", cursor: "pointer",
-                    font: "inherit", fontWeight: 500,
-                    background: isActive ? "var(--sakura)" : "var(--sakura-light)",
-                    color: isActive ? "var(--on-accent)" : "var(--ink)",
-                    border: "none", borderLeft: "3px solid var(--sakura)",
-                    padding: "4px 10px", borderRadius: "0 4px 4px 0",
-                    transition: "background 0.15s, color 0.15s",
-                  }}
-                >
-                  {line || " "}
-                </button>
-              ) : (
-                <div className="lyric-line-ko" style={{ fontWeight: 500 }}>{line || " "}</div>
-              )}
-              {roLines[i] && <div className="lyric-romanized">{roLines[i]}</div>}
+      <div ref={lyricsRef}>
+        {koLines.map((line, i) => {
+          const isEmpty = !line.trim() && !enLines[i]?.trim();
+          if (isEmpty) return <div key={i} style={{ height: 20 }} />;
+          const annotated = (byLine.get(i)?.length ?? 0) > 0;
+          const isActive = activeLine === i;
+          return (
+            <div key={i} className="lyric-line" data-line={i} style={{ borderBottom: "1px solid var(--border)", padding: "10px 0" }}>
+              <div>
+                {annotated ? (
+                  <button
+                    type="button"
+                    onClick={() => setActiveLine(i)}
+                    style={{
+                      display: "block", width: "100%", textAlign: "left", cursor: "pointer",
+                      font: "inherit", fontWeight: 500,
+                      background: isActive ? "var(--sakura)" : "var(--sakura-light)",
+                      color: isActive ? "var(--on-accent)" : "var(--ink)",
+                      border: "none", borderLeft: "3px solid var(--sakura)",
+                      padding: "4px 10px", borderRadius: "0 4px 4px 0",
+                      transition: "background 0.15s, color 0.15s",
+                    }}
+                  >
+                    {line || " "}
+                  </button>
+                ) : (
+                  <div className="lyric-line-ko" style={{ fontWeight: 500 }}>{line || " "}</div>
+                )}
+                {roLines[i] && <div className="lyric-romanized">{roLines[i]}</div>}
+              </div>
+              <div className="lyric-line-en" style={{ color: "#fff" }}>{enLines[i] || " "}</div>
             </div>
-            <div className="lyric-line-en" style={{ color: "#fff" }}>{enLines[i] || " "}</div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
+
+      {/* Floating highlight-to-annotate prompt */}
+      {selPrompt && (
+        <button
+          type="button"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={startAnnotateFromSelection}
+          style={{
+            position: "fixed", top: Math.max(8, selPrompt.top - 46), left: selPrompt.left, transform: "translateX(-50%)", zIndex: 150,
+            background: "var(--sakura)", color: "var(--on-accent)", border: "none", borderRadius: 100,
+            padding: "8px 16px", fontSize: "0.8rem", fontWeight: 800, cursor: "pointer",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.4)", whiteSpace: "nowrap",
+          }}
+        >
+          {isLoggedIn ? "✏️ Annotate" : "Sign Up to Start Annotating"}
+        </button>
+      )}
 
       {/* Backdrop */}
       <div
@@ -156,7 +243,7 @@ export default function AnnotationLyrics({
 
             <div style={{ borderTop: "1px solid var(--border)", paddingTop: 16, marginTop: 16 }}>
               {contribOpen ? (
-                <ContributeForm songId={songId} lineIndex={activeLine!} onClose={() => setContribOpen(false)} />
+                <ContributeForm songId={songId} lineIndex={activeLine!} selectedText={selText} onClose={() => { setContribOpen(false); setSelText(""); }} />
               ) : (
                 <button type="button" onClick={onContribute} style={{ width: "100%", padding: "11px", borderRadius: 8, border: "1px solid var(--sakura)", background: "transparent", color: "var(--sakura)", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer" }}>
                   + Suggest an annotation
@@ -172,7 +259,7 @@ export default function AnnotationLyrics({
   );
 }
 
-function ContributeForm({ songId, lineIndex, onClose }: { songId: string; lineIndex: number; onClose: () => void }) {
+function ContributeForm({ songId, lineIndex, selectedText, onClose }: { songId: string; lineIndex: number; selectedText?: string; onClose: () => void }) {
   const [text, setText] = useState("");
   const [state, setState] = useState<"idle" | "saving" | "done" | "error">("idle");
 
@@ -188,7 +275,7 @@ function ContributeForm({ songId, lineIndex, onClose }: { songId: string; lineIn
           entityId: songId,
           field: `annotation:line-${lineIndex + 1}`,
           suggestedVal: text,
-          reason: "Annotation suggestion",
+          reason: selectedText ? `Annotation for: "${selectedText}"` : "Annotation suggestion",
         }),
       });
       setState(res.ok ? "done" : "error");
@@ -203,11 +290,17 @@ function ContributeForm({ songId, lineIndex, onClose }: { songId: string; lineIn
 
   return (
     <div>
+      {selectedText && (
+        <div style={{ marginBottom: 10, fontSize: "0.82rem", color: "var(--ink-dim)" }}>
+          Annotating: <span style={{ color: "var(--sakura)", fontWeight: 700 }}>&ldquo;{selectedText}&rdquo;</span>
+        </div>
+      )}
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="Explain the slang, reference, or cultural meaning of this line…"
         rows={4}
+        autoFocus
         style={{ width: "100%", background: "var(--surface)", border: "1px solid var(--border-strong)", borderRadius: 8, padding: "10px 12px", color: "var(--ink)", fontFamily: "var(--sans)", fontSize: "0.9rem", resize: "vertical", boxSizing: "border-box" }}
       />
       {state === "error" && <div style={{ color: "var(--sakura)", fontSize: "0.78rem", marginTop: 6 }}>Something went wrong — please try again.</div>}
