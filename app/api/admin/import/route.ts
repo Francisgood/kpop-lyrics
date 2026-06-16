@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { ensureCommunity } from "@/lib/community-db";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -26,7 +27,8 @@ type AlbumIn = { slug: string; title: string; artistSlug: string; releaseYear?: 
 type SongIn = { slug: string; title: string; albumSlug?: string; releaseYear?: number; coverArt?: string; lyricsKo?: string; lyricsEn?: string; lyricsRomanized?: string; credits?: { artistSlug: string; role: string }[] };
 type MembershipIn = { groupSlug: string; memberSlug: string; role?: string; position?: number };
 type NewsIn = { artistSlug: string; headline: string; body: string; source?: string; sourceUrl?: string; category: string; publishedAt?: string };
-type Payload = { labels?: LabelIn[]; artists?: ArtistIn[]; albums?: AlbumIn[]; songs?: SongIn[]; memberships?: MembershipIn[]; news?: NewsIn[] };
+type AnnotationIn = { id: string; authorSlug: string; authorName?: string; songTitle: string; word?: string; note: string; status?: "approved" | "rejected" | "pending" };
+type Payload = { labels?: LabelIn[]; artists?: ArtistIn[]; albums?: AlbumIn[]; songs?: SongIn[]; memberships?: MembershipIn[]; news?: NewsIn[]; annotations?: AnnotationIn[] };
 
 async function artistId(slug: string) {
   const a = await prisma.artist.findUnique({ where: { slug }, select: { id: true } });
@@ -37,7 +39,7 @@ export async function POST(req: NextRequest) {
   if (!authed(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const p = (await req.json().catch(() => ({}))) as Payload;
-    const counts = { labels: 0, artists: 0, albums: 0, songs: 0, memberships: 0, credits: 0, news: 0 };
+    const counts = { labels: 0, artists: 0, albums: 0, songs: 0, memberships: 0, credits: 0, news: 0, annotations: 0 };
 
     for (const l of p.labels ?? []) {
       const data = { name: l.name, country: l.country, foundedYear: l.foundedYear, bio: l.bio, website: l.website, logoUrl: l.logoUrl };
@@ -90,6 +92,21 @@ export async function POST(req: NextRequest) {
       if (dupe) continue;
       await prisma.artistNews.create({ data: { artistId: aid, headline: n.headline, body: n.body, source: n.source, sourceUrl: n.sourceUrl, category: n.category, publishedAt: n.publishedAt ? new Date(n.publishedAt) : null } });
       counts.news++;
+    }
+
+    // Seed community annotations (attributed to contributors) on song lyrics.
+    if ((p.annotations ?? []).length) {
+      await ensureCommunity();
+      for (const an of p.annotations!) {
+        const status = an.status === "rejected" ? "rejected" : an.status === "pending" ? "pending" : "approved";
+        await prisma.$executeRawUnsafe(
+          `INSERT INTO "CommunityAnnotation" ("id","authorSlug","authorName","songTitle","word","romanization","note","status","reviewedBy","reviewedAt")
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,now())
+           ON CONFLICT ("id") DO UPDATE SET "note"=EXCLUDED."note","status"=EXCLUDED."status","songTitle"=EXCLUDED."songTitle","word"=EXCLUDED."word"`,
+          an.id, an.authorSlug, an.authorName ?? an.authorSlug, an.songTitle, an.word ?? "", "", an.note, status, "Aegyo Moderation",
+        );
+        counts.annotations++;
+      }
     }
 
     return NextResponse.json({ ok: true, counts });
