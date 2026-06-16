@@ -10,6 +10,10 @@ export function generateToken(): string {
   return crypto.randomBytes(32).toString("hex");
 }
 
+export function hashResetCode(email: string, code: string): string {
+  return crypto.createHash("sha256").update(`${email}:${code}:${process.env.AUTH_SECRET ?? "aegyo-salt"}`).digest("hex");
+}
+
 export async function getSession() {
   const cookieStore = await cookies();
   const token = cookieStore.get("session")?.value;
