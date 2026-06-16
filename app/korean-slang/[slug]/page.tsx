@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import SlangDefinitions from "@/components/SlangDefinitions";
 
 export const revalidate = 86400;
 
@@ -40,52 +41,10 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
 
       {/* Definitions */}
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px 24px" }}>
-        {term.definitions.map((def, i) => (
-          <div key={def.id} className="genius-card" style={{ padding: 28, marginBottom: 20 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
-              <div style={{
-                background: i === 0 ? "var(--genius-yellow)" : "#f0f0f0",
-                color: "#000",
-                fontWeight: 700,
-                fontSize: "0.75rem",
-                padding: "4px 12px",
-                borderRadius: 999,
-                letterSpacing: "0.05em"
-              }}>
-                #{i + 1} {i === 0 ? "TOP DEFINITION" : ""}
-              </div>
-              <div style={{ display: "flex", gap: 8 }}>
-                <button type="button" className="vote-btn up" style={{ fontSize: "0.82rem" }}>
-                  👍 {def.votesUp}
-                </button>
-                <button type="button" className="vote-btn down" style={{ fontSize: "0.82rem" }}>
-                  👎 {def.votesDown}
-                </button>
-              </div>
-            </div>
-
-            <p style={{ fontSize: "1.05rem", lineHeight: 1.8, color: "#fff", margin: "0 0 16px" }}>
-              {def.body}
-            </p>
-
-            {def.example && (
-              <div style={{
-                background: "rgba(255,111,168,0.18)",
-                borderLeft: "3px solid var(--genius-yellow)",
-                padding: "12px 16px",
-                borderRadius: "0 4px 4px 0",
-                marginTop: 12
-              }}>
-                <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--genius-gray)", marginBottom: 6 }}>
-                  Example
-                </div>
-                <div style={{ fontSize: "0.95rem", fontStyle: "italic", color: "#fff" }}>
-                  &ldquo;{def.example}&rdquo;
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
+        <SlangDefinitions
+          termName={term.term}
+          definitions={term.definitions.map((d) => ({ id: d.id, body: d.body, example: d.example, votesUp: d.votesUp, votesDown: d.votesDown }))}
+        />
 
         <div style={{ textAlign: "center", marginTop: 32 }}>
           <Link href="/korean-slang" style={{ color: "var(--genius-gray)", textDecoration: "none", fontSize: "0.9rem" }}>

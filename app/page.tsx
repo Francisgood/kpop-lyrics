@@ -70,10 +70,6 @@ export default async function HomePage() {
 
         <div className="hero-content">
           <div className="fade-up fade-up-1">
-            <div style={{ marginBottom: 28 }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/aegyo-logo.png" alt="Aegyo Arena" style={{ height: 88, width: "auto", display: "block", maxWidth: "100%" }} />
-            </div>
             <div className="hero-eyebrow">Fan-made · Fandom-powered</div>
             <p className="hero-body">
               The K-pop universe built by fans, for fans. Annotate lyrics, decode slang, and earn real rewards — including our iconic chibi plush collection.
