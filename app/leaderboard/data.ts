@@ -7,6 +7,7 @@ export type City = "Mexico City" | "New York" | "Paris";
 export interface Contributor {
   rank:         number;
   username:     string;
+  slug:         string;     // URL-safe id for /u/[slug]
   initial:      string;
   city:         City;
   flag:         string;
@@ -19,10 +20,11 @@ export interface Contributor {
   annotations:  number;
   edits:        number;
   comments:     number;
+  followers:    number;     // followers from other users
   joinedMonth:  string;
 }
 
-export const CONTRIBUTORS: Contributor[] = [
+const RAW: Omit<Contributor, "followers" | "slug">[] = [
   // ── MEXICO CITY ─────────────────────────────────────────────────────────────
   {
     rank: 1, username: "SofiaRM_CDMX", initial: "S",
@@ -239,6 +241,24 @@ export const CONTRIBUTORS: Contributor[] = [
     annotations: 1, edits: 2, comments: 10, joinedMonth: "May 2025",
   },
 ];
+
+// Followers are derived from standing (points, rank, annotations) with a small
+// deterministic per-user variation so the count reads organically rather than
+// perfectly tracking points. Real DB follows are layered on top at the profile level.
+// URL-safe slug shared by contributor slugs and real-user profile lookups.
+export function slugify(s: string): string {
+  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+export const CONTRIBUTORS: Contributor[] = RAW.map((c) => ({
+  ...c,
+  slug: slugify(c.username),
+  followers: Math.round(c.points * 0.15 + (31 - c.rank) * 14 + c.annotations * 4 + (c.username.length % 7) * 23),
+}));
+
+export function contributorBySlug(slug: string): Contributor | undefined {
+  return CONTRIBUTORS.find((c) => c.slug === slug);
+}
 
 export const CITY_TOTALS: Record<City, { contributors: number; totalPoints: number; topSong: string }> = {
   "Mexico City": { contributors: 10, totalPoints: 50310, topSong: "봄날 (Spring Day)" },
