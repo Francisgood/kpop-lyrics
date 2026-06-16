@@ -6,6 +6,23 @@ import Link from "next/link";
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const AGE_ERROR = "Sorry — this giveaway is only open to entrants who are 18 or older.";
 
+const PRIZES = [
+  {
+    img: "/giveaway/tickets.jpg",
+    badge: "🏆 Grand Prize",
+    accent: "var(--sakura)",
+    title: "2 Luxury Box Seat Tickets",
+    sub: "BTS Arirang World Tour · MetLife Stadium, East Rutherford NJ · August 1, 2026",
+  },
+  {
+    img: "/giveaway/merch.jpg",
+    badge: "Runner-up Prize",
+    accent: "var(--volt)",
+    title: "BTS Merch Bundle",
+    sub: "$300 value · hoodies, photobooks, official lightstick & more",
+  },
+];
+
 export default function BtsGiveawayPage() {
   const thisYear = new Date().getFullYear();
   const years = Array.from({ length: 100 }, (_, i) => thisYear - i);
@@ -109,18 +126,59 @@ export default function BtsGiveawayPage() {
   }
 
   return (
-    <main style={{ padding: "48px 24px 72px" }}>
-      <div style={{ maxWidth: 560, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <div style={{ fontFamily: "var(--mono)", fontSize: "0.72rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 12 }}>BTS Concert Sweepstakes</div>
-          <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(2rem, 6vw, 2.8rem)", fontWeight: 700, color: "var(--ink)", margin: "0 0 12px", lineHeight: 1.1 }}>Win tickets to see BTS live.</h1>
-          <p style={{ color: "var(--ink-dim)", fontSize: "1.02rem", lineHeight: 1.6 }}>MetLife Stadium · East Rutherford, NJ · August 1, 2026. No purchase necessary. Open to U.S. residents 18+.</p>
-          {ref && <p style={{ marginTop: 10, fontSize: "0.85rem", color: "var(--volt)" }}>A friend referred you — enter below so their referral counts!</p>}
+    <main style={{ padding: "0 0 72px" }}>
+      {/* Hero */}
+      <section style={{ background: "linear-gradient(180deg, var(--sakura-light), var(--bg))", borderBottom: "1px solid var(--border)", padding: "56px 24px 48px", textAlign: "center" }}>
+        <div style={{ maxWidth: 720, margin: "0 auto" }}>
+          <div style={{ fontFamily: "var(--mono)", fontSize: "0.72rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 16 }}>Aegyo Arena · BTS ARMY</div>
+          <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(2.4rem, 9vw, 4rem)", fontWeight: 700, color: "var(--ink)", margin: "0 0 16px", lineHeight: 1.05 }}>
+            BTS ARMY <em style={{ color: "var(--sakura)", fontStyle: "italic" }}>Giveaway.</em>
+          </h1>
+          <p style={{ color: "var(--ink-dim)", fontSize: "clamp(1rem, 3.5vw, 1.15rem)", lineHeight: 1.6, maxWidth: 540, margin: "0 auto 28px" }}>
+            Enter for your chance to win exclusive BTS merch, signed albums & concert tickets. Refer friends to multiply your entries.
+          </p>
+          <a href="#enter" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 34px", borderRadius: 100, background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.03em", textTransform: "uppercase", textDecoration: "none" }}>
+            Enter Now →
+          </a>
+          {ref && <p style={{ marginTop: 16, fontSize: "0.85rem", color: "var(--volt)" }}>A friend referred you — enter below so their referral counts! 💜</p>}
         </div>
+      </section>
+
+      {/* Prizes */}
+      <section style={{ maxWidth: 1040, margin: "0 auto", padding: "44px 24px 8px" }}>
+        <div style={{ fontFamily: "var(--mono)", fontSize: "0.72rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 18 }}>Prizes</div>
+        {/* minmax(min(300px,100%)) → side-by-side on desktop, full-width stacked (tickets above merch) on mobile, never overflows narrow screens */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 20 }}>
+          {PRIZES.map((p) => (
+            <div key={p.title} style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 18, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+              <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 10", overflow: "hidden" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={p.img} alt={p.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                <span style={{ position: "absolute", top: 14, left: 14, background: "rgba(15,15,18,0.82)", color: "#fff", fontFamily: "var(--mono)", fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", padding: "6px 12px", borderRadius: 100, border: `1px solid ${p.accent}` }}>
+                  {p.badge}
+                </span>
+              </div>
+              <div style={{ padding: "20px 22px 24px" }}>
+                <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.5rem", fontWeight: 700, color: "var(--ink)", margin: "0 0 8px", lineHeight: 1.2 }}>{p.title}</h2>
+                <p style={{ color: "var(--ink-dim)", fontSize: "0.92rem", lineHeight: 1.6, margin: 0 }}>{p.sub}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p style={{ marginTop: 16, fontSize: "0.74rem", color: "var(--ink-faint)", lineHeight: 1.6 }}>
+          No purchase necessary. Open to U.S. residents 18+. Prizes shown are illustrative. See the{" "}
+          <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>Official Rules</Link>.
+        </p>
+      </section>
+
+      {/* Entry form */}
+      <section id="enter" style={{ maxWidth: 560, margin: "0 auto", padding: "32px 24px 0", scrollMarginTop: 24 }}>
+        <h2 style={{ fontFamily: "var(--serif)", fontSize: "clamp(1.7rem, 5vw, 2.2rem)", fontWeight: 700, color: "var(--ink)", textAlign: "center", margin: "0 0 8px" }}>Enter the sweepstakes</h2>
+        <p style={{ textAlign: "center", color: "var(--ink-dim)", fontSize: "0.98rem", lineHeight: 1.6, marginBottom: 28 }}>
+          Free to enter. One entry per person — then refer friends to boost your odds.
+        </p>
 
         <form onSubmit={submit} style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 16, padding: "28px 24px" }}>
-          <h2 style={{ fontSize: "0.92rem", fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink)", textAlign: "center", marginBottom: 22 }}>Complete the following:</h2>
-
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <input style={field} placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} aria-label="First Name" />
             <input style={field} placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} aria-label="Last Name" />
@@ -164,7 +222,7 @@ export default function BtsGiveawayPage() {
             and to subscribe to the Aegyo Arena email newsletter.
           </p>
         </form>
-      </div>
+      </section>
     </main>
   );
 }
