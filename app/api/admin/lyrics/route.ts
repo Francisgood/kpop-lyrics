@@ -43,14 +43,22 @@ export async function POST(req: NextRequest) {
   }
 
   // Write English translations (right side) produced by the translate-lyrics skill.
+  // Optionally also rewrite the Korean (left side) with a cleaned version — the
+  // skill strips Genius page chrome (the "N Contributors…Lyrics[…가사]" header,
+  // trailing "Embed"/"You might also like") so both columns read cleanly.
   if (action === "set-translations") {
-    const items: { slug?: string; lyricsEn?: string }[] = Array.isArray(b?.items) ? b.items : [];
+    const items: { slug?: string; lyricsEn?: string; lyricsKo?: string }[] = Array.isArray(b?.items) ? b.items : [];
     let updated = 0;
     for (const it of items) {
       const slug = String(it?.slug ?? "").trim();
       const lyricsEn = String(it?.lyricsEn ?? "");
       if (!slug || !lyricsEn.trim()) continue;
-      await prisma.$executeRaw`UPDATE "Song" SET "lyricsEn" = ${lyricsEn} WHERE "slug" = ${slug}`;
+      const lyricsKo = typeof it?.lyricsKo === "string" && it.lyricsKo.trim() ? it.lyricsKo : null;
+      if (lyricsKo) {
+        await prisma.$executeRaw`UPDATE "Song" SET "lyricsEn" = ${lyricsEn}, "lyricsKo" = ${lyricsKo} WHERE "slug" = ${slug}`;
+      } else {
+        await prisma.$executeRaw`UPDATE "Song" SET "lyricsEn" = ${lyricsEn} WHERE "slug" = ${slug}`;
+      }
       updated++;
     }
     return NextResponse.json({ ok: true, updated });
