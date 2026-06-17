@@ -77,5 +77,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, updated });
   }
 
+  // One-off catalog cleanup: normalize Cyrillic homoglyphs (е/а/о/с/р/х… that look
+  // identical to Latin letters but break exact-substring matching + search) to Latin.
+  // Lyrics are Korean + English only, so there is no legitimate Cyrillic to preserve.
+  if (action === "clean-homoglyphs") {
+    const FROM = "аеосрхуѕіјкАЕОСРХУКМНТВІЈ";
+    const TO = "aeocpxysijkAEOCPXYKMHTBIJ";
+    const cleaned = await prisma.$executeRawUnsafe(
+      `UPDATE "Song" SET
+         "lyricsKo" = CASE WHEN "lyricsKo" IS NULL THEN NULL ELSE translate("lyricsKo", $1, $2) END,
+         "lyricsEn" = CASE WHEN "lyricsEn" IS NULL THEN NULL ELSE translate("lyricsEn", $1, $2) END,
+         "lyricsRomanized" = CASE WHEN "lyricsRomanized" IS NULL THEN NULL ELSE translate("lyricsRomanized", $1, $2) END
+       WHERE "lyricsKo" ~ '[а-яА-ЯѕіјЅІЈ]' OR "lyricsEn" ~ '[а-яА-ЯѕіјЅІЈ]' OR "lyricsRomanized" ~ '[а-яА-ЯѕіјЅІЈ]'`,
+      FROM,
+      TO,
+    );
+    return NextResponse.json({ ok: true, cleaned });
+  }
+
   return NextResponse.json({ error: "unknown action" }, { status: 400 });
 }

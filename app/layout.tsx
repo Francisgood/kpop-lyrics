@@ -85,8 +85,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               ))}
             </div>
             <div>
-              <div className="footer-col-title">Labels</div>
-              {[["HYBE", "/labels/hybe-entertainment"], ["SM Entertainment", "/labels/sm-entertainment"], ["YG Entertainment", "/labels/yg-entertainment"], ["JYP Entertainment", "/labels/jyp-entertainment"]].map(([label, href]) => (
+              <div className="footer-col-title">Culture Vulture</div>
+              {[["Dance", "/culture/dance"], ["Fashion", "/culture/fashion"], ["Beauty", "/culture/beauty"], ["Mukbang", "/culture/mukbang"]].map(([label, href]) => (
                 <Link key={href} href={href} style={{ display: "block", fontSize: "1rem", fontWeight: 300, color: "var(--ink-dim)", textDecoration: "none", marginBottom: 10 }}>
                   {label}
                 </Link>
