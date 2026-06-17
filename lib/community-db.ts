@@ -10,6 +10,7 @@ export type AnnRow = {
   authorName: string;
   songTitle: string;
   songSlug: string | null;
+  lineIndex: number | null;
   word: string;
   romanization: string;
   note: string;
@@ -50,6 +51,7 @@ async function createCommunityTables(): Promise<void> {
       "createdAt"    TIMESTAMP NOT NULL DEFAULT now()
     )`);
   await prisma.$executeRawUnsafe(`ALTER TABLE "CommunityAnnotation" ADD COLUMN IF NOT EXISTS "songSlug" TEXT`);
+  await prisma.$executeRawUnsafe(`ALTER TABLE "CommunityAnnotation" ADD COLUMN IF NOT EXISTS "lineIndex" INTEGER`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "CommunityAnnotation_author_idx" ON "CommunityAnnotation" ("authorSlug")`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "CommunityAnnotation_status_idx" ON "CommunityAnnotation" ("status")`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "CommunityAnnotation_songSlug_idx" ON "CommunityAnnotation" ("songSlug")`);
@@ -171,6 +173,53 @@ export async function getSongAnnotations(slug: string, title: string, limit = 24
      ORDER BY "createdAt" DESC LIMIT $3`,
     slug, title, limit,
   );
+}
+
+// Skill-facing: every community annotation for a song (any status) for auditing.
+export async function getSongAnnotationsForAudit(slug: string, title: string): Promise<AnnRow[]> {
+  await ensureCommunity();
+  return prisma.$queryRawUnsafe<AnnRow[]>(
+    `SELECT * FROM "CommunityAnnotation"
+     WHERE "songSlug" = $1 OR (("songSlug" IS NULL OR "songSlug" = '') AND lower("songTitle") = lower($2))
+     ORDER BY "createdAt" DESC`,
+    slug, title,
+  );
+}
+
+// Skill-facing: apply moderation decisions. Only provided fields change (COALESCE keeps
+// the rest). Used by the annotation-moderation skill to set lineIndex/word/note/status.
+export type ModerationItem = {
+  id: string;
+  lineIndex?: number | null;
+  word?: string;
+  romanization?: string;
+  note?: string;
+  status?: "approved" | "rejected" | "pending";
+};
+export async function applyModeration(items: ModerationItem[], reviewer = "annotation-moderation"): Promise<number> {
+  await ensureCommunity();
+  let n = 0;
+  for (const it of items) {
+    const id = String(it?.id ?? "").trim();
+    if (!id) continue;
+    const lineIndex = typeof it.lineIndex === "number" ? it.lineIndex : null;
+    const word = typeof it.word === "string" ? it.word : null;
+    const romanization = typeof it.romanization === "string" ? it.romanization : null;
+    const note = typeof it.note === "string" ? it.note : null;
+    const status = it.status === "approved" || it.status === "rejected" || it.status === "pending" ? it.status : null;
+    await prisma.$executeRaw`
+      UPDATE "CommunityAnnotation" SET
+        "lineIndex"    = COALESCE(${lineIndex}::int, "lineIndex"),
+        "word"         = COALESCE(${word}, "word"),
+        "romanization" = COALESCE(${romanization}, "romanization"),
+        "note"         = COALESCE(${note}, "note"),
+        "status"       = COALESCE(${status}, "status"),
+        "reviewedBy"   = ${reviewer},
+        "reviewedAt"   = now()
+      WHERE "id" = ${id}`;
+    n++;
+  }
+  return n;
 }
 
 export async function getModerationQueue(): Promise<{ pending: AnnRow[]; recent: AnnRow[] }> {

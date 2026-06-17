@@ -10,6 +10,10 @@ export type Ann = {
   note: string;
   termSlug: string | null;
   termName: string | null;
+  // Community (contributor) annotations carry an author + a link to the detail page.
+  authorName?: string | null;
+  authorSlug?: string | null;
+  href?: string | null;
 };
 
 type SelPrompt = { top: number; left: number; text: string; lineIndex: number };
@@ -240,6 +244,18 @@ export default function AnnotationLyrics({
                   <Link href={`/korean-slang/${a.termSlug}`} style={{ display: "inline-block", marginTop: 10, fontSize: "0.8rem", color: "var(--sakura)", fontWeight: 600, textDecoration: "none" }}>
                     See full definition: {a.termName} →
                   </Link>
+                )}
+                {a.authorName && (
+                  <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                    {a.authorSlug ? (
+                      <Link href={`/u/${a.authorSlug}`} style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--sakura)", textDecoration: "none" }}>— {a.authorName}</Link>
+                    ) : (
+                      <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--ink)" }}>— {a.authorName}</span>
+                    )}
+                    {a.href && (
+                      <Link href={a.href} style={{ fontSize: "0.76rem", color: "var(--ink-faint)", textDecoration: "none", marginLeft: "auto" }}>view full →</Link>
+                    )}
+                  </div>
                 )}
               </div>
             ))}

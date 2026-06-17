@@ -95,6 +95,23 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
     termName: ann.term?.term ?? null,
   }));
 
+  // Approved community annotations that the moderation skill has placed on a line render
+  // INLINE (highlighting the exact lyric); unplaced ones still appear in the section below.
+  const communityInline = fanAnnotations
+    .filter((a) => a.lineIndex != null)
+    .map((a) => ({
+      id: a.id,
+      lineIndex: a.lineIndex as number,
+      word: a.word,
+      note: a.note,
+      termSlug: null as string | null,
+      termName: null as string | null,
+      authorName: a.authorName,
+      authorSlug: a.authorSlug,
+      href: `/annotation/${a.id}`,
+    }));
+  const inlineAnnotations = [...annData, ...communityInline];
+
   const performers = song.credits.filter((c) => ["performer", "PRIMARY"].includes(c.role));
   const featured = song.credits.filter((c) => c.role === "featured");
   const producers = song.credits.filter((c) => ["producer", "songwriter", "composer"].includes(c.role));
@@ -181,7 +198,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
               koLines={koLines}
               enLines={enLines}
               roLines={roLines}
-              annotations={annData}
+              annotations={inlineAnnotations}
               isLoggedIn={isLoggedIn}
             />
           </div>
