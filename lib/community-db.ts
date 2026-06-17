@@ -70,7 +70,7 @@ async function createCommunityTables(): Promise<void> {
 // songs (with lyrics) for variety.
 async function buildSongPool(): Promise<{ trending: PoolSong[]; popular: PoolSong[] }> {
   const trending = await prisma.$queryRawUnsafe<PoolSong[]>(
-    `SELECT "title","slug" FROM "Song" WHERE "slug" LIKE 'aespa-%' AND COALESCE("lyricsKo",'') <> '' ORDER BY "viewCount" DESC, "slug" ASC LIMIT 30`,
+    `SELECT "title","slug" FROM "Song" WHERE "slug" LIKE 'aespa-%' AND COALESCE("lyricsKo",'') <> '' ORDER BY "viewCount" DESC, "slug" ASC LIMIT 80`,
   );
   const popular = await prisma.$queryRawUnsafe<PoolSong[]>(
     `SELECT "title","slug" FROM "Song" WHERE COALESCE("lyricsKo",'') <> '' AND "slug" NOT LIKE 'aespa-%' ORDER BY "viewCount" DESC, "slug" ASC LIMIT 160`,
