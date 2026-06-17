@@ -76,6 +76,7 @@ export function generateCommunity(pool: { trending: PoolSong[]; popular: PoolSon
   const popular = pool.popular?.length ? pool.popular : anyPool.length ? anyPool : FALLBACK;
   const trending = pool.trending?.length ? pool.trending : popular;
   let g = 0; // global counter drives the ~90% approved / ~10% rejected split
+  let tIdx = 0, pIdx = 0; // round-robin cursors so every pooled song gets covered evenly
 
   for (const c of CONTRIBUTORS) {
     // Generate the contributor's full annotation count so the profile stat is truthful.
@@ -84,8 +85,9 @@ export function generateCommunity(pool: { trending: PoolSong[]; popular: PoolSon
       // ~40% of each contributor's annotations land on the trending (aespa) comeback,
       // the rest spread across the popular catalog — like a real wiki.
       const useTrending = (c.rank + i) % 5 < 2;
-      const arr = useTrending ? trending : popular;
-      const song = arr[(c.rank * 7 + i * 13) % arr.length];
+      // Round-robin within each pool so every trending (aespa) song + popular song gets
+      // covered — no flagship track left with zero annotations.
+      const song = useTrending ? trending[tIdx++ % trending.length] : popular[pIdx++ % popular.length];
       const slang = SLANG[(c.rank + i) % SLANG.length];
       const note = NOTE_TEMPLATES[(c.rank + i) % NOTE_TEMPLATES.length](song.title, slang, c.focusTag, c.city);
       const status: "approved" | "rejected" = g % 10 === 6 ? "rejected" : "approved";
