@@ -17,7 +17,22 @@ function authed(req: NextRequest): boolean {
 
 export async function GET(req: NextRequest) {
   if (!authed(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const slug = (new URL(req.url).searchParams.get("song") ?? "").trim();
+  const sp = new URL(req.url).searchParams;
+
+  // ?list=1 → the work-list for bulk moderation: every song that has community
+  // annotations, with how many are already placed (lineIndex set) vs total.
+  if (sp.get("list")) {
+    const rows = await prisma.$queryRawUnsafe<{ slug: string; total: number; placed: number }[]>(
+      `SELECT "songSlug" AS slug, COUNT(*)::int AS total,
+              COUNT(*) FILTER (WHERE "lineIndex" IS NOT NULL)::int AS placed
+       FROM "CommunityAnnotation"
+       WHERE "songSlug" IS NOT NULL AND "songSlug" <> ''
+       GROUP BY "songSlug" ORDER BY "songSlug"`,
+    );
+    return NextResponse.json({ count: rows.length, songs: rows });
+  }
+
+  const slug = (sp.get("song") ?? "").trim();
   if (!slug) return NextResponse.json({ error: "song slug required" }, { status: 400 });
   const song = await prisma.song.findUnique({
     where: { slug },
