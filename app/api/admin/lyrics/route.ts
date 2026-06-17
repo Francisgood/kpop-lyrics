@@ -14,15 +14,28 @@ function authed(req: NextRequest): boolean {
 }
 
 // GET → songs with Korean lyrics but no English translation yet.
+// Optional ?prefix=aespa- targets a single artist's recent imports (otherwise the
+// view-count ordering buries brand-new, zero-view songs below the cap).
 export async function GET(req: NextRequest) {
   if (!authed(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const limit = Math.min(Number(new URL(req.url).searchParams.get("limit") ?? 60), 200);
-  const rows = await prisma.$queryRawUnsafe<{ slug: string; title: string; lyricsKo: string }[]>(
-    `SELECT "slug","title","lyricsKo" FROM "Song"
-     WHERE COALESCE("lyricsKo",'') <> '' AND COALESCE("lyricsEn",'') = ''
-     ORDER BY "viewCount" DESC LIMIT $1`,
-    limit,
-  );
+  const sp = new URL(req.url).searchParams;
+  const limit = Math.min(Number(sp.get("limit") ?? 60), 200);
+  const prefix = (sp.get("prefix") ?? "").trim();
+  type Row = { slug: string; title: string; lyricsKo: string };
+  const rows = prefix
+    ? await prisma.$queryRawUnsafe<Row[]>(
+        `SELECT "slug","title","lyricsKo" FROM "Song"
+         WHERE COALESCE("lyricsKo",'') <> '' AND COALESCE("lyricsEn",'') = '' AND "slug" LIKE $1
+         ORDER BY "viewCount" DESC LIMIT $2`,
+        `${prefix}%`,
+        limit,
+      )
+    : await prisma.$queryRawUnsafe<Row[]>(
+        `SELECT "slug","title","lyricsKo" FROM "Song"
+         WHERE COALESCE("lyricsKo",'') <> '' AND COALESCE("lyricsEn",'') = ''
+         ORDER BY "viewCount" DESC LIMIT $1`,
+        limit,
+      );
   return NextResponse.json({ count: rows.length, songs: rows });
 }
 
