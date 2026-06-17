@@ -14,9 +14,11 @@ const TABS: { key: "All" | City; label: string; flag: string }[] = [
 const fmt = (n: number) => n.toLocaleString("en-US");
 const MEDALS = ["#ffd35c", "#cdd3dc", "#e0a06b"]; // gold · silver · bronze
 
-function Avatar({ c, size, ring }: { c: Contributor; size: number; ring?: string }) {
+function Avatar({ c, size, ring }: { c: Contributor; size: number | string; ring?: string }) {
+  // size may be a px number or a fluid CSS length (e.g. clamp(...)) for the podium.
+  const fontSize = typeof size === "number" ? size * 0.42 : `calc(${size} * 0.42)`;
   return (
-    <span style={{ width: size, height: size, borderRadius: "50%", flexShrink: 0, display: "grid", placeItems: "center", background: c.tierColor, color: "#fff", fontWeight: 800, fontSize: size * 0.42, border: ring ? `3px solid ${ring}` : "none" }}>
+    <span style={{ width: size, height: size, borderRadius: "50%", flexShrink: 0, display: "grid", placeItems: "center", background: c.tierColor, color: "#fff", fontWeight: 800, fontSize, border: ring ? `3px solid ${ring}` : "none" }}>
       {c.initial}
     </span>
   );
@@ -89,21 +91,21 @@ export default function LeaderboardClient({ contributors }: { contributors: Cont
 
         {/* Podium (top 3) */}
         {podiumOrder.length > 0 && (
-          <div style={{ display: "grid", gridTemplateColumns: `repeat(${podiumOrder.length}, 1fr)`, gap: 14, alignItems: "end", marginBottom: 30 }}>
+          <div style={{ display: "grid", gridTemplateColumns: `repeat(${podiumOrder.length}, minmax(0, 1fr))`, gap: "clamp(6px, 2vw, 14px)", alignItems: "end", marginBottom: 30 }}>
             {podiumOrder.map((c) => {
               const place = c.displayRank;
               const medal = MEDALS[place - 1] ?? "var(--border-strong)";
               const first = place === 1;
               return (
-                <Link key={c.slug} href={`/u/${c.slug}`} style={{ textDecoration: "none" }}>
-                  <div style={{ background: "var(--bg-card)", border: `1px solid ${first ? "var(--sakura)" : "var(--border)"}`, borderTop: `3px solid ${medal}`, borderRadius: 16, padding: first ? "24px 14px 20px" : "18px 12px 16px", textAlign: "center", transform: first ? "translateY(-10px)" : "none", boxShadow: first ? "0 18px 48px rgba(0,0,0,0.32)" : "none" }}>
+                <Link key={c.slug} href={`/u/${c.slug}`} style={{ textDecoration: "none", minWidth: 0 }}>
+                  <div style={{ background: "var(--bg-card)", border: `1px solid ${first ? "var(--sakura)" : "var(--border)"}`, borderTop: `3px solid ${medal}`, borderRadius: 16, padding: first ? "clamp(16px,4vw,24px) clamp(8px,2.5vw,14px) clamp(14px,3vw,20px)" : "clamp(12px,3vw,18px) clamp(6px,2vw,12px) clamp(12px,2.5vw,16px)", textAlign: "center", transform: first ? "translateY(-10px)" : "none", boxShadow: first ? "0 18px 48px rgba(0,0,0,0.32)" : "none" }}>
                     <div style={{ fontSize: "1.05rem", marginBottom: 6 }}>{place === 1 ? "👑" : place === 2 ? "🥈" : "🥉"}</div>
-                    <div style={{ display: "grid", placeItems: "center", marginBottom: 10 }}><Avatar c={c} size={first ? 70 : 56} ring={medal} /></div>
-                    <div style={{ fontWeight: 800, color: "var(--ink)", fontSize: first ? "1rem" : "0.88rem", marginBottom: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.username}</div>
+                    <div style={{ display: "grid", placeItems: "center", marginBottom: 10 }}><Avatar c={c} size={first ? "clamp(48px,13vw,70px)" : "clamp(40px,11vw,56px)"} ring={medal} /></div>
+                    <div style={{ fontWeight: 800, color: "var(--ink)", fontSize: first ? "clamp(0.8rem,2.6vw,1rem)" : "clamp(0.72rem,2.3vw,0.88rem)", marginBottom: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.username}</div>
                     <div style={{ fontSize: "0.74rem", color: "var(--ink-faint)", marginBottom: 10 }}>{c.flag} {c.city}</div>
-                    <div style={{ fontFamily: "var(--serif)", fontWeight: 800, fontSize: first ? "1.7rem" : "1.35rem", color: "var(--sakura)", lineHeight: 1 }}>{fmt(c.points)}</div>
+                    <div style={{ fontFamily: "var(--serif)", fontWeight: 800, fontSize: first ? "clamp(1.25rem,5vw,1.7rem)" : "clamp(1.05rem,4vw,1.35rem)", color: "var(--sakura)", lineHeight: 1 }}>{fmt(c.points)}</div>
                     <div style={{ fontSize: "0.62rem", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--ink-faint)", marginBottom: 10 }}>points</div>
-                    <div style={{ display: "flex", justifyContent: "center", gap: 12, fontSize: "0.72rem", color: "var(--ink-dim)" }}>
+                    <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "clamp(4px,1.5vw,12px)", fontSize: "clamp(0.62rem,2vw,0.72rem)", color: "var(--ink-dim)" }}>
                       <span><strong style={{ color: "var(--ink)" }}>{c.annotations}</strong> ann.</span>
                       <span><strong style={{ color: "var(--ink)" }}>{fmt(c.followers)}</strong> followers</span>
                     </div>

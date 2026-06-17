@@ -33,8 +33,7 @@ function placeholders(rowIndex: number, cols: number): string {
   return "(" + Array.from({ length: cols }, (_, k) => `$${rowIndex * cols + k + 1}`).join(",") + ")";
 }
 
-export async function ensureCommunity(): Promise<void> {
-  if (ready) return;
+async function createCommunityTables(): Promise<void> {
   await prisma.$executeRawUnsafe(`
     CREATE TABLE IF NOT EXISTS "CommunityAnnotation" (
       "id"           TEXT PRIMARY KEY,
@@ -61,9 +60,11 @@ export async function ensureCommunity(): Promise<void> {
       "createdAt"  TIMESTAMP NOT NULL DEFAULT now()
     )`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "CommunityComment_author_idx" ON "CommunityComment" ("authorSlug")`);
+}
 
-  const existing = await prisma.$queryRaw<{ c: number }[]>`SELECT COUNT(*)::int AS c FROM "CommunityAnnotation"`;
-  if (Number(existing[0]?.c ?? 0) === 0) {
+// Insert the deterministic showcase seed (annotations + comments). Idempotent via
+// ON CONFLICT DO NOTHING, so it's safe to call repeatedly.
+async function insertCommunitySeed(): Promise<{ annotations: number; comments: number }> {
     const { annotations, comments } = generateCommunity();
     const base = Date.now();
 
@@ -99,8 +100,26 @@ export async function ensureCommunity(): Promise<void> {
         ...cVals,
       );
     }
-  }
+  return { annotations: annotations.length, comments: comments.length };
+}
+
+export async function ensureCommunity(): Promise<void> {
+  if (ready) return;
+  await createCommunityTables();
+  const existing = await prisma.$queryRaw<{ c: number }[]>`SELECT COUNT(*)::int AS c FROM "CommunityAnnotation"`;
+  if (Number(existing[0]?.c ?? 0) === 0) await insertCommunitySeed();
   ready = true;
+}
+
+// Rebuild the showcase seed after the contributor usernames/slugs change. Drops the
+// generated rows but KEEPS real user submissions (createAnnotation ids start with "u-").
+export async function reseedCommunity(): Promise<{ annotations: number; comments: number }> {
+  await createCommunityTables();
+  await prisma.$executeRawUnsafe(`DELETE FROM "CommunityAnnotation" WHERE "id" NOT LIKE 'u-%'`);
+  await prisma.$executeRawUnsafe(`DELETE FROM "CommunityComment"`);
+  const counts = await insertCommunitySeed();
+  ready = true;
+  return counts;
 }
 
 export async function getUserAnnotations(slug: string, limit = 5): Promise<AnnRow[]> {
