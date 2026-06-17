@@ -10,6 +10,8 @@ import FavoriteButton from "@/components/FavoriteButton";
 import CommentsSection from "@/components/CommentsSection";
 import { getSession } from "@/lib/auth";
 import AnnotationLyrics from "@/components/AnnotationLyrics";
+import { getSongAnnotations } from "@/lib/community-db";
+import { contributorBySlug } from "@/app/leaderboard/data";
 
 // Cache the DB fetch so generateMetadata and the page share one query per request
 const getSong = cache(async (slug: string) => {
@@ -75,6 +77,9 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
     orderBy: { publishedAt: "desc" },
     take: 4,
   });
+
+  // Community (fan) annotations attributed to leaderboard contributors for this song.
+  const fanAnnotations = await getSongAnnotations(song.slug, song.title);
 
   const koLines = (song.lyricsKo ?? "").split("\n");
   const enLines = (song.lyricsEn ?? "").split("\n");
@@ -166,20 +171,23 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
       <ViewTracker songId={song.id} />
 
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 24px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 48 }}>
-          {/* Lyrics + slide-out annotations */}
-          <AnnotationLyrics
-            songId={song.id}
-            songTitle={song.title}
-            koLines={koLines}
-            enLines={enLines}
-            roLines={roLines}
-            annotations={annData}
-            isLoggedIn={isLoggedIn}
-          />
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 48, alignItems: "flex-start" }}>
+          {/* Lyrics + slide-out annotations — flex-grows; the sidebar wraps below it on phones
+              so the lyrics column is never squeezed by the fixed-width sidebar. */}
+          <div style={{ flex: "3 1 460px", minWidth: 0 }}>
+            <AnnotationLyrics
+              songId={song.id}
+              songTitle={song.title}
+              koLines={koLines}
+              enLines={enLines}
+              roLines={roLines}
+              annotations={annData}
+              isLoggedIn={isLoggedIn}
+            />
+          </div>
 
           {/* Sidebar */}
-          <aside>
+          <aside style={{ flex: "1 1 240px", minWidth: 0 }}>
             {/* Featured artists */}
             {featured.length > 0 && (
               <div className="genius-card" style={{ padding: 20, marginBottom: 16 }}>
@@ -224,22 +232,39 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
               </div>
             )}
 
-            {/* Album */}
-            {song.album && (
-              <div className="genius-card" style={{ padding: 20 }}>
-                <div className="section-header" style={{ margin: "0 0 12px" }}>From the Album</div>
-                {song.album.coverArt && (
-                  <img src={song.album.coverArt} alt={song.album.title} style={{ width: "100%", borderRadius: 4, objectFit: "cover", marginBottom: 12, maxHeight: 200 }} />
-                )}
-                <div style={{ fontWeight: 700, fontSize: "0.95rem" }}>{song.album.title}</div>
-                <div style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginTop: 4 }}>{song.album.releaseYear} &middot; {song.album.type}</div>
-                <Link href={`/artists/${song.album.artist.slug}`} style={{ display: "block", marginTop: 12 }}>
-                  <span className="btn-yellow" style={{ fontSize: "0.7rem" }}>VIEW ARTIST</span>
-                </Link>
-              </div>
-            )}
           </aside>
         </div>
+
+        {/* Fan annotations — community contributions from leaderboard contributors, tied to this song */}
+        {fanAnnotations.length > 0 && (
+          <section style={{ marginTop: 48, paddingTop: 40, borderTop: "2px solid #000" }}>
+            <div className="section-header">Fan Annotations ({fanAnnotations.length})</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(320px, 100%), 1fr))", gap: 16, marginTop: 4 }}>
+              {fanAnnotations.map((a) => {
+                const contributor = contributorBySlug(a.authorSlug);
+                const color = contributor?.tierColor ?? "#ff6fa8";
+                const initial = contributor?.initial ?? a.authorName.charAt(0).toUpperCase();
+                return (
+                  <Link key={a.id} href={`/annotation/${a.id}`} style={{ textDecoration: "none" }}>
+                    <div className="genius-card" style={{ padding: 18, height: "100%", display: "flex", flexDirection: "column", gap: 10 }}>
+                      {a.word && (
+                        <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "#ff6fa8" }}>
+                          &ldquo;{a.romanization || a.word}&rdquo; <span style={{ color: "var(--genius-gray)", fontWeight: 400 }}>{a.word}</span>
+                        </div>
+                      )}
+                      <div style={{ fontSize: "0.84rem", color: "rgba(255,255,255,0.78)", lineHeight: 1.6, flex: 1 }}>{a.note}</div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <span style={{ width: 30, height: 30, borderRadius: "50%", flexShrink: 0, display: "grid", placeItems: "center", background: color, color: "#fff", fontWeight: 800, fontSize: "0.8rem" }}>{initial}</span>
+                        <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#ff6fa8" }}>{a.authorName}</span>
+                        {contributor && <span style={{ fontSize: "0.7rem", color: "var(--genius-gray)" }}>{contributor.flag} {contributor.city}</span>}
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         {/* Artists & Collaborators */}
         {(() => {
@@ -280,6 +305,26 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
             </section>
           );
         })()}
+
+        {/* From the Album — relocated below the lyrics, above Recent News, as a full-width
+            horizontal card so it never squeezes the lyrics column on phones. */}
+        {song.album && (
+          <section style={{ marginTop: 48, paddingTop: 40, borderTop: "2px solid #000" }}>
+            <div className="section-header">From the Album</div>
+            <div className="genius-card" style={{ marginTop: 4, padding: 18, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 18 }}>
+              {song.album.coverArt && (
+                <img src={song.album.coverArt} alt={song.album.title} style={{ width: 110, height: 110, borderRadius: 6, objectFit: "cover", flexShrink: 0 }} />
+              )}
+              <div style={{ flex: "1 1 220px", minWidth: 0 }}>
+                <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#ff6fa8" }}>{song.album.title}</div>
+                <div style={{ fontSize: "0.8rem", color: "var(--genius-gray)", marginTop: 4 }}>{song.album.releaseYear} &middot; {song.album.type}</div>
+              </div>
+              <Link href={`/artists/${song.album.artist.slug}`} style={{ textDecoration: "none", flexShrink: 0 }}>
+                <span className="btn-yellow" style={{ fontSize: "0.7rem" }}>VIEW ARTIST</span>
+              </Link>
+            </div>
+          </section>
+        )}
 
         {/* Recent News */}
         {recentNews.length > 0 && (

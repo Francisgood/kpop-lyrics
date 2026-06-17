@@ -42,7 +42,7 @@ export default async function AnnotationPage({ params }: { params: Promise<{ id:
   const initial = contributor?.initial ?? a.authorName.charAt(0).toUpperCase();
   const color = contributor?.tierColor ?? "#ff6fa8";
   const st = STATUS[a.status];
-  const songSlug = await findSongSlug(a.songTitle);
+  const songSlug = a.songSlug ?? (await findSongSlug(a.songTitle));
 
   return (
     <main>

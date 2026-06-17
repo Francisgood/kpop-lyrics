@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { generateCommunity } from "@/lib/community";
+import { generateCommunity, type PoolSong } from "@/lib/community";
 
 // Self-contained community store (annotations + comments), created and seeded
 // additively on first use. Never touches the existing Prisma-managed tables.
@@ -9,6 +9,7 @@ export type AnnRow = {
   authorSlug: string;
   authorName: string;
   songTitle: string;
+  songSlug: string | null;
   word: string;
   romanization: string;
   note: string;
@@ -48,8 +49,10 @@ async function createCommunityTables(): Promise<void> {
       "reviewedAt"   TIMESTAMP,
       "createdAt"    TIMESTAMP NOT NULL DEFAULT now()
     )`);
+  await prisma.$executeRawUnsafe(`ALTER TABLE "CommunityAnnotation" ADD COLUMN IF NOT EXISTS "songSlug" TEXT`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "CommunityAnnotation_author_idx" ON "CommunityAnnotation" ("authorSlug")`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "CommunityAnnotation_status_idx" ON "CommunityAnnotation" ("status")`);
+  await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "CommunityAnnotation_songSlug_idx" ON "CommunityAnnotation" ("songSlug")`);
   await prisma.$executeRawUnsafe(`
     CREATE TABLE IF NOT EXISTS "CommunityComment" (
       "id"         TEXT PRIMARY KEY,
@@ -62,26 +65,39 @@ async function createCommunityTables(): Promise<void> {
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "CommunityComment_author_idx" ON "CommunityComment" ("authorSlug")`);
 }
 
-// Insert the deterministic showcase seed (annotations + comments). Idempotent via
-// ON CONFLICT DO NOTHING, so it's safe to call repeatedly.
+// Pull a pool of real catalog songs to anchor seed annotations to actual song pages:
+// the aespa comeback as the "trending" set everyone annotates, plus the most-viewed
+// songs (with lyrics) for variety.
+async function buildSongPool(): Promise<{ trending: PoolSong[]; popular: PoolSong[] }> {
+  const trending = await prisma.$queryRawUnsafe<PoolSong[]>(
+    `SELECT "title","slug" FROM "Song" WHERE "slug" LIKE 'aespa-%' AND COALESCE("lyricsKo",'') <> '' ORDER BY "viewCount" DESC, "slug" ASC LIMIT 30`,
+  );
+  const popular = await prisma.$queryRawUnsafe<PoolSong[]>(
+    `SELECT "title","slug" FROM "Song" WHERE COALESCE("lyricsKo",'') <> '' AND "slug" NOT LIKE 'aespa-%' ORDER BY "viewCount" DESC, "slug" ASC LIMIT 160`,
+  );
+  return { trending, popular };
+}
+
+// Insert the deterministic showcase seed (annotations + comments), anchored to real
+// songs. Idempotent via ON CONFLICT DO NOTHING, so it's safe to call repeatedly.
 async function insertCommunitySeed(): Promise<{ annotations: number; comments: number }> {
-    const { annotations, comments } = generateCommunity();
+    const { annotations, comments } = generateCommunity(await buildSongPool());
     const base = Date.now();
 
     // Seeded annotations are pre-moderated (~90% approved / ~10% rejected) — the
     // "cleared queue" end state. Real submissions arrive later as status='pending'.
-    const aCols = 11;
+    const aCols = 12;
     const aVals: unknown[] = [];
     const aTuples: string[] = [];
     annotations.forEach((a, idx) => {
       const createdAt = new Date(base - idx * 90 * 60 * 1000);
       const reviewedAt = new Date(createdAt.getTime() + 2 * 60 * 60 * 1000);
       aTuples.push(placeholders(idx, aCols));
-      aVals.push(a.id, a.authorSlug, a.authorName, a.songTitle, a.word, a.romanization, a.note, a.status, "Aegyo Moderation", reviewedAt, createdAt);
+      aVals.push(a.id, a.authorSlug, a.authorName, a.songTitle, a.songSlug, a.word, a.romanization, a.note, a.status, "Aegyo Moderation", reviewedAt, createdAt);
     });
     if (aTuples.length) {
       await prisma.$executeRawUnsafe(
-        `INSERT INTO "CommunityAnnotation" ("id","authorSlug","authorName","songTitle","word","romanization","note","status","reviewedBy","reviewedAt","createdAt") VALUES ${aTuples.join(",")} ON CONFLICT ("id") DO NOTHING`,
+        `INSERT INTO "CommunityAnnotation" ("id","authorSlug","authorName","songTitle","songSlug","word","romanization","note","status","reviewedBy","reviewedAt","createdAt") VALUES ${aTuples.join(",")} ON CONFLICT ("id") DO NOTHING`,
         ...aVals,
       );
     }
@@ -142,6 +158,19 @@ export async function getAnnotation(id: string): Promise<AnnRow | null> {
   await ensureCommunity();
   const r = await prisma.$queryRawUnsafe<AnnRow[]>(`SELECT * FROM "CommunityAnnotation" WHERE "id" = $1 LIMIT 1`, id);
   return r[0] ?? null;
+}
+
+// Approved community annotations for a song page — matched by stored slug, or by title
+// for real user submissions that only carried a title.
+export async function getSongAnnotations(slug: string, title: string, limit = 24): Promise<AnnRow[]> {
+  await ensureCommunity();
+  return prisma.$queryRawUnsafe<AnnRow[]>(
+    `SELECT * FROM "CommunityAnnotation"
+     WHERE "status" = 'approved'
+       AND ("songSlug" = $1 OR (("songSlug" IS NULL OR "songSlug" = '') AND lower("songTitle") = lower($2)))
+     ORDER BY "createdAt" DESC LIMIT $3`,
+    slug, title, limit,
+  );
 }
 
 export async function getModerationQueue(): Promise<{ pending: AnnRow[]; recent: AnnRow[] }> {
