@@ -58,7 +58,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <div>
               <Link href="/" style={{ display: "inline-block", marginBottom: 16 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/images/aegyo-logo.png" alt="Aegyo Arena" style={{ height: 30, width: "auto", display: "block" }} />
+                <img src="/images/aegyo-logo-footer.png" alt="Aegyo Arena" style={{ height: 34, width: "auto", display: "block" }} />
               </Link>
               <div style={{ fontSize: "1rem", fontWeight: 300, lineHeight: 1.7, color: "var(--ink-faint)", maxWidth: 240, marginBottom: 22 }}>
                 K-pop lyrics, translations, fan wiki and slang dictionary. Fan-made and fandom-powered.
