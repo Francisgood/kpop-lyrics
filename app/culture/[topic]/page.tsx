@@ -14,10 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ topic: st
   const { topic } = await params;
   const m = CULTURE[topic as CultureTopic];
   if (!m) return { title: "Culture Vulture — Aegyo Arena" };
-  return {
-    title: `${m.title} — Culture Vulture | Aegyo Arena`,
-    description: m.blurb,
-  };
+  return { title: `${m.title} — Culture Vulture | Aegyo Arena`, description: m.blurb };
 }
 
 export default async function CultureTopicPage({ params }: { params: Promise<{ topic: string }> }) {
@@ -26,36 +23,30 @@ export default async function CultureTopicPage({ params }: { params: Promise<{ t
   if (!m) notFound();
 
   return (
-    <main>
+    <main style={{ background: "#fbfafc", color: "#15131f" }}>
       {/* Hero */}
-      <section style={{ background: "linear-gradient(160deg, var(--sakura-light), var(--bg-card))", borderBottom: "1px solid var(--border)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "44px 24px 30px" }}>
-          <div style={{ fontFamily: "var(--mono)", fontSize: "0.72rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 14 }}>
-            Culture Vulture
-          </div>
-          <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(2rem, 5vw, 3rem)", fontWeight: 700, color: "var(--ink)", margin: "0 0 10px", lineHeight: 1.05 }}>
+      <section style={{ background: "#ffffff", borderBottom: "1px solid #ececf0" }}>
+        <div style={{ maxWidth: 1080, margin: "0 auto", padding: "40px 24px 26px" }}>
+          <div style={{ fontFamily: "var(--mono)", fontSize: "0.72rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#ff6fa8", marginBottom: 12 }}>Culture Vulture</div>
+          <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(2.1rem, 5.5vw, 3.1rem)", fontWeight: 700, margin: "0 0 8px", lineHeight: 1.04, color: "#15131f" }}>
             {m.emoji} {m.title}
           </h1>
-          <p style={{ color: "var(--ink-dim)", fontSize: "1.05rem", lineHeight: 1.6, maxWidth: 620, margin: 0 }}>{m.blurb}</p>
+          <p style={{ color: "#54545c", fontSize: "1.05rem", lineHeight: 1.6, maxWidth: 620, margin: 0 }}>{m.blurb}</p>
 
-          {/* Topic tabs */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 24 }}>
+          {/* Category pills */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 22 }}>
             {TOPIC_ORDER.map((t) => {
               const active = t === m.key;
               const tt = CULTURE[t];
               return (
-                <Link
-                  key={t}
-                  href={`/culture/${t}`}
+                <Link key={t} href={`/culture/${t}`}
                   style={{
                     display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 16px", borderRadius: 100, textDecoration: "none", fontWeight: 700, fontSize: "0.85rem",
-                    border: active ? "1px solid var(--sakura)" : "1px solid var(--border)",
-                    background: active ? "var(--sakura)" : "var(--bg-card)",
-                    color: active ? "var(--on-accent)" : "var(--ink-dim)",
-                  }}
-                >
-                  <span>{tt.emoji}</span>
-                  {tt.title}
+                    border: active ? "1px solid #ff6fa8" : "1px solid #e2e2e8",
+                    background: active ? "#ff6fa8" : "#fff",
+                    color: active ? "#fff" : "#54545c",
+                  }}>
+                  <span>{tt.emoji}</span>{tt.title}
                 </Link>
               );
             })}
@@ -63,24 +54,34 @@ export default async function CultureTopicPage({ params }: { params: Promise<{ t
         </div>
       </section>
 
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "34px 24px 80px" }}>
+      {/* Feed */}
+      <div style={{ maxWidth: 1080, margin: "0 auto", padding: "34px 24px 16px" }}>
         {m.embeds.length > 0 ? (
           <CultureFeed embeds={m.embeds} />
         ) : (
-          <div style={{ background: "var(--bg-card)", border: "1px dashed var(--border-strong)", borderRadius: 16, padding: "48px 28px", textAlign: "center" }}>
+          <div style={{ background: "#fff", border: "1px dashed #d7d7df", borderRadius: 16, padding: "48px 28px", textAlign: "center" }}>
             <div style={{ fontSize: "2.4rem", marginBottom: 12 }}>{m.emoji}</div>
-            <div style={{ fontFamily: "var(--serif)", fontSize: "1.4rem", fontWeight: 700, color: "var(--ink)", marginBottom: 8 }}>
-              {m.title} drops coming soon
-            </div>
-            <p style={{ color: "var(--ink-dim)", fontSize: "0.95rem", lineHeight: 1.6, maxWidth: 460, margin: "0 auto 18px" }}>
+            <div style={{ fontFamily: "var(--serif)", fontSize: "1.4rem", fontWeight: 700, marginBottom: 8, color: "#15131f" }}>{m.title} drops coming soon</div>
+            <p style={{ color: "#6b6b72", fontSize: "0.95rem", lineHeight: 1.6, maxWidth: 460, margin: "0 auto 18px" }}>
               We&rsquo;re curating the best K-beauty looks and routines. Got a reel we should feature? Tag{" "}
-              <a href="https://www.instagram.com/aegyoarena" target="_blank" rel="noopener noreferrer" style={{ color: "var(--sakura)", fontWeight: 700, textDecoration: "none" }}>@aegyoarena</a>.
+              <a href="https://www.instagram.com/aegyoarena" target="_blank" rel="noopener noreferrer" style={{ color: "#ff6fa8", fontWeight: 700, textDecoration: "none" }}>@aegyoarena</a>.
             </p>
-            <Link href="/culture/dance" style={{ color: "var(--sakura)", fontWeight: 700, fontSize: "0.9rem", textDecoration: "none" }}>
-              Browse Dance instead →
-            </Link>
+            <Link href="/culture/dance" style={{ color: "#ff6fa8", fontWeight: 700, fontSize: "0.9rem", textDecoration: "none" }}>Browse Dance instead →</Link>
           </div>
         )}
+      </div>
+
+      {/* Submit-your-video CTA (future, age-gated) */}
+      <div style={{ maxWidth: 1080, margin: "0 auto", padding: "30px 24px 70px" }}>
+        <div style={{ background: "linear-gradient(135deg,#15131f,#2a2540)", borderRadius: 20, padding: "32px 28px", textAlign: "center", color: "#fff" }}>
+          <div style={{ fontFamily: "var(--serif)", fontSize: "1.5rem", fontWeight: 700, marginBottom: 8 }}>Got the moves? Soon you can post them.</div>
+          <p style={{ color: "#c9c7d6", fontSize: "0.95rem", lineHeight: 1.6, maxWidth: 540, margin: "0 auto 18px" }}>
+            Registered fans will be able to submit their own {m.title.toLowerCase()} videos to Culture Vulture. To keep it safe, uploaders verify they&rsquo;re 18+ (or the minimum age in their country) with a quick{" "}
+            <a href="https://didit.me/products/id-verification/" target="_blank" rel="noopener noreferrer" style={{ color: "#ff9ec4", fontWeight: 700, textDecoration: "none" }}>didit.me ID check</a>{" "}
+            sent to their email.
+          </p>
+          <span style={{ display: "inline-block", padding: "11px 22px", borderRadius: 100, background: "#ff6fa8", color: "#fff", fontWeight: 800, fontSize: "0.85rem" }}>Creator uploads — coming soon</span>
+        </div>
       </div>
     </main>
   );

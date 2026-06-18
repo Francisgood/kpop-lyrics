@@ -5,7 +5,7 @@ import { cache } from "react";
 import type { Metadata } from "next";
 import ViewTracker from "@/components/ViewTracker";
 import ShareButtons from "@/components/ShareButtons";
-import MukbangSection from "@/components/MukbangSection";
+import CultureCorner from "@/components/CultureCorner";
 import FavoriteButton from "@/components/FavoriteButton";
 import CommentsSection from "@/components/CommentsSection";
 import { getSession } from "@/lib/auth";
@@ -381,8 +381,8 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
             </div>
           </section>
         )}
-        {/* Mukbang Corner — below recent news */}
-        <MukbangSection />
+        {/* Culture Vulture — multi-category video explorer (dance/fashion/beauty/mukbang), below recent news */}
+        <CultureCorner />
 
         {/* Comments */}
         <CommentsSection
