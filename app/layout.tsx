@@ -65,10 +65,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </div>
               <div style={{ display: "flex", gap: 10 }}>
                 {[
-                  { label: "TikTok", href: "https://tiktok.com/@aegyoarena", icon: "♪" },
-                  { label: "YouTube", href: "https://youtube.com/@aegyoarena", icon: "▶" },
                   { label: "X / Twitter", href: "https://x.com/aegyoarena", icon: "✕" },
-                  { label: "Reddit", href: "https://reddit.com/r/aegyoarena", icon: "○" },
+                  { label: "TikTok", href: "https://www.tiktok.com/@aegyo.arena", icon: "♪" },
                 ].map(({ label, href, icon }) => (
                   <a key={href} href={href} target="_blank" rel="noopener noreferrer" className="social-btn" aria-label={label}>
                     {icon}
