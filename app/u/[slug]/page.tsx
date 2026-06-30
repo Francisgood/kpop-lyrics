@@ -14,6 +14,7 @@ type Profile = {
   slug: string;
   name: string;
   initial: string;
+  avatar: string | null;
   tierColor: string;
   role: Role;
   city: string | null;
@@ -31,7 +32,7 @@ async function resolveProfile(slug: string): Promise<Profile | null> {
   const c = contributorBySlug(slug);
   if (c) {
     return {
-      slug: c.slug, name: c.username, initial: c.initial, tierColor: c.tierColor,
+      slug: c.slug, name: c.username, initial: c.initial, avatar: c.avatar, tierColor: c.tierColor,
       role: "contributor", city: c.city, flag: c.flag, rank: c.rank, tier: c.tier, focus: c.focus,
       joined: c.joinedMonth, baseFollowers: c.followers, bio: null,
       counts: { annotations: c.annotations, edits: c.edits, comments: c.comments, points: c.points },
@@ -43,7 +44,7 @@ async function resolveProfile(slug: string): Promise<Profile | null> {
   if (!u) return null;
   const commentCount = await prisma.comment.count({ where: { userId: u.id } });
   return {
-    slug, name: u.displayName ?? "Member", initial: (u.displayName ?? "M").charAt(0).toUpperCase(),
+    slug, name: u.displayName ?? "Member", initial: (u.displayName ?? "M").charAt(0).toUpperCase(), avatar: u.avatarUrl ?? null,
     tierColor: "#ff6fa8", role: roleForUser(u), city: null, flag: "", rank: null, tier: null, focus: null,
     joined: u.createdAt.toLocaleDateString("en-US", { month: "short", year: "numeric" }), baseFollowers: 0, bio: u.bio,
     counts: { annotations: null, edits: null, comments: commentCount, points: null },
@@ -90,9 +91,14 @@ export default async function ProfilePage({ params }: { params: Promise<{ slug: 
     <main>
       <section style={{ background: "linear-gradient(160deg, var(--sakura-light), var(--bg-card))", borderBottom: "1px solid var(--border)" }}>
         <div style={{ maxWidth: 960, margin: "0 auto", padding: "44px 24px 36px", display: "flex", gap: 24, alignItems: "center", flexWrap: "wrap" }}>
-          <div style={{ width: 96, height: 96, borderRadius: "50%", flexShrink: 0, display: "grid", placeItems: "center", background: p.tierColor, color: "#fff", fontWeight: 800, fontSize: "2.6rem", border: "4px solid var(--bg-card)", boxShadow: "0 8px 28px rgba(0,0,0,0.3)" }}>
-            {p.initial}
-          </div>
+          {p.avatar ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={p.avatar} alt={p.name} style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", flexShrink: 0, display: "block", background: p.tierColor, border: "4px solid var(--bg-card)", boxShadow: "0 8px 28px rgba(0,0,0,0.3)" }} />
+          ) : (
+            <div style={{ width: 96, height: 96, borderRadius: "50%", flexShrink: 0, display: "grid", placeItems: "center", background: p.tierColor, color: "#fff", fontWeight: 800, fontSize: "2.6rem", border: "4px solid var(--bg-card)", boxShadow: "0 8px 28px rgba(0,0,0,0.3)" }}>
+              {p.initial}
+            </div>
+          )}
           <div style={{ flex: "1 1 320px", minWidth: 0 }}>
             <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", marginBottom: 6 }}>
               <span style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff", background: ROLE_COLOR[p.role], padding: "3px 10px", borderRadius: 100 }}>{ROLE_LABEL[p.role]}</span>

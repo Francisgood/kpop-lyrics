@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAnnotation, type AnnRow } from "@/lib/community-db";
 import { contributorBySlug } from "@/app/leaderboard/data";
+import UserAvatar from "@/components/UserAvatar";
 import { prisma } from "@/lib/prisma";
 
 // Resolve the annotation's song title to a published song page, if one exists.
@@ -70,7 +71,7 @@ export default async function AnnotationPage({ params }: { params: Promise<{ id:
 
         {/* Author — click-through to their profile */}
         <Link href={`/u/${a.authorSlug}`} style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 14, background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 14, padding: "16px 18px" }}>
-          <span style={{ width: 48, height: 48, borderRadius: "50%", flexShrink: 0, display: "grid", placeItems: "center", background: color, color: "#fff", fontWeight: 800, fontSize: "1.2rem" }}>{initial}</span>
+          <UserAvatar avatar={contributor?.avatar} initial={initial} color={color} size={48} />
           <span style={{ flex: 1, minWidth: 0 }}>
             <span style={{ display: "block", fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--ink-faint)" }}>Contributed by</span>
             <span style={{ display: "block", fontWeight: 700, color: "var(--ink)" }}>{a.authorName}{contributor ? ` · ${contributor.flag} ${contributor.city}` : ""}</span>

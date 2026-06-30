@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { Contributor, City } from "@/app/leaderboard/data";
+import UserAvatar from "@/components/UserAvatar";
 
 const TABS: { key: "All" | City; label: string; flag: string }[] = [
   { key: "All", label: "All Cities", flag: "🌐" },
@@ -15,13 +16,7 @@ const fmt = (n: number) => n.toLocaleString("en-US");
 const MEDALS = ["#ffd35c", "#cdd3dc", "#e0a06b"]; // gold · silver · bronze
 
 function Avatar({ c, size, ring }: { c: Contributor; size: number | string; ring?: string }) {
-  // size may be a px number or a fluid CSS length (e.g. clamp(...)) for the podium.
-  const fontSize = typeof size === "number" ? size * 0.42 : `calc(${size} * 0.42)`;
-  return (
-    <span style={{ width: size, height: size, borderRadius: "50%", flexShrink: 0, display: "grid", placeItems: "center", background: c.tierColor, color: "#fff", fontWeight: 800, fontSize, border: ring ? `3px solid ${ring}` : "none" }}>
-      {c.initial}
-    </span>
-  );
+  return <UserAvatar avatar={c.avatar} initial={c.initial} color={c.tierColor} size={size} ring={ring} />;
 }
 
 function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {

@@ -124,7 +124,14 @@ export default async function HomePage() {
               return (
                 <Link href="/leaderboard" className="lb-item" key={c.username}>
                   <span className={`lb-rank ${rankCls}`}>#{i + 1}</span>
-                  <div className="lb-avatar" style={{ background: tint.bg, color: tint.color }}>{c.initial}</div>
+                  <div className="lb-avatar" style={{ background: tint.bg, color: tint.color, overflow: "hidden", padding: 0 }}>
+                    {c.avatar ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={c.avatar} alt={c.username} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                    ) : (
+                      c.initial
+                    )}
+                  </div>
                   <span className="lb-name">{c.username}</span>
                   <span>{i === 0 ? <span className="pill"><span className="pill-dot" />Top Fan</span> : null}</span>
                   <span className="lb-pts">{c.points.toLocaleString()} pts</span>

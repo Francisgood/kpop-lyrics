@@ -12,6 +12,7 @@ import { getSession } from "@/lib/auth";
 import AnnotationLyrics from "@/components/AnnotationLyrics";
 import { getSongAnnotations } from "@/lib/community-db";
 import { contributorBySlug } from "@/app/leaderboard/data";
+import UserAvatar from "@/components/UserAvatar";
 
 // Cache the DB fetch so generateMetadata and the page share one query per request
 const getSong = cache(async (slug: string) => {
@@ -271,7 +272,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                       )}
                       <div style={{ fontSize: "0.84rem", color: "rgba(255,255,255,0.78)", lineHeight: 1.6, flex: 1 }}>{a.note}</div>
                       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                        <span style={{ width: 30, height: 30, borderRadius: "50%", flexShrink: 0, display: "grid", placeItems: "center", background: color, color: "#fff", fontWeight: 800, fontSize: "0.8rem" }}>{initial}</span>
+                        <UserAvatar avatar={contributor?.avatar} initial={initial} color={color} size={30} />
                         <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#ff6fa8" }}>{a.authorName}</span>
                         {contributor && <span style={{ fontSize: "0.7rem", color: "var(--genius-gray)" }}>{contributor.flag} {contributor.city}</span>}
                       </div>

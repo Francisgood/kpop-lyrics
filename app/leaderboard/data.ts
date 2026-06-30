@@ -9,6 +9,7 @@ export interface Contributor {
   username:     string;
   slug:         string;     // URL-safe id for /u/[slug]
   initial:      string;
+  avatar:       string;     // profile image path (/avatars/avatar-NN.png)
   city:         City;
   flag:         string;
   points:       number;
@@ -24,7 +25,7 @@ export interface Contributor {
   joinedMonth:  string;
 }
 
-const RAW: Omit<Contributor, "followers" | "slug">[] = [
+const RAW: Omit<Contributor, "followers" | "slug" | "avatar">[] = [
   // ── MEXICO CITY ─────────────────────────────────────────────────────────────
   {
     rank: 1, username: "Sofia_BTS_stan", initial: "S",
@@ -253,6 +254,7 @@ export function slugify(s: string): string {
 export const CONTRIBUTORS: Contributor[] = RAW.map((c) => ({
   ...c,
   slug: slugify(c.username),
+  avatar: `/avatars/avatar-${String(c.rank).padStart(2, "0")}.png`,
   followers: Math.round(c.points * 0.15 + (31 - c.rank) * 14 + c.annotations * 4 + (c.username.length % 7) * 23),
 }));
 
