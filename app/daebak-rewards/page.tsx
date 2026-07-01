@@ -7,11 +7,11 @@ export const metadata: Metadata = {
     "Earn points by contributing to Aegyo Arena and claim real merch — exclusive drops, our iconic chibi plushies, desk toys, concert tickets, and signed memorabilia.",
 };
 
-const TIERS = [
+const TIERS: { tier: string; icon: string; name: string; pts: string; accent: string; note: string; link?: string; linkLabel?: string }[] = [
   { tier: "Tier 1", icon: "👕", name: "Merch Drop", pts: "2,000 points", accent: "var(--sakura)", note: "Early access to limited-run Aegyo Arena apparel & accessories." },
   { tier: "Tier 2", icon: "🧸", name: "K-pop Plushie", pts: "3,000 points", accent: "var(--volt)", note: "Our iconic chibi plush collection — collect your bias." },
   { tier: "Tier 3", icon: "✨", name: "Desk Toy", pts: "4,000 points", accent: "var(--sky)", note: "Collectible desk figures to flex your fandom at work or in stream." },
-  { tier: "Tier 4", icon: "🎫", name: "Concert Tickets", pts: "5,000 points", accent: "var(--tangerine)", note: "Only 4 tickets are available per season — first qualified, first served." },
+  { tier: "Tier 4", icon: "🎫", name: "Concert Tickets", pts: "5,000 points", accent: "var(--tangerine)", note: "Only 4 tickets are available per season — first qualified, first served.", link: "/bts-giveaway", linkLabel: "🎟 Enter the BTS Ticket Giveaway →" },
   { tier: "Auction", icon: "✍️", name: "Signed Memorabilia", pts: "Bid-based", accent: "var(--lavender)", note: "Spend your points to bid on one-of-a-kind signed items. Highest bid wins." },
 ];
 
@@ -62,6 +62,11 @@ export default function DaebakRewardsPage() {
                   <span style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ink-faint)" }}>{t.tier}</span>
                 </div>
                 <div style={{ color: "var(--ink-dim)", fontSize: "0.92rem", marginTop: 4, lineHeight: 1.55 }}>{t.note}</div>
+                {t.link && (
+                  <Link href={t.link} style={{ display: "inline-block", marginTop: 12, padding: "9px 20px", borderRadius: 100, background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.85rem", textDecoration: "none", boxShadow: "0 4px 16px rgba(255,111,168,0.4)" }}>
+                    {t.linkLabel}
+                  </Link>
+                )}
               </div>
               <div style={{ flexShrink: 0, textAlign: "right" }}>
                 <div style={{ fontWeight: 800, fontSize: "1.05rem", color: t.accent }}>{t.pts}</div>
