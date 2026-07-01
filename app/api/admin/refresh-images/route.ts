@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
 
   if (kind === "albums") {
     const where = slugs
-      ? { artistSlug: { in: slugs } }
+      ? { artistSlug: { in: slugs }, OR: [{ coverArt: null }, { coverArt: "" }, { NOT: { coverArt: { contains: "mzstatic.com" } } }] }
       : force
       ? { OR: [{ coverArt: null }, { coverArt: "" }, { NOT: { coverArt: { contains: "mzstatic.com" } } }] }
       : { OR: [{ coverArt: null }, { coverArt: "" }] };
