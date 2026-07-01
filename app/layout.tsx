@@ -5,6 +5,7 @@ import Link from "next/link";
 import FooterNewsletter from "@/components/FooterNewsletter";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import { getSession } from "@/lib/auth";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Aegyo Arena — K-pop Lyrics & Fan Wiki",
@@ -110,6 +111,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <span>Made with ♡ by the fandom</span>
           </div>
         </footer>
+
+        {/* Google Analytics (gtag.js) — site traffic + paid-ads/referral source tracking */}
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-700MXJM1FW" strategy="afterInteractive" />
+        <Script id="ga4-gtag" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-700MXJM1FW');`}
+        </Script>
       </body>
     </html>
   );
