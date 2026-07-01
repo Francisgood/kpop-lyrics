@@ -20,12 +20,25 @@ const UA = { "User-Agent": "aegyoarena/1.0 (image-refresh)" };
 const RATE_LIMIT = "__RATE_LIMIT__";
 
 // iTunes Search → high-res cover art. Returns a URL, null (not found), or RATE_LIMIT.
+async function fetchT(url: string, ms = 6000): Promise<Response | null> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  try {
+    return await fetch(url, { headers: UA, cache: "no-store", signal: ctrl.signal });
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function itunesArt(term: string, entity: "album" | "song"): Promise<string | null> {
   const url = `https://itunes.apple.com/search?term=${encodeURIComponent(term)}&entity=${entity}&limit=1&country=US`;
+  const r = await fetchT(url, 6000);
+  if (!r) return null;
+  if (r.status === 403 || r.status === 429) return RATE_LIMIT;
+  if (!r.ok) return null;
   try {
-    const r = await fetch(url, { headers: UA, cache: "no-store" });
-    if (r.status === 403 || r.status === 429) return RATE_LIMIT;
-    if (!r.ok) return null;
     const j = await r.json();
     const art: string | undefined = j?.results?.[0]?.artworkUrl100;
     if (!art) return null;
@@ -37,10 +50,10 @@ async function itunesArt(term: string, entity: "album" | "song"): Promise<string
 
 // Wikipedia REST summary → page image (skips disambiguation pages).
 async function wikiArtistImage(name: string): Promise<string | null> {
-  for (const t of [name, `${name} (group)`, `${name} (singer)`, `${name} (rapper)`, `${name} (band)`, `${name} (musician)`]) {
+  for (const t of [name, `${name} (group)`, `${name} (singer)`, `${name} (band)`]) {
+    const r = await fetchT(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(t.replace(/ /g, "_"))}`, 5000);
+    if (!r || !r.ok) continue;
     try {
-      const r = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(t.replace(/ /g, "_"))}`, { headers: UA, cache: "no-store" });
-      if (!r.ok) continue;
       const j = await r.json();
       if (j?.type === "disambiguation") continue;
       const thumb: string | undefined = j?.originalimage?.source || j?.thumbnail?.source;
