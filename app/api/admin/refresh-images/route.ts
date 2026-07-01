@@ -76,11 +76,15 @@ export async function POST(req: NextRequest) {
   const limit = Math.min(Number(b?.limit ?? 18), 40);
   const force = b?.force === true; // re-fetch non-stable (potentially-broken) URLs too
   const delay = Math.max(800, Number(b?.delayMs ?? 2600));
+  // Optional: target specific artist slugs (fills their art regardless of current state).
+  const slugs: string[] | null = Array.isArray(b?.slugs) && b.slugs.length ? b.slugs.map((s: unknown) => String(s)) : null;
 
   let processed = 0, filled = 0, failed = 0, rateLimited = false;
 
   if (kind === "albums") {
-    const where = force
+    const where = slugs
+      ? { artistSlug: { in: slugs } }
+      : force
       ? { OR: [{ coverArt: null }, { coverArt: "" }, { NOT: { coverArt: { contains: "mzstatic.com" } } }] }
       : { OR: [{ coverArt: null }, { coverArt: "" }] };
     const albums = await prisma.album.findMany({ where, include: { artist: { select: { stageName: true } } }, orderBy: { releaseYear: "desc" }, take: limit });
@@ -109,7 +113,11 @@ export async function POST(req: NextRequest) {
       await sleep(delay);
     }
   } else if (kind === "artists") {
-    const where = force ? { OR: [{ imageUrl: null }, { imageUrl: "" }, { NOT: { imageUrl: { contains: "wikimedia.org" } } }] } : { OR: [{ imageUrl: null }, { imageUrl: "" }] };
+    const where = slugs
+      ? { slug: { in: slugs } }
+      : force
+      ? { OR: [{ imageUrl: null }, { imageUrl: "" }, { NOT: { imageUrl: { contains: "wikimedia.org" } } }] }
+      : { OR: [{ imageUrl: null }, { imageUrl: "" }] };
     const artists = await prisma.artist.findMany({ where, orderBy: { stageName: "asc" }, take: limit });
     for (const ar of artists) {
       processed++;
