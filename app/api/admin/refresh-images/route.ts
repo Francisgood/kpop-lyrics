@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
 
   if (kind === "albums") {
     const where = slugs
-      ? { artistSlug: { in: slugs }, OR: [{ coverArt: null }, { coverArt: "" }, { NOT: { coverArt: { contains: "mzstatic.com" } } }] }
+      ? { artist: { slug: { in: slugs } }, OR: [{ coverArt: null }, { coverArt: "" }, { NOT: { coverArt: { contains: "mzstatic.com" } } }] }
       : force
       ? { OR: [{ coverArt: null }, { coverArt: "" }, { NOT: { coverArt: { contains: "mzstatic.com" } } }] }
       : { OR: [{ coverArt: null }, { coverArt: "" }] };
@@ -137,7 +137,7 @@ export async function POST(req: NextRequest) {
       let img = await wikiArtistImage(ar.stageName);
       if (!img) {
         // fallback: the artist's most recent album cover so the page isn't empty
-        const alb = await prisma.album.findFirst({ where: { artistSlug: ar.slug, NOT: [{ coverArt: null }, { coverArt: "" }] }, orderBy: { releaseYear: "desc" }, select: { coverArt: true } });
+        const alb = await prisma.album.findFirst({ where: { artist: { slug: ar.slug }, NOT: [{ coverArt: null }, { coverArt: "" }] }, orderBy: { releaseYear: "desc" }, select: { coverArt: true } });
         img = alb?.coverArt ?? null;
       }
       if (img) { await prisma.artist.update({ where: { id: ar.id }, data: { imageUrl: img } }); filled++; } else failed++;
