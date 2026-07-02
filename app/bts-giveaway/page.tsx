@@ -77,7 +77,7 @@ export default function BtsGiveawayPage() {
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? "Something went wrong. Please try again."); return; }
       // Ad-pixel conversion: fire "lead" only on a NEW entry (not a returning entrant)
-      if (!data.alreadyEntered) trackLead();
+      if (!data.alreadyEntered) trackLead(data.rdtConversionId);
       setResult({ referralLink: data.referralLink, referralCount: data.referralCount ?? 0, alreadyEntered: data.alreadyEntered });
     } catch {
       setError("Something went wrong. Please try again.");

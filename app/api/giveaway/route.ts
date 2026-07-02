@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { subscribeToBeehiiv } from "@/lib/beehiiv";
+import { sendRedditConversion, redditSignals } from "@/lib/reddit-capi";
 import { randomUUID, randomBytes } from "crypto";
 
 export const dynamic = "force-dynamic";
@@ -105,7 +106,12 @@ export async function POST(req: NextRequest) {
     // send the welcome email. Best-effort: subscribeToBeehiiv never throws.
     await subscribeToBeehiiv({ email, source: "bts-giveaway" });
 
-    return NextResponse.json({ ok: true, referralCode: code, referralLink: linkFor(code), referralCount: 0 });
+    // Reddit Conversions API "Lead" — new entrants only. Return the conversion_id so
+    // the browser pixel fires with the same id and Reddit dedups the two events.
+    const rdtConversionId = randomUUID();
+    await sendRedditConversion({ eventType: "Lead", conversionId: rdtConversionId, email, ...redditSignals(req) });
+
+    return NextResponse.json({ ok: true, referralCode: code, referralLink: linkFor(code), referralCount: 0, rdtConversionId });
   } catch (e) {
     console.error("giveaway entry error:", e);
     return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });

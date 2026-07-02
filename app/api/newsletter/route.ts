@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { subscribeToBeehiiv } from "@/lib/beehiiv";
+import { sendRedditConversion, redditSignals } from "@/lib/reddit-capi";
+import { randomUUID } from "crypto";
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
@@ -17,5 +19,11 @@ export async function POST(req: NextRequest) {
   if (!r.ok && !r.skipped) {
     return NextResponse.json({ error: "Subscription failed — please try again." }, { status: 502 });
   }
-  return NextResponse.json({ ok: true });
+
+  // Reddit Conversions API "SignUp" (server-side). Return the conversion_id so the
+  // browser pixel fires with the same id and Reddit dedups the two events.
+  const rdtConversionId = randomUUID();
+  await sendRedditConversion({ eventType: "SignUp", conversionId: rdtConversionId, email, ...redditSignals(req) });
+
+  return NextResponse.json({ ok: true, rdtConversionId });
 }

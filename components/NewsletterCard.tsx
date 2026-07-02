@@ -17,8 +17,9 @@ export default function NewsletterCard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, source: "culture-dance" }),
       });
+      const d = res.ok ? await res.json().catch(() => ({})) : null;
       setState(res.ok ? "done" : "error");
-      if (res.ok) trackSignup();
+      if (res.ok) trackSignup((d as { rdtConversionId?: string } | null)?.rdtConversionId);
     } catch {
       setState("error");
     }

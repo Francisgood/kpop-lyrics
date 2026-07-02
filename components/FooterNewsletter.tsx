@@ -21,9 +21,10 @@ export default function FooterNewsletter() {
         setErrMsg((d as { error?: string }).error ?? "Something went wrong.");
         setStatus("error");
       } else {
+        const d = await res.json().catch(() => ({}));
         setStatus("ok");
         setEmail("");
-        trackSignup();
+        trackSignup((d as { rdtConversionId?: string }).rdtConversionId);
       }
     } catch {
       setErrMsg("Network error — please try again.");
