@@ -134,6 +134,11 @@ document.getElementsByTagName('script')[0],
 '//cdn.taboola.com/libtrc/unip/2066412/tfa.js',
 'tb_tfa_script');`}
         </Script>
+
+        {/* Reddit Pixel — paid-ads conversion tracking (a2_j9m653pqhzu7) */}
+        <Script id="reddit-pixel" strategy="afterInteractive">
+          {`!function(w,d){if(!w.rdt){var p=w.rdt=function(){p.sendEvent?p.sendEvent.apply(p,arguments):p.callQueue.push(arguments)};p.callQueue=[];var t=d.createElement("script");t.src="https://www.redditstatic.com/ads/pixel.js?pixel_id=a2_j9m653pqhzu7",t.async=!0;var s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}}(window,document);rdt('init','a2_j9m653pqhzu7');rdt('track', 'PageVisit');`}
+        </Script>
       </body>
     </html>
   );

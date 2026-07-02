@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { taboolaEvent } from "@/lib/taboola";
+import { trackSignup } from "@/lib/conversions";
 
 export default function FooterNewsletter() {
   const [email, setEmail]   = useState("");
@@ -23,7 +23,7 @@ export default function FooterNewsletter() {
       } else {
         setStatus("ok");
         setEmail("");
-        taboolaEvent("signup");
+        trackSignup();
       }
     } catch {
       setErrMsg("Network error — please try again.");

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { taboolaEvent } from "@/lib/taboola";
+import { trackSignup } from "@/lib/conversions";
 
 export default function NewsletterCard() {
   const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ export default function NewsletterCard() {
         body: JSON.stringify({ email, source: "culture-dance" }),
       });
       setState(res.ok ? "done" : "error");
-      if (res.ok) taboolaEvent("signup");
+      if (res.ok) trackSignup();
     } catch {
       setState("error");
     }
