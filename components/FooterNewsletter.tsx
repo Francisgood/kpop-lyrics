@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { taboolaEvent } from "@/lib/taboola";
 
 export default function FooterNewsletter() {
   const [email, setEmail]   = useState("");
@@ -22,6 +23,7 @@ export default function FooterNewsletter() {
       } else {
         setStatus("ok");
         setEmail("");
+        taboolaEvent("signup");
       }
     } catch {
       setErrMsg("Network error — please try again.");

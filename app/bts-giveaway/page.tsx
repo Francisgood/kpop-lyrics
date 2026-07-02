@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { taboolaEvent } from "@/lib/taboola";
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const AGE_ERROR = "Sorry — this giveaway is only open to entrants who are 18 or older.";
@@ -75,6 +76,8 @@ export default function BtsGiveawayPage() {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? "Something went wrong. Please try again."); return; }
+      // Taboola conversion: fire "lead" only on a NEW entry (not a returning entrant)
+      if (!data.alreadyEntered) taboolaEvent("lead");
       setResult({ referralLink: data.referralLink, referralCount: data.referralCount ?? 0, alreadyEntered: data.alreadyEntered });
     } catch {
       setError("Something went wrong. Please try again.");
