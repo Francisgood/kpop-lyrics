@@ -120,6 +120,20 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-700MXJM1FW');`}
         </Script>
+
+        {/* Taboola Pixel — paid-ads conversion tracking (account 2066412) */}
+        <Script id="taboola-tfa" strategy="afterInteractive">
+          {`window._tfa = window._tfa || [];
+window._tfa.push({notify: 'event', name: 'page_view', id: 2066412});
+!function (t, f, a, x) {
+  if (!document.getElementById(x)) {
+    t.async = 1;t.src = a;t.id=x;f.parentNode.insertBefore(t, f);
+  }
+}(document.createElement('script'),
+document.getElementsByTagName('script')[0],
+'//cdn.taboola.com/libtrc/unip/2066412/tfa.js',
+'tb_tfa_script');`}
+        </Script>
       </body>
     </html>
   );
