@@ -88,7 +88,9 @@ export async function POST(req: NextRequest) {
     for (const n of p.news ?? []) {
       const aid = await artistId(n.artistSlug);
       if (!aid) continue;
-      const dupe = await prisma.artistNews.findFirst({ where: n.sourceUrl ? { sourceUrl: n.sourceUrl } : { artistId: aid, headline: n.headline } });
+      // Dedup per (article, artist) so a multi-artist roundup can post to each named
+      // artist, while re-running the same article for the same artist stays a no-op.
+      const dupe = await prisma.artistNews.findFirst({ where: n.sourceUrl ? { sourceUrl: n.sourceUrl, artistId: aid } : { artistId: aid, headline: n.headline } });
       if (dupe) continue;
       await prisma.artistNews.create({ data: { artistId: aid, headline: n.headline, body: n.body, source: n.source, sourceUrl: n.sourceUrl, category: n.category, publishedAt: n.publishedAt ? new Date(n.publishedAt) : null } });
       counts.news++;
