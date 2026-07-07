@@ -8,6 +8,7 @@ import { getSession } from "@/lib/auth";
 import Script from "next/script";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.aegyoarena.com"),
   title: "Aegyo Arena — K-pop Lyrics & Fan Wiki",
   description: "K-pop lyrics, translations, and fan annotations",
 };
@@ -93,7 +94,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </div>
             <div>
               <div className="footer-col-title">Community</div>
-              {[["Daebak Rewards", "/daebak-rewards"], ["Merch", "/merch"], ["Leaderboard", "/leaderboard"], ["Contribute", "/contribute"], ["BTS Giveaway", "/bts-giveaway"]].map(([label, href]) => (
+              {[["Quiz", "/quiz"], ["Daebak Rewards", "/daebak-rewards"], ["Merch", "/merch"], ["Leaderboard", "/leaderboard"], ["Contribute", "/contribute"], ["BTS Giveaway", "/bts-giveaway"]].map(([label, href]) => (
                 <Link key={label} href={href} style={{ display: "block", fontSize: "1rem", fontWeight: 300, color: "var(--ink-dim)", textDecoration: "none", marginBottom: 10 }}>
                   {label}
                 </Link>

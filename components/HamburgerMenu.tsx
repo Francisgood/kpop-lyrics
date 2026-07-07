@@ -30,6 +30,7 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
 
   const loggedInItems = [
     { label: "Explore",      href: "/search",      prefix: "" },
+    { label: "Quiz",         href: "/quiz",        prefix: "" },
     { label: "Dashboard",    href: "/dashboard",   prefix: "★ " },
     { label: "Leaderboard",  href: "/leaderboard", prefix: "" },
     { label: "Contribute",   href: "/contribute",  prefix: "" },
@@ -38,6 +39,7 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
 
   const loggedOutItems = [
     { label: "Explore",      href: "/search",      highlight: false },
+    { label: "Quiz",         href: "/quiz",        highlight: false },
     { label: "Leaderboard",  href: "/leaderboard", highlight: false },
     { label: "Contribute",   href: "/contribute",  highlight: false },
     { label: "Sign Up",      href: "/signup",       highlight: true  },
