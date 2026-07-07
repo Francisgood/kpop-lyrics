@@ -127,6 +127,10 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
 
   const mainArtist = song.album?.artist;
 
+  // "Listen on Spotify" deep-link (search) — resolves for every song, no API key or per-song data needed.
+  const spotifyQuery = mainArtist?.stageName ? `${mainArtist.stageName} ${song.title}` : song.title;
+  const spotifyUrl   = `https://open.spotify.com/search/${encodeURIComponent(spotifyQuery)}`;
+
   return (
     <main>
       {/* Header */}
@@ -177,6 +181,14 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                 ))}
               </div>
               <div style={{ marginTop: 16, display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+                <a
+                  href={spotifyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "#1DB954", color: "#fff", fontWeight: 700, fontSize: "0.8rem", padding: "8px 16px", borderRadius: 999, textDecoration: "none", letterSpacing: "0.02em", whiteSpace: "nowrap" }}
+                >
+                  <span aria-hidden style={{ fontSize: "0.95rem" }}>♫</span> Listen on Spotify
+                </a>
                 <ShareButtons
                   title={song.title}
                   artist={mainArtist?.stageName ?? ""}
