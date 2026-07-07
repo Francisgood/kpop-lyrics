@@ -21,6 +21,8 @@ const CITY_DATA: Record<string, {
     description: "NYC is the US hub for K-pop events — from Times Square album drops to Flushing fan meetups. MSG, Barclays Center, and Radio City host major tours.",
     concerts: [
       { artist: "BTS — ARIRANG World Tour", venue: "MetLife Stadium, East Rutherford NJ", date: "Aug 1-2, 2026", ticketUrl: `https://www.ticketmaster.com/bts-world-tour-arirang-in-east-east-rutherford-new-jersey-08-01-2026/event/00006429EB39BB6F` },
+      { artist: "aespa", venue: "UBS Arena, Belmont Park", date: "Sep 18, 2026", ticketUrl: `https://seatgeek.com/aespa-tickets` },
+      { artist: "LE SSERAFIM", venue: "Prudential Center, Newark", date: "Oct 8, 2026", ticketUrl: `https://seatgeek.com/le-sserafim-tickets` },
       { artist: "STRAY KIDS", venue: "Madison Square Garden", date: "2025-08", ticketUrl: `https://seatgeek.com/search#?q=stray+kids` },
       { artist: "BLACKPINK", venue: "Barclays Center, Brooklyn", date: "2025-09", ticketUrl: `https://www.songkick.com/search?query=blackpink` },
     ],
@@ -50,7 +52,8 @@ const CITY_DATA: Record<string, {
     description: "LA is the K-pop gateway to the US — home to HYBE America, SM Global, and the largest Korean-American community outside of Seoul.",
     concerts: [
       { artist: "BTS — ARIRANG World Tour", venue: "SoFi Stadium, Inglewood", date: "Sep 1-6, 2026", ticketUrl: `https://www.ticketmaster.com/bts-world-tour-arirang-in-los-inglewood-california-09-01-2026/event/0A006429AB3C5EF1` },
-      { artist: "aespa", venue: "Crypto.com Arena", date: "2025-07", ticketUrl: `https://seatgeek.com/search#?q=aespa` },
+      { artist: "aespa", venue: "Intuit Dome, Inglewood", date: "Oct 3, 2026", ticketUrl: `https://seatgeek.com/aespa-tickets` },
+      { artist: "LE SSERAFIM", venue: "Crypto.com Arena", date: "Sep 16, 2026", ticketUrl: `https://seatgeek.com/le-sserafim-tickets` },
       { artist: "TWICE", venue: "Hollywood Bowl", date: "2025-08", ticketUrl: `https://www.songkick.com/search?query=twice` },
     ],
     meetups: [
@@ -77,6 +80,9 @@ const CITY_DATA: Record<string, {
     description: "The epicenter of K-pop. Home to HYBE, SM, YG, and JYP headquarters — you can literally walk past your bias's company building.",
     concerts: [
       { artist: "BTS — ARIRANG World Tour", venue: "Goyang Stadium, Goyang", date: "Apr 9-12, 2026", ticketUrl: `https://ibighit.com/en/bts/tour/` },
+      { artist: "aespa", venue: "Gocheok Sky Dome", date: "Aug 7-8, 2026", ticketUrl: `https://seatgeek.com/aespa-tickets` },
+      { artist: "(G)I-DLE", venue: "KSPO Dome", date: "Feb 21, 2026", ticketUrl: `https://seatgeek.com/i-dle-tickets` },
+      { artist: "LE SSERAFIM", venue: "Inspire Arena, Incheon", date: "Jul 11-12, 2026", ticketUrl: `https://seatgeek.com/le-sserafim-tickets` },
       { artist: "Multiple Artists", venue: "KSPO Dome (Olympic Gymnastics Arena)", date: "Year-round", ticketUrl: `https://www.songkick.com/search?query=kpop+seoul` },
       { artist: "Multiple Artists", venue: "COEX Artium", date: "Year-round", ticketUrl: `https://seatgeek.com/search#?q=kpop+seoul` },
     ],
@@ -106,6 +112,7 @@ const CITY_DATA: Record<string, {
     description: "Japan is K-pop's largest overseas market. Tokyo sees exclusive Japanese releases, dedicated K-pop floors in Shibuya, and frequent sold-out dome tours.",
     concerts: [
       { artist: "BTS — ARIRANG World Tour", venue: "Tokyo Dome", date: "Apr 17-18, 2026", ticketUrl: `https://ibighit.com/en/bts/tour/` },
+      { artist: "(G)I-DLE", venue: "Yokohama Arena", date: "Jun 20, 2026", ticketUrl: `https://seatgeek.com/i-dle-tickets` },
       { artist: "TWICE", venue: "Saitama Super Arena", date: "2025 TBA", ticketUrl: `https://www.songkick.com/search?query=twice+japan` },
     ],
     meetups: [
@@ -129,6 +136,9 @@ const CITY_DATA: Record<string, {
     description: "Europe's biggest K-pop hub with dedicated fan clubs, the O2 Arena for major tours, and a growing K-town in New Malden.",
     concerts: [
       { artist: "BTS — ARIRANG World Tour", venue: "Tottenham Hotspur Stadium", date: "Jul 6-7, 2026", ticketUrl: `https://www.ticketmaster.co.uk/bts-world-tour-arirang-in-london-london-07-07-2026/event/3500642CAF9145A0` },
+      { artist: "aespa", venue: "The O2", date: "Jan 16, 2027", ticketUrl: `https://seatgeek.com/aespa-tickets` },
+      { artist: "ENHYPEN", venue: "The O2", date: "Mar 9, 2027", ticketUrl: `https://seatgeek.com/enhypen-tickets` },
+      { artist: "LE SSERAFIM", venue: "The O2", date: "Oct 16, 2026", ticketUrl: `https://seatgeek.com/le-sserafim-tickets` },
       { artist: "BLACKPINK", venue: "The O2", date: "2025 TBA", ticketUrl: `https://www.songkick.com/search?query=blackpink+london` },
       { artist: "STRAY KIDS", venue: "OVO Hydro (Glasgow) / O2 Arena", date: "2025", ticketUrl: `https://seatgeek.com/search#?q=stray+kids+uk` },
     ],
@@ -153,6 +163,7 @@ const CITY_DATA: Record<string, {
     description: "Bangkok is Southeast Asia's K-pop epicenter. Lisa (BLACKPINK) is Thai, making the city a global focal point for Blinks and K-pop tourism.",
     concerts: [
       { artist: "BTS — ARIRANG World Tour", venue: "Rajamangala National Stadium", date: "Dec 3-6, 2026", ticketUrl: `https://ibighit.com/en/bts/tour/` },
+      { artist: "ATEEZ", venue: "IMPACT Exhibition Hall 5-6", date: "Apr 4, 2026", ticketUrl: `https://www.ateezlive.com/asia/` },
       { artist: "BLACKPINK / Lisa", venue: "Impact Arena", date: "2025 TBA", ticketUrl: `https://www.songkick.com/search?query=lisa+blackpink+bangkok` },
     ],
     meetups: [
@@ -175,6 +186,8 @@ const CITY_DATA: Record<string, {
     description: "Paris hosts some of K-pop's most iconic events — from BLACKPINK's Palace of Versailles concert to BTS's Accor Arena shows.",
     concerts: [
       { artist: "BTS — ARIRANG World Tour", venue: "Stade de France, Saint-Denis", date: "Jul 17-18, 2026", ticketUrl: `https://www.ticketmaster.fr/fr/manifestation/bts-world-tour-arirang-in-paris-billet/idmanif/647775/idtier/18864121` },
+      { artist: "ENHYPEN", venue: "Plenitude Arena, Nanterre", date: "Feb 27, 2027", ticketUrl: `https://seatgeek.com/enhypen-tickets` },
+      { artist: "LE SSERAFIM", venue: "Accor Arena", date: "Oct 21, 2026", ticketUrl: `https://seatgeek.com/le-sserafim-tickets` },
       { artist: "K-pop tours", venue: "Accor Arena (Bercy)", date: "Various 2025", ticketUrl: `https://www.songkick.com/search?query=kpop+paris` },
     ],
     meetups: [
@@ -197,6 +210,8 @@ const CITY_DATA: Record<string, {
     description: "Latin America's K-pop capital. CDMX fans are known for their legendary fancams and massive fan-organized lightstick oceans.",
     concerts: [
       { artist: "BTS — ARIRANG World Tour", venue: "Estadio GNP Seguros", date: "May 7-10, 2026", ticketUrl: `https://ibighit.com/en/bts/tour/` },
+      { artist: "aespa", venue: "Palacio de los Deportes", date: "Sep 11, 2026", ticketUrl: `https://seatgeek.com/aespa-tickets` },
+      { artist: "ENHYPEN", venue: "Arena CDMX", date: "Jul 11-15, 2026", ticketUrl: `https://seatgeek.com/enhypen-tickets` },
       { artist: "BTS Members / Solo", venue: "Foro Sol", date: "2025 TBA", ticketUrl: `https://www.songkick.com/search?query=kpop+mexico` },
     ],
     meetups: [
@@ -219,6 +234,7 @@ const CITY_DATA: Record<string, {
     description: "Chicago's United Center and Wintrust Arena draw major K-pop tours, while the city's Korean community in north suburbs supports a growing fan scene.",
     concerts: [
       { artist: "BTS — ARIRANG World Tour", venue: "Soldier Field", date: "Aug 27-28, 2026", ticketUrl: `https://www.ticketmaster.com/bts-world-tour-arirang-in-chicago-chicago-illinois-08-27-2026/event/0400642ACBBD5D44` },
+      { artist: "LE SSERAFIM", venue: "United Center", date: "Oct 2, 2026", ticketUrl: `https://seatgeek.com/le-sserafim-tickets` },
       { artist: "Multiple", venue: "United Center", date: "2025 various", ticketUrl: `https://seatgeek.com/search#?q=kpop+chicago` },
     ],
     meetups: [
@@ -241,6 +257,9 @@ const CITY_DATA: Record<string, {
     description: "DFW is Texas's K-pop hub with one of the fastest-growing Korean-American communities and American Airlines Center for major tours.",
     concerts: [
       { artist: "BTS — ARIRANG World Tour", venue: "AT&T Stadium, Arlington", date: "Aug 15-16, 2026", ticketUrl: `https://seatgeek.com/bts-tickets/arlington-texas-at-t-stadium-2026-08-15-8-pm/concert/17975621` },
+      { artist: "aespa", venue: "American Airlines Center", date: "Sep 29, 2026", ticketUrl: `https://seatgeek.com/aespa-tickets` },
+      { artist: "ENHYPEN", venue: "American Airlines Center", date: "Jul 17-18, 2026", ticketUrl: `https://seatgeek.com/enhypen-tickets` },
+      { artist: "LE SSERAFIM", venue: "Dickies Arena, Fort Worth", date: "Sep 27, 2026", ticketUrl: `https://seatgeek.com/le-sserafim-tickets` },
       { artist: "Multiple", venue: "American Airlines Center", date: "2025 various", ticketUrl: `https://seatgeek.com/search#?q=kpop+dallas` },
     ],
     meetups: [
@@ -303,6 +322,7 @@ const CITY_DATA: Record<string, {
     timezone: "MST (UTC-7)", currency: "USD",
     description: "Scottsdale's Desert Diamond Arena and Phoenix-area venues are increasingly on K-pop tour routes in the Southwest.",
     concerts: [
+      { artist: "LE SSERAFIM", venue: "Mortgage Matchup Center, Phoenix", date: "Sep 25, 2026", ticketUrl: `https://seatgeek.com/le-sserafim-tickets` },
       { artist: "Multiple", venue: "Footprint Center (Phoenix)", date: "2025 various", ticketUrl: `https://seatgeek.com/search#?q=kpop+phoenix` },
     ],
     meetups: [
@@ -324,6 +344,8 @@ const CITY_DATA: Record<string, {
     description: "Brazil's megacity has the largest K-pop fanbase in Latin America. KCON Brazil draws tens of thousands, and fan clubs here are legendary for energy.",
     concerts: [
       { artist: "BTS — ARIRANG World Tour", venue: "Estádio MorumBIS", date: "Oct 23-28, 2026", ticketUrl: `https://ibighit.com/en/bts/tour/` },
+      { artist: "aespa", venue: "Mercado Livre Arena Pacaembu", date: "Sep 4, 2026", ticketUrl: `https://seatgeek.com/aespa-tickets` },
+      { artist: "ENHYPEN", venue: "Nubank Parque", date: "Jul 4, 2026", ticketUrl: `https://seatgeek.com/enhypen-tickets` },
       { artist: "K-pop tours", venue: "Allianz Parque", date: "2025 TBA", ticketUrl: `https://www.songkick.com/search?query=kpop+sao+paulo` },
     ],
     meetups: [
@@ -386,6 +408,8 @@ const CITY_DATA: Record<string, {
     timezone: "CET (UTC+1)", currency: "EUR (€)",
     description: "Milan's fashion week draws K-pop artists as brand ambassadors, and the Mediolanum Forum hosts major tours.",
     concerts: [
+      { artist: "aespa", venue: "Unipol Dome", date: "Jan 29, 2027", ticketUrl: `https://seatgeek.com/aespa-tickets` },
+      { artist: "ENHYPEN", venue: "Unipol Dome", date: "Feb 24, 2027", ticketUrl: `https://seatgeek.com/enhypen-tickets` },
       { artist: "Multiple", venue: "Mediolanum Forum", date: "2025 TBA", ticketUrl: `https://www.songkick.com/search?query=kpop+milan` },
     ],
     meetups: [
@@ -428,6 +452,7 @@ const CITY_DATA: Record<string, {
     description: "Philippine fans are among K-pop's most dedicated. Manila's MOA Arena and Philippine Arena draw massive sell-out crowds.",
     concerts: [
       { artist: "BTS — ARIRANG World Tour", venue: "Philippine Sports Stadium, Bulacan", date: "Mar 13-16, 2027", ticketUrl: `https://ibighit.com/en/bts/tour/` },
+      { artist: "ATEEZ", venue: "Smart Araneta Coliseum", date: "Mar 14, 2026", ticketUrl: `https://www.ateezlive.com/asia/` },
       { artist: "Multiple", venue: "Mall of Asia Arena", date: "Year-round", ticketUrl: `https://www.songkick.com/search?query=kpop+manila` },
     ],
     meetups: [
@@ -448,6 +473,7 @@ const CITY_DATA: Record<string, {
     timezone: "MYT (UTC+8)", currency: "MYR (RM)",
     description: "KL's Axiata Arena is Southeast Asia's premier concert venue, hosting dozens of K-pop acts annually. Malaysia's fan community is highly organized.",
     concerts: [
+      { artist: "ATEEZ", venue: "Axiata Arena", date: "Mar 22, 2026", ticketUrl: `https://www.ateezlive.com/asia/` },
       { artist: "Multiple", venue: "Axiata Arena", date: "Year-round", ticketUrl: `https://www.songkick.com/search?query=kpop+kuala+lumpur` },
     ],
     meetups: [
