@@ -13,6 +13,7 @@ import AnnotationLyrics from "@/components/AnnotationLyrics";
 import { getSongAnnotations } from "@/lib/community-db";
 import { contributorBySlug } from "@/app/leaderboard/data";
 import UserAvatar from "@/components/UserAvatar";
+import songSourceLinks from "@/lib/song-source-links.json";
 
 // Cache the DB fetch so generateMetadata and the page share one query per request
 const getSong = cache(async (slug: string) => {
@@ -85,6 +86,13 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
   const koLines = (song.lyricsKo ?? "").split("\n");
   const enLines = (song.lyricsEn ?? "").split("\n");
   const roLines = (song.lyricsRomanized ?? "").split("\n");
+
+  // When a song is released but its lyrics aren't transcribed yet, we show a note
+  // pointing to its Genius landing page (registry keyed by song slug) so the
+  // community knows the track is out and where to listen while lyrics are pending.
+  const hasLyrics  = !!(song.lyricsKo?.trim() || song.lyricsEn?.trim() || song.lyricsRomanized?.trim());
+  const sourceUrl  = (songSourceLinks as Record<string, string>)[song.slug];
+  const showLyricsPending = !hasLyrics && !!sourceUrl;
 
   // Serialize annotations for the client annotation panel
   const annData = song.annotations.map((ann) => ({
@@ -193,15 +201,19 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
           {/* Lyrics + slide-out annotations — flex-grows; the sidebar wraps below it on phones
               so the lyrics column is never squeezed by the fixed-width sidebar. */}
           <div style={{ flex: "3 1 460px", minWidth: 0 }}>
-            <AnnotationLyrics
-              songId={song.id}
-              songTitle={song.title}
-              koLines={koLines}
-              enLines={enLines}
-              roLines={roLines}
-              annotations={inlineAnnotations}
-              isLoggedIn={isLoggedIn}
-            />
+            {showLyricsPending ? (
+              <LyricsPendingNote title={song.title} artist={mainArtist?.stageName} url={sourceUrl} />
+            ) : (
+              <AnnotationLyrics
+                songId={song.id}
+                songTitle={song.title}
+                koLines={koLines}
+                enLines={enLines}
+                roLines={roLines}
+                annotations={inlineAnnotations}
+                isLoggedIn={isLoggedIn}
+              />
+            )}
           </div>
 
           {/* Sidebar */}
@@ -394,5 +406,34 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
         />
       </div>
     </main>
+  );
+}
+
+// Shown in the lyrics column when a track is released but its lyrics aren’t
+// transcribed yet — points fans to the song’s Genius landing page.
+function LyricsPendingNote({ title, artist, url }: { title: string; artist?: string; url: string }) {
+  return (
+    <div style={{ border: "1px solid var(--genius-border)", borderRadius: 10, background: "linear-gradient(180deg, #fff, #fafafa)", padding: "32px 28px" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+        <span style={{ fontSize: "1.7rem", lineHeight: 1 }}>🎧</span>
+        <span style={{ background: "var(--genius-yellow)", color: "#000", fontWeight: 800, fontSize: "0.62rem", letterSpacing: "0.12em", textTransform: "uppercase", padding: "4px 11px", borderRadius: 999 }}>
+          Released · Lyrics pending
+        </span>
+      </div>
+      <h2 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#000", margin: "0 0 10px" }}>
+        Lyrics haven’t been released yet
+      </h2>
+      <p style={{ fontSize: "0.92rem", color: "#444", lineHeight: 1.7, margin: "0 0 18px", maxWidth: 520 }}>
+        <strong>“{title}”</strong>{artist ? ` by ${artist}` : ""} is out now — but its official lyrics
+        haven’t been transcribed yet. You can listen to the track and see its release details on Genius.
+        As soon as the lyrics drop, they’ll appear here for the Aegyo Arena community to annotate.
+      </p>
+      <a href={url} target="_blank" rel="noopener noreferrer" className="btn-yellow" style={{ display: "inline-block" }}>
+        View on Genius ↗
+      </a>
+      <div style={{ marginTop: 16, fontSize: "0.75rem", color: "var(--genius-gray)" }}>
+        Know every word? Check back soon — the community adds lyrics as songs get transcribed.
+      </div>
+    </div>
   );
 }
