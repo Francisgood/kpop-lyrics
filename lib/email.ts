@@ -3,10 +3,10 @@
 // so password-reset codes go through Mailjet. Degrades gracefully: if the keys are
 // not set it logs and returns false rather than throwing, so flows don't break.
 
-export async function sendMail(opts: { to: string; subject: string; text: string; html?: string }): Promise<boolean> {
+export async function sendMail(opts: { to: string; subject: string; text: string; html?: string; from?: string }): Promise<boolean> {
   const pub = process.env.MJ_APIKEY_PUBLIC;
   const priv = process.env.MJ_APIKEY_PRIVATE;
-  const fromEmail = process.env.MAIL_FROM || "no-reply@aegyoarena.com";
+  const fromEmail = opts.from || process.env.MAIL_FROM || "no-reply@aegyoarena.com";
   const fromName = process.env.MAIL_FROM_NAME || "Aegyo Arena";
 
   if (!pub || !priv) {

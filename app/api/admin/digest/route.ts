@@ -12,7 +12,8 @@ export const maxDuration = 60;
 // endpoints). Trigger daily (e.g. a scheduled job that curls this).
 // Query params: ?hours=24 (look-back window), ?send=0 (dry run, no email).
 
-const RECIPIENTS = ["noreply@aegyoarena.com", "simon@myosin.xyz"];
+const RECIPIENTS = ["noreply@aegyoarena.com"];
+const FROM = "hello@aegyoarena.com";
 const SITE = "https://www.aegyoarena.com";
 
 function authed(req: NextRequest): boolean {
@@ -144,7 +145,7 @@ async function handle(req: NextRequest) {
   let sent = 0;
   if (doSend) {
     for (const to of RECIPIENTS) {
-      if (await sendMail({ to, subject, text, html })) sent++;
+      if (await sendMail({ to, subject, text, html, from: FROM })) sent++;
     }
   }
 
