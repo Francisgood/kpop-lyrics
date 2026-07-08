@@ -34,6 +34,22 @@ type PendingAnn = { id: string; authorName: string; songTitle: string; songSlug:
 async function handle(req: NextRequest) {
   if (!authed(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const url = new URL(req.url);
+
+  // Diagnostic: ?probe=1 does a direct Mailjet send and returns its raw response so
+  // key-presence / sender-verification issues are visible without reading server logs.
+  if (url.searchParams.get("probe") === "1") {
+    const pub = process.env.MJ_APIKEY_PUBLIC, priv = process.env.MJ_APIKEY_PRIVATE;
+    if (!pub || !priv) return NextResponse.json({ probe: true, mailConfigured: false, note: "MJ_APIKEY_PUBLIC/PRIVATE not present in this deployment" });
+    const auth = Buffer.from(`${pub}:${priv}`).toString("base64");
+    const r = await fetch("https://api.mailjet.com/v3.1/send", {
+      method: "POST",
+      headers: { Authorization: `Basic ${auth}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ Messages: [{ From: { Email: FROM, Name: "Aegyo Arena" }, To: [{ Email: RECIPIENTS[0] }], Subject: "Aegyo Arena — Mailjet probe", TextPart: "Digest Mailjet connectivity probe." }] }),
+    });
+    const body = await r.text().catch(() => "");
+    return NextResponse.json({ probe: true, mailConfigured: true, from: FROM, to: RECIPIENTS[0], mailjetStatus: r.status, mailjetBody: body.slice(0, 600) });
+  }
+
   const hours = Math.max(1, Number(url.searchParams.get("hours") ?? 24));
   const doSend = url.searchParams.get("send") !== "0";
   const since = new Date(Date.now() - hours * 3600_000);
@@ -151,6 +167,7 @@ async function handle(req: NextRequest) {
 
   return NextResponse.json({
     ok: true,
+    mailConfigured: Boolean(process.env.MJ_APIKEY_PUBLIC && process.env.MJ_APIKEY_PRIVATE),
     windowHours: hours,
     new: { annotations: anns.length, lyricSubmissions: lyricEdits.length, otherEdits: otherEdits.length },
     pendingTotals: { annotations: totalPendAnn[0]?.c ?? 0, edits: totalPendEdit },
