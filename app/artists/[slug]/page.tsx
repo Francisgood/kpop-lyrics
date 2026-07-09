@@ -173,9 +173,6 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                                 </span>
                               )}
                             </div>
-                            <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)" }}>
-                              {song.viewCount.toLocaleString()} views
-                            </div>
                           </div>
                         </Link>
                       );

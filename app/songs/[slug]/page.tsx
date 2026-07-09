@@ -197,9 +197,6 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                 />
                 <FavoriteButton entityType="song" entityId={song.id} isLoggedIn={isLoggedIn} />
               </div>
-              <div style={{ marginTop: 10, fontSize: "0.75rem", color: "rgba(255,255,255,0.35)" }}>
-                {song.viewCount.toLocaleString()} views
-              </div>
             </div>
           </div>
         </div>
