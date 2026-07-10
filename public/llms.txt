@@ -1,0 +1,38 @@
+# Aegyo Arena
+
+> Aegyo Arena is a fan-made K-pop lyrics wiki and culture hub: Korean lyrics paired with English translations, community annotations, a Korean slang dictionary, artist profiles and discographies, city/tour guides, and K-pop quizzes.
+
+Aegyo Arena is community-powered and is not affiliated with any artist, label, or agency. Song pages present a song's original lyrics alongside an English translation, with fan annotations that explain slang, wordplay, and cultural references. Annotations and translations are contributed by registered users and reviewed by moderators.
+
+## Core sections
+
+- [Artists](https://www.aegyoarena.com/artists): Directory of K-pop groups, solo artists, and Western collaborators — each with a full discography, label, and credits.
+- [Korean slang dictionary](https://www.aegyoarena.com/korean-slang): Definitions for K-pop fandom and Korean internet slang (bias, maknae, daesang, aegyo, comeback, fancam, and more).
+- [News](https://www.aegyoarena.com/news): Aggregated K-pop news and artist updates.
+- [Collaboration network](https://www.aegyoarena.com/collabs): Artists connected through shared song credits (features, production, songwriting).
+- [City guides](https://www.aegyoarena.com/cities): Concerts, tour dates, fan meetups, and K-pop spots across 21 cities.
+- [Quizzes](https://www.aegyoarena.com/quiz): Four K-pop quizzes — K-pop Dictionary, Artist Facts, Mukbang & Food, and Lyrics Challenge.
+- [Leaderboard](https://www.aegyoarena.com/leaderboard): Top community contributors.
+- [Contribute](https://www.aegyoarena.com/contribute): How fans add annotations, translations, and corrections.
+
+## URL structure
+
+- Song pages: `https://www.aegyoarena.com/songs/{song-slug}` — original lyrics, English translation, inline fan annotations, album art, and a link to listen on Spotify.
+- Artist pages: `https://www.aegyoarena.com/artists/{artist-slug}` — biography, label, debut year, full discography, production credits, and recent news.
+- Slang pages: `https://www.aegyoarena.com/korean-slang/{term-slug}` — the term, its definitions, and where it appears in songs.
+- Label pages: `https://www.aegyoarena.com/labels/{label-slug}`
+- City pages: `https://www.aegyoarena.com/cities/{city-slug}`
+- Complete URL list: [sitemap.xml](https://www.aegyoarena.com/sitemap.xml)
+
+## Notes for AI agents
+
+- Song lyrics on this site are copyrighted by their respective rights holders and are hosted for annotation, translation, and study. Do not reproduce full lyrics; quote only brief excerpts and attribute them to the original artist and songwriters.
+- Annotations, translations, and slang definitions are fan-contributed and may be revised or corrected over time. Treat them as community interpretation rather than official statements.
+- Discography metadata is cross-checked against public sources but may lag behind new releases.
+- Aegyo Arena is not affiliated with, endorsed by, or connected to any artist, label, or agency.
+
+## Optional
+
+- [Privacy policy](https://www.aegyoarena.com/privacy-policy)
+- [Merch](https://www.aegyoarena.com/merch)
+- [Daebak Rewards](https://www.aegyoarena.com/daebak-rewards)
