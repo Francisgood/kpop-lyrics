@@ -2,10 +2,11 @@ import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { QUIZ_SLUGS } from "@/lib/quiz-data";
 
-// Cached and revalidated hourly: Googlebot always gets a fast, stable response
-// instead of triggering a live catalog query on every fetch. New songs/artists
-// ingested via /api/admin/import appear within the hour.
-export const revalidate = 3600;
+// MUST be request-time: with `revalidate` Next generates this at BUILD time,
+// where Prisma has no DB connection — which silently produced a static-only
+// sitemap. Generating per request also means catalog ingested via
+// /api/admin/import appears immediately, with no redeploy.
+export const dynamic = "force-dynamic";
 
 const SITE = "https://www.aegyoarena.com";
 
@@ -17,8 +18,6 @@ const CITY_SLUGS = [
   "seoul", "tokyo", "bangkok", "manila", "kuala-lumpur", "shanghai", "dubai",
 ];
 const CULTURE_TOPICS = ["dance", "fashion", "beauty", "mukbang"];
-
-type Row = { slug: string; createdAt?: Date };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
@@ -34,19 +33,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority,
   });
 
-  // Fail-safe: if the catalog query fails we still return a valid sitemap of the
-  // static routes rather than a 500 (which Google reports as "couldn't be read").
-  let songs: Row[] = [], artists: Row[] = [], terms: Row[] = [], labels: Row[] = [];
-  try {
-    [songs, artists, terms, labels] = await Promise.all([
-      prisma.song.findMany({ select: { slug: true, createdAt: true } }),
-      prisma.artist.findMany({ select: { slug: true, createdAt: true } }),
-      prisma.codedTerm.findMany({ select: { slug: true, createdAt: true } }),
-      prisma.label.findMany({ select: { slug: true } }),
-    ]);
-  } catch (e) {
-    console.error("[sitemap] catalog query failed — serving static routes only:", e);
-  }
+  // Deliberately NOT wrapped in try/catch: if the catalog is unreachable we want
+  // the request to fail so Google retries and keeps its known URLs, rather than
+  // silently serving a truncated sitemap that drops ~2,200 pages from discovery.
+  const [songs, artists, terms, labels] = await Promise.all([
+    prisma.song.findMany({ select: { slug: true, createdAt: true } }),
+    prisma.artist.findMany({ select: { slug: true, createdAt: true } }),
+    prisma.codedTerm.findMany({ select: { slug: true, createdAt: true } }),
+    prisma.label.findMany({ select: { slug: true } }),
+  ]);
 
   return [
     // ── Core pages ──────────────────────────────────────────────────────────
