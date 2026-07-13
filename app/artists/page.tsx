@@ -60,6 +60,12 @@ export default async function ArtistsPage() {
             <Link href="/korean-slang" style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.7)", fontWeight: 600, fontSize: "0.78rem", padding: "8px 18px", borderRadius: 4, textDecoration: "none" }}>
               K-pop Dictionary
             </Link>
+            <Link href="/cities" style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.7)", fontWeight: 600, fontSize: "0.78rem", padding: "8px 18px", borderRadius: 4, textDecoration: "none" }}>
+              Cities
+            </Link>
+            <Link href="/culture/dance" style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.7)", fontWeight: 600, fontSize: "0.78rem", padding: "8px 18px", borderRadius: 4, textDecoration: "none" }}>
+              Culture
+            </Link>
           </div>
         </div>
       </section>

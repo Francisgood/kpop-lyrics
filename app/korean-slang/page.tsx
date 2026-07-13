@@ -7,6 +7,7 @@ export default async function DefinePage() {
   const terms = await prisma.codedTerm.findMany({
     include: {
       definitions: { orderBy: { votesUp: "desc" }, take: 1 },
+      _count: { select: { annotations: true } },
     },
     orderBy: { term: "asc" },
   });
@@ -23,6 +24,11 @@ export default async function DefinePage() {
           <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "1rem", maxWidth: 520 }}>
             Fan-written definitions for K-pop culture vocabulary. Vote for the best definitions.
           </p>
+          <div style={{ marginTop: 20 }}>
+            <Link href="/quiz/korean-slang" style={{ display: "inline-block", background: "var(--genius-yellow)", color: "#000", fontWeight: 700, fontSize: "0.85rem", padding: "11px 20px", borderRadius: 4, textDecoration: "none", letterSpacing: "0.02em" }}>
+              Think you know your slang? Take the 10-question Korean Slang quiz →
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -36,6 +42,11 @@ export default async function DefinePage() {
                   <div style={{ fontWeight: 800, fontSize: "1.15rem", color: "#ff6fa8", marginBottom: 8 }}>
                     {term.term}
                   </div>
+                  {term._count.annotations > 0 && (
+                    <div style={{ display: "inline-block", background: "#000", color: "var(--genius-yellow)", fontSize: "0.7rem", fontWeight: 700, padding: "2px 9px", borderRadius: 999, marginBottom: 8 }}>
+                      🎵 {term._count.annotations} song{term._count.annotations !== 1 ? "s" : ""}
+                    </div>
+                  )}
                   {topDef && (
                     <div style={{ fontSize: "0.88rem", color: "#fff", lineHeight: 1.6, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                       {topDef.body}

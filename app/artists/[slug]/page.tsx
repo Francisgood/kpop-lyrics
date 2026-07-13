@@ -30,7 +30,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
         albums: {
           include: {
             songs: {
-              include: { credits: { include: { artist: true } } },
+              include: { credits: { include: { artist: true } }, annotations: { include: { term: true } } },
               orderBy: { viewCount: "desc" },
             },
           },
@@ -52,6 +52,19 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
   const isGroup = artist.type === "GROUP";
   const members = artist.groupOf;
   const totalSongs = artist.albums.reduce((n, a) => n + a.songs.length, 0);
+
+  // Distinct K-pop slang terms annotated across all of this artist's songs (deduped by slug).
+  const slangInLyrics = (() => {
+    const bySlug = new Map<string, { slug: string; term: string }>();
+    for (const album of artist.albums) {
+      for (const song of album.songs) {
+        for (const ann of song.annotations) {
+          if (ann.term && !bySlug.has(ann.term.slug)) bySlug.set(ann.term.slug, { slug: ann.term.slug, term: ann.term.term });
+        }
+      }
+    }
+    return [...bySlug.values()];
+  })();
 
   return (
     <main>
@@ -256,6 +269,20 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                     </div>
                   </Link>
                 ))}
+              </div>
+            )}
+
+            {/* K-pop slang appearing in this artist's lyrics */}
+            {slangInLyrics.length > 0 && (
+              <div style={{ marginBottom: 24 }}>
+                <div className="section-header">K-pop slang in their lyrics</div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {slangInLyrics.map((t) => (
+                    <Link key={t.slug} href={`/korean-slang/${t.slug}`} style={{ textDecoration: "none" }}>
+                      <span style={{ display: "inline-block", background: "#000", color: "var(--genius-yellow)", fontSize: "0.78rem", fontWeight: 600, padding: "5px 12px", borderRadius: 999 }}>{t.term}</span>
+                    </Link>
+                  ))}
+                </div>
               </div>
             )}
 

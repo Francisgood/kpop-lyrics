@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAnnotation, type AnnRow } from "@/lib/community-db";
-import { contributorBySlug } from "@/app/leaderboard/data";
+import { contributorBySlug, slugify } from "@/app/leaderboard/data";
+import { CITY_SLUG_SET } from "@/app/cities/city-slugs";
 import UserAvatar from "@/components/UserAvatar";
 import { prisma } from "@/lib/prisma";
 
@@ -69,15 +70,23 @@ export default async function AnnotationPage({ params }: { params: Promise<{ id:
           {a.note}
         </div>
 
-        {/* Author — click-through to their profile */}
-        <Link href={`/u/${a.authorSlug}`} style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 14, background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 14, padding: "16px 18px" }}>
+        {/* Author — click-through to their profile; a known city links to its city guide */}
+        <div style={{ display: "flex", alignItems: "center", gap: 14, background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 14, padding: "16px 18px" }}>
           <UserAvatar avatar={contributor?.avatar} initial={initial} color={color} size={48} />
           <span style={{ flex: 1, minWidth: 0 }}>
             <span style={{ display: "block", fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--ink-faint)" }}>Contributed by</span>
-            <span style={{ display: "block", fontWeight: 700, color: "var(--ink)" }}>{a.authorName}{contributor ? ` · ${contributor.flag} ${contributor.city}` : ""}</span>
+            <span style={{ display: "block", fontWeight: 700, color: "var(--ink)" }}>
+              <Link href={`/u/${a.authorSlug}`} style={{ color: "var(--ink)", textDecoration: "none" }}>{a.authorName}</Link>
+              {contributor ? (
+                <>{" · "}{contributor.flag}{" "}
+                {CITY_SLUG_SET.has(slugify(contributor.city)) ? (
+                  <Link href={`/cities/${slugify(contributor.city)}`} style={{ color: "var(--sakura)", fontWeight: 700, textDecoration: "none" }}>{contributor.city}</Link>
+                ) : contributor.city}</>
+              ) : ""}
+            </span>
           </span>
-          <span style={{ color: "var(--sakura)", fontWeight: 700, fontSize: "0.9rem" }}>View profile →</span>
-        </Link>
+          <Link href={`/u/${a.authorSlug}`} style={{ color: "var(--sakura)", fontWeight: 700, fontSize: "0.9rem", textDecoration: "none", flexShrink: 0 }}>View profile →</Link>
+        </div>
 
         {a.reviewedBy && (
           <div style={{ fontSize: "0.8rem", color: "var(--ink-faint)", marginTop: 16 }}>

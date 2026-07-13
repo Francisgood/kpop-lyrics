@@ -12,10 +12,20 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
     where: { slug },
     include: {
       definitions: { orderBy: { votesUp: "desc" } },
+      annotations: { include: { song: { include: { album: { include: { artist: true } } } } } },
     },
   });
 
   if (!term) notFound();
+
+  // Distinct songs whose lyrics are annotated with this term (deduped by song id).
+  const heardInSongs = (() => {
+    const byId = new Map<string, (typeof term.annotations)[number]["song"]>();
+    for (const ann of term.annotations) {
+      if (ann.song && !byId.has(ann.song.id)) byId.set(ann.song.id, ann.song);
+    }
+    return [...byId.values()];
+  })();
 
   return (
     <main>
@@ -45,6 +55,25 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
           termName={term.term}
           definitions={term.definitions.map((d) => ({ id: d.id, body: d.body, example: d.example, votesUp: d.votesUp, votesDown: d.votesDown }))}
         />
+
+        {/* Songs whose lyrics use this slang term */}
+        {heardInSongs.length > 0 && (
+          <section style={{ marginTop: 40 }}>
+            <div className="section-header">Heard in these songs</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
+              {heardInSongs.map((song) => (
+                <Link key={song.id} href={`/songs/${song.slug}`} style={{ textDecoration: "none" }}>
+                  <div className="genius-card" style={{ padding: 16 }}>
+                    <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "#ff6fa8" }}>{song.title}</div>
+                    {song.album?.artist && (
+                      <div style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginTop: 4 }}>{song.album.artist.stageName}</div>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         <div style={{ textAlign: "center", marginTop: 32 }}>
           <Link href="/korean-slang" style={{ color: "var(--genius-gray)", textDecoration: "none", fontSize: "0.9rem" }}>

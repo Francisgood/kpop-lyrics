@@ -20,7 +20,7 @@ const getSong = cache(async (slug: string) => {
   return prisma.song.findUnique({
     where: { slug },
     include: {
-      album: { include: { artist: true } },
+      album: { include: { artist: true, songs: { select: { slug: true, title: true } } } },
       credits: { include: { artist: true } },
       annotations: { include: { term: { include: { definitions: { orderBy: { votesUp: "desc" }, take: 1 } } } } },
     },
@@ -126,6 +126,19 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
   const producers = song.credits.filter((c) => ["producer", "songwriter", "composer"].includes(c.role));
 
   const mainArtist = song.album?.artist;
+
+  // More songs by the same primary artist, most-viewed first (excludes the current track).
+  const moreSongs = mainArtist
+    ? await prisma.song.findMany({
+        where: { album: { artistId: mainArtist.id }, slug: { not: song.slug } },
+        orderBy: { viewCount: "desc" },
+        take: 6,
+        include: { album: true },
+      })
+    : [];
+
+  // Other tracks on the same album (excludes the current track).
+  const albumTracks = (song.album?.songs ?? []).filter((t) => t.slug !== song.slug);
 
   // "Listen on Spotify" deep-link (search) — resolves for every song, no API key or per-song data needed.
   const spotifyQuery = mainArtist?.stageName ? `${mainArtist.stageName} ${song.title}` : song.title;
@@ -361,6 +374,39 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
               <Link href={`/artists/${song.album.artist.slug}`} style={{ textDecoration: "none", flexShrink: 0 }}>
                 <span className="btn-yellow" style={{ fontSize: "0.7rem" }}>VIEW ARTIST</span>
               </Link>
+            </div>
+            {albumTracks.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
+                {albumTracks.map((t) => (
+                  <Link key={t.slug} href={`/songs/${t.slug}`} style={{ textDecoration: "none" }}>
+                    <span className="genius-card" style={{ display: "inline-block", padding: "6px 14px", fontSize: "0.82rem", fontWeight: 600, color: "#ff6fa8" }}>{t.title}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* More from this artist — internal links to the artist's other tracks */}
+        {mainArtist && moreSongs.length > 0 && (
+          <section style={{ marginTop: 48, paddingTop: 40, borderTop: "2px solid #000" }}>
+            <div className="section-header">More from {mainArtist.stageName}</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 12, marginTop: 4 }}>
+              {moreSongs.map((s) => (
+                <Link key={s.id} href={`/songs/${s.slug}`} style={{ textDecoration: "none" }}>
+                  <div className="genius-card" style={{ padding: 14, display: "flex", alignItems: "center", gap: 12 }}>
+                    {s.album?.coverArt ? (
+                      <img src={s.album.coverArt} alt={s.album.title} style={{ width: 46, height: 46, borderRadius: 4, objectFit: "cover", flexShrink: 0 }} />
+                    ) : (
+                      <div style={{ width: 46, height: 46, borderRadius: 4, background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.1rem", flexShrink: 0 }}>🎵</div>
+                    )}
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "#ff6fa8", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.title}</div>
+                      {s.album && <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginTop: 2 }}>{s.album.title}</div>}
+                    </div>
+                  </div>
+                </Link>
+              ))}
             </div>
           </section>
         )}

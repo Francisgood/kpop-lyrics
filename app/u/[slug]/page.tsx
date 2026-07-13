@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { contributorBySlug, slugify, type Contributor } from "@/app/leaderboard/data";
+import { CITY_SLUG_SET } from "@/app/cities/city-slugs";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { roleForUser, ROLE_LABEL, ROLE_COLOR, type Role } from "@/lib/roles";
@@ -106,7 +107,11 @@ export default async function ProfilePage({ params }: { params: Promise<{ slug: 
             </div>
             <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(1.8rem, 5vw, 2.4rem)", fontWeight: 700, color: "var(--ink)", margin: "0 0 6px", lineHeight: 1.1 }}>{p.name}</h1>
             <div style={{ color: "var(--ink-dim)", fontSize: "0.95rem", marginBottom: 16 }}>
-              {p.city ? `${p.flag} ${p.city} · ` : ""}{p.rank ? `Rank #${p.rank} · ` : ""}{p.focus ? `Focus: ${p.focus} · ` : ""}Joined {p.joined}
+              {p.city ? (
+                CITY_SLUG_SET.has(slugify(p.city)) ? (
+                  <>{p.flag}{" "}<Link href={`/cities/${slugify(p.city)}`} style={{ color: "var(--sakura)", fontWeight: 700, textDecoration: "none" }}>{p.city}</Link>{" · "}</>
+                ) : `${p.flag} ${p.city} · `
+              ) : ""}{p.rank ? `Rank #${p.rank} · ` : ""}{p.focus ? `Focus: ${p.focus} · ` : ""}Joined {p.joined}
             </div>
             {p.bio && <p style={{ color: "var(--ink-dim)", fontSize: "0.92rem", lineHeight: 1.6, marginBottom: 16, maxWidth: 520 }}>{p.bio}</p>}
             <FollowButton targetSlug={p.slug} baseFollowers={p.baseFollowers} isLoggedIn={isLoggedIn} displayName={p.name} />

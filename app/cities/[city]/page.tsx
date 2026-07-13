@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { prisma } from "@/lib/prisma";
+import { CONTRIBUTORS } from "@/app/leaderboard/data";
 
 export const revalidate = 3600;
 
@@ -782,6 +784,19 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   const data = CITY_DATA[city];
   if (!data) notFound();
 
+  // Leaderboard contributors based in this city (empty for cities with no contributors).
+  const cityContributors = CONTRIBUTORS.filter((c) => c.city === data.name);
+
+  // Map DB artists by lowercased stage name so concert billings can deep-link to artist pages.
+  const artists = await prisma.artist.findMany({ select: { slug: true, stageName: true } });
+  const artistSlugByName = new Map(artists.map((a) => [a.stageName.toLowerCase(), a.slug] as const));
+  const SKIP_CONCERT_ARTIST = new Set(["multiple", "multiple artists", "k-pop world tours", "k-pop tours"]);
+  const concertArtistSlug = (raw: string): string | null => {
+    const name = raw.split(/—|\/|feat\./i)[0].trim();
+    if (!name || SKIP_CONCERT_ARTIST.has(name.toLowerCase())) return null;
+    return artistSlugByName.get(name.toLowerCase()) ?? null;
+  };
+
   return (
     <main>
       {/* Hero */}
@@ -818,11 +833,17 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
             <section style={{ marginBottom: 48 }}>
               <div className="section-header">Upcoming Concerts</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                {data.concerts.map((c, i) => (
+                {data.concerts.map((c, i) => {
+                  const artistSlug = concertArtistSlug(c.artist);
+                  return (
                   <div key={i} className="genius-card" style={{ padding: 20, borderLeft: `3px solid ${data.color}` }}>
                     <div style={{ display: "flex", gap: 12, alignItems: "flex-start", flexWrap: "wrap" }}>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 800, fontSize: "1rem", color: "#000", marginBottom: 4 }}>{c.artist}</div>
+                        <div style={{ fontWeight: 800, fontSize: "1rem", color: "#000", marginBottom: 4 }}>
+                          {artistSlug ? (
+                            <Link href={`/artists/${artistSlug}`} style={{ color: "#000", textDecoration: "none" }}>{c.artist}</Link>
+                          ) : c.artist}
+                        </div>
                         <div style={{ fontSize: "0.85rem", color: "var(--genius-gray)" }}>📍 {c.venue}</div>
                         <div style={{ fontSize: "0.82rem", color: "var(--genius-gray)", marginTop: 2 }}>📅 {c.date}</div>
                       </div>
@@ -836,7 +857,8 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                       </div>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </section>
 
@@ -875,6 +897,26 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
 
           {/* Sidebar */}
           <aside>
+            {/* Top leaderboard contributors based in this city */}
+            {cityContributors.length > 0 && (
+              <div style={{ marginBottom: 28 }}>
+                <div className="section-header">Top contributors in {data.name}</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {cityContributors.map((c) => (
+                    <Link key={c.slug} href={`/u/${c.slug}`} style={{ textDecoration: "none" }}>
+                      <div className="genius-card" style={{ padding: "10px 12px", display: "flex", alignItems: "center", gap: 10 }}>
+                        <div style={{ width: 34, height: 34, borderRadius: "50%", background: c.tierColor, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "0.85rem", flexShrink: 0 }}>{c.initial}</div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "#000", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.username}</div>
+                          <div style={{ fontSize: "0.7rem", color: "var(--genius-gray)" }}>#{c.rank} · {c.points.toLocaleString("en-US")} pts</div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Hotel Recommendations */}
             <div style={{ marginBottom: 28 }}>
               <div className="section-header">Hotel Picks</div>
