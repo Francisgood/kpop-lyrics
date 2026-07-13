@@ -6,6 +6,8 @@ export type QuizQuestion = {
   options: string[];
   answer: number;
   explanation: string;
+  image?: string;      // optional illustrative GIF/image shown above the options
+  imageAlt?: string;
 };
 
 export type QuizCategory = {
@@ -21,6 +23,132 @@ export type QuizCategory = {
 };
 
 export const QUIZZES: QuizCategory[] = [
+  {
+    id: "aegyo",
+    slug: "aegyo",
+    title: "Aegyo & Aegyo-Sal Quiz",
+    blurb: "Aegyo-sal, buing buing, and the science of cute — how fluent are you in K-pop's charm code?",
+    description: "What is aegyo-sal? Why do East Asian cultures prize aegyo as charming rather than attention-seeking? Test your knowledge of K-pop's cuteness code — the eye-smile, the gestures, and the science of cute — in this 10-question Aegyo quiz on Aegyo Arena.",
+    label: "Aegyo",
+    emoji: "🥺",
+    accent: "#C77DFF",
+    questions: [
+      {
+        q: "The K-beauty term 애교살 (aegyo-sal) refers to which facial feature?",
+        options: [
+          "A deep dimple that appears in the cheek when smiling",
+          "The small roll of muscle right under the lower lash line that puffs up in a smile",
+          "The rosy flush high on the cheekbones",
+          "The crease of a double eyelid",
+        ],
+        answer: 1,
+        explanation: "애교살 literally means 'charm flesh' (애교 aegyo = charm + 살 sal = flesh). It's the little band of orbicularis-oculi muscle just beneath the lower lashes that plumps into a soft ridge when you smile, making the eyes look bigger, brighter and more expressive.",
+      },
+      {
+        q: "How is aegyo-sal different from an 'eye bag'?",
+        options: [
+          "They're identical — just two words for the same thing",
+          "Aegyo-sal is the thin cute ridge right under the lashes; eye bags are the lower, saggier puffiness read as tired or aging",
+          "Aegyo-sal only appears on men",
+          "Eye bags are considered cute; aegyo-sal is considered aging",
+        ],
+        answer: 1,
+        explanation: "Position is everything. Aegyo-sal sits directly under the lash line and reads as youthful and charming; true under-eye bags (눈밑지방) sit lower and are associated with fatigue and aging. K-beauty makeup exaggerates the former while concealing the latter.",
+      },
+      {
+        q: "K-pop's classic aegyo 'eye smile' — cheeks up, eyes curved into crescents, finger hearts out (as in this GIF) — is prized because it…",
+        image: "/images/quiz/aegyo-expression.gif",
+        imageAlt: "A K-pop idol smiling with a doe-eyed 'eye smile' and pointing at her cheeks with finger hearts — a classic aegyo expression.",
+        options: [
+          "Makes her look older and more authoritative",
+          "Makes the eyes read as bigger, younger and warmer — the aegyo-sal effect",
+          "Signals that she is about to cry",
+          "Only works under bright stage lighting",
+        ],
+        answer: 1,
+        explanation: "That crescent 'eye smile' — cheeks up, aegyo-sal plumped — is the visual core of aegyo. The plumped under-eye makes the eyes look larger and more childlike, which people instinctively find endearing (the 'baby schema').",
+      },
+      {
+        q: "Idols are constantly asked to 'do aegyo' on variety shows. A move like the hands-framing-the-face, sing-song pose in this GIF is best described as…",
+        image: "/images/quiz/aegyo-pose.gif",
+        imageAlt: "A K-pop idol cupping her face with both hands in a cutesy 'flower' aegyo pose surrounded by floating hearts.",
+        options: [
+          "A martial-arts guard position",
+          "A performed act of cuteness — like 뿌잉뿌잉 (buing buing) or the 'Gwiyomi' play",
+          "A traditional court bow",
+          "A vocal warm-up exercise",
+        ],
+        answer: 1,
+        explanation: "Aegyo isn't only a look, it's a performance — cutesy voice, gestures and poses like 뿌잉뿌잉 (buing buing, twisting fists at the cheeks) or the viral 'Gwiyomi' counting play. Variety shows love putting idols on the spot to perform it.",
+      },
+      {
+        q: "Why is aegyo considered a socially acceptable way to draw attention or ask for a favour?",
+        options: [
+          "Because it signals wealth and high social status",
+          "Because acting endearing feels warm and non-threatening, so it wins affection without seeming arrogant or pushy",
+          "Because it is legally required of service workers",
+          "Because it removes the need to ever say thank you",
+        ],
+        answer: 1,
+        explanation: "In cultures that prize social harmony, openly demanding attention can read as arrogant. Aegyo reframes the ask as playful and endearing — a soft, face-saving way to seek affection, defuse tension, or coax a 'yes' without confrontation.",
+      },
+      {
+        q: "Japan has a closely related beauty ideal for the coveted under-eye plumpness. What is it called?",
+        options: [
+          "涙袋 (namida-bukuro), literally 'tear bag'",
+          "漫画 (manga)",
+          "侘寂 (wabi-sabi)",
+          "木漏れ日 (komorebi)",
+        ],
+        answer: 0,
+        explanation: "Japan calls the prized under-eye plumpness 涙袋 (namida-bukuro), 'tear bag,' valued for the same youthful, doe-eyed effect. The broader cute-culture parallel is kawaii — Korea's aegyo and Japan's kawaii are close cousins.",
+      },
+      {
+        q: "How do K-beauty makeup artists fake or boost aegyo-sal?",
+        options: [
+          "By drawing one thick black line across the entire under-eye",
+          "By dabbing a shimmery light shade on the ridge and a thin soft-brown shadow just beneath it",
+          "By applying bright red blush directly under the eye",
+          "By gluing false lashes onto the lower lid only",
+        ],
+        answer: 1,
+        explanation: "The trick is light and shadow: a pearly highlight on the aegyo-sal ridge catches the light so it looks plump, and a faint brown line underneath fakes the natural shadow — creating a 3-D 'pillow' under the eye. Fillers and fat-grafting do it more permanently.",
+      },
+      {
+        q: "Who performs aegyo in Korean pop culture?",
+        options: [
+          "Only female idols",
+          "Only trainees under 18",
+          "Everyone — male idols are regularly asked to do it too, and it's used among friends, couples, and even toward elders or bosses",
+          "Only actors, never singers",
+        ],
+        answer: 2,
+        explanation: "Though often stereotyped as feminine, aegyo is performed by male idols on cue (frequently for comedic effect), and everyday aegyo shows up between friends, couples, and even toward elders or bosses to soften a request. It's a whole social register, not just a girl-group thing.",
+      },
+      {
+        q: "The 2013 viral 'Gwiyomi (귀요미) Player' craze — idols counting '1 + 1' with escalating cuteness — is a textbook example of what?",
+        options: [
+          "A dance-battle format",
+          "A meme-ified aegyo performance that spread worldwide",
+          "A cooking-show segment",
+          "A rap cypher",
+        ],
+        answer: 1,
+        explanation: "귀요미 means 'cutie.' The Gwiyomi Song turned aegyo into a copy-me challenge — an escalating cutesy counting routine — and it went global, showing how aegyo doubles as shareable, participatory content.",
+      },
+      {
+        q: "Scientists explain the universal pull of aegyo with the 'baby schema' (Kindchenschema). What is it?",
+        options: [
+          "A theory about how babies acquire language",
+          "The instinct to feel warmth and a protective urge toward big-eyed, round, childlike features",
+          "A standardized K-pop training curriculum",
+          "A camera lens that digitally enlarges the eyes",
+        ],
+        answer: 1,
+        explanation: "Ethologist Konrad Lorenz described how big eyes, round cheeks and small chins trigger caregiving instincts across humans. Aegyo — and aegyo-sal's big-eyed effect — deliberately leans into this, a big reason cuteness works so well as social currency.",
+      },
+    ],
+  },
   {
     id: "slang",
     slug: "kpop-dictionary",

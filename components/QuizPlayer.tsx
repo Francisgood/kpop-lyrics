@@ -120,6 +120,11 @@ export default function QuizPlayer({ category }: { category: QuizCategory }) {
 
         <div style={{ fontWeight: 800, fontSize: "1.08rem", lineHeight: 1.5, color: "#111", marginBottom: 20 }}>{current.q}</div>
 
+        {current.image && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={current.image} alt={current.imageAlt ?? ""} style={{ display: "block", width: "100%", maxWidth: 320, margin: "0 auto 20px", borderRadius: 12, border: "1px solid #ececec" }} />
+        )}
+
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {current.options.map((opt, i) => {
             let bg = "#f7f7f8", border = "#ececec", color = "#111";

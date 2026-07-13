@@ -135,7 +135,7 @@ export default function QuizModal({ onClose }: QuizModalProps) {
             <div style={{ fontSize: "0.65rem", color: "var(--genius-yellow)", letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 8 }}>Aegyo Arena</div>
             <h2 style={{ fontSize: "1.6rem", fontWeight: 800, margin: "0 0 8px" }}>K-pop Quiz</h2>
             <p style={{ color: "#777", fontSize: "0.88rem", marginBottom: 28 }}>
-              5 questions · Pick a category to start
+              Multiple choice · Pick a category to start
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {CATEGORIES.map(cat => (
@@ -197,6 +197,11 @@ export default function QuizModal({ onClose }: QuizModalProps) {
             <div style={{ fontWeight: 800, fontSize: "1.05rem", lineHeight: 1.5, marginBottom: 20, color: "#000" }}>
               {current.q}
             </div>
+
+            {current.image && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={current.image} alt={current.imageAlt ?? ""} style={{ display: "block", width: "100%", maxWidth: 300, margin: "0 auto 20px", borderRadius: 12, border: "1px solid #ececec" }} />
+            )}
 
             {/* Options */}
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
