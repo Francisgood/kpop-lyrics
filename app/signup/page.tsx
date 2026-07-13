@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { trackSignupPageView, trackAccountCreated } from "@/lib/conversions";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -11,6 +12,9 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Pageview conversion (GA4 / Reddit / TikTok / Taboola).
+  useEffect(() => { trackSignupPageView(); }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -24,6 +28,7 @@ export default function SignupPage() {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? "Signup failed"); return; }
+      trackAccountCreated();
       router.push("/");
       router.refresh();
     } catch {

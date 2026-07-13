@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { trackLoginPageView, trackLoginSuccess } from "@/lib/conversions";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,6 +11,9 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Pageview conversion (GA4 / Reddit / TikTok / Taboola).
+  useEffect(() => { trackLoginPageView(); }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -23,6 +27,7 @@ export default function LoginPage() {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? "Login failed"); return; }
+      trackLoginSuccess();
       router.push("/");
       router.refresh();
     } catch {
