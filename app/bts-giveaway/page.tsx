@@ -254,16 +254,16 @@ export default function BtsGiveawayPage() {
             {submitting ? "Submitting…" : "Submit Your Entry →"}
           </button>
 
-          <p style={{ marginTop: 16, fontSize: "0.82rem", color: "var(--ink-dim)", textAlign: "center", lineHeight: 1.6 }}>
-            🌍 Fans worldwide are welcome to enter and join the newsletter. Please note: under the current{" "}
-            <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>Official Rules</Link>, the grand
-            prize can only be <strong style={{ color: "var(--ink)" }}>awarded to legal U.S. residents 18+</strong>.
-          </p>
-
-          <p style={{ marginTop: 12, fontSize: "0.78rem", color: "var(--ink-faint)", textAlign: "center", lineHeight: 1.6 }}>
+          <p style={{ marginTop: 16, fontSize: "0.78rem", color: "var(--ink-faint)", textAlign: "center", lineHeight: 1.6 }}>
             No purchase necessary. By submitting your entry, you agree to the{" "}
             <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>Official Sweepstakes Rules</Link>{" "}
             and to subscribe to the Aegyo Arena email newsletter.
+          </p>
+
+          <p style={{ marginTop: 12, fontSize: "0.82rem", color: "var(--ink-dim)", textAlign: "center", lineHeight: 1.6 }}>
+            Fans worldwide are welcome to enter and join the newsletter. Please note: under the current{" "}
+            <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>Official Rules</Link>, the grand
+            prize can only be <strong style={{ color: "var(--ink)" }}>awarded to legal U.S. residents 18+</strong>.
           </p>
         </form>
       </section>
