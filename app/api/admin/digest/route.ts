@@ -29,6 +29,7 @@ function clip(s: string, n = 200): string {
 
 type AnnSub = { id: string; authorName: string; songTitle: string; songSlug: string | null; word: string; note: string; status: string; createdAt: Date };
 type Sub = { type: "Annotation" | "Lyrics"; title: string; slug: string | null; who: string; snippet: string; status: string; createdAt: Date };
+type EvRow = { title: string; category: string; city: string | null; dateText: string | null; startsAt: Date | null; source: string | null; sourceUrl: string; createdAt: Date };
 
 async function handle(req: NextRequest) {
   if (!authed(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -64,6 +65,17 @@ async function handle(req: NextRequest) {
     const d = await prisma.$queryRawUnsafe<{ c: number }[]>(`SELECT COUNT(*)::int c FROM "GiveawayEntry" WHERE "createdAt" >= $1`, since);
     giveawayWindow = Number(d[0]?.c ?? 0);
   } catch { /* GiveawayEntry table not created yet */ }
+
+  // ── New fan events (scanned by the event-scanner skill) ────────────────────
+  let newEvents: EvRow[] = [];
+  let eventsLiveTotal = 0;
+  try {
+    newEvents = await prisma.$queryRawUnsafe<EvRow[]>(
+      `SELECT "title","category","city","dateText","startsAt","source","sourceUrl","createdAt"
+         FROM "ScannedEvent" WHERE "status" = 'live' AND "createdAt" >= $1 ORDER BY "createdAt" DESC LIMIT 20`, since);
+    const t = await prisma.$queryRawUnsafe<{ c: number }[]>(`SELECT COUNT(*)::int c FROM "ScannedEvent" WHERE "status" = 'live'`);
+    eventsLiveTotal = Number(t[0]?.c ?? 0);
+  } catch { /* ScannedEvent table not created yet */ }
 
   // ── Last 10 submissions (annotations + lyric submissions, any status) ──────
   const annSubs = await prisma.$queryRawUnsafe<AnnSub[]>(
@@ -145,6 +157,26 @@ async function handle(req: NextRequest) {
     }
   }
 
+  rows.push(`<h2 style="font-size:15px;margin:26px 0 10px;color:#111">New fan events <span style="color:#aaa;font-weight:400">(${newEvents.length} in last ${hours}h · ${eventsLiveTotal} live)</span></h2>`);
+  if (newEvents.length === 0) {
+    rows.push(`<p style="font-size:14px;color:#555">No new events scanned in this window.</p>`);
+  } else {
+    for (const e of newEvents) {
+      const when = e.startsAt ? new Date(e.startsAt).toUTCString().slice(0, 16) : (e.dateText ?? "");
+      const meta = [e.city, when, e.source].filter(Boolean).join(" · ");
+      rows.push(
+        `<div style="border:1px solid #eee;border-radius:8px;padding:11px 14px;margin-bottom:9px">
+           <div style="font-size:13px">
+             <span style="display:inline-block;background:#0f3460;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em">${esc(e.category)}</span>
+             <a href="${esc(e.sourceUrl)}" style="color:#0f3460;text-decoration:none;font-weight:700;margin-left:6px">${esc(e.title)}</a>
+           </div>
+           <div style="font-size:11px;color:#999;margin:3px 0 0">${esc(meta)}</div>
+         </div>`,
+      );
+    }
+    rows.push(`<div style="font-size:12px;margin-top:2px"><a href="${SITE}/events" style="color:#0f3460">See all events →</a></div>`);
+  }
+
   rows.push(
     `<div style="margin-top:22px;padding-top:14px;border-top:1px solid #eee;font-size:13px;color:#666">
        <strong>${totalPendAnn[0]?.c ?? 0}</strong> annotation${(totalPendAnn[0]?.c ?? 0) === 1 ? "" : "s"} and <strong>${totalPendEdit}</strong> edit${totalPendEdit === 1 ? "" : "s"} awaiting review.
@@ -164,6 +196,9 @@ async function handle(req: NextRequest) {
     `Latest submissions (last ${subs.length}):`,
     ...(subs.length ? subs.map((s) => `- [${s.type}/${s.status}] ${s.title} — by ${s.who}\n    ${clip(s.snippet, 160)}`) : ["  (none yet)"]),
     ``,
+    `New fan events (last ${hours}h): ${newEvents.length}${eventsLiveTotal ? ` (${eventsLiveTotal} live)` : ""}`,
+    ...(newEvents.length ? newEvents.slice(0, 10).map((e) => `- [${e.category}] ${e.title}${e.city ? " — " + e.city : ""}`) : []),
+    ``,
     `Pending review: ${totalPendAnn[0]?.c ?? 0} annotations, ${totalPendEdit} edits.`,
     `${SITE}/admin`,
   ].join("\n");
@@ -179,7 +214,7 @@ async function handle(req: NextRequest) {
     ok: true,
     mailConfigured: Boolean(process.env.MJ_APIKEY_PUBLIC && process.env.MJ_APIKEY_PRIVATE),
     windowHours: hours,
-    stats: { signups24h: signups, giveawayTotal, giveawayWindow },
+    stats: { signups24h: signups, giveawayTotal, giveawayWindow, newEvents: newEvents.length, eventsLiveTotal },
     submissions: subs.length,
     pendingTotals: { annotations: totalPendAnn[0]?.c ?? 0, edits: totalPendEdit },
     emailed: doSend ? sent : 0,

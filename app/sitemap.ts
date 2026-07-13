@@ -56,6 +56,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry("/collabs", 0.7, "weekly"),
     entry("/cities", 0.7, "weekly"),
     entry("/cities/meetups", 0.7, "weekly"),
+    entry("/events", 0.7, "daily"),
     entry("/bts-giveaway", 0.7, "weekly"),
     entry("/leaderboard", 0.5, "daily"),
     entry("/contribute", 0.5, "monthly"),
