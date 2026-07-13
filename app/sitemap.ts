@@ -13,9 +13,12 @@ const SITE = "https://www.aegyoarena.com";
 type Freq = "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
 
 const CITY_SLUGS = [
-  "new-york", "los-angeles", "chicago", "dallas", "tampa", "boston", "scottsdale",
-  "mexico-city", "sao-paulo", "buenos-aires", "london", "paris", "madrid", "milan",
+  "new-york", "los-angeles", "chicago", "dallas", "tampa", "boston", "scottsdale", "toronto",
+  "mexico-city", "guadalajara", "monterrey", "puebla", "tijuana", "chihuahua",
+  "sao-paulo", "rio-de-janeiro", "buenos-aires", "santiago", "bogota", "medellin",
+  "london", "paris", "madrid", "milan",
   "seoul", "tokyo", "bangkok", "manila", "kuala-lumpur", "shanghai", "dubai",
+  "melbourne", "sydney",
 ];
 const CULTURE_TOPICS = ["dance", "fashion", "beauty", "mukbang"];
 
@@ -52,6 +55,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry("/quiz", 0.8, "weekly"),
     entry("/collabs", 0.7, "weekly"),
     entry("/cities", 0.7, "weekly"),
+    entry("/cities/meetups", 0.7, "weekly"),
     entry("/bts-giveaway", 0.7, "weekly"),
     entry("/leaderboard", 0.5, "daily"),
     entry("/contribute", 0.5, "monthly"),

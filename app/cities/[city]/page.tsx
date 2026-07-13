@@ -509,6 +509,258 @@ const CITY_DATA: Record<string, {
       { name: "Gubei Korean Town", type: "District", description: "Shanghai's Korean expatriate community with K-pop shops and restaurants." },
     ],
   },
+  "puebla": {
+    name: "Puebla", country: "MX", flag: "🇲🇽", color: "#B0323C",
+    timezone: "CST (UTC-6)", currency: "MXN ($)",
+    description: "One of Mexico's most active K-pop dance-cover scenes. Puebla's plazas fill with random-play-dance circles most weekends, and CDMX arena tours are a short trip away.",
+    concerts: [
+      { artist: "K-pop world tours", venue: "Major arenas & stadiums", date: "Check current listings", ticketUrl: "https://www.songkick.com/search?query=kpop+puebla" },
+    ],
+    meetups: [
+      { title: "Puebla K-pop Meetup", location: "Zócalo (Plaza de Armas)", date: "Monthly", description: "Casual fan gathering with random play dance, album swaps, and photocard trading." },
+      { title: "Angelópolis Dance Crew", location: "Parque Metropolitano", date: "Bi-weekly Sundays", description: "Open K-pop dance-cover practice — all levels welcome." },
+    ],
+    hotels: [
+      { name: "Grand Fiesta Americana Puebla", stars: 5, note: "Central Angelópolis base near the malls fans gather at", area: "Angelópolis" },
+    ],
+    communities: [
+      { name: "K-pop Puebla (fan groups)", platform: "Facebook", url: "https://www.facebook.com/search/groups?q=kpop%20puebla", members: "Active" },
+    ],
+    kpopSpots: [
+      { name: "Anime & K-pop merch stalls", type: "Shopping", description: "Hunt albums, photocards, and lightsticks in the city's anime and Asian-goods shops." },
+    ],
+  },
+  "tijuana": {
+    name: "Tijuana", country: "MX", flag: "🇲🇽", color: "#E4572E",
+    timezone: "PST (UTC-8)", currency: "MXN ($)",
+    description: "A border-city K-pop scene split between Mexico and Southern California — Tijuana fans cross to San Diego and LA shows while building a lively local dance-cover community.",
+    concerts: [
+      { artist: "K-pop world tours", venue: "Major arenas & stadiums", date: "Check current listings", ticketUrl: "https://www.songkick.com/search?query=kpop+tijuana" },
+    ],
+    meetups: [
+      { title: "Tijuana K-pop Fan Meet", location: "Parque Teniente Guerrero", date: "Monthly", description: "Open-air fan meetup with games, trivia, and merch trading." },
+      { title: "TJ Random Play Dance", location: "Plaza Río Tijuana", date: "First Saturday", description: "Random play dance circle — jump in when your bias's song drops." },
+    ],
+    hotels: [
+      { name: "Grand Hotel Tijuana", stars: 4, note: "Landmark towers near Zona Río where fans gather", area: "Zona Río" },
+    ],
+    communities: [
+      { name: "K-pop Tijuana (fan groups)", platform: "Facebook", url: "https://www.facebook.com/search/groups?q=kpop%20tijuana", members: "Active" },
+    ],
+    kpopSpots: [
+      { name: "Plaza Río & anime shops", type: "Shopping", description: "K-pop and anime merch stalls concentrated around Plaza Río Tijuana." },
+    ],
+  },
+  "guadalajara": {
+    name: "Guadalajara", country: "MX", flag: "🇲🇽", color: "#A31621",
+    timezone: "CST (UTC-6)", currency: "MXN ($)",
+    description: "Jalisco's capital is a powerhouse of Mexican K-pop fandom, with huge random-play-dance turnouts and one of the country's biggest anime & K-pop convention circuits.",
+    concerts: [
+      { artist: "K-pop world tours", venue: "Major arenas & stadiums", date: "Check current listings", ticketUrl: "https://www.songkick.com/search?query=kpop+guadalajara" },
+    ],
+    meetups: [
+      { title: "GDL K-pop Meetup", location: "Parque Rojo (Parque Revolución)", date: "Monthly", description: "Casual gathering with dance covers, album swaps, and Korean street snacks." },
+      { title: "Guadalajara Random Play Dance", location: "Plaza de la Liberación", date: "Bi-weekly Saturdays", description: "Downtown random play dance — one of GDL's biggest fan circles." },
+    ],
+    hotels: [
+      { name: "Riu Plaza Guadalajara", stars: 4, note: "High-rise base near the Minerva circle and event venues", area: "Zona Minerva" },
+    ],
+    communities: [
+      { name: "K-pop Guadalajara (fan groups)", platform: "Facebook", url: "https://www.facebook.com/search/groups?q=kpop%20guadalajara", members: "Active" },
+    ],
+    kpopSpots: [
+      { name: "Anime & K-pop shops (Centro)", type: "Shopping", description: "Downtown Guadalajara's anime and import stores stock albums, photocards, and lightsticks." },
+    ],
+  },
+  "monterrey": {
+    name: "Monterrey", country: "MX", flag: "🇲🇽", color: "#1F6FB2",
+    timezone: "CST (UTC-6)", currency: "MXN ($)",
+    description: "Northern Mexico's industrial capital pulls major Latin American tour stops to its arenas, backed by a passionate, well-organized fan base.",
+    concerts: [
+      { artist: "K-pop world tours", venue: "Major arenas & stadiums", date: "Check current listings", ticketUrl: "https://www.songkick.com/search?query=kpop+monterrey" },
+    ],
+    meetups: [
+      { title: "MTY K-pop Fans", location: "Parque Fundidora", date: "Monthly", description: "Fan community meetup with picnics, dance covers, and album trading." },
+      { title: "Monterrey Dance Cover Jam", location: "Macroplaza", date: "First Sunday", description: "Open dance-cover session in the heart of downtown Monterrey." },
+    ],
+    hotels: [
+      { name: "Fiesta Americana Monterrey Valle", stars: 5, note: "San Pedro base near the city's arenas and malls", area: "Valle / San Pedro" },
+    ],
+    communities: [
+      { name: "K-pop Monterrey (fan groups)", platform: "Facebook", url: "https://www.facebook.com/search/groups?q=kpop%20monterrey", members: "Active" },
+    ],
+    kpopSpots: [
+      { name: "Anime & K-pop merch (Centro)", type: "Shopping", description: "Import and anime stores downtown carry K-pop albums and fan goods." },
+    ],
+  },
+  "chihuahua": {
+    name: "Chihuahua", country: "MX", flag: "🇲🇽", color: "#8B5E3C",
+    timezone: "MST (UTC-7)", currency: "MXN ($)",
+    description: "A tight-knit desert-city fandom that punches above its size — regular dance meets and road trips to Monterrey and CDMX shows.",
+    concerts: [
+      { artist: "K-pop world tours", venue: "Regional arenas", date: "Check current listings", ticketUrl: "https://www.songkick.com/search?query=kpop+chihuahua" },
+    ],
+    meetups: [
+      { title: "Chihuahua K-pop Meetup", location: "Plaza del Ángel", date: "Monthly", description: "Casual fan gathering with trivia, dance, and photocard trading." },
+      { title: "CUU Random Play Dance", location: "Deportiva Sur", date: "Monthly", description: "Random play dance session open to dancers of all levels." },
+    ],
+    hotels: [
+      { name: "Quinta Real Chihuahua", stars: 5, note: "Central luxury base for visiting fans", area: "Centro" },
+    ],
+    communities: [
+      { name: "K-pop Chihuahua (fan groups)", platform: "Facebook", url: "https://www.facebook.com/search/groups?q=kpop%20chihuahua", members: "Active" },
+    ],
+    kpopSpots: [
+      { name: "Anime & import shops", type: "Shopping", description: "Local anime and import stores are the go-to for albums and merch." },
+    ],
+  },
+  "rio-de-janeiro": {
+    name: "Rio de Janeiro", country: "BR", flag: "🇧🇷", color: "#00A859",
+    timezone: "BRT (UTC-3)", currency: "BRL (R$)",
+    description: "Brazil's beach capital brings K-pop to the sand — Aterro do Flamengo and Copacabana host huge open-air fan gatherings and dance battles.",
+    concerts: [
+      { artist: "K-pop world tours", venue: "Major arenas & stadiums", date: "Check current listings", ticketUrl: "https://www.songkick.com/search?query=kpop+rio+de+janeiro" },
+    ],
+    meetups: [
+      { title: "Rio K-pop Meetup", location: "Aterro do Flamengo", date: "Monthly", description: "Open-air fan gathering with dance covers, picnics, and album swaps by the bay." },
+      { title: "Rio Random Play Dance", location: "Largo do Machado", date: "Bi-weekly Saturdays", description: "One of Rio's biggest random-play-dance circles." },
+    ],
+    hotels: [
+      { name: "Copacabana Palace", stars: 5, note: "Iconic beachfront landmark hosting touring artists", area: "Copacabana" },
+    ],
+    communities: [
+      { name: "K-pop Rio (fan groups)", platform: "Facebook", url: "https://www.facebook.com/search/groups?q=kpop%20rio%20de%20janeiro", members: "Active" },
+    ],
+    kpopSpots: [
+      { name: "Saara & Asian import shops", type: "Shopping", description: "The Saara market district and Asian-goods stores stock albums and K-pop merch." },
+    ],
+  },
+  "santiago": {
+    name: "Santiago", country: "CL", flag: "🇨🇱", color: "#0F52BA",
+    timezone: "CLT (UTC-4)", currency: "CLP ($)",
+    description: "Chile has one of Latin America's most devoted K-pop fandoms, and Santiago is its heart — famous for record-breaking pre-order drives and sold-out arena tours.",
+    concerts: [
+      { artist: "K-pop world tours", venue: "Movistar Arena & Estadio venues", date: "Check current listings", ticketUrl: "https://www.songkick.com/search?query=kpop+santiago+chile" },
+    ],
+    meetups: [
+      { title: "Santiago K-pop Fans", location: "Parque Forestal", date: "Monthly", description: "Casual fan meetup with dance, trivia, and merch trading along the park." },
+      { title: "K-pop RPD Santiago", location: "Plaza Ñuñoa", date: "First Saturday", description: "Random play dance circle — a Santiago fandom institution." },
+    ],
+    hotels: [
+      { name: "The Ritz-Carlton Santiago", stars: 5, note: "El Golf base near the city's arenas and malls", area: "El Golf" },
+    ],
+    communities: [
+      { name: "K-pop Chile (fan groups)", platform: "Facebook", url: "https://www.facebook.com/search/groups?q=kpop%20chile", members: "Active" },
+    ],
+    kpopSpots: [
+      { name: "Barrio Patronato imports", type: "Shopping", description: "Patronato's Asian-import shops are Santiago's hub for K-pop albums and merch." },
+    ],
+  },
+  "bogota": {
+    name: "Bogotá", country: "CO", flag: "🇨🇴", color: "#00489E",
+    timezone: "COT (UTC-5)", currency: "COP ($)",
+    description: "Colombia's capital is a major Latin American tour stop, with a thriving fan scene organizing meetups across the city's parks and plazas.",
+    concerts: [
+      { artist: "K-pop world tours", venue: "Movistar Arena & Coliseo venues", date: "Check current listings", ticketUrl: "https://www.songkick.com/search?query=kpop+bogota" },
+    ],
+    meetups: [
+      { title: "Bogotá K-pop Meetup", location: "Parque de los Hippies (Chapinero)", date: "Monthly", description: "Casual fan gathering with dance covers, games, and album swaps." },
+      { title: "Bogotá Random Play Dance", location: "Parque Simón Bolívar", date: "Bi-weekly Saturdays", description: "Large-scale random play dance in the city's biggest park." },
+    ],
+    hotels: [
+      { name: "Four Seasons Bogotá (Casa Medina)", stars: 5, note: "Zona G landmark near event venues", area: "Zona G" },
+    ],
+    communities: [
+      { name: "K-pop Colombia (fan groups)", platform: "Facebook", url: "https://www.facebook.com/search/groups?q=kpop%20colombia", members: "Active" },
+    ],
+    kpopSpots: [
+      { name: "Chapinero import shops", type: "Shopping", description: "Chapinero's anime and import stores carry albums, photocards, and lightsticks." },
+    ],
+  },
+  "medellin": {
+    name: "Medellín", country: "CO", flag: "🇨🇴", color: "#E4002B",
+    timezone: "COT (UTC-5)", currency: "COP ($)",
+    description: "The city of eternal spring has a fast-growing K-pop community, centered on El Poblado and the parks of the city center.",
+    concerts: [
+      { artist: "K-pop world tours", venue: "La Macarena & regional venues", date: "Check current listings", ticketUrl: "https://www.songkick.com/search?query=kpop+medellin" },
+    ],
+    meetups: [
+      { title: "Medellín K-pop Fans", location: "Parque de los Deseos", date: "Monthly", description: "Fan meetup with dance covers, trivia, and photocard trading." },
+      { title: "Medellín RPD", location: "Parque de las Luces", date: "First Saturday", description: "Random play dance circle in the heart of the city." },
+    ],
+    hotels: [
+      { name: "The Charlee Hotel", stars: 5, note: "El Poblado nightlife-district base for visiting fans", area: "El Poblado" },
+    ],
+    communities: [
+      { name: "K-pop Medellín (fan groups)", platform: "Facebook", url: "https://www.facebook.com/search/groups?q=kpop%20medellin", members: "Active" },
+    ],
+    kpopSpots: [
+      { name: "El Poblado import shops", type: "Shopping", description: "El Poblado's anime and Asian-goods stores stock K-pop albums and merch." },
+    ],
+  },
+  "toronto": {
+    name: "Toronto", country: "CA", flag: "🇨🇦", color: "#C8102E",
+    timezone: "EST (UTC-5)", currency: "CAD ($)",
+    description: "Canada's most multicultural city is a top North American tour stop, with a deep Korean community along Bloor St and year-round fan events.",
+    concerts: [
+      { artist: "K-pop world tours", venue: "Scotiabank Arena & Rogers Centre", date: "Check current listings", ticketUrl: "https://www.songkick.com/search?query=kpop+toronto" },
+    ],
+    meetups: [
+      { title: "Toronto K-pop Meetup", location: "Nathan Phillips Square", date: "Monthly", description: "Downtown fan gathering with dance covers and album trading." },
+      { title: "Toronto Random Play Dance", location: "Yonge-Dundas Square", date: "Summer weekends", description: "Open-air random play dance in the city's busiest square." },
+    ],
+    hotels: [
+      { name: "Fairmont Royal York", stars: 5, note: "Landmark hotel across from Union Station and the arena", area: "Downtown" },
+    ],
+    communities: [
+      { name: "Toronto K-pop (fan groups)", platform: "Facebook", url: "https://www.facebook.com/search/groups?q=kpop%20toronto", members: "Active" },
+    ],
+    kpopSpots: [
+      { name: "Koreatown (Bloor St W)", type: "District", description: "Toronto's Koreatown has restaurants, cafés, and shops carrying K-pop albums and goods." },
+    ],
+  },
+  "melbourne": {
+    name: "Melbourne", country: "AU", flag: "🇦🇺", color: "#1B3A6B",
+    timezone: "AEST (UTC+10)", currency: "AUD ($)",
+    description: "Australia's culture capital anchors a huge K-pop scene — from Fed Square dance meets to sold-out shows at Rod Laver Arena.",
+    concerts: [
+      { artist: "K-pop world tours", venue: "Rod Laver Arena & Marvel Stadium", date: "Check current listings", ticketUrl: "https://www.songkick.com/search?query=kpop+melbourne" },
+    ],
+    meetups: [
+      { title: "Melbourne K-pop Meetup", location: "Federation Square", date: "Monthly", description: "Central fan gathering with dance covers, trivia, and merch swaps." },
+      { title: "Melbourne Random Play Dance", location: "State Library Victoria forecourt", date: "Bi-weekly Saturdays", description: "A long-running Melbourne fan random-play-dance circle." },
+    ],
+    hotels: [
+      { name: "Crown Towers Melbourne", stars: 5, note: "Southbank riverside base near major venues", area: "Southbank" },
+    ],
+    communities: [
+      { name: "K-pop Melbourne (fan groups)", platform: "Facebook", url: "https://www.facebook.com/search/groups?q=kpop%20melbourne", members: "Active" },
+    ],
+    kpopSpots: [
+      { name: "CBD K-pop & Asian grocers", type: "Shopping", description: "The CBD's Asian grocers and album shops stock K-pop releases and photocards." },
+    ],
+  },
+  "sydney": {
+    name: "Sydney", country: "AU", flag: "🇦🇺", color: "#0057B8",
+    timezone: "AEST (UTC+10)", currency: "AUD ($)",
+    description: "Sydney draws nearly every K-pop world tour to Qudos Bank Arena, with fan meetups clustered around Darling Harbour and the CBD.",
+    concerts: [
+      { artist: "K-pop world tours", venue: "Qudos Bank Arena & Accor Stadium", date: "Check current listings", ticketUrl: "https://www.songkick.com/search?query=kpop+sydney" },
+    ],
+    meetups: [
+      { title: "Sydney K-pop Meetup", location: "Tumbalong Park (Darling Harbour)", date: "Monthly", description: "Harbourside fan gathering with dance, games, and album trading." },
+      { title: "Sydney Random Play Dance", location: "Sydney Town Hall steps", date: "First Saturday", description: "Random play dance circle on the iconic Town Hall steps." },
+    ],
+    hotels: [
+      { name: "The Star Grand", stars: 5, note: "Pyrmont base a short walk from Darling Harbour meetups", area: "Pyrmont" },
+    ],
+    communities: [
+      { name: "K-pop Sydney (fan groups)", platform: "Facebook", url: "https://www.facebook.com/search/groups?q=kpop%20sydney", members: "Active" },
+    ],
+    kpopSpots: [
+      { name: "Chinatown album shops", type: "Shopping", description: "Haymarket / Chinatown stores are Sydney's hub for K-pop albums and merch." },
+    ],
+  },
 };
 
 export async function generateMetadata({ params }: { params: Promise<{ city: string }> }): Promise<Metadata> {
