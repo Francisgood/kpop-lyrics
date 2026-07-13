@@ -7,6 +7,32 @@ import { trackLead } from "@/lib/conversions";
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const AGE_ERROR = "Sorry — this giveaway is only open to entrants who are 18 or older.";
 
+// Country picker — top traffic markets pinned first, then the full list A–Z.
+const FEATURED_COUNTRIES = ["Mexico", "Brazil", "Argentina", "Chile", "Colombia", "Peru", "Philippines", "Indonesia", "United States", "Canada"];
+const COUNTRIES = [
+  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria",
+  "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia",
+  "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia",
+  "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo (Brazzaville)",
+  "Congo (Kinshasa)", "Costa Rica", "Côte d’Ivoire", "Croatia", "Cuba", "Cyprus", "Czechia", "Denmark", "Djibouti", "Dominica",
+  "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia",
+  "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea",
+  "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq",
+  "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Laos",
+  "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macau", "Madagascar",
+  "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia",
+  "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands",
+  "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau",
+  "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania",
+  "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino",
+  "São Tomé and Príncipe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia",
+  "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan",
+  "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga",
+  "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates",
+  "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen",
+  "Zambia", "Zimbabwe",
+];
+
 const PRIZES = [
   {
     img: "/giveaway/tickets.jpg",
@@ -37,6 +63,7 @@ export default function BtsGiveawayPage() {
   const [day, setDay] = useState("");
   const [year, setYear] = useState("");
   const [zip, setZip] = useState("");
+  const [country, setCountry] = useState("");
   const [ref, setRef] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -63,7 +90,7 @@ export default function BtsGiveawayPage() {
     e.preventDefault();
     setError("");
     if (under18) { setError(AGE_ERROR); return; }
-    if (!firstName || !lastName || !email || !phone || !month || !day || !year || !zip) {
+    if (!firstName || !lastName || !email || !phone || !month || !day || !year || !country || !zip) {
       setError("Please complete all fields to enter.");
       return;
     }
@@ -72,7 +99,7 @@ export default function BtsGiveawayPage() {
       const res = await fetch("/api/giveaway", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName, lastName, email, phone, zip, birthMonth: month, birthDay: day, birthYear: year, ref }),
+        body: JSON.stringify({ firstName, lastName, email, phone, zip, country, birthMonth: month, birthDay: day, birthYear: year, ref }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? "Something went wrong. Please try again."); return; }
@@ -120,7 +147,7 @@ export default function BtsGiveawayPage() {
           </div>
 
           <p style={{ marginTop: 20, fontSize: "0.78rem", color: "var(--ink-faint)", lineHeight: 1.6 }}>
-            Referrals count only when your friend is 18+, a U.S. resident, accepts the rules, and joins the newsletter. See the{" "}
+            Referrals count only when your friend is 18+, accepts the rules, and joins the newsletter. See the{" "}
             <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>Official Rules</Link> (Section 16).
           </p>
         </div>
@@ -169,7 +196,7 @@ export default function BtsGiveawayPage() {
           ))}
         </div>
         <p style={{ marginTop: 16, fontSize: "0.74rem", color: "var(--ink-faint)", lineHeight: 1.6 }}>
-          No purchase necessary. Open to U.S. residents 18+. Prizes shown are illustrative. See the{" "}
+          No purchase necessary. Open to entrants 18+ where permitted by law. Prizes shown are illustrative. See the{" "}
           <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>Official Rules</Link>.
         </p>
       </section>
@@ -186,7 +213,7 @@ export default function BtsGiveawayPage() {
             <input style={field} placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} aria-label="First Name" />
             <input style={field} placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} aria-label="Last Name" />
             <input style={field} type="email" placeholder="Email Address" value={email} onChange={(e) => setEmail(e.target.value)} aria-label="Email Address" />
-            <input style={field} type="tel" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} aria-label="Phone Number" />
+            <input style={field} type="tel" autoComplete="tel" placeholder="Phone number (with country code, e.g. +52…)" value={phone} onChange={(e) => setPhone(e.target.value)} aria-label="Phone number" />
 
             <div>
               <label style={{ display: "block", fontWeight: 700, color: "var(--ink)", fontSize: "0.95rem", marginBottom: 8 }}>Birthday</label>
@@ -206,7 +233,15 @@ export default function BtsGiveawayPage() {
               </div>
             </div>
 
-            <input style={field} inputMode="numeric" placeholder="Zip Code" value={zip} onChange={(e) => setZip(e.target.value)} aria-label="Zip Code" />
+            <div style={{ display: "flex", gap: 8 }}>
+              <select style={{ ...sel, flex: "1 1 45%" }} value={country} onChange={(e) => setCountry(e.target.value)} aria-label="Country">
+                <option value="">Country</option>
+                {FEATURED_COUNTRIES.map((c) => <option key={`f-${c}`} value={c}>{c}</option>)}
+                <option value="" disabled>──────────</option>
+                {COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+              <input style={{ ...field, flex: "1 1 55%", minWidth: 0 }} autoComplete="postal-code" placeholder="Postal code" value={zip} onChange={(e) => setZip(e.target.value)} aria-label="Postal code" />
+            </div>
           </div>
 
           {(under18 || error) && (

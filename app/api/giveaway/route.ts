@@ -33,6 +33,8 @@ async function ensureTable() {
   await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "GiveawayEntry_email_key" ON "GiveawayEntry" ("email")`);
   await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "GiveawayEntry_referralCode_key" ON "GiveawayEntry" ("referralCode")`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "GiveawayEntry_referredByCode_idx" ON "GiveawayEntry" ("referredByCode")`);
+  // International entrants: a country + a postal code in that country's own format.
+  await prisma.$executeRawUnsafe(`ALTER TABLE "GiveawayEntry" ADD COLUMN IF NOT EXISTS "country" TEXT`);
   tableReady = true;
 }
 
@@ -53,10 +55,11 @@ export async function POST(req: NextRequest) {
     const email = String(b.email ?? "").trim().toLowerCase();
     const phone = String(b.phone ?? "").trim();
     const zip = String(b.zip ?? "").trim();
+    const country = String(b.country ?? "").trim();
     const ref = b.ref ? String(b.ref).trim() : null;
     const y = Number(b.birthYear), mo = Number(b.birthMonth), d = Number(b.birthDay);
 
-    if (!firstName || !lastName || !email.includes("@") || !phone || !zip || !y || !mo || !d) {
+    if (!firstName || !lastName || !email.includes("@") || !phone || !zip || !country || !y || !mo || !d) {
       return NextResponse.json({ error: "Please complete all fields to enter." }, { status: 400 });
     }
     const birthDate = new Date(Date.UTC(y, mo - 1, d));
@@ -85,7 +88,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Attribute a referral only if it's valid: known code, not self, referrer under the 50 cap.
-    // (The referred entrant is, by reaching this point, 18+, U.S. zip, agreed to the rules, and newsletter-opted-in.)
+    // (The referred entrant is, by reaching this point, 18+, gave a country + postal code, agreed to the rules, and newsletter-opted-in.)
     let referredByCode: string | null = null;
     if (ref) {
       const r = await prisma.$queryRaw<{ id: string; email: string; referralCount: number }[]>`
@@ -98,9 +101,9 @@ export async function POST(req: NextRequest) {
 
     await prisma.$executeRaw`
       INSERT INTO "GiveawayEntry"
-        ("id","firstName","lastName","email","phone","zip","birthDate","newsletterOptIn","referralCode","referredByCode","referralCount")
+        ("id","firstName","lastName","email","phone","zip","country","birthDate","newsletterOptIn","referralCode","referredByCode","referralCount")
       VALUES
-        (${randomUUID()}, ${firstName}, ${lastName}, ${email}, ${phone}, ${zip}, ${birthDate}, true, ${code}, ${referredByCode}, 0)`;
+        (${randomUUID()}, ${firstName}, ${lastName}, ${email}, ${phone}, ${zip}, ${country}, ${birthDate}, true, ${code}, ${referredByCode}, 0)`;
 
     // The entrant opted into the newsletter on the form — add them to beehiiv and
     // send the welcome email. Best-effort: subscribeToBeehiiv never throws.
