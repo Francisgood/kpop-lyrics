@@ -56,11 +56,29 @@ export default function AnnotationLyrics({
   const [selPrompt, setSelPrompt] = useState<SelPrompt | null>(null);
   const lyricsRef = useRef<HTMLDivElement>(null);
 
+  // ~95% of traffic is mobile. On touch devices the native iOS selection bar
+  // (Copy / Look Up / Find Selection) fires on any text highlight and covers our
+  // floating "Annotate" prompt — so highlight-to-annotate is unusable there. On
+  // coarse pointers we instead let users TAP a line to annotate it, and disable
+  // text selection on the lyrics so the OS menu never appears.
+  const [isTouch, setIsTouch] = useState(false);
+
   const activeAnns = activeLine != null ? byLine.get(activeLine) ?? [] : [];
   const open = activeLine != null;
 
-  // Highlight-to-annotate: surface a floating prompt at the current text selection.
+  // Detect touch / coarse-pointer devices (mobile) — see note above.
   useEffect(() => {
+    const mq = window.matchMedia("(pointer: coarse)");
+    const update = () => setIsTouch(mq.matches);
+    update();
+    mq.addEventListener?.("change", update);
+    return () => mq.removeEventListener?.("change", update);
+  }, []);
+
+  // Highlight-to-annotate (desktop / fine pointer only): surface a floating prompt
+  // at the current text selection. Skipped on touch, where tapping a line is the entry.
+  useEffect(() => {
+    if (isTouch) { setSelPrompt(null); return; }
     function compute() {
       const sel = window.getSelection();
       const container = lyricsRef.current;
@@ -102,7 +120,7 @@ export default function AnnotationLyrics({
       document.removeEventListener("selectionchange", onSelChange);
       window.removeEventListener("scroll", onScroll, true);
     };
-  }, []);
+  }, [isTouch]);
 
   function close() {
     setActiveLine(null);
@@ -129,16 +147,26 @@ export default function AnnotationLyrics({
     setActiveLine(lineIndex >= 0 ? lineIndex : 0);
     setContribOpen(true);
   }
+  // Touch entry point: tap a (non-annotated) line to annotate the whole line.
+  function startAnnotateFromLine(lineIndex: number) {
+    if (!isLoggedIn) {
+      setGateOpen(true);
+      return;
+    }
+    setSelText(koLines[lineIndex]?.trim() ?? "");
+    setActiveLine(lineIndex);
+    setContribOpen(true);
+  }
 
   return (
     <section>
       {annotations.length > 0 ? (
         <div style={{ background: "var(--sakura-light)", border: "1px solid var(--sakura)", borderRadius: 8, padding: "10px 16px", marginBottom: 20, fontSize: "0.82rem", color: "var(--ink-dim)" }}>
-          <strong style={{ color: "var(--sakura)" }}>Annotated lyrics</strong> — pink lines have K-pop slang &amp; culture notes (tap to read). Or <strong style={{ color: "var(--sakura)" }}>highlight any line</strong> to add your own.
+          <strong style={{ color: "var(--sakura)" }}>Annotated lyrics</strong> — pink lines have K-pop slang &amp; culture notes (tap to read). Or <strong style={{ color: "var(--sakura)" }}>{isTouch ? "tap any line" : "highlight any line"}</strong> to add your own.
         </div>
       ) : (
         <div style={{ background: "var(--sakura-light)", border: "1px solid var(--sakura)", borderRadius: 8, padding: "10px 16px", marginBottom: 20, fontSize: "0.82rem", color: "var(--ink-dim)" }}>
-          <strong style={{ color: "var(--sakura)" }}>Highlight any lyric</strong> to start an annotation — explain the slang, references, and culture behind the words.
+          <strong style={{ color: "var(--sakura)" }}>{isTouch ? "Tap any lyric" : "Highlight any lyric"}</strong> to start an annotation — explain the slang, references, and culture behind the words.
         </div>
       )}
 
@@ -147,15 +175,25 @@ export default function AnnotationLyrics({
         <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-faint)" }}>English Translation</div>
       </div>
 
-      <div ref={lyricsRef}>
+      <div ref={lyricsRef} style={isTouch ? { WebkitUserSelect: "none", userSelect: "none", WebkitTouchCallout: "none" } : undefined}>
         {Array.from({ length: Math.max(koLines.length, enLines.length, roLines.length) }).map((_unused, i) => {
           const line = koLines[i] ?? "";
           const isEmpty = !line.trim() && !enLines[i]?.trim();
           if (isEmpty) return <div key={i} style={{ height: 20 }} />;
           const annotated = (byLine.get(i)?.length ?? 0) > 0;
           const isActive = activeLine === i;
+          const tapToAnnotate = isTouch && !annotated;
           return (
-            <div key={i} className="lyric-line" data-line={i} style={{ borderBottom: "1px solid var(--border)", padding: "10px 0" }}>
+            <div
+              key={i}
+              className="lyric-line"
+              data-line={i}
+              role={tapToAnnotate ? "button" : undefined}
+              tabIndex={tapToAnnotate ? 0 : undefined}
+              onClick={tapToAnnotate ? () => startAnnotateFromLine(i) : undefined}
+              onKeyDown={tapToAnnotate ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); startAnnotateFromLine(i); } } : undefined}
+              style={{ borderBottom: "1px solid var(--border)", padding: "10px 0", cursor: tapToAnnotate ? "pointer" : undefined, WebkitTapHighlightColor: isTouch ? "rgba(255,111,168,0.22)" : undefined }}
+            >
               <div>
                 {annotated ? (
                   <button
@@ -184,8 +222,8 @@ export default function AnnotationLyrics({
         })}
       </div>
 
-      {/* Floating highlight-to-annotate prompt */}
-      {selPrompt && (
+      {/* Floating highlight-to-annotate prompt (desktop only) */}
+      {!isTouch && selPrompt && (
         <button
           type="button"
           onMouseDown={(e) => e.preventDefault()}
