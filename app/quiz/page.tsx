@@ -4,7 +4,7 @@ import { QUIZZES } from "@/lib/quiz-data";
 
 const TITLE = "K-pop Quizzes — Aegyo Arena";
 const DESC =
-  "Five K-pop quizzes: an aegyo deep-dive, fandom slang, artist facts, idol mukbangs, and a lyrics challenge. Test your knowledge and share your score.";
+  "Six K-pop quizzes: an aegyo deep-dive, Korean slang, fandom slang, artist facts, idol mukbangs, and a lyrics challenge. Test your knowledge and share your score.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -26,7 +26,7 @@ export default function QuizHubPage() {
           How well do you<br />really know K-pop?
         </h1>
         <p style={{ fontSize: "1.05rem", color: "var(--ink-dim)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto" }}>
-          Five quizzes spanning K-pop culture — from aegyo to lyrics. Pick your category, beat your score, and share the link —
+          Six quizzes spanning K-pop culture — from aegyo to lyrics. Pick your category, beat your score, and share the link —
           every quiz has its own page built to send to your group chat.
         </p>
       </section>

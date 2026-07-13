@@ -18,12 +18,12 @@ export default function Image() {
             How well do you really know K-pop?
           </div>
           <div style={{ display: "flex", marginTop: 26, fontSize: 34, color: "rgba(250,250,248,0.62)" }}>
-            Five quizzes · From aegyo to lyrics · Beat your score
+            Six quizzes · From aegyo to lyrics · Beat your score
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", gap: 12 }}>
-            {["#C77DFF", "#FFD700", "#FF6B9D", "#FF6B35", "#4ECDC4"].map((c) => (
+            {["#C77DFF", "#FFD700", "#4AC8F0", "#FF6B9D", "#FF6B35", "#4ECDC4"].map((c) => (
               <div key={c} style={{ display: "flex", width: 46, height: 12, borderRadius: 999, background: c }} />
             ))}
           </div>
