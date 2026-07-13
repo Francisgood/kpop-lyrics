@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 
-export const revalidate = 600;
+export const dynamic = "force-dynamic";
 
 const TITLE = "K-pop Fan Events & Meetups Near You — Aegyo Arena";
 const DESC =
