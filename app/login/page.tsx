@@ -38,16 +38,8 @@ export default function LoginPage() {
   return (
     <main style={{ minHeight: "82vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "48px 24px" }}>
       <div style={{ width: "100%", maxWidth: 440 }}>
-        {/* Brand */}
-        <div style={{ textAlign: "center", marginBottom: 26 }}>
-          <Link href="/" aria-label="Aegyo Arena home" style={{ display: "inline-block" }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/aegyo-logo.png" alt="Aegyo Arena" style={{ height: 46, width: "auto", display: "block", margin: "0 auto" }} />
-          </Link>
-        </div>
-
         {/* Card */}
-        <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 18, padding: "34px 30px", boxShadow: "0 18px 50px rgba(0,0,0,0.35)" }}>
+        <div style={{ background: "var(--bg-card)", border: "8px solid #fff", borderRadius: 18, padding: "34px 30px", boxShadow: "0 18px 50px rgba(0,0,0,0.35)" }}>
           <div style={{ textAlign: "center", marginBottom: 24 }}>
             <h1 style={{ fontFamily: "var(--serif)", fontSize: "2rem", fontWeight: 700, color: "var(--ink)", margin: "0 0 6px" }}>Welcome back</h1>
             <p style={{ color: "var(--ink-dim)", fontSize: "0.92rem", margin: 0 }}>Sign in to save favorites, comment, and more</p>
