@@ -67,11 +67,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </div>
               <div style={{ display: "flex", gap: 10 }}>
                 {[
-                  { label: "X / Twitter", href: "https://x.com/aegyoarena", icon: "✕" },
-                  { label: "TikTok", href: "https://www.tiktok.com/@aegyo.arena", icon: "♪" },
-                ].map(({ label, href, icon }) => (
+                  { label: "X / Twitter", href: "https://x.com/aegyoarena", node: "✕" as React.ReactNode },
+                  { label: "TikTok", href: "https://www.tiktok.com/@aegyo.arena", node: "♪" as React.ReactNode },
+                  { label: "YouTube", href: "https://www.youtube.com/@Aegyoarena", node: (
+                    <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.51A3.02 3.02 0 0 0 .5 6.2C0 8.07 0 12 0 12s0 3.93.5 5.8a3.02 3.02 0 0 0 2.12 2.14c1.88.51 9.38.51 9.38.51s7.5 0 9.38-.51a3.02 3.02 0 0 0 2.12-2.14C24 15.93 24 12 24 12s0-3.93-.5-5.8ZM9.55 15.57V8.43L15.82 12l-6.27 3.57Z" /></svg>
+                  ) },
+                  { label: "Reddit", href: "https://www.reddit.com/user/aegyo-arena/", node: (
+                    <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M24 11.78a2.57 2.57 0 0 0-4.36-1.83 12.6 12.6 0 0 0-6.86-2.17l1.17-5.5 3.82.81a1.83 1.83 0 1 0 .19-.87l-4.27-.9a.45.45 0 0 0-.53.35l-1.3 6.11a12.63 12.63 0 0 0-6.96 2.17 2.57 2.57 0 1 0-2.84 4.22 5.16 5.16 0 0 0-.06.78c0 3.98 4.64 7.21 10.36 7.21s10.36-3.23 10.36-7.21a5.16 5.16 0 0 0-.06-.78A2.57 2.57 0 0 0 24 11.78ZM6.33 13.6a1.83 1.83 0 1 1 3.66 0 1.83 1.83 0 0 1-3.66 0Zm10.23 4.85a5.42 5.42 0 0 1-3.9 1.2h-.03a5.42 5.42 0 0 1-3.9-1.2.34.34 0 1 1 .48-.49 4.76 4.76 0 0 0 3.42 1.02h.03a4.76 4.76 0 0 0 3.42-1.02.34.34 0 0 1 .48.49Zm-.36-3.02a1.83 1.83 0 1 1 0-3.66 1.83 1.83 0 0 1 0 3.66Z" /></svg>
+                  ) },
+                ].map(({ label, href, node }) => (
                   <a key={href} href={href} target="_blank" rel="noopener noreferrer" className="social-btn" aria-label={label}>
-                    {icon}
+                    {node}
                   </a>
                 ))}
               </div>
