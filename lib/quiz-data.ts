@@ -8,6 +8,8 @@ export type QuizQuestion = {
   explanation: string;
   image?: string;      // optional illustrative GIF/image shown above the options
   imageAlt?: string;
+  sourceUrl?: string;    // optional "watch the clip" link shown at the bottom of the question
+  sourceLabel?: string;
 };
 
 export type QuizCategory = {
@@ -127,6 +129,8 @@ export const QUIZZES: QuizCategory[] = [
       },
       {
         q: "The 2013 viral 'Gwiyomi (귀요미) Player' craze — idols counting '1 + 1' with escalating cuteness — is a textbook example of what?",
+        image: "/images/quiz/aegyo-gwiyomi.gif",
+        imageAlt: "A performer doing the Gwiyomi Song's cutesy counting routine, hands framing the face — the aegyo gesture that went viral.",
         options: [
           "A dance-battle format",
           "A meme-ified aegyo performance that spread worldwide",
@@ -135,6 +139,8 @@ export const QUIZZES: QuizCategory[] = [
         ],
         answer: 1,
         explanation: "귀요미 means 'cutie.' The Gwiyomi Song turned aegyo into a copy-me challenge — an escalating cutesy counting routine — and it went global, showing how aegyo doubles as shareable, participatory content.",
+        sourceUrl: "https://www.youtube.com/watch?v=YjZ1vd1YgOE",
+        sourceLabel: "Watch the Gwiyomi Song clip on YouTube",
       },
       {
         q: "Scientists explain the universal pull of aegyo with the 'baby schema' (Kindchenschema). What is it?",

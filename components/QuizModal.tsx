@@ -261,6 +261,14 @@ export default function QuizModal({ onClose }: QuizModalProps) {
                 </button>
               )}
             </div>
+
+            {current.sourceUrl && (
+              <div style={{ marginTop: 14, textAlign: "center" }}>
+                <a href={current.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.78rem", color: "#888", textDecoration: "none", fontWeight: 700 }}>
+                  ▶ {current.sourceLabel ?? "Watch the clip on YouTube"}
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>
