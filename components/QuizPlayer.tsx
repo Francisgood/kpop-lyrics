@@ -151,6 +151,13 @@ export default function QuizPlayer({ category }: { category: QuizCategory }) {
         {confirmed && (
           <div style={{ marginTop: 16, background: "#f9f9f9", borderLeft: `4px solid ${accent}`, borderRadius: "0 6px 6px 0", padding: "12px 16px", fontSize: "0.82rem", color: "#555", lineHeight: 1.6 }}>
             {current.explanation}
+            {current.learnMoreUrl && (
+              <div style={{ marginTop: 10 }}>
+                <a href={current.learnMoreUrl} target="_blank" rel="noopener noreferrer" style={{ color: accent, fontWeight: 800, textDecoration: "none" }}>
+                  {current.learnMoreLabel ?? "Read the full definition →"}
+                </a>
+              </div>
+            )}
           </div>
         )}
 

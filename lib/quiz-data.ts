@@ -10,6 +10,8 @@ export type QuizQuestion = {
   imageAlt?: string;
   sourceUrl?: string;    // optional "watch the clip" link shown at the bottom of the question
   sourceLabel?: string;
+  learnMoreUrl?: string;   // optional internal link shown AFTER answering (e.g. the slang dictionary entry)
+  learnMoreLabel?: string;
 };
 
 export type QuizCategory = {
@@ -242,6 +244,8 @@ export const QUIZZES: QuizCategory[] = [
         ],
         answer: 1,
         explanation: "대박 originally meant 'great success' or 'jackpot/windfall,' then became an all-purpose exclamation of amazement. It's one of the most widely borrowed Korean words in global fandom — used for shock announcements, stunning visuals, or surprise chart wins.",
+        learnMoreUrl: "/korean-slang/daebak",
+        learnMoreLabel: "Read the full 대박 entry in the K-pop dictionary →",
       },
       {
         q: "치맥 (chimaek) — a Korean national institution and variety-show staple — is a mashup of which two things?",
@@ -253,6 +257,8 @@ export const QUIZZES: QuizCategory[] = [
         ],
         answer: 1,
         explanation: "치맥 = 치킨 (chicken) + 맥주 (beer) — Korea's beloved fried-chicken-and-beer pairing. It's so iconic it has its own festival in Daegu, and idols reference it constantly (and endorse chicken brands).",
+        learnMoreUrl: "/korean-slang/chimaek",
+        learnMoreLabel: "Read the full 치맥 entry in the K-pop dictionary →",
       },
       {
         q: "An idol who gracefully reads the mood of a room and responds perfectly is said to have great 눈치 (nunchi). What is it?",
@@ -264,6 +270,8 @@ export const QUIZZES: QuizCategory[] = [
         ],
         answer: 1,
         explanation: "눈치 (literally 'eye-measure') is the Korean art of reading a room — catching unspoken cues and reacting appropriately. Good 눈치 helps idols handle interviews and group dynamics gracefully; lacking it is a classic criticism of tone-deaf behavior.",
+        learnMoreUrl: "/korean-slang/nunchi",
+        learnMoreLabel: "Read the full 눈치 entry in the K-pop dictionary →",
       },
       {
         q: "정 (jeong) is often called untranslatable. What does it describe?",
@@ -275,6 +283,8 @@ export const QUIZZES: QuizCategory[] = [
         ],
         answer: 1,
         explanation: "정 is a uniquely Korean concept — the deep, sticky bond that grows through shared history. It's the loyalty between longtime members and the attachment fans feel after following an idol through every era. You can even develop 정 for a song or a place.",
+        learnMoreUrl: "/korean-slang/jeong",
+        learnMoreLabel: "Read the full 정 entry in the K-pop dictionary →",
       },
       {
         q: "In K-pop commentary, a veteran who lectures younger groups about 'real talent' and 'the old ways' might be called a 꼰대 (kkondae). Who is that?",
@@ -286,6 +296,8 @@ export const QUIZZES: QuizCategory[] = [
         ],
         answer: 1,
         explanation: "꼰대 is the rigid elder who constantly references 'back in my day' and lectures juniors. Gen Z broadened it into a catch-all for any condescending, boomer-style moralizing — including industry vets who gatekeep what counts as 'real' K-pop.",
+        learnMoreUrl: "/korean-slang/kkondae",
+        learnMoreLabel: "Read the full 꼰대 entry in the K-pop dictionary →",
       },
       {
         q: "Your bias flashes an unexpected sweet smile and you feel 심쿵 (simkung). What just happened?",
@@ -297,6 +309,8 @@ export const QUIZZES: QuizCategory[] = [
         ],
         answer: 0,
         explanation: "심쿵 = 심장 (heart) + 쿵 (a thud sound) — the little heart-drop when an idol does something unexpectedly charming. It's one of the most common reactions to idol content, from a casual vlog smile to a breathtaking stage look.",
+        learnMoreUrl: "/korean-slang/simkung",
+        learnMoreLabel: "Read the full 심쿵 entry in the K-pop dictionary →",
       },
       {
         q: "Fans call an idol's 2016 comeback their 리즈 (rijeu). Surprisingly, this slang for 'peak/prime era' traces back to…",
@@ -308,6 +322,8 @@ export const QUIZZES: QuizCategory[] = [
         ],
         answer: 1,
         explanation: "리즈 means someone's absolute prime — their best-looking, best-performing era. It traces back through a Korean internet meme to Leeds United (a footballer's 'Leeds era' being his peak). Now it's pure K-pop shorthand: 'that was her 리즈 era.'",
+        learnMoreUrl: "/korean-slang/rijeu",
+        learnMoreLabel: "Read the full 리즈 entry in the K-pop dictionary →",
       },
       {
         q: "An idol films a cozy vlog of themselves 혼밥 (honbap). What are they doing?",
@@ -319,6 +335,8 @@ export const QUIZZES: QuizCategory[] = [
         ],
         answer: 1,
         explanation: "혼밥 = 혼자 (alone) + 밥 (meal) — eating solo. Once mildly stigmatized in Korea's communal food culture, it was normalized in the mid-2010s, and idol 혼밥 vlogs now look downright aspirational. (Its drinking cousin is 혼술, honsul.)",
+        learnMoreUrl: "/korean-slang/honbap",
+        learnMoreLabel: "Read the full 혼밥 entry in the K-pop dictionary →",
       },
       {
         q: "A surprise disbandment announcement leaves the whole fandom in total 멘붕 (menbung). What is it?",
@@ -330,6 +348,8 @@ export const QUIZZES: QuizCategory[] = [
         ],
         answer: 1,
         explanation: "멘붕 is short for 멘탈 붕괴 ('mental collapse') — the brain-melting overwhelm of too much to process, whether it's a shocking controversy, a surprise comeback, or a performance so good your brain short-circuits.",
+        learnMoreUrl: "/korean-slang/menbung",
+        learnMoreLabel: "Read the full 멘붕 entry in the K-pop dictionary →",
       },
       {
         q: "Fans hold up an idol's 5 a.m. workouts and language study as 갓생 (gatsaeng) goals. What does 갓생 mean?",
@@ -341,6 +361,8 @@ export const QUIZZES: QuizCategory[] = [
         ],
         answer: 1,
         explanation: "갓생 = 갓 (god, as in 'godlike') + 생 (life) — living a disciplined, growth-focused, ultra-productive existence. Fans admire idols' punishing routines (early workouts, multi-language study, perfectionist rehearsals) as 갓생 inspiration.",
+        learnMoreUrl: "/korean-slang/gatsaeng",
+        learnMoreLabel: "Read the full 갓생 entry in the K-pop dictionary →",
       },
     ],
   },
