@@ -48,6 +48,13 @@ const SPOTIFY_MONTHLY: { artist: string; listeners: string; slug?: string }[] = 
   { artist: "ENHYPEN",   listeners: "9.3M",   slug: "enhypen" },
 ];
 
+// Naver VIBE daily Top 100 — songs that jumped 5+ spots (checked 2026-07-13, source vibe.naver.com/chart/total)
+const VIBE_MOVERS: { rank: number; move: number; artist: string; song: string; slug?: string }[] = [
+  { rank: 21, move: 8, artist: "RESCENE",  song: "Pretty Girl" },
+  { rank: 72, move: 6, artist: "(G)I-DLE", song: "나는 아픈 건 딱 질색이니까 (Fate)", slug: "g-i-dle" },
+  { rank: 86, move: 5, artist: "DAY6",     song: "예뻤어 (You Were Beautiful)", slug: "day6" },
+];
+
 const CATEGORY_COLORS: Record<string, string> = {
   chart:     "#FFFF64",
   milestone: "#ACFA52",
@@ -141,6 +148,36 @@ export default async function NewsPage() {
               <div style={{ marginTop: 12, fontSize: "0.72rem", color: "var(--genius-gray)" }}>
                 Notable: BTS has two songs charting simultaneously — 'Hooligan' climbing, 'SWIM' falling.
                 LE SSERAFIM × j-hope collab gaining fast.
+              </div>
+            </section>
+
+            {/* VIBE Top 100 — biggest climbers */}
+            <section style={{ marginBottom: 56 }}>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 6 }}>
+                <div className="section-header" style={{ margin: 0 }}>VIBE Top 100 — Biggest Climbers</div>
+                <span style={{ fontSize: "0.65rem", background: "var(--genius-yellow)", color: "var(--on-accent)", padding: "2px 8px", borderRadius: 999, fontWeight: 800 }}>JUL 13</span>
+              </div>
+              <p style={{ fontSize: "0.8rem", color: "var(--genius-gray)", marginBottom: 16 }}>
+                Songs up 5+ spots on Naver VIBE&apos;s daily Top 100 ·{" "}
+                <a href="https://vibe.naver.com/chart/total" target="_blank" rel="noopener noreferrer" style={{ color: "var(--sakura)", fontWeight: 700, textDecoration: "none" }}>Source: VIBE →</a>
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {VIBE_MOVERS.map((entry) => (
+                  <div key={entry.song} className="genius-card" style={{ padding: "12px 16px", display: "flex", alignItems: "center", gap: 14 }}>
+                    <div style={{ width: 36, height: 36, borderRadius: "50%", flexShrink: 0, background: "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: "0.88rem", color: "var(--on-accent)" }}>
+                      {entry.rank}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      {entry.slug ? (
+                        <Link href={`/artists/${entry.slug}`} style={{ fontWeight: 700, fontSize: "0.92rem", color: "var(--ink)", textDecoration: "none" }}>{entry.artist}</Link>
+                      ) : (
+                        <span style={{ fontWeight: 700, fontSize: "0.92rem", color: "var(--ink)" }}>{entry.artist}</span>
+                      )}
+                      <span style={{ marginLeft: 8, fontSize: "0.82rem", color: "var(--genius-gray)", fontStyle: "italic" }}>&ldquo;{entry.song}&rdquo;</span>
+                    </div>
+                    <div style={{ fontSize: "0.72rem", fontWeight: 800, color: "#16a34a", whiteSpace: "nowrap" }}>▲ {entry.move}</div>
+                  </div>
+                ))}
               </div>
             </section>
 
