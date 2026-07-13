@@ -32,67 +32,59 @@ export default function LoginPage() {
     }
   }
 
+  const field: React.CSSProperties = { width: "100%", padding: "12px 15px", border: "1px solid var(--border-strong)", borderRadius: 9, fontSize: "0.95rem", outline: "none", background: "#fff", color: "#000", boxSizing: "border-box" };
+  const labelStyle: React.CSSProperties = { fontSize: "0.72rem", fontWeight: 700, color: "var(--ink)", letterSpacing: "0.08em", textTransform: "uppercase", display: "block", marginBottom: 7 };
+
   return (
-    <main style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 24px" }}>
-      <div style={{ width: "100%", maxWidth: 420 }}>
-        <div style={{ textAlign: "center", marginBottom: 36 }}>
-          <Link href="/" style={{ fontFamily: "monospace", fontSize: "1.5rem", fontWeight: 800, color: "var(--genius-yellow)", textDecoration: "none", background: "#000", padding: "4px 14px", borderRadius: 4 }}>
-            Aegyo Arena
+    <main style={{ minHeight: "82vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "48px 24px" }}>
+      <div style={{ width: "100%", maxWidth: 440 }}>
+        {/* Brand */}
+        <div style={{ textAlign: "center", marginBottom: 26 }}>
+          <Link href="/" aria-label="Aegyo Arena home" style={{ display: "inline-block" }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/aegyo-logo.png" alt="Aegyo Arena" style={{ height: 46, width: "auto", display: "block", margin: "0 auto" }} />
           </Link>
-          <h1 style={{ fontSize: "1.6rem", fontWeight: 800, marginTop: 20, marginBottom: 6, color: "#fff" }}>Welcome back</h1>
-          <p style={{ color: "var(--genius-gray)", fontSize: "0.88rem" }}>Sign in to save favorites, comment, and more</p>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          {error && (
-            <div style={{ background: "#fff0f0", border: "1px solid #ffcdd2", borderRadius: 4, padding: "10px 14px", fontSize: "0.85rem", color: "#c62828" }}>
-              {error}
+        {/* Card */}
+        <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 18, padding: "34px 30px", boxShadow: "0 18px 50px rgba(0,0,0,0.35)" }}>
+          <div style={{ textAlign: "center", marginBottom: 24 }}>
+            <h1 style={{ fontFamily: "var(--serif)", fontSize: "2rem", fontWeight: 700, color: "var(--ink)", margin: "0 0 6px" }}>Welcome back</h1>
+            <p style={{ color: "var(--ink-dim)", fontSize: "0.92rem", margin: 0 }}>Sign in to save favorites, comment, and more</p>
+          </div>
+
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 15 }}>
+            {error && (
+              <div style={{ background: "rgba(255,90,90,0.1)", border: "1px solid rgba(255,90,90,0.35)", borderRadius: 9, padding: "10px 14px", fontSize: "0.85rem", color: "#ff9a9a" }}>
+                {error}
+              </div>
+            )}
+
+            <div>
+              <label style={labelStyle}>Email</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@example.com" style={field} />
             </div>
-          )}
 
-          <div>
-            <label style={{ fontSize: "0.78rem", fontWeight: 700, color: "#fff", letterSpacing: "0.06em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder="you@example.com"
-              style={{ width: "100%", padding: "10px 14px", border: "1px solid var(--genius-border)", borderRadius: 4, fontSize: "0.95rem", outline: "none", background: "#fff", color: "#000" }}
-            />
-          </div>
+            <div>
+              <label style={labelStyle}>Password</label>
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="••••••••" style={field} />
+            </div>
 
-          <div>
-            <label style={{ fontSize: "0.78rem", fontWeight: 700, color: "#fff", letterSpacing: "0.06em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="••••••••"
-              style={{ width: "100%", padding: "10px 14px", border: "1px solid var(--genius-border)", borderRadius: 4, fontSize: "0.95rem", outline: "none", background: "#fff", color: "#000" }}
-            />
-          </div>
+            <div style={{ textAlign: "right", marginTop: -4 }}>
+              <Link href="/forgot-password" style={{ fontSize: "0.8rem", color: "var(--sakura)", fontWeight: 600, textDecoration: "none" }}>
+                Forgot my password?
+              </Link>
+            </div>
 
-          <div style={{ textAlign: "right", marginTop: -4 }}>
-            <Link href="/forgot-password" style={{ fontSize: "0.8rem", color: "var(--sakura)", fontWeight: 600, textDecoration: "none" }}>
-              Forgot my password?
-            </Link>
-          </div>
+            <button type="submit" disabled={loading} className="btn-yellow" style={{ width: "100%", padding: "13px", fontSize: "0.85rem", marginTop: 4, opacity: loading ? 0.6 : 1 }}>
+              {loading ? "Signing in…" : "SIGN IN"}
+            </button>
+          </form>
+        </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-yellow"
-            style={{ width: "100%", padding: "12px", fontSize: "0.85rem", marginTop: 6, opacity: loading ? 0.6 : 1 }}
-          >
-            {loading ? "Signing in…" : "SIGN IN"}
-          </button>
-        </form>
-
-        <div style={{ textAlign: "center", marginTop: 24, fontSize: "0.85rem", color: "var(--genius-gray)" }}>
+        <div style={{ textAlign: "center", marginTop: 22, fontSize: "0.88rem", color: "var(--ink-dim)" }}>
           No account?{" "}
-          <Link href="/signup" style={{ color: "#000", fontWeight: 700, textDecoration: "none" }}>
+          <Link href="/signup" style={{ color: "var(--sakura)", fontWeight: 700, textDecoration: "none" }}>
             Create one free
           </Link>
         </div>
