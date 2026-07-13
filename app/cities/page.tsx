@@ -74,8 +74,8 @@ export default function CitiesPage() {
             <Link key={city.slug} href={`/cities/${city.slug}`} style={{ textDecoration: "none" }}>
               <div className="genius-card" style={{ padding: "22px 20px", borderLeft: `4px solid ${city.color}` }}>
                 <div style={{ fontSize: "1.8rem", marginBottom: 8 }}>{city.flag}</div>
-                <div style={{ fontWeight: 800, fontSize: "1rem", color: "#000" }}>{city.name}</div>
-                <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginTop: 4 }}>{city.country} · View events</div>
+                <div style={{ fontWeight: 800, fontSize: "1rem", color: "var(--ink)" }}>{city.name}</div>
+                <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.72)", marginTop: 4 }}>{city.country} · View events</div>
               </div>
             </Link>
           ))}

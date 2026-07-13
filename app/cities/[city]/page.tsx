@@ -12,7 +12,7 @@ const CITY_DATA: Record<string, {
   timezone: string; currency: string;
   description: string;
   concerts: { artist: string; venue: string; date: string; ticketUrl: string }[];
-  meetups: { title: string; location: string; date: string; description: string }[];
+  meetups: { title: string; location: string; date: string; description: string; url?: string }[];
   hotels: { name: string; stars: number; note: string; area: string }[];
   communities: { name: string; platform: string; url: string; members: string }[];
   kpopSpots: { name: string; type: string; description: string }[];
@@ -29,7 +29,7 @@ const CITY_DATA: Record<string, {
       { artist: "BLACKPINK", venue: "Barclays Center, Brooklyn", date: "2025-09", ticketUrl: `https://www.songkick.com/search?query=blackpink` },
     ],
     meetups: [
-      { title: "NYC ARMY Meetup", location: "Central Park (Bethesda Fountain)", date: "Monthly", description: "Casual fan gathering with BTS trivia and album trading." },
+      { title: "NYC ARMY Meetup", location: "Central Park (Bethesda Fountain)", date: "Monthly", description: "Casual fan gathering with BTS trivia and album trading.", url: "https://linktr.ee/popupgirlsnyc" },
       { title: "Flushing K-pop Night", location: "Flushing, Queens", date: "Bi-weekly Saturdays", description: "Dance covers, idol merch swap, and Korean BBQ crawl." },
     ],
     hotels: [
@@ -217,7 +217,7 @@ const CITY_DATA: Record<string, {
       { artist: "BTS Members / Solo", venue: "Foro Sol", date: "2025 TBA", ticketUrl: `https://www.songkick.com/search?query=kpop+mexico` },
     ],
     meetups: [
-      { title: "CDMX Stan Network", location: "Parque España, Condesa", date: "Monthly", description: "Open fan meeting with dance battles and idol trivia." },
+      { title: "CDMX Stan Network", location: "Parque España, Condesa", date: "Monthly", description: "Open fan meeting with dance battles and idol trivia.", url: "https://linktr.ee/Bernalkpop" },
     ],
     hotels: [
       { name: "Four Seasons Mexico City", stars: 5, note: "K-pop artists' top accommodation on Latin American tours", area: "Paseo de la Reforma" },
@@ -372,7 +372,7 @@ const CITY_DATA: Record<string, {
       { artist: "Multiple", venue: "Movistar Arena", date: "2025 TBA", ticketUrl: `https://www.songkick.com/search?query=kpop+buenos+aires` },
     ],
     meetups: [
-      { title: "Buenos Aires Stan Night", location: "Palermo Soho", date: "Monthly", description: "Argentine K-pop fan gathering with dance covers and merchandise." },
+      { title: "Buenos Aires Stan Night", location: "Palermo Soho", date: "Monthly", description: "Argentine K-pop fan gathering with dance covers and merchandise.", url: "https://linktr.ee/uriche.stream" },
     ],
     hotels: [
       { name: "Alvear Palace Hotel", stars: 5, note: "Buenos Aires grand palace, major touring acts' accommodation", area: "Recoleta" },
@@ -475,6 +475,7 @@ const CITY_DATA: Record<string, {
     timezone: "MYT (UTC+8)", currency: "MYR (RM)",
     description: "KL's Axiata Arena is Southeast Asia's premier concert venue, hosting dozens of K-pop acts annually. Malaysia's fan community is highly organized.",
     concerts: [
+      { artist: "BTS — ARIRANG World Tour", venue: "Stadium Nasional Bukit Jalil", date: "Dec 12-13, 2026", ticketUrl: "https://ibighit.com/en/bts/tour/" },
       { artist: "ATEEZ", venue: "Axiata Arena", date: "Mar 22, 2026", ticketUrl: `https://www.ateezlive.com/asia/` },
       { artist: "Multiple", venue: "Axiata Arena", date: "Year-round", ticketUrl: `https://www.songkick.com/search?query=kpop+kuala+lumpur` },
     ],
@@ -642,6 +643,7 @@ const CITY_DATA: Record<string, {
     timezone: "CLT (UTC-4)", currency: "CLP ($)",
     description: "Chile has one of Latin America's most devoted K-pop fandoms, and Santiago is its heart — famous for record-breaking pre-order drives and sold-out arena tours.",
     concerts: [
+      { artist: "BTS — ARIRANG World Tour", venue: "Estadio Nacional", date: "Oct 14, 16-17, 2026", ticketUrl: "https://ibighit.com/en/bts/tour/" },
       { artist: "K-pop world tours", venue: "Movistar Arena & Estadio venues", date: "Check current listings", ticketUrl: "https://www.songkick.com/search?query=kpop+santiago+chile" },
     ],
     meetups: [
@@ -663,6 +665,7 @@ const CITY_DATA: Record<string, {
     timezone: "COT (UTC-5)", currency: "COP ($)",
     description: "Colombia's capital is a major Latin American tour stop, with a thriving fan scene organizing meetups across the city's parks and plazas.",
     concerts: [
+      { artist: "BTS — ARIRANG World Tour", venue: "Estadio El Campín", date: "Oct 2-3, 2026", ticketUrl: "https://ibighit.com/en/bts/tour/" },
       { artist: "K-pop world tours", venue: "Movistar Arena & Coliseo venues", date: "Check current listings", ticketUrl: "https://www.songkick.com/search?query=kpop+bogota" },
     ],
     meetups: [
@@ -705,6 +708,7 @@ const CITY_DATA: Record<string, {
     timezone: "EST (UTC-5)", currency: "CAD ($)",
     description: "Canada's most multicultural city is a top North American tour stop, with a deep Korean community along Bloor St and year-round fan events.",
     concerts: [
+      { artist: "BTS — ARIRANG World Tour", venue: "Rogers Stadium", date: "Aug 22-23, 2026", ticketUrl: "https://ibighit.com/en/bts/tour/" },
       { artist: "K-pop world tours", venue: "Scotiabank Arena & Rogers Centre", date: "Check current listings", ticketUrl: "https://www.songkick.com/search?query=kpop+toronto" },
     ],
     meetups: [
@@ -726,6 +730,7 @@ const CITY_DATA: Record<string, {
     timezone: "AEST (UTC+10)", currency: "AUD ($)",
     description: "Australia's culture capital anchors a huge K-pop scene — from Fed Square dance meets to sold-out shows at Rod Laver Arena.",
     concerts: [
+      { artist: "BTS — ARIRANG World Tour", venue: "Marvel Stadium", date: "Feb 10, 12-13, 2027", ticketUrl: "https://ibighit.com/en/bts/tour/" },
       { artist: "K-pop world tours", venue: "Rod Laver Arena & Marvel Stadium", date: "Check current listings", ticketUrl: "https://www.songkick.com/search?query=kpop+melbourne" },
     ],
     meetups: [
@@ -747,6 +752,7 @@ const CITY_DATA: Record<string, {
     timezone: "AEST (UTC+10)", currency: "AUD ($)",
     description: "Sydney draws nearly every K-pop world tour to Qudos Bank Arena, with fan meetups clustered around Darling Harbour and the CBD.",
     concerts: [
+      { artist: "BTS — ARIRANG World Tour", venue: "Accor Stadium", date: "Feb 20-21, 2027", ticketUrl: "https://ibighit.com/en/bts/tour/" },
       { artist: "K-pop world tours", venue: "Qudos Bank Arena & Accor Stadium", date: "Check current listings", ticketUrl: "https://www.songkick.com/search?query=kpop+sydney" },
     ],
     meetups: [
@@ -839,19 +845,19 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                   <div key={i} className="genius-card" style={{ padding: 20, borderLeft: `3px solid ${data.color}` }}>
                     <div style={{ display: "flex", gap: 12, alignItems: "flex-start", flexWrap: "wrap" }}>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 800, fontSize: "1rem", color: "#000", marginBottom: 4 }}>
+                        <div style={{ fontWeight: 800, fontSize: "1rem", color: "var(--ink)", marginBottom: 4 }}>
                           {artistSlug ? (
-                            <Link href={`/artists/${artistSlug}`} style={{ color: "#000", textDecoration: "none" }}>{c.artist}</Link>
+                            <Link href={`/artists/${artistSlug}`} style={{ color: "var(--ink)", textDecoration: "none" }}>{c.artist}</Link>
                           ) : c.artist}
                         </div>
-                        <div style={{ fontSize: "0.85rem", color: "var(--genius-gray)" }}>📍 {c.venue}</div>
-                        <div style={{ fontSize: "0.82rem", color: "var(--genius-gray)", marginTop: 2 }}>📅 {c.date}</div>
+                        <div style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.68)" }}>📍 {c.venue}</div>
+                        <div style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.68)", marginTop: 2 }}>📅 {c.date}</div>
                       </div>
                       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                         <a href={c.ticketUrl} target="_blank" rel="noopener noreferrer" className="btn-yellow" style={{ fontSize: "0.72rem", textAlign: "center" }}>
                           FIND TICKETS
                         </a>
-                        <a href={`https://www.songkick.com/search?query=${encodeURIComponent(c.artist + " " + data.name)}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.68rem", color: "var(--genius-gray)", textAlign: "center", textDecoration: "none" }}>
+                        <a href={`https://www.songkick.com/search?query=${encodeURIComponent(c.artist + " " + data.name)}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.68)", textAlign: "center", textDecoration: "none" }}>
                           Check Songkick →
                         </a>
                       </div>
@@ -868,9 +874,12 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {data.meetups.map((m, i) => (
                   <div key={i} className="genius-card" style={{ padding: 20 }}>
-                    <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "#000", marginBottom: 6 }}>{m.title}</div>
-                    <div style={{ fontSize: "0.82rem", color: "var(--genius-gray)", marginBottom: 4 }}>📍 {m.location} &middot; 🗓 {m.date}</div>
-                    <div style={{ fontSize: "0.88rem", color: "#444", lineHeight: 1.6 }}>{m.description}</div>
+                    <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "var(--ink)", marginBottom: 6 }}>{m.title}</div>
+                    <div style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.68)", marginBottom: 4 }}>📍 {m.location} &middot; 🗓 {m.date}</div>
+                    <div style={{ fontSize: "0.88rem", color: "rgba(255,255,255,0.82)", lineHeight: 1.6 }}>{m.description}</div>
+                    <a href={m.url ?? `https://www.google.com/search?q=${encodeURIComponent(`${m.title} ${data.name} K-pop meetup`)}`} target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", marginTop: 10, fontSize: "0.78rem", color: "var(--sakura)", fontWeight: 700, textDecoration: "none" }}>
+                      {m.url ? "More info & socials →" : "Find this meetup →"}
+                    </a>
                   </div>
                 ))}
               </div>
@@ -883,12 +892,12 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                 {data.kpopSpots.map((s, i) => (
                   <div key={i} className="genius-card" style={{ padding: 18 }}>
                     <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 8 }}>
-                      <span style={{ background: "var(--genius-yellow)", color: "#000", fontSize: "0.65rem", fontWeight: 700, padding: "2px 8px", borderRadius: 999, whiteSpace: "nowrap", letterSpacing: "0.06em" }}>
+                      <span style={{ background: "var(--genius-yellow)", color: "var(--on-accent)", fontSize: "0.65rem", fontWeight: 700, padding: "2px 8px", borderRadius: 999, whiteSpace: "nowrap", letterSpacing: "0.06em" }}>
                         {s.type.toUpperCase()}
                       </span>
                     </div>
-                    <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "#000", marginBottom: 6 }}>{s.name}</div>
-                    <div style={{ fontSize: "0.82rem", color: "#555", lineHeight: 1.6 }}>{s.description}</div>
+                    <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--ink)", marginBottom: 6 }}>{s.name}</div>
+                    <div style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.82)", lineHeight: 1.6 }}>{s.description}</div>
                   </div>
                 ))}
               </div>
@@ -907,8 +916,8 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                       <div className="genius-card" style={{ padding: "10px 12px", display: "flex", alignItems: "center", gap: 10 }}>
                         <div style={{ width: 34, height: 34, borderRadius: "50%", background: c.tierColor, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "0.85rem", flexShrink: 0 }}>{c.initial}</div>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "#000", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.username}</div>
-                          <div style={{ fontSize: "0.7rem", color: "var(--genius-gray)" }}>#{c.rank} · {c.points.toLocaleString("en-US")} pts</div>
+                          <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "var(--ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.username}</div>
+                          <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.68)" }}>#{c.rank} · {c.points.toLocaleString("en-US")} pts</div>
                         </div>
                       </div>
                     </Link>
@@ -924,13 +933,13 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                 {data.hotels.map((h, i) => (
                   <div key={i} className="genius-card" style={{ padding: 16 }}>
                     <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 4 }}>
-                      <span style={{ fontWeight: 800, fontSize: "0.9rem", color: "#000" }}>{h.name}</span>
+                      <span style={{ fontWeight: 800, fontSize: "0.9rem", color: "var(--ink)" }}>{h.name}</span>
                       <span style={{ fontSize: "0.72rem", color: "var(--genius-yellow)", letterSpacing: "0.04em" }}>
                         {"★".repeat(h.stars)}
                       </span>
                     </div>
-                    <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginBottom: 4 }}>📍 {h.area}</div>
-                    <div style={{ fontSize: "0.78rem", color: "#555", fontStyle: "italic", lineHeight: 1.5 }}>{h.note}</div>
+                    <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.68)", marginBottom: 4 }}>📍 {h.area}</div>
+                    <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.82)", fontStyle: "italic", lineHeight: 1.5 }}>{h.note}</div>
                   </div>
                 ))}
               </div>
@@ -944,10 +953,10 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                   <a key={i} href={c.url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
                     <div className="genius-card" style={{ padding: "12px 14px", display: "flex", alignItems: "center", gap: 10 }}>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 700, fontSize: "0.85rem", color: "#000" }}>{c.name}</div>
-                        <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)" }}>{c.platform} · {c.members} members</div>
+                        <div style={{ fontWeight: 700, fontSize: "0.85rem", color: "var(--ink)" }}>{c.name}</div>
+                        <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.68)" }}>{c.platform} · {c.members} members</div>
                       </div>
-                      <span style={{ fontSize: "0.72rem", color: "var(--genius-gray)" }}>→</span>
+                      <span style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.68)" }}>→</span>
                     </div>
                   </a>
                 ))}
@@ -978,13 +987,13 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             {Object.entries(CITY_DATA).filter(([slug]) => slug !== city).slice(0, 10).map(([slug, c]) => (
               <Link key={slug} href={`/cities/${slug}`} style={{ textDecoration: "none" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "#fff", border: "1px solid var(--genius-border)", borderRadius: 999, padding: "5px 14px", fontSize: "0.82rem", fontWeight: 600, color: "#000" }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "#fff", border: "1px solid var(--genius-border)", borderRadius: 999, padding: "5px 14px", fontSize: "0.82rem", fontWeight: 600, color: "var(--on-accent)" }}>
                   {c.flag} {c.name}
                 </span>
               </Link>
             ))}
             <Link href="/cities" style={{ textDecoration: "none" }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "var(--genius-yellow)", border: "1px solid var(--genius-yellow)", borderRadius: 999, padding: "5px 14px", fontSize: "0.82rem", fontWeight: 700, color: "#000" }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "var(--genius-yellow)", border: "1px solid var(--genius-yellow)", borderRadius: 999, padding: "5px 14px", fontSize: "0.82rem", fontWeight: 700, color: "var(--on-accent)" }}>
                 View all cities →
               </span>
             </Link>
