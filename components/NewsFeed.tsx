@@ -36,7 +36,7 @@ function timeAgo(iso: string | null): string {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-// ── Cross-promo units (cycled after every 10 articles) ──────────────────────
+// ── Cross-promo units (cycled after every 5 articles) ───────────────────────
 function ExploreUnit() {
   const items = [
     { href: "/artists", tag: "Artists", label: "Discover every artist & group", color: "var(--sakura)" },
@@ -60,53 +60,29 @@ function ExploreUnit() {
   );
 }
 
-function MerchUnit() {
+function EventsUnit() {
   return (
-    <div style={{ position: "relative", borderRadius: 18, overflow: "hidden", border: "1px solid var(--border-strong)", minHeight: 200, display: "flex", alignItems: "flex-end", backgroundImage: "url('/images/redesign/merch-01.png')", backgroundSize: "cover", backgroundPosition: "center 30%" }}>
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(20,15,25,0.94), rgba(20,15,25,0.35) 60%, transparent)" }} />
-      <div style={{ position: "relative", zIndex: 2, padding: "22px 24px" }}>
-        <div style={{ fontFamily: "var(--mono)", fontSize: "0.66rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 6 }}>Aegyo Merch</div>
-        <div style={{ fontFamily: "var(--serif)", fontSize: "1.6rem", fontWeight: 700, color: "#fff", marginBottom: 6 }}>Wear the culture.</div>
-        <p style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.8)", margin: "0 0 14px", maxWidth: 360 }}>Earned through points. Worn in the streets of Seoul.</p>
-        <Link href="/merch" style={{ display: "inline-flex", padding: "10px 20px", borderRadius: 100, background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.82rem", letterSpacing: "0.03em", textTransform: "uppercase", textDecoration: "none" }}>Shop the merch →</Link>
-      </div>
+    <div style={{ background: "linear-gradient(135deg, rgba(74,200,240,0.14), var(--bg-card))", border: "1px solid var(--sky)", borderRadius: 18, padding: "26px 24px" }}>
+      <div style={{ fontFamily: "var(--mono)", fontSize: "0.66rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sky)", marginBottom: 6 }}>Community · Live feed</div>
+      <div style={{ fontFamily: "var(--serif)", fontSize: "1.6rem", fontWeight: 700, color: "var(--ink)", marginBottom: 6 }}>Fan events near you.</div>
+      <p style={{ fontSize: "0.85rem", color: "var(--ink-dim)", margin: "0 0 14px", maxWidth: 380 }}>K-pop meetups, dance meets, K-beauty pop-ups &amp; comic cons — updated daily, sorted by city.</p>
+      <Link href="/events" style={{ display: "inline-flex", padding: "10px 20px", borderRadius: 100, background: "var(--sky)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.82rem", letterSpacing: "0.03em", textTransform: "uppercase", textDecoration: "none" }}>See what&apos;s on →</Link>
     </div>
   );
 }
 
-function NewsletterUnit() {
-  const [email, setEmail] = useState("");
-  const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email.includes("@")) return;
-    setState("loading");
-    try {
-      const res = await fetch("/api/newsletter", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
-      setState(res.ok ? "done" : "error");
-    } catch { setState("error"); }
-  }
+function QuizUnit() {
   return (
-    <div style={{ background: "linear-gradient(135deg, rgba(255,111,168,0.14), var(--bg-card))", border: "1px solid var(--sakura)", borderRadius: 18, padding: "26px 24px" }}>
-      <div style={{ fontFamily: "var(--mono)", fontSize: "0.66rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 6 }}>Stay in the loop</div>
-      <div style={{ fontFamily: "var(--serif)", fontSize: "1.6rem", fontWeight: 700, color: "var(--ink)", marginBottom: 6 }}>K-pop news, straight to you.</div>
-      <p style={{ fontSize: "0.85rem", color: "var(--ink-dim)", margin: "0 0 14px" }}>New drops, artist breakdowns, slang &amp; chart alerts. No spam. Just K-pop.</p>
-      {state === "done" ? (
-        <div style={{ color: "var(--volt)", fontWeight: 700, fontSize: "0.9rem" }}>✓ You&apos;re in! Check your inbox. 💜</div>
-      ) : (
-        <form onSubmit={submit} style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" aria-label="Email"
-            style={{ flex: "1 1 200px", minWidth: 0, padding: "12px 15px", borderRadius: 100, border: "1px solid var(--border-strong)", background: "#fff", color: "#000", fontSize: "0.9rem", outline: "none" }} />
-          <button type="submit" disabled={state === "loading"} style={{ padding: "12px 22px", borderRadius: 100, border: "none", background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.82rem", letterSpacing: "0.03em", textTransform: "uppercase", cursor: "pointer" }}>
-            {state === "loading" ? "…" : "Subscribe"}
-          </button>
-        </form>
-      )}
+    <div style={{ background: "linear-gradient(135deg, rgba(200,240,74,0.14), var(--bg-card))", border: "1px solid var(--volt)", borderRadius: 18, padding: "26px 24px" }}>
+      <div style={{ fontFamily: "var(--mono)", fontSize: "0.66rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--volt)", marginBottom: 6 }}>Play · Test yourself</div>
+      <div style={{ fontFamily: "var(--serif)", fontSize: "1.6rem", fontWeight: 700, color: "var(--ink)", marginBottom: 6 }}>How well do you know K-pop?</div>
+      <p style={{ fontSize: "0.85rem", color: "var(--ink-dim)", margin: "0 0 14px", maxWidth: 380 }}>Aegyo, Korean slang &amp; idol trivia — quick quizzes to prove your bias knowledge.</p>
+      <Link href="/quiz" style={{ display: "inline-flex", padding: "10px 20px", borderRadius: 100, background: "var(--volt)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.82rem", letterSpacing: "0.03em", textTransform: "uppercase", textDecoration: "none" }}>Take the quiz →</Link>
     </div>
   );
 }
 
-const PROMOS = [ExploreUnit, MerchUnit, NewsletterUnit];
+const PROMOS = [ExploreUnit, EventsUnit, QuizUnit];
 
 // ── Article card ────────────────────────────────────────────────────────────
 function ArticleCard({ p, featured }: { p: NewsRow; featured?: boolean }) {
@@ -178,12 +154,12 @@ export default function NewsFeed({ initial, initialOffset, initialHasMore }: { i
     );
   }
 
-  // Build the feed: every 10 articles, insert the next cross-promo unit (cycled).
+  // Build the feed: every 5 articles, insert the next cross-promo unit (cycled).
   const nodes: React.ReactNode[] = [];
   let promoIdx = 0;
   posts.forEach((p, i) => {
     nodes.push(<ArticleCard key={p.id} p={p} featured={i === 0} />);
-    if ((i + 1) % 10 === 0) {
+    if ((i + 1) % 5 === 0) {
       const Promo = PROMOS[promoIdx % PROMOS.length];
       promoIdx++;
       nodes.push(<div key={`promo-${i}`}><Promo /></div>);

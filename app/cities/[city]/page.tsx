@@ -785,6 +785,31 @@ export async function generateStaticParams() {
   return Object.keys(CITY_DATA).map((city) => ({ city }));
 }
 
+// Category styling for live scanned events (mirrors /events so the two stay visually consistent).
+const EVENT_CAT: Record<string, { label: string; emoji: string; color: string }> = {
+  kpop:    { label: "K-pop",     emoji: "💜", color: "#C77DFF" },
+  kbeauty: { label: "K-Beauty",  emoji: "💄", color: "#FF6FA8" },
+  dance:   { label: "Dance",     emoji: "🕺", color: "#4AC8F0" },
+  anime:   { label: "Anime",     emoji: "🎌", color: "#FF8C42" },
+  comicon: { label: "Comic-Con", emoji: "🦸", color: "#C8F04A" },
+  store:   { label: "Store",     emoji: "🛍", color: "#B8A0FF" },
+  meetup:  { label: "Meetup",    emoji: "🗓", color: "#4ECDC4" },
+  other:   { label: "Event",     emoji: "✨", color: "#FFD700" },
+};
+
+type CityEvent = {
+  id: string; title: string; category: string; venue: string | null;
+  startsAt: Date | null; dateText: string | null; description: string | null;
+  source: string | null; sourceUrl: string;
+};
+
+function fmtEventDate(e: CityEvent): string {
+  if (e.startsAt) {
+    try { return new Date(e.startsAt).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" }); } catch { /* fall through */ }
+  }
+  return e.dateText ?? "";
+}
+
 export default async function CityPage({ params }: { params: Promise<{ city: string }> }) {
   const { city } = await params;
   const data = CITY_DATA[city];
@@ -792,6 +817,22 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
 
   // Leaderboard contributors based in this city (empty for cities with no contributors).
   const cityContributors = CONTRIBUTORS.filter((c) => c.city === data.name);
+
+  // Live events scanned for this city — the SAME feed shown on /events, filtered
+  // to this city so the two pages stay in sync. Matched by citySlug or city name.
+  let liveEvents: CityEvent[] = [];
+  try {
+    liveEvents = await prisma.$queryRawUnsafe<CityEvent[]>(
+      `SELECT "id","title","category","venue","startsAt","dateText","description","source","sourceUrl"
+       FROM "ScannedEvent"
+       WHERE "status" = 'live'
+         AND ("startsAt" IS NULL OR "startsAt" >= now() - interval '1 day')
+         AND ("citySlug" = $1 OR lower("city") = $2)
+       ORDER BY ("startsAt" IS NULL), "startsAt" ASC, "createdAt" DESC
+       LIMIT 12`,
+      city, data.name.toLowerCase()
+    );
+  } catch { liveEvents = []; }
 
   // Map DB artists by lowercased stage name so concert billings can deep-link to artist pages.
   const artists = await prisma.artist.findMany({ select: { slug: true, stageName: true } });
@@ -835,6 +876,39 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 24px" }}>
         <div className="responsive-sidebar-grid">
           <div>
+            {/* Happening Soon — live scanned events for this city (synced with /events) */}
+            {liveEvents.length > 0 && (
+              <section style={{ marginBottom: 48 }}>
+                <div className="section-header">Happening Soon</div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
+                  {liveEvents.map((e) => {
+                    const c = EVENT_CAT[e.category] ?? EVENT_CAT.other;
+                    const when = fmtEventDate(e);
+                    return (
+                      <div key={e.id} className="genius-card" style={{ padding: 18, display: "flex", flexDirection: "column", borderLeft: `3px solid ${c.color}` }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                          <span style={{ background: `${c.color}22`, color: "var(--ink)", fontSize: "0.62rem", fontWeight: 800, letterSpacing: "0.06em", padding: "3px 9px", borderRadius: 999, textTransform: "uppercase" }}>{c.emoji} {c.label}</span>
+                        </div>
+                        <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "var(--ink)", lineHeight: 1.35, marginBottom: 6 }}>{e.title}</div>
+                        {(e.venue || when) && (
+                          <div style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.68)", marginBottom: 8 }}>
+                            {e.venue && <span>📍 {e.venue}</span>}{e.venue && when ? " · " : ""}{when && <span>🗓 {when}</span>}
+                          </div>
+                        )}
+                        {e.description && <div style={{ fontSize: "0.84rem", color: "rgba(255,255,255,0.82)", lineHeight: 1.55, marginBottom: 12, flex: 1 }}>{e.description}</div>}
+                        <a href={e.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ marginTop: "auto", fontSize: "0.78rem", color: c.color, fontWeight: 800, textDecoration: "none" }}>
+                          Details{e.source ? ` on ${e.source}` : ""} →
+                        </a>
+                      </div>
+                    );
+                  })}
+                </div>
+                <Link href="/events" style={{ display: "inline-block", marginTop: 14, fontSize: "0.8rem", color: "var(--sakura)", fontWeight: 700, textDecoration: "none" }}>
+                  See all fan events →
+                </Link>
+              </section>
+            )}
+
             {/* Upcoming Concerts */}
             <section style={{ marginBottom: 48 }}>
               <div className="section-header">Upcoming Concerts</div>
@@ -914,7 +988,8 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                   {cityContributors.map((c) => (
                     <Link key={c.slug} href={`/u/${c.slug}`} style={{ textDecoration: "none" }}>
                       <div className="genius-card" style={{ padding: "10px 12px", display: "flex", alignItems: "center", gap: 10 }}>
-                        <div style={{ width: 34, height: 34, borderRadius: "50%", background: c.tierColor, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "0.85rem", flexShrink: 0 }}>{c.initial}</div>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={c.avatar} alt="" width={34} height={34} loading="lazy" style={{ width: 34, height: 34, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: `2px solid ${c.tierColor}`, background: c.tierColor }} />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "var(--ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.username}</div>
                           <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.68)" }}>#{c.rank} · {c.points.toLocaleString("en-US")} pts</div>
