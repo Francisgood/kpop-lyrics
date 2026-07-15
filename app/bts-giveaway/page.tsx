@@ -4,10 +4,15 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { trackLead } from "@/lib/conversions";
 
-const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const AGE_ERROR = "Sorry — this giveaway is only open to entrants who are 18 or older.";
+type Lang = "en" | "es";
+
+const MONTHS: Record<Lang, string[]> = {
+  en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+  es: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+};
 
 // Country picker — top traffic markets pinned first, then the full list A–Z.
+// Values stay in English so the admin export / API data stays consistent across languages.
 const FEATURED_COUNTRIES = ["Mexico", "Brazil", "Argentina", "Chile", "Colombia", "Peru", "Philippines", "Indonesia", "United States", "Canada"];
 const COUNTRIES = [
   "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria",
@@ -33,28 +38,99 @@ const COUNTRIES = [
   "Zambia", "Zimbabwe",
 ];
 
-const PRIZES = [
-  {
-    img: "/giveaway/tickets.jpg",
-    badge: "🏆 Grand Prize",
-    accent: "var(--sakura)",
-    title: "2 Luxury Box Seat Tickets",
-    sub: "BTS Arirang World Tour · MetLife Stadium, East Rutherford NJ · August 1, 2026",
-  },
-  {
-    img: "/giveaway/merch.jpg",
-    badge: "Runner-up Prize",
-    accent: "var(--volt)",
-    title: "BTS Merch Bundle",
-    sub: "$300 value · hoodies, photobooks, official lightstick & more",
-  },
+const PRIZE_META = [
+  { img: "/giveaway/tickets.jpg", accent: "var(--sakura)" },
+  { img: "/giveaway/merch.jpg", accent: "var(--volt)" },
 ];
+
+type Copy = {
+  eyebrow: string; heroPre: string; heroEm: string; subhead: string; cta: string; referred: string;
+  prizesLabel: string;
+  prizes: { badge: string; title: string; sub: string }[];
+  disclaimerPre: string; disclaimerLink: string; disclaimerPost: string;
+  formTitle: string; formSubtitle: string;
+  phFirst: string; phLast: string; phEmail: string; phPhone: string; birthday: string;
+  phMonth: string; phDay: string; phYear: string; phCountry: string; phPostal: string;
+  submit: string; submitting: string;
+  ageError: string; errFields: string; errGeneric: string;
+  finePre: string; fineLink: string; finePost: string;
+  entered: string; alreadyEntered: string;
+  resultSubPre: string; resultSubBold: string; resultSubPost: string;
+  referralLinkLabel: string; copy: string; copied: string; referralsSoFar: string;
+  resultFinePre: string; resultFineLink: string; resultFinePost: string;
+};
+
+const COPY: Record<Lang, Copy> = {
+  en: {
+    eyebrow: "Aegyo Arena · BTS ARMY",
+    heroPre: "BTS ARMY ", heroEm: "Giveaway.",
+    subhead: "Enter for your chance to win exclusive BTS merch, signed albums & concert tickets. Refer friends to multiply your entries.",
+    cta: "Enter Now →",
+    referred: "A friend referred you — enter below so their referral counts! 💜",
+    prizesLabel: "Prizes",
+    prizes: [
+      { badge: "🏆 Grand Prize", title: "2 Luxury Box Seat Tickets", sub: "BTS Arirang World Tour · MetLife Stadium, East Rutherford NJ · August 1, 2026" },
+      { badge: "Runner-up Prize", title: "BTS Merch Bundle", sub: "$300 value · hoodies, photobooks, official lightstick & more" },
+    ],
+    disclaimerPre: "No purchase necessary. Open to entrants 18+ where permitted by law. Prizes shown are illustrative. See the ",
+    disclaimerLink: "Official Rules", disclaimerPost: ".",
+    formTitle: "Enter the sweepstakes",
+    formSubtitle: "Free to enter. One entry per person — then refer friends to boost your odds.",
+    phFirst: "First Name", phLast: "Last Name", phEmail: "Email Address",
+    phPhone: "Phone number (with country code, e.g. +52…)", birthday: "Birthday",
+    phMonth: "Month", phDay: "Day", phYear: "Year", phCountry: "Country", phPostal: "Postal code",
+    submit: "Submit Your Entry →", submitting: "Submitting…",
+    ageError: "Sorry — this giveaway is only open to entrants who are 18 or older.",
+    errFields: "Please complete all fields to enter.",
+    errGeneric: "Something went wrong. Please try again.",
+    finePre: "No purchase necessary. By submitting your entry, you agree to the ",
+    fineLink: "Official Sweepstakes Rules", finePost: " and to subscribe to the Aegyo Arena email newsletter.",
+    entered: "You’re entered!", alreadyEntered: "You’re already entered!",
+    resultSubPre: "Want better odds? Refer friends — every valid referral is an extra shot at the tickets, up to ",
+    resultSubBold: "50 referrals", resultSubPost: ".",
+    referralLinkLabel: "Your referral link", copy: "Copy", copied: "Copied!", referralsSoFar: "Referrals so far:",
+    resultFinePre: "Referrals count only when your friend is 18+, accepts the rules, and joins the newsletter. See the ",
+    resultFineLink: "Official Rules", resultFinePost: " (Section 16).",
+  },
+  es: {
+    eyebrow: "Aegyo Arena · BTS ARMY",
+    heroPre: "Sorteo ", heroEm: "BTS ARMY.",
+    subhead: "Participa por la oportunidad de ganar merch exclusivo de BTS, álbumes firmados y boletos para el concierto. Invita a tus amigos para multiplicar tus participaciones.",
+    cta: "Participa ahora →",
+    referred: "Un amigo te invitó — participa abajo para que su invitación cuente. 💜",
+    prizesLabel: "Premios",
+    prizes: [
+      { badge: "🏆 Premio mayor", title: "2 boletos de palco de lujo", sub: "BTS Arirang World Tour · MetLife Stadium, East Rutherford NJ · 1 de agosto de 2026" },
+      { badge: "Premio secundario", title: "Paquete de merch de BTS", sub: "Valor de $300 · sudaderas, photobooks, lightstick oficial y más" },
+    ],
+    disclaimerPre: "No es necesario comprar. Abierto a mayores de 18 años donde lo permita la ley. Las imágenes de los premios son ilustrativas. Consulta las ",
+    disclaimerLink: "Reglas Oficiales", disclaimerPost: ".",
+    formTitle: "Participa en el sorteo",
+    formSubtitle: "Participación gratuita. Una participación por persona — luego invita a tus amigos para mejorar tus posibilidades.",
+    phFirst: "Nombre", phLast: "Apellido", phEmail: "Correo electrónico",
+    phPhone: "Teléfono (con código de país, ej. +52…)", birthday: "Fecha de nacimiento",
+    phMonth: "Mes", phDay: "Día", phYear: "Año", phCountry: "País", phPostal: "Código postal",
+    submit: "Enviar mi participación →", submitting: "Enviando…",
+    ageError: "Lo sentimos — este sorteo solo está abierto a mayores de 18 años.",
+    errFields: "Por favor completa todos los campos para participar.",
+    errGeneric: "Algo salió mal. Inténtalo de nuevo.",
+    finePre: "No es necesario comprar. Al enviar tu participación, aceptas las ",
+    fineLink: "Reglas Oficiales del Sorteo", finePost: " y te suscribes al boletín de Aegyo Arena.",
+    entered: "¡Ya estás participando!", alreadyEntered: "¡Ya te habías registrado!",
+    resultSubPre: "¿Quieres más posibilidades? Invita a tus amigos — cada invitación válida es una oportunidad extra de ganar los boletos, hasta ",
+    resultSubBold: "50 invitaciones", resultSubPost: ".",
+    referralLinkLabel: "Tu enlace de invitación", copy: "Copiar", copied: "¡Copiado!", referralsSoFar: "Invitaciones hasta ahora:",
+    resultFinePre: "Las invitaciones cuentan solo cuando tu amigo es mayor de 18 años, acepta las reglas y se suscribe al boletín. Consulta las ",
+    resultFineLink: "Reglas Oficiales", resultFinePost: " (Sección 16).",
+  },
+};
 
 export default function BtsGiveawayPage() {
   const thisYear = new Date().getFullYear();
   const years = Array.from({ length: 100 }, (_, i) => thisYear - i);
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
+  const [lang, setLang] = useState<Lang>("en");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -70,10 +146,23 @@ export default function BtsGiveawayPage() {
   const [result, setResult] = useState<{ referralLink: string; referralCount: number; alreadyEntered?: boolean } | null>(null);
   const [copied, setCopied] = useState(false);
 
+  const c = COPY[lang];
+
   useEffect(() => {
     const r = new URLSearchParams(window.location.search).get("ref");
     if (r) setRef(r);
+    // Language: saved preference wins, otherwise default Spanish browsers to ES.
+    try {
+      const saved = localStorage.getItem("giveaway-lang");
+      if (saved === "en" || saved === "es") setLang(saved);
+      else if ((navigator.language || "").toLowerCase().startsWith("es")) setLang("es");
+    } catch { /* localStorage/navigator unavailable */ }
   }, []);
+
+  function switchLang(l: Lang) {
+    setLang(l);
+    try { localStorage.setItem("giveaway-lang", l); } catch { /* ignore */ }
+  }
 
   function computeAge(): number | null {
     if (!month || !day || !year) return null;
@@ -89,9 +178,9 @@ export default function BtsGiveawayPage() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (under18) { setError(AGE_ERROR); return; }
+    if (under18) { setError(c.ageError); return; }
     if (!firstName || !lastName || !email || !phone || !month || !day || !year || !country || !zip) {
-      setError("Please complete all fields to enter.");
+      setError(c.errFields);
       return;
     }
     setSubmitting(true);
@@ -102,12 +191,12 @@ export default function BtsGiveawayPage() {
         body: JSON.stringify({ firstName, lastName, email, phone, zip, country, birthMonth: month, birthDay: day, birthYear: year, ref }),
       });
       const data = await res.json();
-      if (!res.ok) { setError(data.error ?? "Something went wrong. Please try again."); return; }
+      if (!res.ok) { setError(data.error ?? c.errGeneric); return; }
       // Ad-pixel conversion: fire "lead" only on a NEW entry (not a returning entrant)
       if (!data.alreadyEntered) trackLead(data.rdtConversionId);
       setResult({ referralLink: data.referralLink, referralCount: data.referralCount ?? 0, alreadyEntered: data.alreadyEntered });
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError(c.errGeneric);
     } finally {
       setSubmitting(false);
     }
@@ -121,34 +210,47 @@ export default function BtsGiveawayPage() {
   const field: React.CSSProperties = { width: "100%", padding: "13px 16px", border: "1px solid var(--border-strong)", borderRadius: 8, fontSize: "1rem", outline: "none", background: "#fff", color: "#000", boxSizing: "border-box" };
   const sel: React.CSSProperties = { ...field, padding: "13px 8px", flex: 1, minWidth: 0 };
 
+  const LangToggle = () => (
+    <div style={{ display: "flex", justifyContent: "center", marginBottom: 22 }}>
+      <div style={{ display: "inline-flex", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 100, padding: 3 }}>
+        {(["en", "es"] as Lang[]).map((l) => (
+          <button key={l} type="button" onClick={() => switchLang(l)} aria-pressed={lang === l}
+            style={{ padding: "6px 16px", borderRadius: 100, border: "none", cursor: "pointer", fontSize: "0.78rem", fontWeight: 800, letterSpacing: "0.02em", background: lang === l ? "var(--sakura)" : "transparent", color: lang === l ? "var(--on-accent)" : "var(--ink-dim)", transition: "background 0.15s, color 0.15s" }}>
+            {l === "en" ? "English" : "Español"}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   if (result) {
     return (
       <main style={{ padding: "56px 24px 80px" }}>
         <div style={{ maxWidth: 540, margin: "0 auto", textAlign: "center" }}>
           <div style={{ fontSize: "3rem", marginBottom: 10 }}>💜</div>
           <h1 style={{ fontFamily: "var(--serif)", fontSize: "2.2rem", color: "var(--ink)", marginBottom: 10 }}>
-            {result.alreadyEntered ? "You’re already entered!" : "You’re entered!"}
+            {result.alreadyEntered ? c.alreadyEntered : c.entered}
           </h1>
           <p style={{ color: "var(--ink-dim)", fontSize: "1.05rem", lineHeight: 1.6, marginBottom: 28 }}>
-            Want better odds? Refer friends — every valid referral is an extra shot at the tickets, up to <strong style={{ color: "var(--ink)" }}>50 referrals</strong>.
+            {c.resultSubPre}<strong style={{ color: "var(--ink)" }}>{c.resultSubBold}</strong>{c.resultSubPost}
           </p>
 
           <div style={{ background: "var(--bg-card)", border: "1px solid var(--sakura)", borderRadius: 14, padding: 22, textAlign: "left" }}>
-            <div style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 10 }}>Your referral link</div>
+            <div style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 10 }}>{c.referralLinkLabel}</div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               <input readOnly value={result.referralLink} style={{ ...field, flex: 1, minWidth: 200, fontSize: "0.88rem" }} onFocus={(e) => e.currentTarget.select()} />
               <button type="button" onClick={copyLink} style={{ padding: "13px 20px", borderRadius: 8, border: "none", background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer" }}>
-                {copied ? "Copied!" : "Copy"}
+                {copied ? c.copied : c.copy}
               </button>
             </div>
             <div style={{ marginTop: 14, fontSize: "0.9rem", color: "var(--ink-dim)" }}>
-              Referrals so far: <strong style={{ color: "var(--sakura)" }}>{result.referralCount}</strong> / 50
+              {c.referralsSoFar} <strong style={{ color: "var(--sakura)" }}>{result.referralCount}</strong> / 50
             </div>
           </div>
 
           <p style={{ marginTop: 20, fontSize: "0.78rem", color: "var(--ink-faint)", lineHeight: 1.6 }}>
-            Referrals count only when your friend is 18+, accepts the rules, and joins the newsletter. See the{" "}
-            <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>Official Rules</Link> (Section 16).
+            {c.resultFinePre}
+            <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>{c.resultFineLink}</Link>{c.resultFinePost}
           </p>
         </div>
       </main>
@@ -158,112 +260,109 @@ export default function BtsGiveawayPage() {
   return (
     <main style={{ padding: "0 0 72px" }}>
       {/* Hero */}
-      <section style={{ background: "linear-gradient(180deg, var(--sakura-light), var(--bg))", borderBottom: "1px solid var(--border)", padding: "56px 24px 48px", textAlign: "center" }}>
+      <section style={{ background: "linear-gradient(180deg, var(--sakura-light), var(--bg))", borderBottom: "1px solid var(--border)", padding: "40px 24px 48px", textAlign: "center" }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
-          <div style={{ fontFamily: "var(--mono)", fontSize: "0.72rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 16 }}>Aegyo Arena · BTS ARMY</div>
+          <LangToggle />
+          <div style={{ fontFamily: "var(--mono)", fontSize: "0.72rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 16 }}>{c.eyebrow}</div>
           <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(2.4rem, 9vw, 4rem)", fontWeight: 700, color: "var(--ink)", margin: "0 0 16px", lineHeight: 1.05 }}>
-            BTS ARMY <em style={{ color: "var(--sakura)", fontStyle: "italic" }}>Giveaway.</em>
+            {c.heroPre}<em style={{ color: "var(--sakura)", fontStyle: "italic" }}>{c.heroEm}</em>
           </h1>
           <p style={{ color: "var(--ink-dim)", fontSize: "clamp(1rem, 3.5vw, 1.15rem)", lineHeight: 1.6, maxWidth: 540, margin: "0 auto 28px" }}>
-            Enter for your chance to win exclusive BTS merch, signed albums & concert tickets. Refer friends to multiply your entries.
+            {c.subhead}
           </p>
           <a href="#enter" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 34px", borderRadius: 100, background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.03em", textTransform: "uppercase", textDecoration: "none" }}>
-            Enter Now →
+            {c.cta}
           </a>
-          {ref && <p style={{ marginTop: 16, fontSize: "0.85rem", color: "var(--volt)" }}>A friend referred you — enter below so their referral counts! 💜</p>}
+          {ref && <p style={{ marginTop: 16, fontSize: "0.85rem", color: "var(--volt)" }}>{c.referred}</p>}
         </div>
       </section>
 
       {/* Prizes */}
       <section style={{ maxWidth: 1040, margin: "0 auto", padding: "44px 24px 8px" }}>
-        <div style={{ fontFamily: "var(--mono)", fontSize: "0.72rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 18 }}>Prizes</div>
+        <div style={{ fontFamily: "var(--mono)", fontSize: "0.72rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 18 }}>{c.prizesLabel}</div>
         {/* minmax(min(300px,100%)) → side-by-side on desktop, full-width stacked (tickets above merch) on mobile, never overflows narrow screens */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 20 }}>
-          {PRIZES.map((p) => (
-            <div key={p.title} style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 18, overflow: "hidden", display: "flex", flexDirection: "column" }}>
-              <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 10", overflow: "hidden" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={p.img} alt={p.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-                <span style={{ position: "absolute", top: 14, left: 14, background: "rgba(15,15,18,0.82)", color: "#fff", fontFamily: "var(--mono)", fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", padding: "6px 12px", borderRadius: 100, border: `1px solid ${p.accent}` }}>
-                  {p.badge}
-                </span>
+          {PRIZE_META.map((m, i) => {
+            const p = c.prizes[i];
+            return (
+              <div key={i} style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 18, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+                <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 10", overflow: "hidden" }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={m.img} alt={p.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <span style={{ position: "absolute", top: 14, left: 14, background: "rgba(15,15,18,0.82)", color: "#fff", fontFamily: "var(--mono)", fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", padding: "6px 12px", borderRadius: 100, border: `1px solid ${m.accent}` }}>
+                    {p.badge}
+                  </span>
+                </div>
+                <div style={{ padding: "20px 22px 24px" }}>
+                  <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.5rem", fontWeight: 700, color: "var(--ink)", margin: "0 0 8px", lineHeight: 1.2 }}>{p.title}</h2>
+                  <p style={{ color: "var(--ink-dim)", fontSize: "0.92rem", lineHeight: 1.6, margin: 0 }}>{p.sub}</p>
+                </div>
               </div>
-              <div style={{ padding: "20px 22px 24px" }}>
-                <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.5rem", fontWeight: 700, color: "var(--ink)", margin: "0 0 8px", lineHeight: 1.2 }}>{p.title}</h2>
-                <p style={{ color: "var(--ink-dim)", fontSize: "0.92rem", lineHeight: 1.6, margin: 0 }}>{p.sub}</p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         <p style={{ marginTop: 16, fontSize: "0.74rem", color: "var(--ink-faint)", lineHeight: 1.6 }}>
-          No purchase necessary. Open to entrants 18+ where permitted by law. Prizes shown are illustrative. See the{" "}
-          <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>Official Rules</Link>.
+          {c.disclaimerPre}
+          <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>{c.disclaimerLink}</Link>{c.disclaimerPost}
         </p>
       </section>
 
       {/* Entry form */}
       <section id="enter" style={{ maxWidth: 560, margin: "0 auto", padding: "32px 24px 0", scrollMarginTop: 24 }}>
-        <h2 style={{ fontFamily: "var(--serif)", fontSize: "clamp(1.7rem, 5vw, 2.2rem)", fontWeight: 700, color: "var(--ink)", textAlign: "center", margin: "0 0 8px" }}>Enter the sweepstakes</h2>
+        <h2 style={{ fontFamily: "var(--serif)", fontSize: "clamp(1.7rem, 5vw, 2.2rem)", fontWeight: 700, color: "var(--ink)", textAlign: "center", margin: "0 0 8px" }}>{c.formTitle}</h2>
         <p style={{ textAlign: "center", color: "var(--ink-dim)", fontSize: "0.98rem", lineHeight: 1.6, marginBottom: 28 }}>
-          Free to enter. One entry per person — then refer friends to boost your odds.
+          {c.formSubtitle}
         </p>
 
         <form onSubmit={submit} style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 16, padding: "28px 24px" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <input style={field} placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} aria-label="First Name" />
-            <input style={field} placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} aria-label="Last Name" />
-            <input style={field} type="email" placeholder="Email Address" value={email} onChange={(e) => setEmail(e.target.value)} aria-label="Email Address" />
-            <input style={field} type="tel" autoComplete="tel" placeholder="Phone number (with country code, e.g. +52…)" value={phone} onChange={(e) => setPhone(e.target.value)} aria-label="Phone number" />
+            <input style={field} placeholder={c.phFirst} value={firstName} onChange={(e) => setFirstName(e.target.value)} aria-label={c.phFirst} />
+            <input style={field} placeholder={c.phLast} value={lastName} onChange={(e) => setLastName(e.target.value)} aria-label={c.phLast} />
+            <input style={field} type="email" placeholder={c.phEmail} value={email} onChange={(e) => setEmail(e.target.value)} aria-label={c.phEmail} />
+            <input style={field} type="tel" autoComplete="tel" placeholder={c.phPhone} value={phone} onChange={(e) => setPhone(e.target.value)} aria-label={c.phPhone} />
 
             <div>
-              <label style={{ display: "block", fontWeight: 700, color: "var(--ink)", fontSize: "0.95rem", marginBottom: 8 }}>Birthday</label>
+              <label style={{ display: "block", fontWeight: 700, color: "var(--ink)", fontSize: "0.95rem", marginBottom: 8 }}>{c.birthday}</label>
               <div style={{ display: "flex", gap: 8 }}>
-                <select style={sel} value={month} onChange={(e) => setMonth(e.target.value)} aria-label="Birth month">
-                  <option value="">Month</option>
-                  {MONTHS.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
+                <select style={sel} value={month} onChange={(e) => setMonth(e.target.value)} aria-label={c.phMonth}>
+                  <option value="">{c.phMonth}</option>
+                  {MONTHS[lang].map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
                 </select>
-                <select style={sel} value={day} onChange={(e) => setDay(e.target.value)} aria-label="Birth day">
-                  <option value="">Day</option>
+                <select style={sel} value={day} onChange={(e) => setDay(e.target.value)} aria-label={c.phDay}>
+                  <option value="">{c.phDay}</option>
                   {days.map((d) => <option key={d} value={d}>{d}</option>)}
                 </select>
-                <select style={sel} value={year} onChange={(e) => setYear(e.target.value)} aria-label="Birth year">
-                  <option value="">Year</option>
+                <select style={sel} value={year} onChange={(e) => setYear(e.target.value)} aria-label={c.phYear}>
+                  <option value="">{c.phYear}</option>
                   {years.map((y) => <option key={y} value={y}>{y}</option>)}
                 </select>
               </div>
             </div>
 
             <div style={{ display: "flex", gap: 8 }}>
-              <select style={{ ...sel, flex: "1 1 45%" }} value={country} onChange={(e) => setCountry(e.target.value)} aria-label="Country">
-                <option value="">Country</option>
-                {FEATURED_COUNTRIES.map((c) => <option key={`f-${c}`} value={c}>{c}</option>)}
+              <select style={{ ...sel, flex: "1 1 45%" }} value={country} onChange={(e) => setCountry(e.target.value)} aria-label={c.phCountry}>
+                <option value="">{c.phCountry}</option>
+                {FEATURED_COUNTRIES.map((cn) => <option key={`f-${cn}`} value={cn}>{cn}</option>)}
                 <option value="" disabled>──────────</option>
-                {COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                {COUNTRIES.map((cn) => <option key={cn} value={cn}>{cn}</option>)}
               </select>
-              <input style={{ ...field, flex: "1 1 55%", minWidth: 0 }} autoComplete="postal-code" placeholder="Postal code" value={zip} onChange={(e) => setZip(e.target.value)} aria-label="Postal code" />
+              <input style={{ ...field, flex: "1 1 55%", minWidth: 0 }} autoComplete="postal-code" placeholder={c.phPostal} value={zip} onChange={(e) => setZip(e.target.value)} aria-label={c.phPostal} />
             </div>
           </div>
 
           {(under18 || error) && (
             <div role="alert" style={{ marginTop: 16, color: "#ff5a5a", fontSize: "0.9rem", fontWeight: 600, lineHeight: 1.5 }}>
-              {under18 ? AGE_ERROR : error}
+              {under18 ? c.ageError : error}
             </div>
           )}
 
           <button type="submit" disabled={under18 || submitting} style={{ width: "100%", marginTop: 20, padding: "15px", borderRadius: 10, border: "none", background: (under18 || submitting) ? "var(--border-strong)" : "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.04em", textTransform: "uppercase", cursor: (under18 || submitting) ? "not-allowed" : "pointer" }}>
-            {submitting ? "Submitting…" : "Submit Your Entry →"}
+            {submitting ? c.submitting : c.submit}
           </button>
 
           <p style={{ marginTop: 16, fontSize: "0.78rem", color: "var(--ink-faint)", textAlign: "center", lineHeight: 1.6 }}>
-            No purchase necessary. By submitting your entry, you agree to the{" "}
-            <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>Official Sweepstakes Rules</Link>{" "}
-            and to subscribe to the Aegyo Arena email newsletter.
-          </p>
-
-          <p style={{ marginTop: 12, fontSize: "0.82rem", color: "var(--ink-dim)", textAlign: "center", lineHeight: 1.6 }}>
-            Fans worldwide are welcome to enter and join the newsletter. Please note: under the current{" "}
-            <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>Official Rules</Link>, the grand
-            prize can only be <strong style={{ color: "var(--ink)" }}>awarded to legal U.S. residents 18+</strong>.
+            {c.finePre}
+            <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>{c.fineLink}</Link>{c.finePost}
           </p>
         </form>
       </section>
