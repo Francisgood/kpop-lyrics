@@ -40,7 +40,7 @@ function timeAgo(iso: string | null): string {
 function ExploreUnit() {
   const items = [
     { href: "/artists", tag: "Artists", label: "Discover every artist & group", color: "var(--sakura)" },
-    { href: "/songs", tag: "Lyrics", label: "18k+ songs annotated", color: "var(--lavender)" },
+    { href: "/collabs", tag: "Collabs", label: "Artist collaborations", color: "var(--lavender)" },
     { href: "/korean-slang", tag: "Slang", label: "K-pop slang dictionary", color: "var(--sky)" },
     { href: "/cities", tag: "Cities", label: "Global K-pop cities & meetups", color: "var(--volt)" },
   ];
