@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
-import Link from "next/link";
 import NewsFeed, { type NewsRow } from "@/components/NewsFeed";
 
 export const dynamic = "force-dynamic";
@@ -51,26 +50,7 @@ async function getFirstPage(): Promise<NewsRow[]> {
 export default async function HomePage() {
   const first = await getFirstPage();
 
-  return (
-    <main style={{ paddingBottom: 72 }}>
-      {/* Feed header (the site nav in the layout stays sticky above this) */}
-      <section style={{ background: "linear-gradient(180deg, var(--sakura-light), var(--bg))", borderBottom: "1px solid var(--border)", padding: "40px 24px 34px" }}>
-        <div style={{ maxWidth: 720, margin: "0 auto" }}>
-          <div style={{ fontFamily: "var(--mono)", fontSize: "0.72rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 12 }}>The Feed · Updated daily</div>
-          <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(2.2rem, 7vw, 3.4rem)", fontWeight: 700, color: "var(--ink)", lineHeight: 1.05, margin: "0 0 12px" }}>
-            K-pop news, gossip <em style={{ color: "var(--sakura)", fontStyle: "italic" }}>&amp; rumors.</em>
-          </h1>
-          <p style={{ color: "var(--ink-dim)", fontSize: "1.02rem", lineHeight: 1.6, maxWidth: 560, margin: 0 }}>
-            The whole scene in one endless scroll — comebacks, charts, scandals and scoops, rewritten for fans with a link to every source.{" "}
-            <Link href="/artists" style={{ color: "var(--sakura)", fontWeight: 700, textDecoration: "none" }}>Explore the universe →</Link>
-          </p>
-        </div>
-      </section>
-
-      {/* Infinite-scroll feed */}
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "32px 24px 0" }}>
-        <NewsFeed initial={first} initialOffset={first.length} initialHasMore={first.length === PAGE} />
-      </div>
-    </main>
-  );
+  // The header, language toggle (EN/ES) and feed all live in the NewsFeed client
+  // component so one language state drives the whole homepage.
+  return <NewsFeed initial={first} initialOffset={first.length} initialHasMore={first.length === PAGE} />;
 }
