@@ -63,7 +63,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <img src="/images/aegyo-logo-footer.png" alt="Aegyo Arena" style={{ height: 34, width: "auto", display: "block" }} />
               </Link>
               <div style={{ fontSize: "1rem", fontWeight: 300, lineHeight: 1.7, color: "var(--ink-faint)", maxWidth: 240, marginBottom: 22 }}>
-                K-pop lyrics, translations, fan wiki and slang dictionary. Fan-made and fandom-powered.
+                K-pop mini games, slang dictionary, and fan wiki. Fan-made and fandom-powered.
               </div>
               <div style={{ display: "flex", gap: 10 }}>
                 {[
