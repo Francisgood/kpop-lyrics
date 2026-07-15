@@ -4,31 +4,39 @@ import { randomUUID } from "crypto";
 
 export const dynamic = "force-dynamic";
 
-// Homepage news feed: original, aggregator-style posts (own-words summary + link
-// back to the source). Written by the `news-publisher` skill from RSS sources.
-// Self-contained table, created additively on first use (mirrors ScannedEvent).
+// Homepage news feed. Each row keeps BOTH the ORIGINAL story (origHeadline,
+// origSubheadline, image, publisher, url) AND the REWRITTEN version the site
+// publishes (headline, subheadline, body — written in the Aegyo Arena voice by
+// the `news-publisher` skill). The homepage shows the rewritten copy over the
+// original image, linking back to the source. Self-contained table, created +
+// migrated additively on first use (mirrors ScannedEvent).
 let tableReady = false;
 async function ensureTable() {
   if (tableReady) return;
   await prisma.$executeRawUnsafe(`
     CREATE TABLE IF NOT EXISTS "NewsPost" (
-      "id"          TEXT PRIMARY KEY,
-      "headline"    TEXT NOT NULL,
-      "subheadline" TEXT,
-      "body"        TEXT,
-      "imageUrl"    TEXT,
-      "imageCredit" TEXT,
-      "category"    TEXT,
-      "tag"         TEXT,
-      "artistSlug"  TEXT,
-      "artistName"  TEXT,
-      "sourceName"  TEXT,
-      "sourceUrl"   TEXT NOT NULL,
-      "readMins"    INTEGER NOT NULL DEFAULT 2,
-      "publishedAt" TIMESTAMP,
-      "status"      TEXT NOT NULL DEFAULT 'live',
-      "createdAt"   TIMESTAMP NOT NULL DEFAULT now()
+      "id"              TEXT PRIMARY KEY,
+      "headline"        TEXT NOT NULL,
+      "subheadline"     TEXT,
+      "body"            TEXT,
+      "origHeadline"    TEXT,
+      "origSubheadline" TEXT,
+      "imageUrl"        TEXT,
+      "imageCredit"     TEXT,
+      "category"        TEXT,
+      "tag"             TEXT,
+      "artistSlug"      TEXT,
+      "artistName"      TEXT,
+      "sourceName"      TEXT,
+      "sourceUrl"       TEXT NOT NULL,
+      "readMins"        INTEGER NOT NULL DEFAULT 2,
+      "publishedAt"     TIMESTAMP,
+      "status"          TEXT NOT NULL DEFAULT 'live',
+      "createdAt"       TIMESTAMP NOT NULL DEFAULT now()
     )`);
+  // Additive migration for tables created before the original/rewritten split.
+  await prisma.$executeRawUnsafe(`ALTER TABLE "NewsPost" ADD COLUMN IF NOT EXISTS "origHeadline" TEXT`);
+  await prisma.$executeRawUnsafe(`ALTER TABLE "NewsPost" ADD COLUMN IF NOT EXISTS "origSubheadline" TEXT`);
   await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "NewsPost_sourceUrl_key" ON "NewsPost" ("sourceUrl")`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "NewsPost_status_pub_idx" ON "NewsPost" ("status", "publishedAt")`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "NewsPost_tag_idx" ON "NewsPost" ("tag")`);
@@ -61,7 +69,9 @@ function readMins(body: string): number {
 }
 
 type PostIn = {
-  headline?: string; subheadline?: string; body?: string; imageUrl?: string; imageCredit?: string;
+  headline?: string; subheadline?: string; body?: string;
+  origHeadline?: string; origSubheadline?: string;
+  imageUrl?: string; imageCredit?: string;
   category?: string; tag?: string; artistSlug?: string; artistName?: string;
   sourceName?: string; sourceUrl?: string; readMins?: number; publishedAt?: string;
 };
@@ -83,6 +93,8 @@ export async function POST(req: NextRequest) {
       received++;
       const subheadline = p.subheadline ? String(p.subheadline).trim() : null;
       const body = p.body ? String(p.body).trim() : null;
+      const origHeadline = p.origHeadline ? String(p.origHeadline).trim() : null;
+      const origSubheadline = p.origSubheadline ? String(p.origSubheadline).trim() : null;
       const imageUrl = p.imageUrl ? String(p.imageUrl).trim() : null;
       const imageCredit = p.imageCredit ? String(p.imageCredit).trim() : (p.sourceName ? String(p.sourceName).trim() : null);
       const category = normCat(p.category);
@@ -96,11 +108,12 @@ export async function POST(req: NextRequest) {
 
       const n = await prisma.$executeRaw`
         INSERT INTO "NewsPost"
-          ("id","headline","subheadline","body","imageUrl","imageCredit","category","tag","artistSlug","artistName","sourceName","sourceUrl","readMins","publishedAt","status")
+          ("id","headline","subheadline","body","origHeadline","origSubheadline","imageUrl","imageCredit","category","tag","artistSlug","artistName","sourceName","sourceUrl","readMins","publishedAt","status")
         VALUES
-          (${randomUUID()}, ${headline}, ${subheadline}, ${body}, ${imageUrl}, ${imageCredit}, ${category}, ${tag}, ${artistSlug}, ${artistName}, ${sourceName}, ${sourceUrl}, ${rm}, ${publishedAt ?? new Date()}, 'live')
+          (${randomUUID()}, ${headline}, ${subheadline}, ${body}, ${origHeadline}, ${origSubheadline}, ${imageUrl}, ${imageCredit}, ${category}, ${tag}, ${artistSlug}, ${artistName}, ${sourceName}, ${sourceUrl}, ${rm}, ${publishedAt ?? new Date()}, 'live')
         ON CONFLICT ("sourceUrl") DO UPDATE SET
           "headline" = EXCLUDED."headline", "subheadline" = EXCLUDED."subheadline", "body" = EXCLUDED."body",
+          "origHeadline" = EXCLUDED."origHeadline", "origSubheadline" = EXCLUDED."origSubheadline",
           "imageUrl" = EXCLUDED."imageUrl", "imageCredit" = EXCLUDED."imageCredit", "category" = EXCLUDED."category",
           "tag" = EXCLUDED."tag", "artistSlug" = EXCLUDED."artistSlug", "artistName" = EXCLUDED."artistName",
           "sourceName" = EXCLUDED."sourceName", "readMins" = EXCLUDED."readMins", "publishedAt" = EXCLUDED."publishedAt"`;
