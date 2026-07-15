@@ -1,126 +1,303 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { CONTRIBUTORS } from "@/app/leaderboard/data";
+import HomeInteractions from "@/components/HomeInteractions";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Contribute — Aegyo Arena",
-  description:
-    "Aegyo Arena is the ultimate source of K-pop music knowledge, created by contributors like you. Learn how to annotate lyrics, earn points, and follow the 10 Annotation Commandments.",
+  title: "Contribute & Explore — Aegyo Arena",
+  description: "Join Aegyo Arena: annotate lyrics, decode slang, earn Daebak points and rewards, and explore every artist, city and collaboration in the K-pop universe.",
+  openGraph: {
+    title: "Contribute & Explore — Aegyo Arena",
+    description: "Annotate lyrics, earn rewards, and explore the K-pop universe — built by fans, for fans.",
+    type: "website",
+  },
+  twitter: { card: "summary_large_image" },
 };
 
-const POINTS = [
-  { action: "Sign-up bonus", pts: "+50", note: "One-time, just for creating your account." },
-  { action: "Post a comment", pts: "+1", note: "On any song, artist, or album page." },
-  { action: "Write an annotation", pts: "+20", note: "Appears as an “Unreviewed Annotation.”" },
-  { action: "Annotation accepted", pts: "+10", note: "An editor reviews and approves it." },
-  { action: "Annotation rejected", pts: "−10", note: "If an editor rejects your annotation." },
-  { action: "Link a social profile", pts: "+10 each", note: "Verify up to 3 social media accounts." },
+const MARQUEE_ITEMS = [
+  "HYBE Entertainment", "SM Entertainment", "YG Entertainment", "JYP Entertainment",
+  "Aegyo Rewards", "K-Pop Lyrics", "Fan Annotations", "Slang Dictionary",
+  "Concert Tickets", "Signed Memorabilia", "240,000 Members",
 ];
 
-const GOOD = [
-  "A breakdown of a reference",
-  "Uncommon slang term definitions",
-  "A description of poetic wordplay or double meanings",
-  "Quotes from artist interviews that give context or explain meaning",
-  "Connections to history or current events that expand the meaning",
-  "Connections to lyrics or themes in other songs",
-  "Connections to the artist’s real life",
-  "Images, GIFs, or videos that help explain meaning or provide evidence",
+const REWARDS = [
+  { cls: "rc-sakura",    badge: "Tier 1",  icon: "👕", name: "Merch Drop",        pts: "2,000 pts" },
+  { cls: "rc-volt",      badge: "Tier 2",  icon: "🧸", name: "K-pop Plushie",     pts: "3,000 pts" },
+  { cls: "rc-sky",       badge: "Tier 3",  icon: "✨", name: "Desk Toy",          pts: "4,000 pts" },
+  { cls: "rc-tangerine", badge: "Tier 4",  icon: "🎫", name: "Concert Ticket",    pts: "5,000 pts" },
+  { cls: "rc-lavender",  badge: "Auction", icon: "✍️", name: "Signed Memorabilia", pts: "Bid-based" },
 ];
 
-const COMMANDMENTS = [
-  { t: "Don’t Restate The Lyric", d: "Most lyrics don’t need explaining—the meaning is obvious. Don’t just paraphrase them in other words. Not all lines need to be annotated." },
-  { t: "Write Like A Human", d: "Avoid overly complicated words, but don’t be too casual either. An annotation shouldn’t sound like a robot wrote it—so avoid generative AI programs, too." },
-  { t: "Watch Grammar & Spelling", d: "Writing like a human doesn’t mean forgetting the basics of style. Don’t undermine an important annotation with sloppy writing." },
-  { t: "Do Research & Hyperlink Sources", d: "Avoid plagiarism and speculation. Don’t copy Wikipedia, Urban Dictionary, or forums (tertiary sources)—link primary or secondary sources instead." },
-  { t: "Highlight All Relevant Lyrics", d: "Don’t highlight a single word—annotate at least one full line. Sometimes you need two or four bars for context, but be wary of more than four lines." },
-  { t: "Master Formatting", d: "Learn markdown—the basic code used in annotations for italics, bold, blockquotes, and the flourishes that make your ’tates a joy to read." },
-  { t: "Include Media That Adds Depth", d: "If you add an image, it should illustrate something specific in the lyric, not just a general idea." },
-  { t: "Be Objective", d: "Your annotations shouldn’t be rude or demeaning to the artist, and you shouldn’t write like a corny superfan." },
-  { t: "Be Concise", d: "Say what you mean in the fewest words possible. Wordiness ruins annotations—but so does too little. Annotations should be more than 50 characters." },
-  { t: "Be Evergreen", d: "Avoid time-sensitive phrasing that becomes inaccurate fast (“two years ago,” “next summer,” “recently,” “upcoming,” etc.)." },
+const EARN_WAYS = [
+  { icon: "🎤", iconCls: "ewi-1", name: "Post a Comment",      desc: "Share your thoughts on any song, artist, or album", pts: "+1 pt" },
+  { icon: "✍️", iconCls: "ewi-2", name: "Add an Annotation",    desc: "Decode a lyric line for the community",             pts: "+20 pts" },
+  { icon: "✅", iconCls: "ewi-3", name: "Annotation Approved", desc: "An editor accepts it; rejected ones lose 10",          pts: "+10 pts" },
+  { icon: "⭐", iconCls: "ewi-4", name: "Sign-up Bonus",        desc: "One-time reward when you create your account",      pts: "+50 pts" },
+  { icon: "🔗", iconCls: "ewi-5", name: "Link Social Profiles", desc: "Verify up to 3 social media accounts",              pts: "+10 each" },
 ];
 
-export default function ContributePage() {
+const MERCH = [
+  { img: "/images/redesign/merch-01.png", size: "wide", tag: "Drop 01", text: "“Hwaiting !!!” — Neon Seoul" },
+  { img: "/images/redesign/merch-02.png", size: "wide", tag: "Drop 02", text: "“I Learned Korean For This”" },
+  { img: "/images/redesign/merch-03.png", size: "tall", tag: "Drop 03", text: "“My Parents Think It's A Phase”" },
+  { img: "/images/redesign/merch-04.png", size: "tall", tag: "Drop 04", text: "“Unboxed 12 Albums. Got His Unit.”" },
+  { img: "/images/redesign/merch-05.png", size: "tall", tag: "Drop 05", text: "“Mukbang Made Me Do It”" },
+  { img: "/images/redesign/merch-06.png", size: "tall", tag: "Drop 06", text: "“Killing Part Survivor”" },
+];
+
+const AVATAR_TINTS = [
+  { bg: "rgba(255,111,168,0.2)", color: "var(--sakura)" },
+  { bg: "var(--lavender-dim)",   color: "var(--lavender)" },
+  { bg: "var(--sky-dim)",        color: "var(--sky)" },
+  { bg: "var(--volt-dim)",       color: "var(--volt)" },
+  { bg: "rgba(255,140,66,0.18)", color: "var(--tangerine)" },
+  { bg: "rgba(255,111,168,0.2)", color: "var(--sakura)" },
+];
+
+export default async function ContributePage() {
+  const topContributors = CONTRIBUTORS.slice(0, 6);
+
   return (
     <main>
-      {/* Hero */}
-      <section style={{ background: "var(--bg-card)", borderBottom: "1px solid var(--border)", padding: "72px 24px 56px" }}>
-        <div style={{ maxWidth: 880, margin: "0 auto" }}>
-          <div style={{ fontFamily: "var(--mono)", fontSize: "0.72rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 16 }}>
-            How to get involved
+      {/* ── HERO ─────────────────────────────────────────────────────────── */}
+      <section className="hero">
+        <div className="hero-image-bg">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/redesign/hero-plush.png" alt="Aegyo Arena Plush Collection — all seven chibi characters holding hands" />
+        </div>
+
+        <div className="hero-content">
+          <div className="fade-up fade-up-1">
+            <div className="hero-eyebrow">Fan-made · Fandom-powered</div>
+            <p className="hero-body">
+              The K-pop universe built by fans, for fans. Annotate lyrics, decode slang, and earn real rewards — including our iconic chibi plush collection.
+            </p>
+            <div className="hero-actions">
+              <Link href="/signup" className="btn-primary">
+                Start Earning
+                <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+              </Link>
+              <Link href="/artists" className="btn-ghost">Explore Artists</Link>
+            </div>
           </div>
-          <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(2.1rem, 5.5vw, 3.2rem)", fontWeight: 700, color: "var(--ink)", margin: "0 0 18px", lineHeight: 1.12 }}>
-            The ultimate source of K-pop knowledge, built by contributors like you.
-          </h1>
-          <p style={{ color: "var(--ink-dim)", fontSize: "1.1rem", lineHeight: 1.7, maxWidth: 660 }}>
-            Fans from around the world share facts and insight about the songs and artists they love. Earn <strong style={{ color: "var(--ink)" }}>points</strong> by adding knowledge about an artist, a song lyric, or an album—every contributor has a point total next to their name that shows how knowledgeable they are.
-          </p>
-          <div style={{ marginTop: 28, display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <Link href="/signup" style={{ padding: "13px 26px", borderRadius: 100, background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.95rem", textDecoration: "none" }}>Start contributing</Link>
-            <Link href="/daebak-rewards" style={{ padding: "13px 26px", borderRadius: 100, border: "1px solid var(--border-strong)", color: "var(--ink)", fontWeight: 700, fontSize: "0.95rem", textDecoration: "none" }}>See the rewards →</Link>
+
+          <div className="hero-right-block fade-up fade-up-2">
+            <div className="hero-collection-tag">
+              <span style={{ width: 6, height: 6, background: "#fff", borderRadius: "50%", display: "inline-block", flexShrink: 0 }} />
+              Limited Collection · 490 units
+            </div>
+            <div className="hero-stat-grid">
+              <div className="hsg-cell"><span className="hsg-num">240k+</span><span className="hsg-label">Fan Members</span></div>
+              <div className="hsg-cell"><span className="hsg-num">18k+</span><span className="hsg-label">Songs Annotated</span></div>
+              <div className="hsg-cell"><span className="hsg-num">7</span><span className="hsg-label">Plush Characters</span></div>
+              <div className="hsg-cell"><span className="hsg-num">4</span><span className="hsg-label">Major Labels</span></div>
+            </div>
           </div>
         </div>
       </section>
 
-      <div style={{ maxWidth: 980, margin: "0 auto", padding: "64px 24px" }}>
-        {/* Points */}
-        <h2 style={{ fontFamily: "var(--serif)", fontSize: "2rem", color: "var(--ink)", margin: "0 0 8px" }}>How points work</h2>
-        <p style={{ color: "var(--ink-dim)", marginBottom: 28, fontSize: "1rem" }}>Every contribution moves the needle. Points bank toward <Link href="/daebak-rewards" style={{ color: "var(--sakura)", fontWeight: 600 }}>Daebak Rewards</Link>.</p>
-        <div style={{ display: "grid", gap: 10, marginBottom: 72 }}>
-          {POINTS.map((p) => {
-            const neg = p.pts.startsWith("−");
-            return (
-              <div key={p.action} style={{ display: "flex", alignItems: "center", gap: 16, background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 12, padding: "16px 20px" }}>
-                <div style={{ flexShrink: 0, minWidth: 78, fontFamily: "var(--mono)", fontWeight: 800, fontSize: "1.05rem", color: neg ? "#ff7a7a" : "var(--sakura)" }}>{p.pts}</div>
-                <div>
-                  <div style={{ fontWeight: 700, color: "var(--ink)", fontSize: "0.98rem" }}>{p.action}</div>
-                  <div style={{ color: "var(--ink-dim)", fontSize: "0.86rem", marginTop: 2 }}>{p.note}</div>
-                </div>
-              </div>
-            );
-          })}
+      {/* ── MARQUEE ──────────────────────────────────────────────────────── */}
+      <div className="marquee-wrap">
+        <div className="marquee-track">
+          {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
+            <span className="marquee-item" key={i}><span className="marquee-dot" />{item}</span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── LEADERBOARD: TOP CONTRIBUTORS ────────────────────────────────── */}
+      <section className="section section-dark">
+        <div className="lb-layout">
+          <div className="lb-intro">
+            <div className="section-eyebrow">Hall of Fame</div>
+            <h2 className="section-title">Top<br /><em>Contributors</em><br />This Month</h2>
+            <p>The community champions who shape the wiki. Annotate lyrics, correct translations, decode slang — and climb the ranks to earn exclusive rewards.</p>
+            <Link href="/leaderboard" className="btn-primary" style={{ display: "inline-flex" }}>View Full Leaderboard</Link>
+          </div>
+
+          <div className="leaderboard-list">
+            {topContributors.map((c, i) => {
+              const rankCls = i === 0 ? "lb-rank-gold" : i === 1 ? "lb-rank-silver" : i === 2 ? "lb-rank-bronze" : "";
+              const tint = AVATAR_TINTS[i] ?? AVATAR_TINTS[0];
+              return (
+                <Link href="/leaderboard" className="lb-item" key={c.username}>
+                  <span className={`lb-rank ${rankCls}`}>#{i + 1}</span>
+                  <div className="lb-avatar" style={{ background: tint.bg, color: tint.color, overflow: "hidden", padding: 0 }}>
+                    {c.avatar ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={c.avatar} alt={c.username} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                    ) : (
+                      c.initial
+                    )}
+                  </div>
+                  <span className="lb-name">{c.username}</span>
+                  <span>{i === 0 ? <span className="pill"><span className="pill-dot" />Top Fan</span> : null}</span>
+                  <span className="lb-pts">{c.points.toLocaleString()} pts</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── REWARDS ──────────────────────────────────────────────────────── */}
+      <section className="section section-mid">
+        <div className="section-head-row">
+          <div>
+            <div className="section-eyebrow">Aegyo Rewards</div>
+            <h2 className="section-title">Collect Points.<br /><em>Win the Dream.</em></h2>
+          </div>
+          <p className="section-sub">Every annotation, comment, and approved edit brings you closer to your idol.</p>
         </div>
 
-        {/* How to annotate */}
-        <h2 style={{ fontFamily: "var(--serif)", fontSize: "2rem", color: "var(--ink)", margin: "0 0 16px" }}>How to annotate a lyric</h2>
-        <div style={{ color: "var(--ink-dim)", fontSize: "1.02rem", lineHeight: 1.8, marginBottom: 16 }}>
-          <p style={{ margin: "0 0 14px" }}>Highlight any line in a song to start an annotation, then click the <strong style={{ color: "var(--sakura)" }}>&ldquo;Start the Annotation&rdquo;</strong> button. The easiest way is on a laptop, but you can do it on your phone too—hold down on the text and drag the selector across all the lines you need.</p>
-          <p style={{ margin: "0 0 14px" }}>You’ll get <strong style={{ color: "var(--ink)" }}>+20 points</strong> for writing one, which appears as an &ldquo;Unreviewed Annotation.&rdquo; An editor then reviews it: if it’s good, they accept it and you earn <strong style={{ color: "var(--ink)" }}>+10 more</strong>. If they reject it, you <strong style={{ color: "#ff7a7a" }}>lose 10</strong>. Spot a poor unreviewed annotation? Tag <code style={{ color: "var(--sakura)", fontFamily: "var(--mono)" }}>@red-removers</code> and an editor will take a look.</p>
+        <div className="rewards-grid">
+          {REWARDS.map((r) => (
+            <Link href="/daebak-rewards" className={`reward-card ${r.cls}`} key={r.name}>
+              <span className="reward-badge">{r.badge}</span>
+              <span className="reward-icon">{r.icon}</span>
+              <div className="reward-name">{r.name}</div>
+              <div className="reward-pts">{r.pts}</div>
+            </Link>
+          ))}
         </div>
+      </section>
 
-        {/* Good annotation includes */}
-        <div style={{ background: "var(--sakura-light)", border: "1px solid var(--sakura)", borderRadius: 16, padding: "28px 28px 12px", marginBottom: 72 }}>
-          <h3 style={{ fontWeight: 800, color: "var(--ink)", fontSize: "1.2rem", margin: "0 0 16px" }}>A good annotation can include:</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "8px 24px" }}>
-            {GOOD.map((g) => (
-              <div key={g} style={{ display: "flex", gap: 10, color: "var(--ink-dim)", fontSize: "0.94rem", lineHeight: 1.5, marginBottom: 12 }}>
-                <span style={{ color: "var(--sakura)", flexShrink: 0 }}>✦</span>{g}
+      {/* ── EARN ─────────────────────────────────────────────────────────── */}
+      <section className="section section-dark">
+        <div className="earn-grid">
+          <div>
+            <div className="earn-card-stack">
+              <div className="earn-card ec1">
+                <div className="earn-card-label">Sign-Up Bonus</div>
+                <div className="earn-card-pts">+50</div>
+                <div className="earn-card-desc">One-time reward, just for creating your account.</div>
               </div>
-            ))}
+              <div className="earn-card ec2">
+                <div className="earn-card-label">Annotation</div>
+                <div className="earn-card-pts">+20</div>
+                <div className="earn-card-desc">Explain a lyric. Help the fandom understand.</div>
+              </div>
+              <div className="earn-card ec3">
+                <div className="earn-card-label">Comment</div>
+                <div className="earn-card-pts">+1</div>
+                <div className="earn-card-desc">Join the conversation on any song page.</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div className="section-eyebrow">How to Earn</div>
+            <h2 className="section-title" style={{ marginBottom: 40 }}>Five Ways<br /><em>to Win Points</em></h2>
+            <ul className="earn-ways">
+              {EARN_WAYS.map((w) => (
+                <li className="earn-way" key={w.name}>
+                  <div className="earn-way-left">
+                    <div className={`earn-way-icon ${w.iconCls}`}>{w.icon}</div>
+                    <div>
+                      <span className="earn-way-name">{w.name}</span>
+                      <span className="earn-way-desc">{w.desc}</span>
+                    </div>
+                  </div>
+                  <span className="earn-pts-badge">{w.pts}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* ── MERCH ────────────────────────────────────────────────────────── */}
+      <section className="merch-section section-mid">
+        <div className="merch-header">
+          <div>
+            <div className="section-eyebrow">Aegyo Merch</div>
+            <h2 className="section-title">Wear the<br /><em>Culture.</em></h2>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <p className="section-sub">Earned through points. Worn in the streets of Seoul.</p>
+            <Link href="/merch" className="btn-primary" style={{ display: "inline-flex", marginTop: 20 }}>Shop the Merch</Link>
           </div>
         </div>
 
-        {/* 10 Commandments */}
-        <h2 style={{ fontFamily: "var(--serif)", fontSize: "2rem", color: "var(--ink)", margin: "0 0 8px" }}>The 10 Annotation Commandments</h2>
-        <p style={{ color: "var(--ink-dim)", marginBottom: 32, fontSize: "1rem" }}>Follow these rules of thumb to keep your annotations from getting rejected.</p>
-        <div style={{ display: "grid", gap: 12, marginBottom: 72 }}>
-          {COMMANDMENTS.map((c, i) => (
-            <div key={c.t} style={{ display: "flex", gap: 18, background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 12, padding: "18px 22px" }}>
-              <div style={{ flexShrink: 0, fontFamily: "var(--serif)", fontWeight: 700, fontSize: "1.6rem", color: "var(--sakura)", lineHeight: 1, minWidth: 32 }}>{i + 1}</div>
-              <div>
-                <div style={{ fontWeight: 800, color: "var(--ink)", fontSize: "1.02rem", marginBottom: 4 }}>{c.t}</div>
-                <div style={{ color: "var(--ink-dim)", fontSize: "0.92rem", lineHeight: 1.6 }}>{c.d}</div>
+        <div className="merch-scroll" id="merchScroll">
+          {MERCH.map((m) => (
+            <div className={`merch-card ${m.size}`} key={m.tag}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={m.img} alt={m.text} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center", display: "block" }} />
+              <div className="merch-caption">
+                <div className="merch-caption-tag">{m.tag}</div>
+                <div className="merch-caption-text">{m.text}</div>
               </div>
             </div>
           ))}
         </div>
+      </section>
 
-        {/* CTA */}
-        <div style={{ textAlign: "center", background: "var(--bg-card)", border: "1px solid var(--border-strong)", borderRadius: 16, padding: "48px 28px" }}>
-          <h2 style={{ fontFamily: "var(--serif)", fontSize: "2rem", color: "var(--ink)", margin: "0 0 10px" }}>Ready to add your knowledge?</h2>
-          <p style={{ color: "var(--ink-dim)", fontSize: "1.05rem", marginBottom: 24, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>Create a free account, grab your +50 sign-up bonus, and start annotating.</p>
-          <Link href="/signup" style={{ display: "inline-block", padding: "14px 32px", borderRadius: 100, background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "1rem", textDecoration: "none" }}>Become a Contributor</Link>
+      {/* ── EXPLORE ──────────────────────────────────────────────────────── */}
+      <section className="section section-dark">
+        <div className="section-head-row">
+          <div>
+            <div className="section-eyebrow">The Universe</div>
+            <h2 className="section-title">Explore<br /><em>Everything.</em></h2>
+          </div>
+          <p className="section-sub">Artists, lyrics, slang, collaborations, cities and sounds.</p>
         </div>
+
+        <div className="featured-grid">
+          <Link href="/artists" className="feat-card feat-main" style={{ backgroundImage: "url('/images/redesign/explore-artists.png')", backgroundSize: "cover", backgroundPosition: "center top", gridColumn: 1, gridRow: "1/3", minHeight: 500 }}>
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(30,35,45,0.95) 0%,rgba(30,35,45,0.4) 50%,rgba(30,35,45,0.1) 100%)" }} />
+            <div style={{ position: "relative", zIndex: 2 }}>
+              <div className="feat-tag" style={{ color: "var(--sakura)" }}>Artists</div>
+              <div className="feat-title">Discover Every<br />Artist &amp; Group</div>
+            </div>
+          </Link>
+
+          <Link href="/songs" className="feat-card feat-small" style={{ backgroundImage: "url('/images/redesign/explore-lyrics.png')", backgroundSize: "cover", backgroundPosition: "center 20%", border: "none" }}>
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(20,15,35,0.92) 0%,rgba(20,15,35,0.3) 60%,transparent 100%)" }} />
+            <div style={{ position: "relative", zIndex: 2 }}>
+              <div className="feat-tag" style={{ color: "var(--lavender)" }}>Lyrics</div>
+              <div className="feat-title">18k+ Songs Annotated</div>
+            </div>
+          </Link>
+
+          <Link href="/korean-slang" className="feat-card feat-small-alt" style={{ backgroundImage: "url('/images/redesign/explore-slang.png')", backgroundSize: "cover", backgroundPosition: "center 30%", border: "none" }}>
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(25,20,45,0.92) 0%,rgba(25,20,45,0.3) 60%,transparent 100%)" }} />
+            <div style={{ position: "relative", zIndex: 2 }}>
+              <div className="feat-tag" style={{ color: "var(--sky)" }}>Slang</div>
+              <div className="feat-title">K-pop Slang Dictionary</div>
+            </div>
+          </Link>
+
+          <Link href="/collabs" className="feat-card feat-small-volt" style={{ backgroundImage: "url('/images/redesign/explore-collabs.png')", backgroundSize: "cover", backgroundPosition: "center top", border: "none" }}>
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(20,30,25,0.92) 0%,rgba(20,30,25,0.25) 60%,transparent 100%)" }} />
+            <div style={{ position: "relative", zIndex: 2 }}>
+              <div className="feat-tag" style={{ color: "var(--volt)" }}>Collabs</div>
+              <div className="feat-title">Artist Collaborations</div>
+            </div>
+          </Link>
+
+          <Link href="/cities" className="feat-card feat-small-sky" style={{ backgroundImage: "url('/images/redesign/explore-cities.png')", backgroundSize: "cover", backgroundPosition: "center 40%", border: "none" }}>
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(15,25,35,0.92) 0%,rgba(15,25,35,0.25) 60%,transparent 100%)" }} />
+            <div style={{ position: "relative", zIndex: 2 }}>
+              <div className="feat-tag" style={{ color: "var(--sky)" }}>Cities</div>
+              <div className="feat-title">Global K-pop Cities</div>
+            </div>
+          </Link>
+        </div>
+      </section>
+
+      {/* ── NEWSLETTER ───────────────────────────────────────────────────── */}
+      <div className="newsletter">
+        <div className="nl-blob nl-b1" />
+        <div className="nl-blob nl-b2" />
+        <div style={{ position: "relative", zIndex: 2 }}>
+          <div className="nl-eyebrow">Stay in the Loop</div>
+          <h2 className="nl-title">K-pop news,<br /><em>straight to you.</em></h2>
+          <p className="nl-sub">New lyrics, artist breakdowns, slang drops, and chart alerts. No spam. Just K-pop.</p>
+        </div>
+        <HomeInteractions />
       </div>
     </main>
   );
