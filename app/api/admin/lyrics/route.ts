@@ -13,6 +13,16 @@ function authed(req: NextRequest): boolean {
   return req.headers.get("authorization") === `Bearer ${secret}`;
 }
 
+// The Song.lyricsEs migration doesn't apply on this deploy pipeline, so add the
+// column additively on first use (same pattern as ScannedEvent / NewsPost). Safe
+// and idempotent; keeps every lyricsEs read/write working regardless of migration state.
+let esColumnReady = false;
+async function ensureEsColumn() {
+  if (esColumnReady) return;
+  await prisma.$executeRawUnsafe(`ALTER TABLE "Song" ADD COLUMN IF NOT EXISTS "lyricsEs" TEXT`);
+  esColumnReady = true;
+}
+
 // GET → songs with Korean lyrics still missing a translation.
 //   (default)   → missing ENGLISH  (the nightly translate-lyrics skill)
 //   ?target=es  → missing SPANISH  (the Korean→Spanish pipeline)
@@ -21,6 +31,7 @@ function authed(req: NextRequest): boolean {
 // view-count ordering buries brand-new, zero-view songs below the cap).
 export async function GET(req: NextRequest) {
   if (!authed(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  await ensureEsColumn();
   const sp = new URL(req.url).searchParams;
   const limit = Math.min(Number(sp.get("limit") ?? 60), 200);
   const prefix = (sp.get("prefix") ?? "").trim();
@@ -59,6 +70,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   if (!authed(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  await ensureEsColumn();
   const b = await req.json().catch(() => ({}));
   const action = String(b?.action ?? "");
 
