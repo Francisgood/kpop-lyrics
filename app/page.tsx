@@ -23,11 +23,15 @@ async function getFirstPage(): Promise<NewsRow[]> {
     await prisma.$executeRawUnsafe(`
       CREATE TABLE IF NOT EXISTS "NewsPost" (
         "id" TEXT PRIMARY KEY, "headline" TEXT NOT NULL, "subheadline" TEXT, "body" TEXT,
+        "esHeadline" TEXT, "esSubheadline" TEXT,
         "imageUrl" TEXT, "imageCredit" TEXT, "category" TEXT, "tag" TEXT, "artistSlug" TEXT, "artistName" TEXT,
         "sourceName" TEXT, "sourceUrl" TEXT NOT NULL, "readMins" INTEGER NOT NULL DEFAULT 2,
         "publishedAt" TIMESTAMP, "status" TEXT NOT NULL DEFAULT 'live', "createdAt" TIMESTAMP NOT NULL DEFAULT now())`);
+    // Older tables may predate the ES columns — add them defensively so the SELECT never fails.
+    await prisma.$executeRawUnsafe(`ALTER TABLE "NewsPost" ADD COLUMN IF NOT EXISTS "esHeadline" TEXT`);
+    await prisma.$executeRawUnsafe(`ALTER TABLE "NewsPost" ADD COLUMN IF NOT EXISTS "esSubheadline" TEXT`);
     const rows = await prisma.$queryRawUnsafe<Array<Record<string, unknown>>>(
-      `SELECT "id","headline","subheadline","body","imageUrl","imageCredit","category","tag",
+      `SELECT "id","headline","subheadline","body","esHeadline","esSubheadline","imageUrl","imageCredit","category","tag",
               "artistSlug","artistName","sourceName","sourceUrl","readMins","publishedAt"
        FROM "NewsPost" WHERE "status" = 'live'
        ORDER BY "publishedAt" DESC NULLS LAST, "createdAt" DESC LIMIT ${PAGE}`
@@ -35,6 +39,7 @@ async function getFirstPage(): Promise<NewsRow[]> {
     return rows.map((r) => ({
       id: String(r.id), headline: String(r.headline),
       subheadline: (r.subheadline as string) ?? null, body: (r.body as string) ?? null,
+      esHeadline: (r.esHeadline as string) ?? null, esSubheadline: (r.esSubheadline as string) ?? null,
       imageUrl: (r.imageUrl as string) ?? null, imageCredit: (r.imageCredit as string) ?? null,
       category: (r.category as string) ?? null, tag: (r.tag as string) ?? null,
       artistSlug: (r.artistSlug as string) ?? null, artistName: (r.artistName as string) ?? null,

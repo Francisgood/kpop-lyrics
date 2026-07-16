@@ -19,6 +19,8 @@ async function ensureTable() {
       "headline"        TEXT NOT NULL,
       "subheadline"     TEXT,
       "body"            TEXT,
+      "esHeadline"      TEXT,
+      "esSubheadline"   TEXT,
       "origHeadline"    TEXT,
       "origSubheadline" TEXT,
       "imageUrl"        TEXT,
@@ -34,7 +36,9 @@ async function ensureTable() {
       "status"          TEXT NOT NULL DEFAULT 'live',
       "createdAt"       TIMESTAMP NOT NULL DEFAULT now()
     )`);
-  // Additive migration for tables created before the original/rewritten split.
+  // Additive migration for tables created before the original/rewritten/es split.
+  await prisma.$executeRawUnsafe(`ALTER TABLE "NewsPost" ADD COLUMN IF NOT EXISTS "esHeadline" TEXT`);
+  await prisma.$executeRawUnsafe(`ALTER TABLE "NewsPost" ADD COLUMN IF NOT EXISTS "esSubheadline" TEXT`);
   await prisma.$executeRawUnsafe(`ALTER TABLE "NewsPost" ADD COLUMN IF NOT EXISTS "origHeadline" TEXT`);
   await prisma.$executeRawUnsafe(`ALTER TABLE "NewsPost" ADD COLUMN IF NOT EXISTS "origSubheadline" TEXT`);
   await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "NewsPost_sourceUrl_key" ON "NewsPost" ("sourceUrl")`);
@@ -70,6 +74,7 @@ function readMins(body: string): number {
 
 type PostIn = {
   headline?: string; subheadline?: string; body?: string;
+  esHeadline?: string; esSubheadline?: string;
   origHeadline?: string; origSubheadline?: string;
   imageUrl?: string; imageCredit?: string;
   category?: string; tag?: string; artistSlug?: string; artistName?: string;
@@ -93,6 +98,8 @@ export async function POST(req: NextRequest) {
       received++;
       const subheadline = p.subheadline ? String(p.subheadline).trim() : null;
       const body = p.body ? String(p.body).trim() : null;
+      const esHeadline = p.esHeadline ? String(p.esHeadline).trim() : null;
+      const esSubheadline = p.esSubheadline ? String(p.esSubheadline).trim() : null;
       const origHeadline = p.origHeadline ? String(p.origHeadline).trim() : null;
       const origSubheadline = p.origSubheadline ? String(p.origSubheadline).trim() : null;
       const imageUrl = p.imageUrl ? String(p.imageUrl).trim() : null;
@@ -108,11 +115,12 @@ export async function POST(req: NextRequest) {
 
       const n = await prisma.$executeRaw`
         INSERT INTO "NewsPost"
-          ("id","headline","subheadline","body","origHeadline","origSubheadline","imageUrl","imageCredit","category","tag","artistSlug","artistName","sourceName","sourceUrl","readMins","publishedAt","status")
+          ("id","headline","subheadline","body","esHeadline","esSubheadline","origHeadline","origSubheadline","imageUrl","imageCredit","category","tag","artistSlug","artistName","sourceName","sourceUrl","readMins","publishedAt","status")
         VALUES
-          (${randomUUID()}, ${headline}, ${subheadline}, ${body}, ${origHeadline}, ${origSubheadline}, ${imageUrl}, ${imageCredit}, ${category}, ${tag}, ${artistSlug}, ${artistName}, ${sourceName}, ${sourceUrl}, ${rm}, ${publishedAt ?? new Date()}, 'live')
+          (${randomUUID()}, ${headline}, ${subheadline}, ${body}, ${esHeadline}, ${esSubheadline}, ${origHeadline}, ${origSubheadline}, ${imageUrl}, ${imageCredit}, ${category}, ${tag}, ${artistSlug}, ${artistName}, ${sourceName}, ${sourceUrl}, ${rm}, ${publishedAt ?? new Date()}, 'live')
         ON CONFLICT ("sourceUrl") DO UPDATE SET
           "headline" = EXCLUDED."headline", "subheadline" = EXCLUDED."subheadline", "body" = EXCLUDED."body",
+          "esHeadline" = EXCLUDED."esHeadline", "esSubheadline" = EXCLUDED."esSubheadline",
           "origHeadline" = EXCLUDED."origHeadline", "origSubheadline" = EXCLUDED."origSubheadline",
           "imageUrl" = EXCLUDED."imageUrl", "imageCredit" = EXCLUDED."imageCredit", "category" = EXCLUDED."category",
           "tag" = EXCLUDED."tag", "artistSlug" = EXCLUDED."artistSlug", "artistName" = EXCLUDED."artistName",

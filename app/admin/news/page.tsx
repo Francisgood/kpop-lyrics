@@ -9,13 +9,14 @@ type Row = {
   sourceName: string | null; sourceUrl: string; imageUrl: string | null; publishedAt: Date | null;
   origHeadline: string | null; origSubheadline: string | null;
   headline: string; subheadline: string | null; body: string | null;
+  esHeadline: string | null; esSubheadline: string | null;
 };
 
 async function getRows(): Promise<Row[]> {
   try {
     return await prisma.$queryRawUnsafe<Row[]>(
       `SELECT "id","status","category","artistName","sourceName","sourceUrl","imageUrl","publishedAt",
-              "origHeadline","origSubheadline","headline","subheadline","body"
+              "origHeadline","origSubheadline","headline","subheadline","body","esHeadline","esSubheadline"
        FROM "NewsPost"
        ORDER BY "publishedAt" DESC NULLS LAST, "createdAt" DESC
        LIMIT 200`,
@@ -83,6 +84,13 @@ export default async function AdminNewsPage({ searchParams }: { searchParams: Pr
                 <div style={{ fontFamily: "var(--serif)", fontWeight: 700, color: "var(--ink)", fontSize: "1.05rem", lineHeight: 1.25, marginBottom: 6 }}>{r.headline}</div>
                 {r.subheadline && <div style={{ color: "var(--ink-dim)", fontSize: "0.86rem", lineHeight: 1.5, marginBottom: 8 }}>{r.subheadline}</div>}
                 {r.body && <div style={{ color: "var(--ink-faint)", fontSize: "0.82rem", lineHeight: 1.55, whiteSpace: "pre-wrap" }}>{r.body}</div>}
+                {(r.esHeadline || r.esSubheadline) && (
+                  <div style={{ marginTop: 12, paddingTop: 10, borderTop: "1px dashed var(--border)" }}>
+                    <div style={{ ...label, color: "var(--sky)" }}>🇪🇸 Español · shown on the ES toggle</div>
+                    {r.esHeadline && <div style={{ fontFamily: "var(--serif)", fontWeight: 700, color: "var(--ink)", fontSize: "1rem", lineHeight: 1.25, marginBottom: 4 }}>{r.esHeadline}</div>}
+                    {r.esSubheadline && <div style={{ color: "var(--ink-dim)", fontSize: "0.84rem", lineHeight: 1.5 }}>{r.esSubheadline}</div>}
+                  </div>
+                )}
               </div>
             </div>
           </div>

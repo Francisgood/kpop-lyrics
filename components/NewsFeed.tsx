@@ -5,6 +5,7 @@ import Link from "next/link";
 
 export type NewsRow = {
   id: string; headline: string; subheadline: string | null; body: string | null;
+  esHeadline: string | null; esSubheadline: string | null;
   imageUrl: string | null; imageCredit: string | null; category: string | null; tag: string | null;
   artistSlug: string | null; artistName: string | null; sourceName: string | null; sourceUrl: string;
   readMins: number; publishedAt: string | null;
@@ -141,6 +142,11 @@ const PROMOS = [ExploreUnit, EventsUnit, QuizUnit];
 // ── Article card ────────────────────────────────────────────────────────────
 function ArticleCard({ p, featured, c }: { p: NewsRow; featured?: boolean; c: Copy }) {
   const cc = catOf(p.category);
+  // In Spanish, show the Spanish rewrite of the headline/sub-header (fall back to
+  // English if this post hasn't been translated yet).
+  const es = c.lang === "es";
+  const headline = es ? (p.esHeadline ?? p.headline) : p.headline;
+  const subheadline = es ? (p.esSubheadline ?? p.subheadline) : p.subheadline;
   const meta = [p.sourceName, timeAgo(p.publishedAt, c), c.readLabel(p.readMins)].filter(Boolean).join(" · ");
   return (
     <a href={p.sourceUrl} target="_blank" rel="noopener noreferrer"
@@ -156,8 +162,8 @@ function ArticleCard({ p, featured, c }: { p: NewsRow; featured?: boolean; c: Co
           <span style={{ background: `${cc.color}22`, color: cc.color, fontSize: "0.62rem", fontWeight: 800, letterSpacing: "0.07em", padding: "3px 9px", borderRadius: 999, textTransform: "uppercase" }}>{c.lang === "es" ? cc.es : cc.en}</span>
           {p.artistName && <span style={{ fontSize: "0.72rem", color: "var(--ink-faint)" }}>{p.artistName}</span>}
         </div>
-        <h2 style={{ fontFamily: "var(--serif)", fontSize: featured ? "1.7rem" : "1.25rem", fontWeight: 700, color: "var(--ink)", lineHeight: 1.2, margin: "0 0 8px" }}>{p.headline}</h2>
-        {p.subheadline && <p style={{ fontSize: "0.92rem", color: "var(--ink-dim)", lineHeight: 1.55, margin: "0 0 12px" }}>{p.subheadline}</p>}
+        <h2 style={{ fontFamily: "var(--serif)", fontSize: featured ? "1.7rem" : "1.25rem", fontWeight: 700, color: "var(--ink)", lineHeight: 1.2, margin: "0 0 8px" }}>{headline}</h2>
+        {subheadline && <p style={{ fontSize: "0.92rem", color: "var(--ink-dim)", lineHeight: 1.55, margin: "0 0 12px" }}>{subheadline}</p>}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
           <span style={{ fontSize: "0.72rem", color: "var(--ink-faint)" }}>{meta}</span>
           <span style={{ fontSize: "0.76rem", color: cc.color, fontWeight: 800 }}>{c.readMore}</span>
