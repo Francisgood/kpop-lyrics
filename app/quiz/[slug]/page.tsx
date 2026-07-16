@@ -42,11 +42,11 @@ export default async function QuizSlugPage({ params }: { params: Promise<{ slug:
           <div style={{ fontFamily: "var(--mono)", fontSize: "0.66rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--ink-faint)", marginBottom: 18 }}>
             <Link href="/quiz" style={{ color: "var(--ink-faint)", textDecoration: "none" }}><T en="Quizzes" es="Trivias" /></Link>
             {" / "}
-            <span style={{ color: "var(--ink-dim)" }}>{quiz.label}</span>
+            <span style={{ color: "var(--ink-dim)" }}><T en={quiz.label} es={quiz.labelEs} /></span>
           </div>
           <div style={{ fontSize: "3rem", marginBottom: 10 }}>{quiz.emoji}</div>
-          <h1 style={{ fontSize: "clamp(1.8rem, 5vw, 2.7rem)", fontWeight: 800, lineHeight: 1.1, margin: "0 0 12px", color: "var(--ink)" }}>{quiz.title}</h1>
-          <p style={{ fontSize: "1rem", color: "var(--ink-dim)", lineHeight: 1.7, maxWidth: 500, margin: "0 auto 18px" }}>{quiz.blurb}</p>
+          <h1 style={{ fontSize: "clamp(1.8rem, 5vw, 2.7rem)", fontWeight: 800, lineHeight: 1.1, margin: "0 0 12px", color: "var(--ink)" }}><T en={quiz.title} es={quiz.titleEs} /></h1>
+          <p style={{ fontSize: "1rem", color: "var(--ink-dim)", lineHeight: 1.7, maxWidth: 500, margin: "0 auto 18px" }}><T en={quiz.blurb} es={quiz.blurbEs} /></p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
             <span style={{ fontFamily: "var(--mono)", fontSize: "0.68rem", letterSpacing: "0.1em", textTransform: "uppercase", color: quiz.accent, fontWeight: 700 }}>
               <T en={`${quiz.questions.length} questions`} es={`${quiz.questions.length} preguntas`} />

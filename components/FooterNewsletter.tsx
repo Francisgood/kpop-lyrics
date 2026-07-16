@@ -1,11 +1,13 @@
 "use client";
 import { useState } from "react";
 import { trackSignup } from "@/lib/conversions";
+import { T, useT } from "@/components/LangProvider";
 
 export default function FooterNewsletter() {
   const [email, setEmail]   = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
   const [errMsg, setErrMsg] = useState("");
+  const t = useT();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -18,7 +20,7 @@ export default function FooterNewsletter() {
       });
       if (!res.ok) {
         const d = await res.json().catch(() => ({}));
-        setErrMsg((d as { error?: string }).error ?? "Something went wrong.");
+        setErrMsg((d as { error?: string }).error ?? t("Something went wrong.", "Algo salió mal."));
         setStatus("error");
       } else {
         const d = await res.json().catch(() => ({}));
@@ -27,7 +29,7 @@ export default function FooterNewsletter() {
         trackSignup((d as { rdtConversionId?: string }).rdtConversionId);
       }
     } catch {
-      setErrMsg("Network error — please try again.");
+      setErrMsg(t("Network error — please try again.", "Error de conexión — intenta de nuevo."));
       setStatus("error");
     }
   }
@@ -42,21 +44,28 @@ export default function FooterNewsletter() {
       margin: "0 auto 40px",
     }}>
       <div style={{ fontSize: "0.65rem", color: "var(--genius-yellow)", letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 8 }}>
-        Newsletter
+        <T en="Newsletter" es="Newsletter" />
       </div>
       <div style={{ fontWeight: 800, fontSize: "1.1rem", color: "#fff", marginBottom: 6 }}>
-        Stay plugged into K-pop
+        <T en="Stay plugged into K-pop" es="Mantente al día con el K-pop" />
       </div>
       <p style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.5)", marginBottom: 20, lineHeight: 1.6 }}>
-        New lyrics, artist breakdowns, slang explainers, and chart alerts — straight to your inbox. No spam.
+        <T
+          en="New lyrics, artist breakdowns, slang explainers, and chart alerts — straight to your inbox. No spam."
+          es="Nuevas letras, análisis de artistas, slang explicado y alertas de charts — directo a tu inbox. Nada de spam."
+        />
       </p>
 
       {status === "ok" ? (
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 16px", background: "rgba(255,215,0,0.12)", border: "1px solid var(--genius-yellow)", borderRadius: 6 }}>
           <span style={{ fontSize: "1.2rem" }}>✓</span>
           <div>
-            <div style={{ fontWeight: 700, fontSize: "0.85rem", color: "var(--genius-yellow)" }}>You&rsquo;re in!</div>
-            <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.5)" }}>Check your inbox to confirm.</div>
+            <div style={{ fontWeight: 700, fontSize: "0.85rem", color: "var(--genius-yellow)" }}>
+              <T en="You’re in!" es="¡Ya estás dentro!" />
+            </div>
+            <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.5)" }}>
+              <T en="Check your inbox to confirm." es="Revisa tu inbox para confirmar." />
+            </div>
           </div>
         </div>
       ) : (
@@ -66,7 +75,8 @@ export default function FooterNewsletter() {
             required
             value={email}
             onChange={e => setEmail(e.target.value)}
-            placeholder="your@email.com"
+            placeholder={t("your@email.com", "tu@correo.com")}
+            aria-label={t("Email address", "Correo electrónico")}
             disabled={status === "loading"}
             style={{
               flex: 1,
@@ -96,7 +106,7 @@ export default function FooterNewsletter() {
               whiteSpace: "nowrap",
             }}
           >
-            {status === "loading" ? "…" : "SUBSCRIBE"}
+            {status === "loading" ? "…" : t("SUBSCRIBE", "SUSCRIBIRME")}
           </button>
           {status === "error" && (
             <div style={{ width: "100%", fontSize: "0.75rem", color: "#ff6b6b", marginTop: 4 }}>{errMsg}</div>

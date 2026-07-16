@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { T } from "@/components/LangProvider";
 
 interface Props {
   entityType: string;
@@ -36,7 +37,7 @@ export default function FavoriteButton({ entityType, entityId, isLoggedIn, initi
     return (
       <Link href="/login" style={{ textDecoration: "none" }}>
         <button style={{ background: "#f8f8f8", border: "1px solid var(--genius-border)", borderRadius: 999, padding: "6px 14px", fontSize: "0.78rem", fontWeight: 700, cursor: "pointer", color: "var(--genius-gray)", display: "flex", alignItems: "center", gap: 5 }}>
-          ♡ Save
+          ♡ <T en="Save" es="Guardar" />
         </button>
       </Link>
     );
@@ -62,7 +63,9 @@ export default function FavoriteButton({ entityType, entityId, isLoggedIn, initi
         transition: "all 0.15s",
       }}
     >
-      {favorited ? "♥ Saved" : "♡ Save"}
+      {favorited
+        ? <>♥ <T en="Saved" es="Guardado" /></>
+        : <>♡ <T en="Save" es="Guardar" /></>}
     </button>
   );
 }

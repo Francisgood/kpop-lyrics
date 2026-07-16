@@ -22,10 +22,12 @@ export default function QuizPlayer({ category }: { category: QuizCategory }) {
   const accent    = category.accent;
   const pct       = Math.round((score / total) * 100);
 
+  // Display-language copy. `current.answer` stays the canonical index — never keyed off these.
+  const label     = t(category.label, category.labelEs);
   const url       = `https://www.aegyoarena.com/quiz/${category.slug}`;
   const shareText = t(
     `I scored ${score}/${total} on the ${category.label} quiz on Aegyo Arena. Can you beat me?`,
-    `Saqué ${score}/${total} en la trivia de ${category.label} en Aegyo Arena. ¿Puedes superarme?`,
+    `Saqué ${score}/${total} en la trivia de ${category.labelEs ?? category.label} en Aegyo Arena. ¿Puedes superarme?`,
   );
   const xHref     = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(url)}`;
 
@@ -48,7 +50,7 @@ export default function QuizPlayer({ category }: { category: QuizCategory }) {
   }
   async function nativeShare() {
     if (typeof navigator !== "undefined" && navigator.share) {
-      try { await navigator.share({ title: category.title, text: shareText, url }); } catch { /* dismissed */ }
+      try { await navigator.share({ title: t(category.title, category.titleEs), text: shareText, url }); } catch { /* dismissed */ }
     } else {
       copyLink();
     }
@@ -118,20 +120,21 @@ export default function QuizPlayer({ category }: { category: QuizCategory }) {
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 22 }}>
           <span style={{ fontSize: "1.4rem" }}>{category.emoji}</span>
           <div>
-            <div style={{ fontWeight: 800, fontSize: "0.8rem", color: "#111" }}>{category.label}</div>
+            <div style={{ fontWeight: 800, fontSize: "0.8rem", color: "#111" }}>{label}</div>
             <div style={{ fontSize: "0.72rem", color: "#aaa" }}>{t(`Question ${qIndex + 1} of ${total}`, `Pregunta ${qIndex + 1} de ${total}`)}</div>
           </div>
           <div style={{ marginLeft: "auto", fontWeight: 800, fontSize: "0.85rem", color: accent }}>{score}/{qIndex}</div>
         </div>
 
-        <div style={{ fontWeight: 800, fontSize: "1.08rem", lineHeight: 1.5, color: "#111", marginBottom: 20 }}>{current.q}</div>
+        <div style={{ fontWeight: 800, fontSize: "1.08rem", lineHeight: 1.5, color: "#111", marginBottom: 20 }}>{t(current.q, current.qEs)}</div>
 
         {current.image && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={current.image} alt={current.imageAlt ?? ""} style={{ display: "block", width: "100%", maxWidth: 320, margin: "0 auto 20px", borderRadius: 12, border: "1px solid #ececec" }} />
+          <img src={current.image} alt={t(current.imageAlt, current.imageAltEs) ?? ""} style={{ display: "block", width: "100%", maxWidth: 320, margin: "0 auto 20px", borderRadius: 12, border: "1px solid #ececec" }} />
         )}
 
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {/* Iterate the CANONICAL options so `i` always matches `current.answer`; only the label text is translated. */}
           {current.options.map((opt, i) => {
             let bg = "#f7f7f8", border = "#ececec", color = "#111";
             if (confirmed) {
@@ -148,7 +151,7 @@ export default function QuizPlayer({ category }: { category: QuizCategory }) {
                 <span style={{ width: 24, height: 24, borderRadius: "50%", flexShrink: 0, background: border === "#ececec" ? "#e0e0e0" : border, color: border === "#ececec" ? "#666" : "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.7rem", fontWeight: 800 }}>
                   {confirmed && i === current.answer ? "✓" : confirmed && i === selected ? "✕" : String.fromCharCode(65 + i)}
                 </span>
-                {opt}
+                {t(opt, current.optionsEs?.[i])}
               </button>
             );
           })}
@@ -156,11 +159,11 @@ export default function QuizPlayer({ category }: { category: QuizCategory }) {
 
         {confirmed && (
           <div style={{ marginTop: 16, background: "#f9f9f9", borderLeft: `4px solid ${accent}`, borderRadius: "0 6px 6px 0", padding: "12px 16px", fontSize: "0.82rem", color: "#555", lineHeight: 1.6 }}>
-            {current.explanation}
+            {t(current.explanation, current.explanationEs)}
             {current.learnMoreUrl && (
               <div style={{ marginTop: 10 }}>
                 <a href={current.learnMoreUrl} target="_blank" rel="noopener noreferrer" style={{ color: accent, fontWeight: 800, textDecoration: "none" }}>
-                  {current.learnMoreLabel ?? t("Read the full definition →", "Lee la definición completa →")}
+                  {t(current.learnMoreLabel, current.learnMoreLabelEs) ?? t("Read the full definition →", "Lee la definición completa →")}
                 </a>
               </div>
             )}
@@ -184,7 +187,7 @@ export default function QuizPlayer({ category }: { category: QuizCategory }) {
         {current.sourceUrl && (
           <div style={{ marginTop: 16, textAlign: "center" }}>
             <a href={youtubeWithLang(current.sourceUrl, lang)} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.78rem", color: "#888", textDecoration: "none", fontWeight: 700 }}>
-              ▶ {current.sourceLabel ?? t("Watch the clip on YouTube", "Mira el clip en YouTube")}
+              ▶ {t(current.sourceLabel, current.sourceLabelEs) ?? t("Watch the clip on YouTube", "Mira el clip en YouTube")}
             </a>
           </div>
         )}

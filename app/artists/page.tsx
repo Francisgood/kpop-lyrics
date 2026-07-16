@@ -141,14 +141,14 @@ export default async function ArtistsPage() {
                         </div>
                         {artist.memberships.length > 0 && (
                           <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginTop: 4 }}>
-                            Also in: {artist.memberships.map((m) => m.group.stageName).join(", ")}
+                            <T en="Also in:" es="También en:" /> {artist.memberships.map((m) => m.group.stageName).join(", ")}
                           </div>
                         )}
                       </div>
                     </div>
                     {artist.albums[0] && (
                       <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--genius-border)", fontSize: "0.78rem", color: "var(--genius-gray)" }}>
-                        Latest: <span style={{ color: "#ff6fa8", fontWeight: 600 }}>{artist.albums[0].title}</span> ({artist.albums[0].releaseYear})
+                        <T en="Latest:" es="Último:" /> <span style={{ color: "#ff6fa8", fontWeight: 600 }}>{artist.albums[0].title}</span> ({artist.albums[0].releaseYear})
                       </div>
                     )}
                   </div>
@@ -168,7 +168,10 @@ export default async function ArtistsPage() {
               </span>
             </div>
             <p style={{ fontSize: "0.82rem", color: "var(--genius-gray)", marginBottom: 20, lineHeight: 1.5 }}>
-              Western artists who have crossed into the K-pop cultural sphere through collaborations, features, and co-writes.
+              <T
+                en="Western artists who have crossed into the K-pop cultural sphere through collaborations, features, and co-writes."
+                es="Artistas occidentales que han cruzado a la esfera cultural del K-pop a través de colaboraciones, features y co-escrituras."
+              />
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 }}>
               {collabs.map((artist) => {
@@ -194,18 +197,21 @@ export default async function ArtistsPage() {
                             <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginTop: 1 }}>{artist.realName}</div>
                           )}
                           <div style={{ fontSize: "0.75rem", color: "#e879f9", fontWeight: 700, marginTop: 4 }}>
-                            {totalSongs(artist)} crossover track{totalSongs(artist) !== 1 ? "s" : ""}
+                            <T
+                              en={`${totalSongs(artist)} crossover track${totalSongs(artist) !== 1 ? "s" : ""}`}
+                              es={`${totalSongs(artist)} track${totalSongs(artist) !== 1 ? "s" : ""} crossover`}
+                            />
                           </div>
                         </div>
                       </div>
                       {kpopCollabs.length > 0 && (
                         <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--genius-border)", fontSize: "0.75rem", color: "var(--genius-gray)" }}>
-                          Collaborated with: <span style={{ color: "#ff6fa8", fontWeight: 600 }}>{kpopCollabs.join(", ")}</span>
+                          <T en="Collaborated with:" es="Colaboró con:" /> <span style={{ color: "#ff6fa8", fontWeight: 600 }}>{kpopCollabs.join(", ")}</span>
                         </div>
                       )}
                       {artist.albums[0] && kpopCollabs.length === 0 && (
                         <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--genius-border)", fontSize: "0.75rem", color: "var(--genius-gray)" }}>
-                          Latest: <span style={{ color: "#ff6fa8", fontWeight: 600 }}>{artist.albums[0].title}</span>
+                          <T en="Latest:" es="Último:" /> <span style={{ color: "#ff6fa8", fontWeight: 600 }}>{artist.albums[0].title}</span>
                         </div>
                       )}
                     </div>

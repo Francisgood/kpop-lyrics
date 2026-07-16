@@ -16,6 +16,13 @@ export type TopicMeta = {
   tagline: string;
   blurb: string;
   embeds: Embed[];
+  // Spanish copy (optional + additive — EN fields stay the source of truth and the
+  // fallback). Consumers prefer these when the site is in ES: see CultureCorner.
+  // Korean terms ("Mukbang") and fandom loanwords (covers, challenges, skincare)
+  // stay untranslated on purpose — that's how LatAm fandom actually says them.
+  titleEs?: string;
+  taglineEs?: string;
+  blurbEs?: string;
 };
 
 const ig = (id: string, type: "reel" | "p" = "reel"): Embed => ({ kind: "instagram", permalink: `https://www.instagram.com/${type}/${id}/` });
@@ -62,17 +69,23 @@ export const CULTURE: Record<CultureTopic, TopicMeta> = {
   dance: {
     key: "dance",
     title: "Dance",
+    titleEs: "Baile",
     emoji: "💃",
     tagline: "Choreo, covers & challenges",
+    taglineEs: "Coreo, covers y challenges",
     blurb: "The moves the fandom can't stop looping — point choreography, dance covers, and the challenges blowing up across Reels right now.",
+    blurbEs: "Los pasos que el fandom no para de repetir — point choreography, dance covers y los challenges que están explotando en Reels ahora mismo.",
     embeds: [ig("DWy2SSwASyv"), ig("DYth9jESBvi"), ig("DWz3FVkiHFX"), ig("DZX2gAZJrJu"), ig("DYv8VaNitHv"), ig("DWzzdknj1Ci")],
   },
   fashion: {
     key: "fashion",
     title: "Fashion",
+    titleEs: "Moda",
     emoji: "👗",
     tagline: "Fits, airport looks & runway",
+    taglineEs: "Outfits, aeropuerto y pasarela",
     blurb: "Idol fits, airport fashion, and red-carpet moments the fandom is dissecting frame by frame.",
+    blurbEs: "Looks de idols, moda de aeropuerto y momentos de alfombra roja que el fandom analiza cuadro por cuadro.",
     embeds: [
       ig("DX98jtWIBgC"), ig("DYB50KJEYj4"), ig("DX8GxZWj1MY", "p"), ig("DXt_rHUDRIq"), ig("DW4fBZgDHUG"), ig("DYOzawixRgH"),
       tt("ZTBb11NSc"), tt("ZTBqouGqn"), tt("ZTBqobQwa"), tt("ZTBqoa67V"), tt("ZTBqoqSRm"),
@@ -82,17 +95,24 @@ export const CULTURE: Record<CultureTopic, TopicMeta> = {
   beauty: {
     key: "beauty",
     title: "Beauty",
+    titleEs: "Belleza",
     emoji: "💄",
     tagline: "Makeup, skincare & glow-ups",
+    taglineEs: "Maquillaje, skincare y glow-ups",
     blurb: "Idol makeup looks, K-beauty routines, and get-ready-with-me breakdowns. Curated drops coming soon.",
+    blurbEs: "Looks de maquillaje de idols, rutinas de K-beauty y get-ready-with-me paso a paso. Drops curados muy pronto.",
     embeds: [],
   },
   mukbang: {
     key: "mukbang",
     title: "Mukbang",
+    // "Mukbang" is a Korean term — same in both languages, kept for the ES fallback.
+    titleEs: "Mukbang",
     emoji: "🍜",
     tagline: "Eat with your faves",
+    taglineEs: "Come con tus faves",
     blurb: "Mukbang and what-I-eat-in-a-day videos — the comfort-watch corner of the fandom.",
+    blurbEs: "Videos de mukbang y what-I-eat-in-a-day — el rincón comfort del fandom.",
     embeds: [yt("hBMaTyVrOfc"), yt("wjdsvcT0uQA"), yt("5e15ZMCOCfA")],
   },
 };

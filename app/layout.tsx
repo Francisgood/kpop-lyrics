@@ -4,7 +4,8 @@ import "./globals.css";
 import Link from "next/link";
 import FooterNewsletter from "@/components/FooterNewsletter";
 import HamburgerMenu from "@/components/HamburgerMenu";
-import { LangProvider } from "@/components/LangProvider";
+import NavSearch from "@/components/NavSearch";
+import { LangProvider, T } from "@/components/LangProvider";
 import { getSession } from "@/lib/auth";
 import Script from "next/script";
 
@@ -33,14 +34,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <img src="/images/aegyo-logo.png" alt="Aegyo Arena" style={{ height: 34, width: "auto", display: "block" }} />
             </Link>
 
-            <form action="/search" className="nav-search-form" style={{ flex: 1, maxWidth: 380 }}>
-              <input
-                name="q"
-                type="search"
-                placeholder="Search songs, artists, terms..."
-                className="search-input"
-              />
-            </form>
+            <NavSearch />
 
             <div style={{ marginLeft: "auto", flexShrink: 0 }}>
               <HamburgerMenu
@@ -66,7 +60,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <img src="/images/aegyo-logo-footer.png" alt="Aegyo Arena" style={{ height: 34, width: "auto", display: "block" }} />
               </Link>
               <div style={{ fontSize: "1rem", fontWeight: 300, lineHeight: 1.7, color: "var(--ink-faint)", maxWidth: 240, marginBottom: 22 }}>
-                K-pop mini games, slang dictionary, and fan wiki. Fan-made and fandom-powered.
+                <T
+                  en="K-pop mini games, slang dictionary, and fan wiki. Fan-made and fandom-powered."
+                  es="Minijuegos de K-pop, diccionario de jerga y wiki de fans. Hecho por fans, impulsado por el fandom."
+                />
               </div>
               <div style={{ display: "flex", gap: 10 }}>
                 {[
@@ -88,27 +85,29 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 ))}
               </div>
             </div>
+            {/* [label, href, labelEs] — label stays the canonical EN key, labelEs is display-only. */}
             <div>
-              <div className="footer-col-title">Discover</div>
-              {[["Artists", "/artists"], ["Collaborations", "/collabs"], ["Signals", "/news"], ["Slang", "/korean-slang"], ["Cities", "/cities"], ["Events", "/events"], ["Search", "/search"]].map(([label, href]) => (
+              <div className="footer-col-title"><T en="Discover" es="Descubre" /></div>
+              {[["Artists", "/artists", "Artistas"], ["Collaborations", "/collabs", "Colaboraciones"], ["Signals", "/news", "Señales"], ["Slang", "/korean-slang", "Jerga"], ["Cities", "/cities", "Ciudades"], ["Events", "/events", "Eventos"], ["Search", "/search", "Buscar"]].map(([label, href, labelEs]) => (
                 <Link key={href} href={href} style={{ display: "block", fontSize: "1rem", fontWeight: 300, color: "var(--ink-dim)", textDecoration: "none", marginBottom: 10 }}>
-                  {label}
+                  <T en={label} es={labelEs} />
                 </Link>
               ))}
             </div>
             <div>
+              {/* "Culture Vulture" is a brand name — stays EN. */}
               <div className="footer-col-title">Culture Vulture</div>
-              {[["Dance", "/culture/dance"], ["Fashion", "/culture/fashion"], ["Beauty", "/culture/beauty"], ["Mukbang", "/culture/mukbang"]].map(([label, href]) => (
+              {[["Dance", "/culture/dance", "Baile"], ["Fashion", "/culture/fashion", "Moda"], ["Beauty", "/culture/beauty", "Belleza"], ["Mukbang", "/culture/mukbang", "Mukbang"]].map(([label, href, labelEs]) => (
                 <Link key={href} href={href} style={{ display: "block", fontSize: "1rem", fontWeight: 300, color: "var(--ink-dim)", textDecoration: "none", marginBottom: 10 }}>
-                  {label}
+                  <T en={label} es={labelEs} />
                 </Link>
               ))}
             </div>
             <div>
-              <div className="footer-col-title">Community</div>
-              {[["Quiz", "/quiz"], ["Daebak Rewards", "/daebak-rewards"], ["Merch", "/merch"], ["Leaderboard", "/leaderboard"], ["Contribute", "/contribute"], ["BTS Giveaway", "/bts-giveaway"]].map(([label, href]) => (
+              <div className="footer-col-title"><T en="Community" es="Comunidad" /></div>
+              {[["Quiz", "/quiz", "Quiz"], ["Daebak Rewards", "/daebak-rewards", "Daebak Rewards"], ["Merch", "/merch", "Merch"], ["Leaderboard", "/leaderboard", "Ranking"], ["Contribute", "/contribute", "Contribuir"], ["BTS Giveaway", "/bts-giveaway", "Sorteo BTS"]].map(([label, href, labelEs]) => (
                 <Link key={label} href={href} style={{ display: "block", fontSize: "1rem", fontWeight: 300, color: "var(--ink-dim)", textDecoration: "none", marginBottom: 10 }}>
-                  {label}
+                  <T en={label} es={labelEs} />
                 </Link>
               ))}
             </div>
@@ -117,11 +116,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {/* Bottom bar */}
           <div style={{ borderTop: "1px solid var(--border)", maxWidth: 1240, margin: "0 auto", padding: "28px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap", fontSize: "0.78rem", color: "var(--ink-faint)", fontFamily: "var(--mono)", letterSpacing: "0.04em" }}>
             <span>
-              © {new Date().getFullYear()} Aegyo Arena · Fan-made K-pop resource · Not affiliated with any artist, label, or agency
+              <T
+                en={`© ${new Date().getFullYear()} Aegyo Arena · Fan-made K-pop resource · Not affiliated with any artist, label, or agency`}
+                es={`© ${new Date().getFullYear()} Aegyo Arena · Recurso de K-pop hecho por fans · Sin afiliación con ningún artista, sello o agencia`}
+              />
               {" · "}
-              <Link href="/privacy-policy" style={{ color: "inherit", textDecoration: "underline" }}>Privacy Policy</Link>
+              <Link href="/privacy-policy" style={{ color: "inherit", textDecoration: "underline" }}>
+                <T en="Privacy Policy" es="Política de Privacidad" />
+              </Link>
             </span>
-            <span>Made with ♡ by the fandom</span>
+            <span><T en="Made with ♡ by the fandom" es="Hecho con ♡ por el fandom" /></span>
           </div>
         </footer>
 

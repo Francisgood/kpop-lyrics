@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { T, useT } from "@/components/LangProvider";
 
 interface Props {
   isLoggedIn: boolean;
@@ -12,6 +13,7 @@ interface Props {
 export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const t = useT();
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -28,21 +30,23 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
     window.location.href = "/";
   }
 
+  // `label` stays the canonical EN key (the Dashboard highlight below matches on it);
+  // `labelEs` is display-only.
   const loggedInItems = [
-    { label: "Explore",      href: "/search",      prefix: "" },
-    { label: "Quiz",         href: "/quiz",        prefix: "" },
-    { label: "Dashboard",    href: "/dashboard",   prefix: "★ " },
-    { label: "Leaderboard",  href: "/leaderboard", prefix: "" },
-    { label: "Contribute",   href: "/contribute",  prefix: "" },
-    { label: "Refer",        href: "/refer",       prefix: "" },
+    { label: "Explore",      labelEs: "Explorar",    href: "/search",      prefix: "" },
+    { label: "Quiz",         labelEs: "Quiz",        href: "/quiz",        prefix: "" },
+    { label: "Dashboard",    labelEs: "Mi Panel",    href: "/dashboard",   prefix: "★ " },
+    { label: "Leaderboard",  labelEs: "Ranking",     href: "/leaderboard", prefix: "" },
+    { label: "Contribute",   labelEs: "Contribuir",  href: "/contribute",  prefix: "" },
+    { label: "Refer",        labelEs: "Invitar",     href: "/refer",       prefix: "" },
   ];
 
   const loggedOutItems = [
-    { label: "Explore",      href: "/search",      highlight: false },
-    { label: "Quiz",         href: "/quiz",        highlight: false },
-    { label: "Leaderboard",  href: "/leaderboard", highlight: false },
-    { label: "Contribute",   href: "/contribute",  highlight: false },
-    { label: "Sign Up",      href: "/signup",       highlight: true  },
+    { label: "Explore",      labelEs: "Explorar",    href: "/search",      highlight: false },
+    { label: "Quiz",         labelEs: "Quiz",        href: "/quiz",        highlight: false },
+    { label: "Leaderboard",  labelEs: "Ranking",     href: "/leaderboard", highlight: false },
+    { label: "Contribute",   labelEs: "Contribuir",  href: "/contribute",  highlight: false },
+    { label: "Sign Up",      labelEs: "Regístrate",  href: "/signup",       highlight: true  },
   ];
 
   return (
@@ -50,7 +54,7 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
       {/* Hamburger button */}
       <button
         onClick={() => setOpen((o) => !o)}
-        aria-label={open ? "Close menu" : "Open menu"}
+        aria-label={open ? t("Close menu", "Cerrar menú") : t("Open menu", "Abrir menú")}
         style={{
           background: "none",
           border:     "1px solid rgba(255,255,255,0.15)",
@@ -122,7 +126,7 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
                   onClick={() => setOpen(false)}
                   style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.35)", textDecoration: "none", letterSpacing: "0.05em" }}
                 >
-                  View profile →
+                  <T en="View profile →" es="Ver perfil →" />
                 </Link>
               </div>
             </div>
@@ -130,7 +134,7 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
 
           {/* Menu items */}
           {isLoggedIn
-            ? loggedInItems.map(({ label, href, prefix }) => (
+            ? loggedInItems.map(({ label, labelEs, href, prefix }) => (
                 <Link
                   key={href}
                   href={href}
@@ -150,10 +154,10 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
                   onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                 >
-                  {prefix}{label}
+                  {prefix}<T en={label} es={labelEs} />
                 </Link>
               ))
-            : loggedOutItems.map(({ label, href, highlight }) => (
+            : loggedOutItems.map(({ label, labelEs, href, highlight }) => (
                 <Link
                   key={href}
                   href={href}
@@ -170,7 +174,7 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
                   onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                 >
-                  {label}
+                  <T en={label} es={labelEs} />
                 </Link>
               ))
           }
@@ -194,7 +198,7 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
               onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#ef4444"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.3)"; }}
             >
-              Sign out
+              <T en="Sign out" es="Cerrar sesión" />
             </button>
           )}
         </div>

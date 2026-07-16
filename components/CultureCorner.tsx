@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CULTURE, TOPIC_ORDER, type CultureTopic, type Embed } from "@/app/culture/content";
-import { useLang, youtubeWithLang } from "@/components/LangProvider";
+import { useLang, useT, youtubeWithLang } from "@/components/LangProvider";
 
 const ACCENT: Record<CultureTopic, string> = {
   dance: "linear-gradient(135deg,#ff6fa8,#b14cff)",
@@ -40,6 +40,10 @@ function EmbedView({ e }: { e: Embed }) {
 export default function CultureCorner() {
   const { lang } = useLang();
   const es = lang === "es";
+  // Topic title/tagline come from the shared content.ts — prefer its Spanish
+  // fields in ES, falling back to English wherever one isn't filled in.
+  // (Named `pick`, not `t`: the TOPIC_ORDER.map below binds `t` to the topic key.)
+  const pick = useT();
   const [open, setOpen] = useState<CultureTopic | null>(null);
 
   // (Re)process Instagram embeds whenever a modal with IG content opens.
@@ -67,6 +71,7 @@ export default function CultureCorner() {
   }, [open]);
 
   const active = open ? CULTURE[open] : null;
+  const activeTitle = active ? pick(active.title, active.titleEs) : "";
   const preview = active ? active.embeds.slice(0, 4) : [];
 
   return (
@@ -95,8 +100,8 @@ export default function CultureCorner() {
             >
               <div style={{ padding: "18px 18px 16px", display: "flex", flexDirection: "column", height: "100%" }}>
                 <div style={{ fontSize: "1.9rem", marginBottom: 6 }}>{m.emoji}</div>
-                <div style={{ fontWeight: 800, fontSize: "1.05rem" }}>{m.title}</div>
-                <div style={{ fontSize: "0.76rem", opacity: 0.9, marginTop: 2 }}>{m.tagline}</div>
+                <div style={{ fontWeight: 800, fontSize: "1.05rem" }}>{pick(m.title, m.titleEs)}</div>
+                <div style={{ fontSize: "0.76rem", opacity: 0.9, marginTop: 2 }}>{pick(m.tagline, m.taglineEs)}</div>
                 <div style={{ marginTop: "auto", paddingTop: 12, fontSize: "0.74rem", fontWeight: 700 }}>
                   {count > 0
                     ? `${count} clip${count > 1 ? "s" : ""} · ${es ? "Explorar" : "Explore"} →`
@@ -128,7 +133,7 @@ export default function CultureCorner() {
         >
           <div onClick={(ev) => ev.stopPropagation()} style={{ width: "min(560px, 96vw)", background: "var(--bg-card)", border: "1px solid var(--border-strong)", borderRadius: 18, padding: "20px 22px 26px", boxShadow: "0 24px 70px rgba(0,0,0,0.5)" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-              <span style={{ fontFamily: "var(--serif)", fontSize: "1.3rem", fontWeight: 700, color: "var(--ink)" }}>{active.emoji} {active.title}</span>
+              <span style={{ fontFamily: "var(--serif)", fontSize: "1.3rem", fontWeight: 700, color: "var(--ink)" }}>{active.emoji} {activeTitle}</span>
               <button type="button" onClick={() => setOpen(null)} aria-label={es ? "Cerrar" : "Close"} style={{ background: "none", border: "none", color: "var(--ink-dim)", fontSize: "1.7rem", lineHeight: 1, cursor: "pointer" }}>×</button>
             </div>
             <div style={{ display: "grid", gap: 16 }}>
@@ -139,7 +144,7 @@ export default function CultureCorner() {
               ))}
             </div>
             <Link href={`/culture/${active.key}`} style={{ display: "block", textAlign: "center", marginTop: 18, padding: "11px", borderRadius: 100, background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.85rem", textDecoration: "none" }}>
-              {es ? <>Ver todo {active.title} en Culture Vulture →</> : <>See all {active.title} on Culture Vulture →</>}
+              {es ? <>Ver todo {activeTitle} en Culture Vulture →</> : <>See all {activeTitle} on Culture Vulture →</>}
             </Link>
           </div>
         </div>

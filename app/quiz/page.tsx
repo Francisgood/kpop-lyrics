@@ -45,9 +45,9 @@ export default function QuizHubPage() {
                 <span style={{ fontSize: "2rem", width: 54, height: 54, borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", background: `${quiz.accent}22`, flexShrink: 0 }}>
                   {quiz.emoji}
                 </span>
-                <div style={{ fontWeight: 800, fontSize: "1.15rem", color: "var(--ink)", lineHeight: 1.2 }}>{quiz.label}</div>
+                <div style={{ fontWeight: 800, fontSize: "1.15rem", color: "var(--ink)", lineHeight: 1.2 }}><T en={quiz.label} es={quiz.labelEs} /></div>
               </div>
-              <p style={{ fontSize: "0.9rem", color: "var(--ink-dim)", lineHeight: 1.6, margin: "0 0 20px", flex: 1 }}>{quiz.blurb}</p>
+              <p style={{ fontSize: "0.9rem", color: "var(--ink-dim)", lineHeight: 1.6, margin: "0 0 20px", flex: 1 }}><T en={quiz.blurb} es={quiz.blurbEs} /></p>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "auto" }}>
                 <span style={{ fontFamily: "var(--mono)", fontSize: "0.68rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-faint)" }}>
                   <T en={`${quiz.questions.length} questions`} es={`${quiz.questions.length} preguntas`} />
