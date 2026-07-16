@@ -104,12 +104,20 @@ export async function POST(req: NextRequest) {
       const origSubheadline = p.origSubheadline ? String(p.origSubheadline).trim() : null;
       const imageUrl = p.imageUrl ? String(p.imageUrl).trim() : null;
       const imageCredit = p.imageCredit ? String(p.imageCredit).trim() : (p.sourceName ? String(p.sourceName).trim() : null);
-      const category = normCat(p.category);
+      // Must be null when omitted, or the COALESCE below can't tell "not provided"
+      // from a real value and a partial update would silently reset it to 'news'.
+      const category = p.category != null ? normCat(p.category) : null;
       const tag = p.tag ? String(p.tag).trim() : (p.artistSlug ? String(p.artistSlug).trim() : null);
       const artistSlug = p.artistSlug ? String(p.artistSlug).trim() : null;
       const artistName = p.artistName ? String(p.artistName).trim() : null;
       const sourceName = p.sourceName ? String(p.sourceName).trim() : null;
-      const rm = Number(p.readMins) > 0 ? Math.round(Number(p.readMins)) : readMins(body ?? subheadline ?? "");
+      // 0 = "not provided" sentinel (never a real read time) so the COALESCE/NULLIF
+      // below preserves the stored value on a partial update instead of resetting it.
+      const rm = Number(p.readMins) > 0
+        ? Math.round(Number(p.readMins))
+        : (body != null || subheadline != null ? readMins(body ?? subheadline ?? "") : 0);
+      // Null when omitted — otherwise a partial update would stamp now() and reorder
+      // the feed. Publishers always send publishedAt for genuinely new posts.
       let publishedAt: Date | null = null;
       if (p.publishedAt) { const d = new Date(p.publishedAt); if (!isNaN(d.getTime())) publishedAt = d; }
 
@@ -117,7 +125,7 @@ export async function POST(req: NextRequest) {
         INSERT INTO "NewsPost"
           ("id","headline","subheadline","body","esHeadline","esSubheadline","origHeadline","origSubheadline","imageUrl","imageCredit","category","tag","artistSlug","artistName","sourceName","sourceUrl","readMins","publishedAt","status")
         VALUES
-          (${randomUUID()}, ${headline}, ${subheadline}, ${body}, ${esHeadline}, ${esSubheadline}, ${origHeadline}, ${origSubheadline}, ${imageUrl}, ${imageCredit}, ${category}, ${tag}, ${artistSlug}, ${artistName}, ${sourceName}, ${sourceUrl}, ${rm}, ${publishedAt ?? new Date()}, 'live')
+          (${randomUUID()}, ${headline}, ${subheadline}, ${body}, ${esHeadline}, ${esSubheadline}, ${origHeadline}, ${origSubheadline}, ${imageUrl}, ${imageCredit}, ${category}, ${tag}, ${artistSlug}, ${artistName}, ${sourceName}, ${sourceUrl}, ${rm}, ${publishedAt}, 'live')
         ON CONFLICT ("sourceUrl") DO UPDATE SET
           "headline" = EXCLUDED."headline",
           "subheadline"     = COALESCE(EXCLUDED."subheadline",     "NewsPost"."subheadline"),
@@ -133,7 +141,8 @@ export async function POST(req: NextRequest) {
           "artistSlug"      = COALESCE(EXCLUDED."artistSlug",      "NewsPost"."artistSlug"),
           "artistName"      = COALESCE(EXCLUDED."artistName",      "NewsPost"."artistName"),
           "sourceName"      = COALESCE(EXCLUDED."sourceName",      "NewsPost"."sourceName"),
-          "readMins" = EXCLUDED."readMins", "publishedAt" = EXCLUDED."publishedAt"`;
+          "readMins"    = COALESCE(NULLIF(EXCLUDED."readMins", 0), "NewsPost"."readMins"),
+          "publishedAt" = COALESCE(EXCLUDED."publishedAt",         "NewsPost"."publishedAt")`;
       upserted += Number(n);
     }
     const total = await prisma.$queryRaw<{ c: number }[]>`SELECT COUNT(*)::int AS c FROM "NewsPost" WHERE "status" = 'live'`;
