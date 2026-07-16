@@ -119,12 +119,21 @@ export async function POST(req: NextRequest) {
         VALUES
           (${randomUUID()}, ${headline}, ${subheadline}, ${body}, ${esHeadline}, ${esSubheadline}, ${origHeadline}, ${origSubheadline}, ${imageUrl}, ${imageCredit}, ${category}, ${tag}, ${artistSlug}, ${artistName}, ${sourceName}, ${sourceUrl}, ${rm}, ${publishedAt ?? new Date()}, 'live')
         ON CONFLICT ("sourceUrl") DO UPDATE SET
-          "headline" = EXCLUDED."headline", "subheadline" = EXCLUDED."subheadline", "body" = EXCLUDED."body",
-          "esHeadline" = EXCLUDED."esHeadline", "esSubheadline" = EXCLUDED."esSubheadline",
-          "origHeadline" = EXCLUDED."origHeadline", "origSubheadline" = EXCLUDED."origSubheadline",
-          "imageUrl" = EXCLUDED."imageUrl", "imageCredit" = EXCLUDED."imageCredit", "category" = EXCLUDED."category",
-          "tag" = EXCLUDED."tag", "artistSlug" = EXCLUDED."artistSlug", "artistName" = EXCLUDED."artistName",
-          "sourceName" = EXCLUDED."sourceName", "readMins" = EXCLUDED."readMins", "publishedAt" = EXCLUDED."publishedAt"`;
+          "headline" = EXCLUDED."headline",
+          "subheadline"     = COALESCE(EXCLUDED."subheadline",     "NewsPost"."subheadline"),
+          "body"            = COALESCE(EXCLUDED."body",            "NewsPost"."body"),
+          "esHeadline"      = COALESCE(EXCLUDED."esHeadline",      "NewsPost"."esHeadline"),
+          "esSubheadline"   = COALESCE(EXCLUDED."esSubheadline",   "NewsPost"."esSubheadline"),
+          "origHeadline"    = COALESCE(EXCLUDED."origHeadline",    "NewsPost"."origHeadline"),
+          "origSubheadline" = COALESCE(EXCLUDED."origSubheadline", "NewsPost"."origSubheadline"),
+          "imageUrl"        = COALESCE(EXCLUDED."imageUrl",        "NewsPost"."imageUrl"),
+          "imageCredit"     = COALESCE(EXCLUDED."imageCredit",     "NewsPost"."imageCredit"),
+          "category"        = COALESCE(EXCLUDED."category",        "NewsPost"."category"),
+          "tag"             = COALESCE(EXCLUDED."tag",             "NewsPost"."tag"),
+          "artistSlug"      = COALESCE(EXCLUDED."artistSlug",      "NewsPost"."artistSlug"),
+          "artistName"      = COALESCE(EXCLUDED."artistName",      "NewsPost"."artistName"),
+          "sourceName"      = COALESCE(EXCLUDED."sourceName",      "NewsPost"."sourceName"),
+          "readMins" = EXCLUDED."readMins", "publishedAt" = EXCLUDED."publishedAt"`;
       upserted += Number(n);
     }
     const total = await prisma.$queryRaw<{ c: number }[]>`SELECT COUNT(*)::int AS c FROM "NewsPost" WHERE "status" = 'live'`;
