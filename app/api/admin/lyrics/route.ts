@@ -13,7 +13,10 @@ function authed(req: NextRequest): boolean {
   return req.headers.get("authorization") === `Bearer ${secret}`;
 }
 
-// GET → songs with Korean lyrics but no English translation yet.
+// GET → songs with Korean lyrics still missing a translation.
+//   (default)   → missing ENGLISH  (the nightly translate-lyrics skill)
+//   ?target=es  → missing SPANISH  (the Korean→Spanish pipeline)
+//   ?stats=1    → catalog counts for both languages
 // Optional ?prefix=aespa- targets a single artist's recent imports (otherwise the
 // view-count ordering buries brand-new, zero-view songs below the cap).
 export async function GET(req: NextRequest) {
@@ -21,22 +24,37 @@ export async function GET(req: NextRequest) {
   const sp = new URL(req.url).searchParams;
   const limit = Math.min(Number(sp.get("limit") ?? 60), 200);
   const prefix = (sp.get("prefix") ?? "").trim();
+  // Whitelisted, never user-controlled → safe to interpolate into the raw SQL.
+  const target = sp.get("target") === "es" ? "es" : "en";
+  const missingCol = target === "es" ? `"lyricsEs"` : `"lyricsEn"`;
+
+  if (sp.get("stats")) {
+    const rows = await prisma.$queryRawUnsafe<Record<string, number>[]>(
+      `SELECT COUNT(*)::int AS "songsTotal",
+              COUNT(*) FILTER (WHERE COALESCE("lyricsKo",'') <> '')::int AS "withKorean",
+              COUNT(*) FILTER (WHERE COALESCE("lyricsEn",'') <> '')::int AS "withEnglish",
+              COUNT(*) FILTER (WHERE COALESCE("lyricsEs",'') <> '')::int AS "withSpanish",
+              COUNT(*) FILTER (WHERE COALESCE("lyricsKo",'') <> '' AND COALESCE("lyricsEs",'') = '')::int AS "needSpanish"
+       FROM "Song"`);
+    return NextResponse.json(rows[0] ?? {});
+  }
+
   type Row = { slug: string; title: string; lyricsKo: string };
   const rows = prefix
     ? await prisma.$queryRawUnsafe<Row[]>(
         `SELECT "slug","title","lyricsKo" FROM "Song"
-         WHERE COALESCE("lyricsKo",'') <> '' AND COALESCE("lyricsEn",'') = '' AND "slug" LIKE $1
+         WHERE COALESCE("lyricsKo",'') <> '' AND COALESCE(${missingCol},'') = '' AND "slug" LIKE $1
          ORDER BY "viewCount" DESC LIMIT $2`,
         `${prefix}%`,
         limit,
       )
     : await prisma.$queryRawUnsafe<Row[]>(
         `SELECT "slug","title","lyricsKo" FROM "Song"
-         WHERE COALESCE("lyricsKo",'') <> '' AND COALESCE("lyricsEn",'') = ''
+         WHERE COALESCE("lyricsKo",'') <> '' AND COALESCE(${missingCol},'') = ''
          ORDER BY "viewCount" DESC LIMIT $1`,
         limit,
       );
-  return NextResponse.json({ count: rows.length, songs: rows });
+  return NextResponse.json({ count: rows.length, songs: rows, target });
 }
 
 export async function POST(req: NextRequest) {
@@ -75,6 +93,22 @@ export async function POST(req: NextRequest) {
       updated++;
     }
     return NextResponse.json({ ok: true, updated });
+  }
+
+  // Write Spanish translations (Korean→Spanish pipeline). Shown on song pages when
+  // the site-wide toggle is set to ES. Never blanks an existing translation.
+  if (action === "set-es-translations") {
+    const items: { slug?: string; lyricsEs?: string }[] = Array.isArray(b?.items) ? b.items : [];
+    let updated = 0;
+    for (const it of items) {
+      const slug = String(it?.slug ?? "").trim();
+      const lyricsEs = String(it?.lyricsEs ?? "");
+      if (!slug || !lyricsEs.trim()) continue;
+      updated += Number(await prisma.$executeRaw`UPDATE "Song" SET "lyricsEs" = ${lyricsEs} WHERE "slug" = ${slug}`);
+    }
+    const rows = await prisma.$queryRawUnsafe<{ remaining: number }[]>(
+      `SELECT COUNT(*) FILTER (WHERE COALESCE("lyricsKo",'') <> '' AND COALESCE("lyricsEs",'') = '')::int AS remaining FROM "Song"`);
+    return NextResponse.json({ ok: true, received: items.length, updated, remaining: rows[0]?.remaining ?? null });
   }
 
   // One-off catalog cleanup: normalize Cyrillic homoglyphs (е/а/о/с/р/х… that look
