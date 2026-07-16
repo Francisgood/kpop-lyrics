@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import type { QuizCategory } from "@/lib/quiz-data";
+import { useLang, useT, youtubeWithLang } from "@/components/LangProvider";
 
 // Inline, page-embedded player for a SINGLE quiz category (the /quiz/<slug> pages).
 // Mirrors the homepage QuizModal's question/result UI, minus the modal chrome, plus
@@ -12,6 +13,8 @@ export default function QuizPlayer({ category }: { category: QuizCategory }) {
   const [score, setScore]         = useState(0);
   const [done, setDone]           = useState(false);
   const [copied, setCopied]       = useState(false);
+  const { lang } = useLang();
+  const t = useT();
 
   const questions = category.questions;
   const current   = questions[qIndex];
@@ -20,7 +23,10 @@ export default function QuizPlayer({ category }: { category: QuizCategory }) {
   const pct       = Math.round((score / total) * 100);
 
   const url       = `https://www.aegyoarena.com/quiz/${category.slug}`;
-  const shareText = `I scored ${score}/${total} on the ${category.label} quiz on Aegyo Arena. Can you beat me?`;
+  const shareText = t(
+    `I scored ${score}/${total} on the ${category.label} quiz on Aegyo Arena. Can you beat me?`,
+    `Saqué ${score}/${total} en la trivia de ${category.label} en Aegyo Arena. ¿Puedes superarme?`,
+  );
   const xHref     = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(url)}`;
 
   function confirm() {
@@ -61,11 +67,11 @@ export default function QuizPlayer({ category }: { category: QuizCategory }) {
 
   const resultEmoji = pct === 100 ? "🏆" : pct >= 80 ? "🌟" : pct >= 60 ? "👏" : pct >= 40 ? "📖" : "💪";
   const resultMsg =
-    pct === 100 ? "Perfect score. You're a certified K-pop expert." :
-    pct >= 80   ? "Impressive — you really know your K-pop." :
-    pct >= 60   ? "Nice. Solid fandom knowledge." :
-    pct >= 40   ? "Not bad — keep exploring Aegyo Arena." :
-    "Rookie run. Try again and climb the ranks!";
+    pct === 100 ? t("Perfect score. You're a certified K-pop expert.", "Puntaje perfecto. Eres experta certificada en K-pop.") :
+    pct >= 80   ? t("Impressive — you really know your K-pop.", "Impresionante — de verdad te sabes tu K-pop.") :
+    pct >= 60   ? t("Nice. Solid fandom knowledge.", "Nada mal. Buen nivel de fandom.") :
+    pct >= 40   ? t("Not bad — keep exploring Aegyo Arena.", "Vas bien — sigue explorando Aegyo Arena.") :
+    t("Rookie run. Try again and climb the ranks!", "Nivel rookie. ¡Inténtalo de nuevo y sube de rango!");
 
   // ── Result ────────────────────────────────────────────────────────────────
   if (done) {
@@ -81,21 +87,21 @@ export default function QuizPlayer({ category }: { category: QuizCategory }) {
           <p style={{ color: "#555", fontSize: "0.95rem", lineHeight: 1.6, margin: "0 0 26px" }}>{resultMsg}</p>
 
           <div style={{ fontSize: "0.68rem", fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase", color: "#aaa", marginBottom: 12 }}>
-            Share your score
+            {t("Share your score", "Comparte tu puntaje")}
           </div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center", marginBottom: 22 }}>
             <button onClick={nativeShare} style={{ background: accent, color: "#111", border: "none", borderRadius: 8, padding: "12px 22px", fontWeight: 800, fontSize: "0.85rem", cursor: "pointer", letterSpacing: "0.03em" }}>
-              Share result
+              {t("Share result", "Compartir resultado")}
             </button>
             <a href={xHref} target="_blank" rel="noopener noreferrer" style={{ background: "#111", color: "#fff", borderRadius: 8, padding: "12px 22px", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none" }}>
-              Post on X
+              {t("Post on X", "Publicar en X")}
             </a>
             <button onClick={copyLink} style={{ background: "#f0f0f0", color: "#111", border: "none", borderRadius: 8, padding: "12px 20px", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer" }}>
-              {copied ? "Link copied ✓" : "Copy link"}
+              {copied ? t("Link copied ✓", "Link copiado ✓") : t("Copy link", "Copiar link")}
             </button>
           </div>
           <button onClick={restart} style={{ background: "none", color: "#888", border: "none", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer", textDecoration: "underline" }}>
-            Play again
+            {t("Play again", "Jugar de nuevo")}
           </button>
         </div>
       </div>
@@ -113,7 +119,7 @@ export default function QuizPlayer({ category }: { category: QuizCategory }) {
           <span style={{ fontSize: "1.4rem" }}>{category.emoji}</span>
           <div>
             <div style={{ fontWeight: 800, fontSize: "0.8rem", color: "#111" }}>{category.label}</div>
-            <div style={{ fontSize: "0.72rem", color: "#aaa" }}>Question {qIndex + 1} of {total}</div>
+            <div style={{ fontSize: "0.72rem", color: "#aaa" }}>{t(`Question ${qIndex + 1} of ${total}`, `Pregunta ${qIndex + 1} de ${total}`)}</div>
           </div>
           <div style={{ marginLeft: "auto", fontWeight: 800, fontSize: "0.85rem", color: accent }}>{score}/{qIndex}</div>
         </div>
@@ -154,7 +160,7 @@ export default function QuizPlayer({ category }: { category: QuizCategory }) {
             {current.learnMoreUrl && (
               <div style={{ marginTop: 10 }}>
                 <a href={current.learnMoreUrl} target="_blank" rel="noopener noreferrer" style={{ color: accent, fontWeight: 800, textDecoration: "none" }}>
-                  {current.learnMoreLabel ?? "Read the full definition →"}
+                  {current.learnMoreLabel ?? t("Read the full definition →", "Lee la definición completa →")}
                 </a>
               </div>
             )}
@@ -165,20 +171,20 @@ export default function QuizPlayer({ category }: { category: QuizCategory }) {
           {!confirmed ? (
             <button onClick={confirm} disabled={selected === null}
               style={{ width: "100%", background: selected === null ? "#e5e5e5" : accent, color: selected === null ? "#aaa" : "#111", border: "none", borderRadius: 9, padding: "14px", fontWeight: 800, fontSize: "0.9rem", cursor: selected === null ? "not-allowed" : "pointer", letterSpacing: "0.04em" }}>
-              CHECK ANSWER
+              {t("CHECK ANSWER", "REVISAR RESPUESTA")}
             </button>
           ) : (
             <button onClick={next}
               style={{ width: "100%", background: accent, color: "#111", border: "none", borderRadius: 9, padding: "14px", fontWeight: 800, fontSize: "0.9rem", cursor: "pointer", letterSpacing: "0.04em" }}>
-              {qIndex + 1 < total ? "NEXT QUESTION →" : "SEE RESULTS →"}
+              {qIndex + 1 < total ? t("NEXT QUESTION →", "SIGUIENTE PREGUNTA →") : t("SEE RESULTS →", "VER RESULTADOS →")}
             </button>
           )}
         </div>
 
         {current.sourceUrl && (
           <div style={{ marginTop: 16, textAlign: "center" }}>
-            <a href={current.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.78rem", color: "#888", textDecoration: "none", fontWeight: 700 }}>
-              ▶ {current.sourceLabel ?? "Watch the clip on YouTube"}
+            <a href={youtubeWithLang(current.sourceUrl, lang)} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.78rem", color: "#888", textDecoration: "none", fontWeight: 700 }}>
+              ▶ {current.sourceLabel ?? t("Watch the clip on YouTube", "Mira el clip en YouTube")}
             </a>
           </div>
         )}

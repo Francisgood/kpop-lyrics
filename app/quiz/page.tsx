@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { QUIZZES } from "@/lib/quiz-data";
+import { T, LangToggle } from "@/components/LangProvider";
 
 const TITLE = "K-pop Quizzes — Aegyo Arena";
 const DESC =
@@ -19,15 +20,18 @@ export default function QuizHubPage() {
     <main style={{ minHeight: "70vh" }}>
       {/* Hero */}
       <section style={{ maxWidth: 1000, margin: "0 auto", padding: "64px 24px 20px", textAlign: "center" }}>
+        <LangToggle align="center" marginBottom={16} />
         <div style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 16 }}>
-          Aegyo Arena · Quizzes
+          Aegyo Arena · <T en="Quizzes" es="Trivias" />
         </div>
         <h1 style={{ fontSize: "clamp(2.2rem, 6vw, 3.6rem)", fontWeight: 800, lineHeight: 1.05, margin: "0 0 16px", color: "var(--ink)" }}>
-          How well do you<br />really know K-pop?
+          <T en="How well do you" es="¿Qué tan bien" /><br /><T en="really know K-pop?" es="conoces el K-pop?" />
         </h1>
         <p style={{ fontSize: "1.05rem", color: "var(--ink-dim)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto" }}>
-          Six quizzes spanning K-pop culture — from aegyo to lyrics. Pick your category, beat your score, and share the link —
-          every quiz has its own page built to send to your group chat.
+          <T
+            en="Six quizzes spanning K-pop culture — from aegyo to lyrics. Pick your category, beat your score, and share the link — every quiz has its own page built to send to your group chat."
+            es="Seis trivias que recorren la cultura K-pop — del aegyo a las letras. Elige tu categoría, supera tu puntaje y comparte el link — cada trivia tiene su propia página lista para mandar al grupo del chat."
+          />
         </p>
       </section>
 
@@ -46,16 +50,19 @@ export default function QuizHubPage() {
               <p style={{ fontSize: "0.9rem", color: "var(--ink-dim)", lineHeight: 1.6, margin: "0 0 20px", flex: 1 }}>{quiz.blurb}</p>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "auto" }}>
                 <span style={{ fontFamily: "var(--mono)", fontSize: "0.68rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-faint)" }}>
-                  {quiz.questions.length} questions
+                  <T en={`${quiz.questions.length} questions`} es={`${quiz.questions.length} preguntas`} />
                 </span>
-                <span style={{ fontWeight: 800, fontSize: "0.85rem", color: quiz.accent }}>Play →</span>
+                <span style={{ fontWeight: 800, fontSize: "0.85rem", color: quiz.accent }}><T en="Play →" es="Jugar →" /></span>
               </div>
             </Link>
           ))}
         </div>
 
         <p style={{ textAlign: "center", marginTop: 40, fontSize: "0.85rem", color: "var(--ink-faint)", lineHeight: 1.7 }}>
-          Made for sharing — post a single quiz to X, TikTok, or Instagram and send fans straight to it.
+          <T
+            en="Made for sharing — post a single quiz to X, TikTok, or Instagram and send fans straight to it."
+            es="Hechas para compartir — publica una trivia en X, TikTok o Instagram y manda a los fans directo a ella."
+          />
         </p>
       </section>
 

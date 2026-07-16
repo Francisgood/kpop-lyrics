@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { trackLead } from "@/lib/conversions";
-
-type Lang = "en" | "es";
+import { useLang, LangToggle, type Lang } from "@/components/LangProvider";
 
 const MONTHS: Record<Lang, string[]> = {
   en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -130,7 +129,7 @@ export default function BtsGiveawayPage() {
   const years = Array.from({ length: 100 }, (_, i) => thisYear - i);
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
-  const [lang, setLang] = useState<Lang>("en");
+  const { lang } = useLang();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -151,18 +150,9 @@ export default function BtsGiveawayPage() {
   useEffect(() => {
     const r = new URLSearchParams(window.location.search).get("ref");
     if (r) setRef(r);
-    // Language: saved preference wins, otherwise default Spanish browsers to ES.
-    try {
-      const saved = localStorage.getItem("giveaway-lang");
-      if (saved === "en" || saved === "es") setLang(saved);
-      else if ((navigator.language || "").toLowerCase().startsWith("es")) setLang("es");
-    } catch { /* localStorage/navigator unavailable */ }
   }, []);
-
-  function switchLang(l: Lang) {
-    setLang(l);
-    try { localStorage.setItem("giveaway-lang", l); } catch { /* ignore */ }
-  }
+  // Language now comes from the site-wide LangProvider, which owns persistence
+  // and the Spanish-browser default — so the choice follows the user off this page.
 
   function computeAge(): number | null {
     if (!month || !day || !year) return null;
@@ -209,19 +199,6 @@ export default function BtsGiveawayPage() {
 
   const field: React.CSSProperties = { width: "100%", padding: "13px 16px", border: "1px solid var(--border-strong)", borderRadius: 8, fontSize: "1rem", outline: "none", background: "#fff", color: "#000", boxSizing: "border-box" };
   const sel: React.CSSProperties = { ...field, padding: "13px 8px", flex: 1, minWidth: 0 };
-
-  const LangToggle = () => (
-    <div style={{ display: "flex", justifyContent: "center", marginBottom: 22 }}>
-      <div style={{ display: "inline-flex", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 100, padding: 3 }}>
-        {(["en", "es"] as Lang[]).map((l) => (
-          <button key={l} type="button" onClick={() => switchLang(l)} aria-pressed={lang === l}
-            style={{ padding: "6px 16px", borderRadius: 100, border: "none", cursor: "pointer", fontSize: "0.78rem", fontWeight: 800, letterSpacing: "0.02em", background: lang === l ? "var(--sakura)" : "transparent", color: lang === l ? "var(--on-accent)" : "var(--ink-dim)", transition: "background 0.15s, color 0.15s" }}>
-            {l === "en" ? "English" : "Español"}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
 
   if (result) {
     return (

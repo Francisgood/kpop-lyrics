@@ -50,22 +50,25 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(rows[0] ?? {});
   }
 
+  // ?buckets=N&bucket=i → stable disjoint slice by slug hash, so N translator agents
+  // can run in parallel without handing each other the same songs. Both are clamped
+  // ints, so they're safe to interpolate.
+  const buckets = Math.max(1, Math.min(64, Math.floor(Number(sp.get("buckets") ?? 1)) || 1));
+  const bucket = Math.max(0, Math.min(buckets - 1, Math.floor(Number(sp.get("bucket") ?? 0)) || 0));
+
   type Row = { slug: string; title: string; lyricsKo: string };
-  const rows = prefix
-    ? await prisma.$queryRawUnsafe<Row[]>(
-        `SELECT "slug","title","lyricsKo" FROM "Song"
-         WHERE COALESCE("lyricsKo",'') <> '' AND COALESCE(${missingCol},'') = '' AND "slug" LIKE $1
-         ORDER BY "viewCount" DESC LIMIT $2`,
-        `${prefix}%`,
-        limit,
-      )
-    : await prisma.$queryRawUnsafe<Row[]>(
-        `SELECT "slug","title","lyricsKo" FROM "Song"
-         WHERE COALESCE("lyricsKo",'') <> '' AND COALESCE(${missingCol},'') = ''
-         ORDER BY "viewCount" DESC LIMIT $1`,
-        limit,
-      );
-  return NextResponse.json({ count: rows.length, songs: rows, target });
+  const where = [`COALESCE("lyricsKo",'') <> ''`, `COALESCE(${missingCol},'') = ''`];
+  const params: unknown[] = [];
+  if (prefix) { params.push(`${prefix}%`); where.push(`"slug" LIKE $${params.length}`); }
+  if (buckets > 1) where.push(`(abs(hashtext("slug")) % ${buckets}) = ${bucket}`);
+  params.push(limit);
+  const rows = await prisma.$queryRawUnsafe<Row[]>(
+    `SELECT "slug","title","lyricsKo" FROM "Song"
+     WHERE ${where.join(" AND ")}
+     ORDER BY "viewCount" DESC LIMIT $${params.length}`,
+    ...params,
+  );
+  return NextResponse.json({ count: rows.length, songs: rows, target, bucket, buckets });
 }
 
 export async function POST(req: NextRequest) {

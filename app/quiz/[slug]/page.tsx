@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { QUIZZES, getQuizBySlug } from "@/lib/quiz-data";
 import QuizPlayer from "@/components/QuizPlayer";
+import { T, LangToggle } from "@/components/LangProvider";
 
 export function generateStaticParams() {
   return QUIZZES.map((q) => ({ slug: q.slug }));
@@ -37,8 +38,9 @@ export default async function QuizSlugPage({ params }: { params: Promise<{ slug:
       {/* Header */}
       <section style={{ borderBottom: "1px solid var(--border)", background: `linear-gradient(180deg, ${quiz.accent}20, transparent)` }}>
         <div style={{ maxWidth: 720, margin: "0 auto", padding: "34px 24px 30px", textAlign: "center" }}>
+          <LangToggle align="center" marginBottom={16} />
           <div style={{ fontFamily: "var(--mono)", fontSize: "0.66rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--ink-faint)", marginBottom: 18 }}>
-            <Link href="/quiz" style={{ color: "var(--ink-faint)", textDecoration: "none" }}>Quizzes</Link>
+            <Link href="/quiz" style={{ color: "var(--ink-faint)", textDecoration: "none" }}><T en="Quizzes" es="Trivias" /></Link>
             {" / "}
             <span style={{ color: "var(--ink-dim)" }}>{quiz.label}</span>
           </div>
@@ -47,11 +49,11 @@ export default async function QuizSlugPage({ params }: { params: Promise<{ slug:
           <p style={{ fontSize: "1rem", color: "var(--ink-dim)", lineHeight: 1.7, maxWidth: 500, margin: "0 auto 18px" }}>{quiz.blurb}</p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
             <span style={{ fontFamily: "var(--mono)", fontSize: "0.68rem", letterSpacing: "0.1em", textTransform: "uppercase", color: quiz.accent, fontWeight: 700 }}>
-              {quiz.questions.length} questions
+              <T en={`${quiz.questions.length} questions`} es={`${quiz.questions.length} preguntas`} />
             </span>
             <span style={{ color: "var(--ink-faint)" }}>·</span>
             <a href={xShare} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.78rem", color: "var(--ink-dim)", textDecoration: "underline", textUnderlineOffset: 3 }}>
-              Share this quiz
+              <T en="Share this quiz" es="Comparte esta trivia" />
             </a>
           </div>
         </div>
@@ -64,14 +66,14 @@ export default async function QuizSlugPage({ params }: { params: Promise<{ slug:
 
       {/* Try another */}
       <section style={{ maxWidth: 720, margin: "0 auto", padding: "36px 24px 72px" }}>
-        <div className="section-header" style={{ marginBottom: 16 }}>Try another quiz</div>
+        <div className="section-header" style={{ marginBottom: 16 }}><T en="Try another quiz" es="Prueba otra trivia" /></div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
           {others.map((q) => (
             <Link key={q.slug} href={`/quiz/${q.slug}`} style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 12, background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 12, padding: "14px 16px" }}>
               <span style={{ fontSize: "1.5rem", flexShrink: 0 }}>{q.emoji}</span>
               <div style={{ minWidth: 0 }}>
                 <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--ink)" }}>{q.label}</div>
-                <div style={{ fontSize: "0.72rem", color: "var(--ink-faint)" }}>{q.questions.length} questions</div>
+                <div style={{ fontSize: "0.72rem", color: "var(--ink-faint)" }}><T en={`${q.questions.length} questions`} es={`${q.questions.length} preguntas`} /></div>
               </div>
               <span style={{ marginLeft: "auto", color: q.accent, fontWeight: 800 }}>→</span>
             </Link>
@@ -79,7 +81,7 @@ export default async function QuizSlugPage({ params }: { params: Promise<{ slug:
         </div>
         <div style={{ marginTop: 24, textAlign: "center" }}>
           <Link href="/quiz" style={{ fontSize: "0.82rem", color: "var(--ink-dim)", textDecoration: "none", borderBottom: "1px solid var(--border-strong)", paddingBottom: 2 }}>
-            ← All quizzes
+            <T en="← All quizzes" es="← Todas las trivias" />
           </Link>
         </div>
       </section>

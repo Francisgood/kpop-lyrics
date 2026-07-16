@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { T, LangToggle } from "@/components/LangProvider";
 
 export const revalidate = 3600;
 
@@ -27,15 +28,16 @@ export default async function LabelPage({ params }: { params: Promise<{ slug: st
       {/* Label Hero */}
       <section style={{ background: "#000", color: "#fff", padding: "60px 24px 40px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <LangToggle align="flex-start" marginBottom={16} />
           <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 20 }}>
-            <Link href="/" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Aegyo Arena</Link> / Labels / {label.name}
+            <Link href="/" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Aegyo Arena</Link> / <T en="Labels" es="Sellos" /> / {label.name}
           </div>
           <div style={{ fontSize: "0.7rem", color: "var(--genius-yellow)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>
-            Record Label
+            <T en="Record Label" es="Sello Discográfico" />
           </div>
           <h1 style={{ fontSize: "3rem", fontWeight: 800, margin: "0 0 12px", color: "#fff" }}>{label.name}</h1>
           <div style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.9rem" }}>
-            {label.country} &middot; Founded {label.foundedYear}
+            {label.country} &middot; <T en={`Founded ${label.foundedYear}`} es={`Fundado en ${label.foundedYear}`} />
           </div>
           {label.bio && (
             <p style={{ marginTop: 20, color: "rgba(255,255,255,0.7)", maxWidth: 600, lineHeight: 1.7 }}>
@@ -48,7 +50,7 @@ export default async function LabelPage({ params }: { params: Promise<{ slug: st
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 24px" }}>
         {groups.length > 0 && (
           <section style={{ marginBottom: 48 }}>
-            <div className="section-header">Groups</div>
+            <div className="section-header"><T en="Groups" es="Grupos" /></div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
               {groups.map((group) => (
                 <Link key={group.id} href={`/artists/${group.slug}`} style={{ textDecoration: "none" }}>
@@ -59,7 +61,10 @@ export default async function LabelPage({ params }: { params: Promise<{ slug: st
                       Debut {group.debutYear}
                     </div>
                     <div style={{ fontSize: "0.75rem", color: "var(--genius-gray)", marginTop: 2 }}>
-                      {group.albums.length} album{group.albums.length !== 1 ? "s" : ""}
+                      <T
+                        en={`${group.albums.length} album${group.albums.length !== 1 ? "s" : ""}`}
+                        es={`${group.albums.length} ${group.albums.length !== 1 ? "álbumes" : "álbum"}`}
+                      />
                     </div>
                   </div>
                 </Link>
@@ -70,7 +75,7 @@ export default async function LabelPage({ params }: { params: Promise<{ slug: st
 
         {soloists.length > 0 && (
           <section>
-            <div className="section-header">Solo Artists</div>
+            <div className="section-header"><T en="Solo Artists" es="Artistas Solistas" /></div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
               {soloists.map((artist) => (
                 <Link key={artist.id} href={`/artists/${artist.slug}`} style={{ textDecoration: "none" }}>

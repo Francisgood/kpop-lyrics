@@ -4,18 +4,19 @@ import Link from "next/link";
 import FavoriteButton from "@/components/FavoriteButton";
 import CommentsSection from "@/components/CommentsSection";
 import { getSession } from "@/lib/auth";
+import { T, LangToggle } from "@/components/LangProvider";
 
 export const revalidate = 3600;
 
-const CATEGORY_STYLES: Record<string, { label: string; bg: string; color: string }> = {
-  milestone: { label: "MILESTONE", bg: "#FFFF64", color: "#000" },
-  comeback:  { label: "COMEBACK",  bg: "#000",    color: "#FFFF64" },
-  award:     { label: "AWARD",     bg: "#ACFA52", color: "#000" },
-  collab:    { label: "COLLAB",    bg: "#e0e0ff", color: "#000" },
-  drama:     { label: "DRAMA",     bg: "#FF2A38", color: "#fff" },
-  member:    { label: "MEMBER",    bg: "#f0f0f0", color: "#000" },
-  legal:     { label: "LEGAL",     bg: "#FF2A38", color: "#fff" },
-  label:     { label: "LABEL",     bg: "#1a1a2e", color: "#fff" },
+const CATEGORY_STYLES: Record<string, { label: string; labelEs: string; bg: string; color: string }> = {
+  milestone: { label: "MILESTONE", labelEs: "HITO",     bg: "#FFFF64", color: "#000" },
+  comeback:  { label: "COMEBACK",  labelEs: "COMEBACK", bg: "#000",    color: "#FFFF64" },
+  award:     { label: "AWARD",     labelEs: "PREMIO",   bg: "#ACFA52", color: "#000" },
+  collab:    { label: "COLLAB",    labelEs: "COLAB",    bg: "#e0e0ff", color: "#000" },
+  drama:     { label: "DRAMA",     labelEs: "DRAMA",    bg: "#FF2A38", color: "#fff" },
+  member:    { label: "MEMBER",    labelEs: "MIEMBRO",  bg: "#f0f0f0", color: "#000" },
+  legal:     { label: "LEGAL",     labelEs: "LEGAL",    bg: "#FF2A38", color: "#fff" },
+  label:     { label: "LABEL",     labelEs: "SELLO",    bg: "#1a1a2e", color: "#fff" },
 };
 
 export default async function ArtistPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -71,10 +72,11 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
       {/* Hero */}
       <section className="artist-hero">
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
+          <LangToggle align="flex-start" marginBottom={16} />
           <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 20 }}>
             <Link href="/" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Aegyo Arena</Link>
             {" / "}
-            <Link href="/artists" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Artists</Link>
+            <Link href="/artists" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}><T en="Artists" es="Artistas" /></Link>
             {" / "}
             {artist.stageName}
           </div>
@@ -89,16 +91,30 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
             )}
             <div>
               <div style={{ fontSize: "0.7rem", color: "var(--genius-yellow)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 8 }}>
-                {isGroup ? "K-pop Group" : artist.type === "SOLOIST" ? "Solo Artist" : "K-pop Artist"}
+                {isGroup
+                  ? <T en="K-pop Group" es="Grupo de K-pop" />
+                  : artist.type === "SOLOIST"
+                    ? <T en="Solo Artist" es="Artista Solista" />
+                    : <T en="K-pop Artist" es="Artista de K-pop" />}
               </div>
               <h1 style={{ fontSize: "3rem", fontWeight: 800, margin: "0 0 8px", color: "#fff" }}>{artist.stageName}</h1>
               {artist.realName && <div style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.95rem", marginBottom: 8 }}>{artist.realName}</div>}
               <div style={{ display: "flex", gap: 16, fontSize: "0.85rem", color: "rgba(255,255,255,0.5)", flexWrap: "wrap" }}>
                 {artist.debutYear && <span>Debut {artist.debutYear}</span>}
                 {artist.label && <Link href={`/labels/${artist.label.slug}`} style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none" }}>{artist.label.name}</Link>}
-                {isGroup && <span>{members.length} members</span>}
-                <span>{artist.albums.length} album{artist.albums.length !== 1 ? "s" : ""}</span>
-                <span>{totalSongs} song{totalSongs !== 1 ? "s" : ""}</span>
+                {isGroup && <span><T en={`${members.length} members`} es={`${members.length} miembros`} /></span>}
+                <span>
+                  <T
+                    en={`${artist.albums.length} album${artist.albums.length !== 1 ? "s" : ""}`}
+                    es={`${artist.albums.length} ${artist.albums.length !== 1 ? "álbumes" : "álbum"}`}
+                  />
+                </span>
+                <span>
+                  <T
+                    en={`${totalSongs} song${totalSongs !== 1 ? "s" : ""}`}
+                    es={`${totalSongs} ${totalSongs !== 1 ? "canciones" : "canción"}`}
+                  />
+                </span>
               </div>
             </div>
           </div>
@@ -135,7 +151,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
             {/* Member Roster */}
             {isGroup && members.length > 0 && (
               <section style={{ marginBottom: 48 }}>
-                <div className="section-header">Members</div>
+                <div className="section-header"><T en="Members" es="Miembros" /></div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))", gap: 10 }}>
                   {members.map(({ member, role }) => (
                     <Link key={member.id} href={`/artists/${member.slug}`} style={{ textDecoration: "none" }}>
@@ -157,7 +173,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
 
             {/* Full Discography with every song */}
             <section style={{ marginBottom: 48 }}>
-              <div className="section-header">Discography</div>
+              <div className="section-header"><T en="Discography" es="Discografía" /></div>
               {artist.albums.map((album) => (
                 <div key={album.id} style={{ marginBottom: 32 }}>
                   <div style={{ display: "flex", gap: 16, alignItems: "center", marginBottom: 12 }}>
@@ -167,7 +183,11 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                     <div>
                       <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#ff6fa8" }}>{album.title}</div>
                       <div style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginTop: 4 }}>
-                        {album.releaseYear} &middot; {album.type} &middot; {album.songs.length} track{album.songs.length !== 1 ? "s" : ""}
+                        {album.releaseYear} &middot; {album.type} &middot;{" "}
+                        <T
+                          en={`${album.songs.length} track${album.songs.length !== 1 ? "s" : ""}`}
+                          es={`${album.songs.length} ${album.songs.length !== 1 ? "canciones" : "canción"}`}
+                        />
                       </div>
                     </div>
                   </div>
@@ -198,7 +218,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
             {/* Gossip & News */}
             {artist.news.length > 0 && (
               <section>
-                <div className="section-header">News & Gossip</div>
+                <div className="section-header"><T en="News & Gossip" es="Noticias y Chismes" /></div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                   {artist.news.map((item) => {
                     const style = CATEGORY_STYLES[item.category] ?? CATEGORY_STYLES["milestone"];
@@ -211,11 +231,14 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                         )}
                         <div style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 10 }}>
                           <span style={{ background: style.bg, color: style.color, fontWeight: 700, fontSize: "0.67rem", letterSpacing: "0.08em", padding: "3px 10px", borderRadius: 999, whiteSpace: "nowrap" }}>
-                            {style.label}
+                            <T en={style.label} es={style.labelEs} />
                           </span>
                           {item.publishedAt && (
                             <span style={{ fontSize: "0.75rem", color: "var(--genius-gray)", marginTop: 3 }}>
-                              {new Date(item.publishedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                              <T
+                                en={new Date(item.publishedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                                es={new Date(item.publishedAt).toLocaleDateString("es-MX", { month: "short", year: "numeric" })}
+                              />
                             </span>
                           )}
                         </div>
@@ -223,7 +246,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                         <div style={{ fontSize: "0.88rem", color: "rgba(255,255,255,0.72)", lineHeight: 1.75 }}>{item.body}</div>
                         {item.source && (
                           <div style={{ marginTop: 10, fontSize: "0.72rem", color: "var(--genius-gray)" }}>
-                            Source: {item.sourceUrl ? <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ color: "var(--genius-gray)" }}>{item.source}</a> : item.source}
+                            <T en="Source:" es="Fuente:" /> {item.sourceUrl ? <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ color: "var(--genius-gray)" }}>{item.source}</a> : item.source}
                           </div>
                         )}
                       </div>
@@ -239,7 +262,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
             {/* Group membership for soloists */}
             {!isGroup && artist.memberships.length > 0 && (
               <div style={{ marginBottom: 24 }}>
-                <div className="section-header">Also in</div>
+                <div className="section-header"><T en="Also in" es="También en" /></div>
                 {artist.memberships.map(({ group }) => (
                   <Link key={group.id} href={`/artists/${group.slug}`} style={{ textDecoration: "none", display: "block", marginBottom: 8 }}>
                     <div className="genius-card" style={{ padding: "12px 16px", fontWeight: 700, fontSize: "0.9rem", display: "flex", alignItems: "center", gap: 10 }}>
@@ -258,7 +281,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
             {/* Collab appearances */}
             {artist.songs.filter((c) => c.role === "featured").length > 0 && (
               <div style={{ marginBottom: 24 }}>
-                <div className="section-header">Featured On</div>
+                <div className="section-header"><T en="Featured On" es="Aparece En" /></div>
                 {artist.songs.filter((c) => c.role === "featured").map((c) => (
                   <Link key={c.song.id} href={`/songs/${c.song.slug}`} style={{ textDecoration: "none", display: "block", marginBottom: 8 }}>
                     <div className="genius-card" style={{ padding: "12px 16px" }}>
@@ -275,7 +298,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
             {/* K-pop slang appearing in this artist's lyrics */}
             {slangInLyrics.length > 0 && (
               <div style={{ marginBottom: 24 }}>
-                <div className="section-header">K-pop slang in their lyrics</div>
+                <div className="section-header"><T en="K-pop slang in their lyrics" es="Jerga K-pop en sus letras" /></div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                   {slangInLyrics.map((t) => (
                     <Link key={t.slug} href={`/korean-slang/${t.slug}`} style={{ textDecoration: "none" }}>
@@ -288,16 +311,16 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
 
             {/* Quick stats */}
             <div className="genius-card" style={{ padding: 20 }}>
-              <div className="section-header" style={{ margin: "0 0 14px" }}>Quick Stats</div>
+              <div className="section-header" style={{ margin: "0 0 14px" }}><T en="Quick Stats" es="Datos Rápidos" /></div>
               {[
-                { label: "Debut Year", value: artist.debutYear ?? "—" },
-                { label: "Label", value: artist.label?.name ?? "Independent" },
-                { label: "Albums", value: artist.albums.length },
-                { label: "Songs", value: totalSongs },
-                { label: "News Items", value: artist.news.length },
-              ].map(({ label, value }) => (
-                <div key={label} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid var(--genius-border)", fontSize: "0.83rem" }}>
-                  <span style={{ color: "var(--genius-gray)" }}>{label}</span>
+                { en: "Debut Year", es: "Año de Debut", value: artist.debutYear ?? "—" },
+                { en: "Label", es: "Sello", value: artist.label?.name ?? <T en="Independent" es="Independiente" /> },
+                { en: "Albums", es: "Álbumes", value: artist.albums.length },
+                { en: "Songs", es: "Canciones", value: totalSongs },
+                { en: "News Items", es: "Noticias", value: artist.news.length },
+              ].map(({ en, es, value }) => (
+                <div key={en} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid var(--genius-border)", fontSize: "0.83rem" }}>
+                  <span style={{ color: "var(--genius-gray)" }}><T en={en} es={es} /></span>
                   <span style={{ fontWeight: 700, color: "#ff6fa8" }}>{value}</span>
                 </div>
               ))}
@@ -305,7 +328,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
 
             <div style={{ marginTop: 16 }}>
               <Link href="/collabs" style={{ display: "block" }}>
-                <span className="btn-yellow" style={{ display: "block", textAlign: "center" }}>VIEW COLLAB NETWORK</span>
+                <span className="btn-yellow" style={{ display: "block", textAlign: "center" }}><T en="VIEW COLLAB NETWORK" es="VER RED DE COLABORACIONES" /></span>
               </Link>
             </div>
           </aside>

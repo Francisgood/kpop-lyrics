@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
-import Link from "next/link";
+import { useLang } from "@/components/LangProvider";
 
 export type GraphNode = {
   id: string;
@@ -42,6 +42,7 @@ export default function CollabNetwork({ nodes, links, centerId }: { nodes: Graph
   const svgRef = useRef<SVGSVGElement>(null);
   const [tooltip, setTooltip] = useState<Tooltip>(null);
   const [dims, setDims] = useState({ w: 900, h: 600 });
+  const { lang } = useLang();
 
   useEffect(() => {
     function measure() {
@@ -220,21 +221,25 @@ export default function CollabNetwork({ nodes, links, centerId }: { nodes: Graph
       {/* Legend */}
       <div style={{ position: "absolute", top: 12, left: 12, display: "flex", flexDirection: "column", gap: 6 }}>
         {[
-          { color: NODE_COLOR.kpop_GROUP, label: "K-pop Group" },
-          { color: NODE_COLOR.kpop_SOLOIST, label: "K-pop Soloist" },
-          { color: NODE_COLOR.western, label: "Western Artist" },
-          { color: NODE_COLOR.kpop_COLLAB, label: "Collaborator" },
-        ].map(({ color, label }) => (
-          <div key={label} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          { color: NODE_COLOR.kpop_GROUP, en: "K-pop Group", es: "Grupo de K-pop" },
+          { color: NODE_COLOR.kpop_SOLOIST, en: "K-pop Soloist", es: "Solista de K-pop" },
+          { color: NODE_COLOR.western, en: "Western Artist", es: "Artista Occidental" },
+          { color: NODE_COLOR.kpop_COLLAB, en: "Collaborator", es: "Colaborador" },
+        ].map(({ color, en, es }) => (
+          <div key={en} style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <div style={{ width: 10, height: 10, borderRadius: "50%", background: color, border: "1px solid rgba(255,255,255,0.3)", flexShrink: 0 }} />
-            <span style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.6)", fontWeight: 600, letterSpacing: "0.04em" }}>{label}</span>
+            <span style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.6)", fontWeight: 600, letterSpacing: "0.04em" }}>
+              {lang === "es" ? es : en}
+            </span>
           </div>
         ))}
       </div>
 
       {/* Instructions */}
       <div style={{ position: "absolute", bottom: 10, right: 12, fontSize: "0.62rem", color: "rgba(255,255,255,0.35)", textAlign: "right" }}>
-        Scroll to zoom · Drag to pan · Click artist to visit page
+        {lang === "es"
+          ? "Desplázate para hacer zoom · Arrastra para mover · Haz clic en un artista para ver su página"
+          : "Scroll to zoom · Drag to pan · Click artist to visit page"}
       </div>
 
       {/* Tooltip */}
@@ -247,10 +252,14 @@ export default function CollabNetwork({ nodes, links, centerId }: { nodes: Graph
         }}>
           <div style={{ fontWeight: 800, color: "#fff", fontSize: "0.85rem" }}>{tooltip.node.name}</div>
           <div style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.72rem", marginTop: 2 }}>
-            {tooltip.node.region === "western" ? "Western Artist" : tooltip.node.type}
+            {tooltip.node.region === "western"
+              ? (lang === "es" ? "Artista Occidental" : "Western Artist")
+              : tooltip.node.type}
           </div>
           <div style={{ color: "#FFFF64", fontSize: "0.72rem", marginTop: 2 }}>
-            {tooltip.node.songCount} credited song{tooltip.node.songCount !== 1 ? "s" : ""}
+            {lang === "es"
+              ? `${tooltip.node.songCount} ${tooltip.node.songCount === 1 ? "canción acreditada" : "canciones acreditadas"}`
+              : `${tooltip.node.songCount} credited song${tooltip.node.songCount !== 1 ? "s" : ""}`}
           </div>
         </div>
       )}

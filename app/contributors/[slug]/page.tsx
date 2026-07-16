@@ -2,8 +2,16 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getSession } from "@/lib/auth";
+import { T, LangToggle } from "@/components/LangProvider";
 
 export const revalidate = 300;
+
+// Spanish for the suggested-edit status values. Unknown keys fall back to English.
+const EDIT_STATUS_ES: Record<string, string> = {
+  approved: "aprobada",
+  rejected: "rechazada",
+  pending: "pendiente",
+};
 
 export default async function ContributorPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -40,9 +48,10 @@ export default async function ContributorPage({ params }: { params: Promise<{ sl
       {/* Hero */}
       <section style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%)", color: "#fff", padding: "60px 24px 40px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <LangToggle align="flex-start" marginBottom={16} />
           <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 16 }}>
             <Link href="/" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Aegyo Arena</Link>
-            {" / Contributors / "}
+            <T en=" / Contributors / " es=" / Colaboradores / " />
             {displayName}
           </div>
           <div style={{ display: "flex", gap: 24, alignItems: "center", flexWrap: "wrap" }}>
@@ -52,8 +61,8 @@ export default async function ContributorPage({ params }: { params: Promise<{ sl
             <div>
               <h1 style={{ fontSize: "2rem", fontWeight: 800, margin: "0 0 6px" }}>{displayName}</h1>
               <div style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.5)" }}>
-                Fan since {joinDate}
-                {isOwn && <span style={{ marginLeft: 12, color: "var(--genius-yellow)", fontWeight: 700 }}>· This is you</span>}
+                <T en={`Fan since ${joinDate}`} es={`Fan desde ${joinDate}`} />
+                {isOwn && <span style={{ marginLeft: 12, color: "var(--genius-yellow)", fontWeight: 700 }}><T en="· This is you" es="· Este eres tú" /></span>}
               </div>
               {profileUser.bio && (
                 <div style={{ marginTop: 10, color: "rgba(255,255,255,0.75)", maxWidth: 500, fontSize: "0.9rem", lineHeight: 1.6 }}>
@@ -66,13 +75,13 @@ export default async function ContributorPage({ params }: { params: Promise<{ sl
           {/* Stats */}
           <div style={{ display: "flex", gap: 24, marginTop: 24, flexWrap: "wrap" }}>
             {[
-              { label: "Comments", value: profileUser.comments.length },
-              { label: "Edits Suggested", value: profileUser.suggestedEdits.length },
-              { label: "Favorites", value: profileUser.favorites.length },
-            ].map(({ label, value }) => (
+              { label: "Comments", labelEs: "Comentarios", value: profileUser.comments.length },
+              { label: "Edits Suggested", labelEs: "Ediciones Sugeridas", value: profileUser.suggestedEdits.length },
+              { label: "Favorites", labelEs: "Favoritos", value: profileUser.favorites.length },
+            ].map(({ label, labelEs, value }) => (
               <div key={label} style={{ textAlign: "center" }}>
                 <div style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--genius-yellow)" }}>{value}</div>
-                <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "0.1em" }}>{label}</div>
+                <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "0.1em" }}><T en={label} es={labelEs} /></div>
               </div>
             ))}
           </div>
@@ -85,13 +94,13 @@ export default async function ContributorPage({ params }: { params: Promise<{ sl
             {/* Recent Comments */}
             {profileUser.comments.length > 0 && (
               <section style={{ marginBottom: 40 }}>
-                <div className="section-header">Recent Comments</div>
+                <div className="section-header"><T en="Recent Comments" es="Comentarios Recientes" /></div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {profileUser.comments.map((c) => (
                     <div key={c.id} className="genius-card" style={{ padding: 16 }}>
                       <div style={{ fontSize: "0.82rem", color: "#333", lineHeight: 1.65 }}>{c.body}</div>
                       <div style={{ marginTop: 6, fontSize: "0.72rem", color: "var(--genius-gray)" }}>
-                        on {c.entityType} · {new Date(c.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                        <T en="on" es="en" /> {c.entityType} · {new Date(c.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                       </div>
                     </div>
                   ))}
@@ -102,7 +111,7 @@ export default async function ContributorPage({ params }: { params: Promise<{ sl
             {/* Suggested Edits */}
             {profileUser.suggestedEdits.length > 0 && (
               <section>
-                <div className="section-header">Suggested Edits</div>
+                <div className="section-header"><T en="Suggested Edits" es="Ediciones Sugeridas" /></div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {profileUser.suggestedEdits.map((e) => (
                     <div key={e.id} className="genius-card" style={{ padding: 16 }}>
@@ -112,7 +121,7 @@ export default async function ContributorPage({ params }: { params: Promise<{ sl
                           color: e.status === "approved" ? "#166534" : e.status === "rejected" ? "#991b1b" : "#854d0e",
                           fontSize: "0.65rem", fontWeight: 700, padding: "2px 8px", borderRadius: 999, textTransform: "uppercase"
                         }}>
-                          {e.status}
+                          <T en={e.status} es={EDIT_STATUS_ES[e.status]} />
                         </span>
                         <span style={{ fontSize: "0.72rem", color: "var(--genius-gray)" }}>{e.entityType} · {e.field}</span>
                       </div>
@@ -126,9 +135,9 @@ export default async function ContributorPage({ params }: { params: Promise<{ sl
 
             {profileUser.comments.length === 0 && profileUser.suggestedEdits.length === 0 && (
               <div style={{ color: "var(--genius-gray)", fontSize: "0.9rem" }}>
-                No public activity yet.
+                <T en="No public activity yet." es="Aún no hay actividad pública." />
                 {isOwn && (
-                  <> <Link href="/artists" style={{ color: "#000", fontWeight: 700, textDecoration: "none" }}>Browse artists</Link> and leave a comment to get started!</>
+                  <> <Link href="/artists" style={{ color: "#000", fontWeight: 700, textDecoration: "none" }}><T en="Browse artists" es="Explora artistas" /></Link> <T en="and leave a comment to get started!" es="y deja un comentario para empezar." /></>
                 )}
               </div>
             )}
@@ -139,7 +148,7 @@ export default async function ContributorPage({ params }: { params: Promise<{ sl
             {/* Favorites */}
             {profileUser.favorites.length > 0 && (
               <div>
-                <div className="section-header">Favorites</div>
+                <div className="section-header"><T en="Favorites" es="Favoritos" /></div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {profileUser.favorites.slice(0, 12).map((f) => (
                     <div key={f.id} className="genius-card" style={{ padding: "10px 14px" }}>

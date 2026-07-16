@@ -14,6 +14,24 @@ import { getSongAnnotations } from "@/lib/community-db";
 import { contributorBySlug } from "@/app/leaderboard/data";
 import UserAvatar from "@/components/UserAvatar";
 import songSourceLinks from "@/lib/song-source-links.json";
+import { T, LangToggle } from "@/components/LangProvider";
+
+// Credit-role labels. The DB stores raw role keys ("producer", "PRIMARY", …); this
+// maps the ones we know to display labels, falling back to the raw key for the rest.
+const ROLE_LABELS: Record<string, { en: string; es: string }> = {
+  main:       { en: "Main Artist", es: "Artista principal" },
+  performer:  { en: "Performer",   es: "Intérprete" },
+  PRIMARY:    { en: "Performer",   es: "Intérprete" },
+  featured:   { en: "Featured",    es: "Artista invitado" },
+  producer:   { en: "Producer",    es: "Productor" },
+  songwriter: { en: "Songwriter",  es: "Autor" },
+  composer:   { en: "Composer",    es: "Compositor" },
+};
+
+function RoleLabel({ role }: { role: string }) {
+  const m = ROLE_LABELS[role];
+  return m ? <T en={m.en} es={m.es} /> : <>{role}</>;
+}
 
 // Cache the DB fetch so generateMetadata and the page share one query per request
 const getSong = cache(async (slug: string) => {
@@ -149,6 +167,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
       {/* Header */}
       <section style={{ background: "linear-gradient(135deg, #000 0%, #1a1a2e 80%)", color: "#fff", padding: "48px 24px 36px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <LangToggle align="flex-start" marginBottom={16} />
           <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 12 }}>
             <Link href="/" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Aegyo Arena</Link>
             {mainArtist && <> / <Link href={`/artists/${mainArtist.slug}`} style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>{mainArtist.stageName}</Link></>}
@@ -173,7 +192,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
               )}
               {featured.length > 0 && (
                 <span style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.5)" }}>
-                  {" "}feat. {featured.map((c, i) => (
+                  {" "}<T en="feat." es="con" /> {featured.map((c, i) => (
                     <span key={c.id}>
                       <Link href={`/artists/${c.artist.slug}`} style={{ color: "rgba(255,255,255,0.6)", textDecoration: "none" }}>{c.artist.stageName}</Link>
                       {i < featured.length - 1 ? ", " : ""}
@@ -200,7 +219,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                   rel="noopener noreferrer"
                   style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "#1DB954", color: "#fff", fontWeight: 700, fontSize: "0.8rem", padding: "8px 16px", borderRadius: 999, textDecoration: "none", letterSpacing: "0.02em", whiteSpace: "nowrap" }}
                 >
-                  <span aria-hidden style={{ fontSize: "0.95rem" }}>♫</span> Listen on Spotify
+                  <span aria-hidden style={{ fontSize: "0.95rem" }}>♫</span> <T en="Listen on Spotify" es="Escuchar en Spotify" />
                 </a>
                 <ShareButtons
                   title={song.title}
@@ -243,7 +262,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
             {/* Featured artists */}
             {featured.length > 0 && (
               <div className="genius-card" style={{ padding: 20, marginBottom: 16 }}>
-                <div className="section-header" style={{ margin: "0 0 12px" }}>Featured</div>
+                <div className="section-header" style={{ margin: "0 0 12px" }}><T en="Featured" es="Artistas invitados" /></div>
                 {featured.map((c) => (
                   <Link key={c.id} href={`/artists/${c.artist.slug}`} style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10, padding: "6px 0" }}>
                     <span style={{ fontSize: "1.2rem" }}>⭐</span>
@@ -256,10 +275,10 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
             {/* Credits */}
             {producers.length > 0 && (
               <div className="genius-card" style={{ padding: 20, marginBottom: 16 }}>
-                <div className="section-header" style={{ margin: "0 0 12px" }}>Credits</div>
+                <div className="section-header" style={{ margin: "0 0 12px" }}><T en="Credits" es="Créditos" /></div>
                 {producers.map((c) => (
                   <div key={c.id} style={{ marginBottom: 10 }}>
-                    <div style={{ fontSize: "0.7rem", color: "var(--genius-gray)", textTransform: "uppercase", letterSpacing: "0.08em" }}>{c.role}</div>
+                    <div style={{ fontSize: "0.7rem", color: "var(--genius-gray)", textTransform: "uppercase", letterSpacing: "0.08em" }}><RoleLabel role={c.role} /></div>
                     <Link href={`/artists/${c.artist.slug}`} style={{ fontWeight: 600, fontSize: "0.88rem", color: "#ff6fa8", textDecoration: "none" }}>{c.artist.stageName}</Link>
                   </div>
                 ))}
@@ -269,14 +288,16 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
             {/* Annotations index */}
             {song.annotations.length > 0 && (
               <div className="genius-card" style={{ padding: 20, marginBottom: 16 }}>
-                <div className="section-header" style={{ margin: "0 0 12px" }}>Annotations ({song.annotations.length})</div>
+                <div className="section-header" style={{ margin: "0 0 12px" }}>
+                  <T en={`Annotations (${song.annotations.length})`} es={`Anotaciones (${song.annotations.length})`} />
+                </div>
                 {song.annotations.map((ann) => (
                   <div key={ann.id} style={{ marginBottom: 10, paddingBottom: 10, borderBottom: "1px solid var(--genius-border)" }}>
-                    <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "#ff6fa8" }}>&ldquo;{ann.word}&rdquo; — line {ann.lineIndex + 1}</div>
+                    <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "#ff6fa8" }}>&ldquo;{ann.word}&rdquo; — <T en={`line ${ann.lineIndex + 1}`} es={`línea ${ann.lineIndex + 1}`} /></div>
                     <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.72)", marginTop: 2 }}>{ann.note.slice(0, 80)}{ann.note.length > 80 ? "…" : ""}</div>
                     {ann.term && (
                       <Link href={`/korean-slang/${ann.term.slug}`} style={{ fontSize: "0.72rem", color: "var(--genius-gray)", textDecoration: "none", marginTop: 4, display: "block" }}>
-                        → See: {ann.term.term}
+                        → <T en="See:" es="Ver:" /> {ann.term.term}
                       </Link>
                     )}
                   </div>
@@ -290,7 +311,9 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
         {/* Fan annotations — community contributions from leaderboard contributors, tied to this song */}
         {fanAnnotations.length > 0 && (
           <section style={{ marginTop: 48, paddingTop: 40, borderTop: "2px solid #000" }}>
-            <div className="section-header">Fan Annotations ({fanAnnotations.length})</div>
+            <div className="section-header">
+              <T en={`Fan Annotations (${fanAnnotations.length})`} es={`Anotaciones de Fans (${fanAnnotations.length})`} />
+            </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(320px, 100%), 1fr))", gap: 16, marginTop: 4 }}>
               {fanAnnotations.map((a) => {
                 const contributor = contributorBySlug(a.authorSlug);
@@ -324,19 +347,18 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
           const seen = new Set<string>();
           if (mainArtist && !seen.has(mainArtist.id)) {
             seen.add(mainArtist.id);
-            allArtists.push({ id: mainArtist.id, slug: mainArtist.slug, name: mainArtist.stageName, imageUrl: mainArtist.imageUrl, role: "Main Artist" });
+            allArtists.push({ id: mainArtist.id, slug: mainArtist.slug, name: mainArtist.stageName, imageUrl: mainArtist.imageUrl, role: "main" });
           }
           for (const c of song.credits) {
             if (!seen.has(c.artist.id)) {
               seen.add(c.artist.id);
-              const roleLabel = c.role === "featured" ? "Featured" : c.role === "producer" ? "Producer" : c.role === "songwriter" ? "Songwriter" : c.role === "composer" ? "Composer" : c.role === "PRIMARY" ? "Performer" : c.role;
-              allArtists.push({ id: c.artist.id, slug: c.artist.slug, name: c.artist.stageName, imageUrl: c.artist.imageUrl, role: roleLabel });
+              allArtists.push({ id: c.artist.id, slug: c.artist.slug, name: c.artist.stageName, imageUrl: c.artist.imageUrl, role: c.role });
             }
           }
           if (allArtists.length < 2) return null;
           return (
             <section style={{ marginTop: 48, paddingTop: 40, borderTop: "2px solid #000" }}>
-              <div className="section-header">Artists &amp; Collaborators</div>
+              <div className="section-header"><T en="Artists & Collaborators" es="Artistas y Colaboradores" /></div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: 4 }}>
                 {allArtists.map((a) => (
                   <Link key={a.id} href={`/artists/${a.slug}`} style={{ textDecoration: "none" }}>
@@ -348,7 +370,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                       )}
                       <div>
                         <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "#ff6fa8" }}>{a.name}</div>
-                        <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 2 }}>{a.role}</div>
+                        <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 2 }}><RoleLabel role={a.role} /></div>
                       </div>
                     </div>
                   </Link>
@@ -362,7 +384,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
             horizontal card so it never squeezes the lyrics column on phones. */}
         {song.album && (
           <section style={{ marginTop: 48, paddingTop: 40, borderTop: "2px solid #000" }}>
-            <div className="section-header">From the Album</div>
+            <div className="section-header"><T en="From the Album" es="Del Álbum" /></div>
             <div className="genius-card" style={{ marginTop: 4, padding: 18, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 18 }}>
               {song.album.coverArt && (
                 <img src={song.album.coverArt} alt={song.album.title} style={{ width: 110, height: 110, borderRadius: 6, objectFit: "cover", flexShrink: 0 }} />
@@ -372,7 +394,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                 <div style={{ fontSize: "0.8rem", color: "var(--genius-gray)", marginTop: 4 }}>{song.album.releaseYear} &middot; {song.album.type}</div>
               </div>
               <Link href={`/artists/${song.album.artist.slug}`} style={{ textDecoration: "none", flexShrink: 0 }}>
-                <span className="btn-yellow" style={{ fontSize: "0.7rem" }}>VIEW ARTIST</span>
+                <span className="btn-yellow" style={{ fontSize: "0.7rem" }}><T en="VIEW ARTIST" es="VER ARTISTA" /></span>
               </Link>
             </div>
             {albumTracks.length > 0 && (
@@ -390,7 +412,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
         {/* More from this artist — internal links to the artist's other tracks */}
         {mainArtist && moreSongs.length > 0 && (
           <section style={{ marginTop: 48, paddingTop: 40, borderTop: "2px solid #000" }}>
-            <div className="section-header">More from {mainArtist.stageName}</div>
+            <div className="section-header"><T en={`More from ${mainArtist.stageName}`} es={`Más de ${mainArtist.stageName}`} /></div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 12, marginTop: 4 }}>
               {moreSongs.map((s) => (
                 <Link key={s.id} href={`/songs/${s.slug}`} style={{ textDecoration: "none" }}>
@@ -414,7 +436,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
         {/* Recent News */}
         {recentNews.length > 0 && (
           <section style={{ marginTop: 48, paddingTop: 40, borderTop: "2px solid #000" }}>
-            <div className="section-header">Recent News</div>
+            <div className="section-header"><T en="Recent News" es="Noticias Recientes" /></div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 16, marginTop: 4 }}>
               {recentNews.map((item) => (
                 <Link key={item.id} href={`/artists/${item.artist.slug}`} style={{ textDecoration: "none" }}>
@@ -432,7 +454,12 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                         <div>
                           <div style={{ fontWeight: 700, fontSize: "0.78rem", color: "#ff6fa8" }}>{item.artist.stageName}</div>
                           <div style={{ fontSize: "0.68rem", color: "var(--genius-gray)" }}>
-                            {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""}
+                            {item.publishedAt ? (
+                              <T
+                                en={new Date(item.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                                es={new Date(item.publishedAt).toLocaleDateString("es-MX", { month: "short", day: "numeric", year: "numeric" })}
+                              />
+                            ) : ""}
                             {item.source ? ` · ${item.source}` : ""}
                           </div>
                         </div>
@@ -472,22 +499,27 @@ function LyricsPendingNote({ title, artist, url }: { title: string; artist?: str
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
         <span style={{ fontSize: "1.7rem", lineHeight: 1 }}>🎧</span>
         <span style={{ background: "var(--genius-yellow)", color: "#000", fontWeight: 800, fontSize: "0.62rem", letterSpacing: "0.12em", textTransform: "uppercase", padding: "4px 11px", borderRadius: 999 }}>
-          Released · Lyrics pending
+          <T en="Released · Lyrics pending" es="Ya salió · Letra pendiente" />
         </span>
       </div>
       <h2 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#000", margin: "0 0 10px" }}>
-        Lyrics haven’t been released yet
+        <T en="Lyrics haven’t been released yet" es="La letra todavía no se publicó" />
       </h2>
       <p style={{ fontSize: "0.92rem", color: "#444", lineHeight: 1.7, margin: "0 0 18px", maxWidth: 520 }}>
-        <strong>“{title}”</strong>{artist ? ` by ${artist}` : ""} is out now — but its official lyrics
-        haven’t been transcribed yet. You can listen to the track and see its release details on Genius.
-        As soon as the lyrics drop, they’ll appear here for the Aegyo Arena community to annotate.
+        <strong>“{title}”</strong>
+        <T
+          en={`${artist ? ` by ${artist}` : ""} is out now — but its official lyrics haven’t been transcribed yet. You can listen to the track and see its release details on Genius. As soon as the lyrics drop, they’ll appear here for the Aegyo Arena community to annotate.`}
+          es={`${artist ? ` de ${artist}` : ""} ya salió — pero su letra oficial todavía no se transcribe. Puedes escuchar el tema y ver los detalles de su lanzamiento en Genius. Apenas salga la letra, va a aparecer aquí para que la comunidad de Aegyo Arena la anote.`}
+        />
       </p>
       <a href={url} target="_blank" rel="noopener noreferrer" className="btn-yellow" style={{ display: "inline-block" }}>
-        View on Genius ↗
+        <T en="View on Genius ↗" es="Ver en Genius ↗" />
       </a>
       <div style={{ marginTop: 16, fontSize: "0.75rem", color: "var(--genius-gray)" }}>
-        Know every word? Check back soon — the community adds lyrics as songs get transcribed.
+        <T
+          en="Know every word? Check back soon — the community adds lyrics as songs get transcribed."
+          es="¿Te sabes cada palabra? Vuelve pronto — la comunidad agrega letras a medida que se transcriben las canciones."
+        />
       </div>
     </div>
   );

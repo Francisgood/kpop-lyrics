@@ -1,7 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useLang } from "@/components/LangProvider";
 
 export default function HomeInteractions() {
+  const { lang } = useLang();
+  const es = lang === "es";
   const [email, setEmail]   = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
   const [errMsg, setErrMsg] = useState("");
@@ -38,14 +41,14 @@ export default function HomeInteractions() {
       });
       if (!res.ok) {
         const d = await res.json().catch(() => ({}));
-        setErrMsg((d as { error?: string }).error ?? "Something went wrong.");
+        setErrMsg((d as { error?: string }).error ?? (es ? "Algo salió mal." : "Something went wrong."));
         setStatus("error");
       } else {
         setStatus("ok");
         setEmail("");
       }
     } catch {
-      setErrMsg("Network error — please try again.");
+      setErrMsg(es ? "Error de red — inténtalo de nuevo." : "Network error — please try again.");
       setStatus("error");
     }
   }
@@ -56,8 +59,8 @@ export default function HomeInteractions() {
         <div style={{ background: "var(--sakura-light)", border: "1px solid rgba(255,111,168,0.35)", borderRadius: 16, padding: "20px 24px", display: "flex", alignItems: "center", gap: 12 }}>
           <span style={{ fontSize: "1.4rem" }}>✓</span>
           <div>
-            <div style={{ fontWeight: 700, fontSize: "1rem", color: "var(--sakura)" }}>You&rsquo;re in!</div>
-            <div style={{ fontSize: "0.85rem", color: "var(--ink-dim)" }}>Check your inbox to confirm.</div>
+            <div style={{ fontWeight: 700, fontSize: "1rem", color: "var(--sakura)" }}>{es ? "¡Ya estás dentro!" : "You’re in!"}</div>
+            <div style={{ fontSize: "0.85rem", color: "var(--ink-dim)" }}>{es ? "Revisa tu correo para confirmar." : "Check your inbox to confirm."}</div>
           </div>
         </div>
       </div>
@@ -72,14 +75,16 @@ export default function HomeInteractions() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         className="nl-input"
-        placeholder="your@email.com"
+        placeholder={es ? "tu@correo.com" : "your@email.com"}
         disabled={status === "loading"}
       />
       <button className="nl-btn" type="submit" disabled={status === "loading"}>
-        {status === "loading" ? "…" : "Subscribe — It's Free"}
+        {status === "loading" ? "…" : es ? "Suscríbete — Es Gratis" : "Subscribe — It's Free"}
       </button>
       <p className="nl-note">
-        {status === "error" ? <span style={{ color: "#ff8fb0" }}>{errMsg}</span> : "No spam. Unsubscribe anytime. We respect your inbox."}
+        {status === "error"
+          ? <span style={{ color: "#ff8fb0" }}>{errMsg}</span>
+          : es ? "Nada de spam. Cancela cuando quieras. Respetamos tu bandeja." : "No spam. Unsubscribe anytime. We respect your inbox."}
       </p>
     </form>
   );

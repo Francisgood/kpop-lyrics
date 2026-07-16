@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import { T, LangToggle } from "@/components/LangProvider";
 
 export const revalidate = 86400;
 
@@ -17,16 +18,25 @@ export default async function DefinePage() {
       {/* Header */}
       <section style={{ background: "#000", color: "#fff", padding: "60px 24px 40px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <LangToggle align="flex-start" marginBottom={16} />
           <div style={{ fontSize: "0.7rem", color: "var(--genius-yellow)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>
-            K-pop Dictionary
+            <T en="K-pop Dictionary" es="Diccionario K-pop" />
           </div>
-          <h1 style={{ fontSize: "2.8rem", fontWeight: 800, margin: "0 0 12px" }}>K-pop Slang & Terms</h1>
+          <h1 style={{ fontSize: "2.8rem", fontWeight: 800, margin: "0 0 12px" }}>
+            <T en="K-pop Slang & Terms" es="Jerga y Términos del K-pop" />
+          </h1>
           <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "1rem", maxWidth: 520 }}>
-            Fan-written definitions for K-pop culture vocabulary. Vote for the best definitions.
+            <T
+              en="Fan-written definitions for K-pop culture vocabulary. Vote for the best definitions."
+              es="Definiciones escritas por fans para el vocabulario de la cultura K-pop. Vota por las mejores."
+            />
           </p>
           <div style={{ marginTop: 20 }}>
             <Link href="/quiz/korean-slang" style={{ display: "inline-block", background: "var(--genius-yellow)", color: "#000", fontWeight: 700, fontSize: "0.85rem", padding: "11px 20px", borderRadius: 4, textDecoration: "none", letterSpacing: "0.02em" }}>
-              Think you know your slang? Take the 10-question Korean Slang quiz →
+              <T
+                en="Think you know your slang? Take the 10-question Korean Slang quiz →"
+                es="¿Crees que dominas la jerga? Haz el quiz de 10 preguntas de jerga coreana →"
+              />
             </Link>
           </div>
         </div>
@@ -44,7 +54,10 @@ export default async function DefinePage() {
                   </div>
                   {term._count.annotations > 0 && (
                     <div style={{ display: "inline-block", background: "#000", color: "var(--genius-yellow)", fontSize: "0.7rem", fontWeight: 700, padding: "2px 9px", borderRadius: 999, marginBottom: 8 }}>
-                      🎵 {term._count.annotations} song{term._count.annotations !== 1 ? "s" : ""}
+                      🎵 <T
+                        en={`${term._count.annotations} song${term._count.annotations !== 1 ? "s" : ""}`}
+                        es={`${term._count.annotations} ${term._count.annotations !== 1 ? "canciones" : "canción"}`}
+                      />
                     </div>
                   )}
                   {topDef && (

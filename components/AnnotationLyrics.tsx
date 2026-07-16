@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useLang } from "@/components/LangProvider";
 
 export type Ann = {
   id: string;
@@ -42,6 +43,8 @@ export default function AnnotationLyrics({
   annotations: Ann[];
   isLoggedIn: boolean;
 }) {
+  const { lang } = useLang();
+  const es = lang === "es";
   const byLine = new Map<number, Ann[]>();
   for (const a of annotations) {
     const arr = byLine.get(a.lineIndex) ?? [];
@@ -162,17 +165,26 @@ export default function AnnotationLyrics({
     <section>
       {annotations.length > 0 ? (
         <div style={{ background: "var(--sakura-light)", border: "1px solid var(--sakura)", borderRadius: 8, padding: "10px 16px", marginBottom: 20, fontSize: "0.82rem", color: "var(--ink-dim)" }}>
-          <strong style={{ color: "var(--sakura)" }}>Annotated lyrics</strong> — pink lines have K-pop slang &amp; culture notes (tap to read). Or <strong style={{ color: "var(--sakura)" }}>{isTouch ? "tap any line" : "highlight any line"}</strong> to add your own.
+          <strong style={{ color: "var(--sakura)" }}>{es ? "Letra anotada" : "Annotated lyrics"}</strong>
+          {es
+            ? <> — las líneas en rosa tienen notas de jerga y cultura K-pop (tócalas para leerlas). O <strong style={{ color: "var(--sakura)" }}>{isTouch ? "toca cualquier línea" : "resalta cualquier línea"}</strong> para agregar la tuya.</>
+            : <> — pink lines have K-pop slang &amp; culture notes (tap to read). Or <strong style={{ color: "var(--sakura)" }}>{isTouch ? "tap any line" : "highlight any line"}</strong> to add your own.</>}
         </div>
       ) : (
         <div style={{ background: "var(--sakura-light)", border: "1px solid var(--sakura)", borderRadius: 8, padding: "10px 16px", marginBottom: 20, fontSize: "0.82rem", color: "var(--ink-dim)" }}>
-          <strong style={{ color: "var(--sakura)" }}>{isTouch ? "Tap any lyric" : "Highlight any lyric"}</strong> to start an annotation — explain the slang, references, and culture behind the words.
+          <strong style={{ color: "var(--sakura)" }}>
+            {es ? (isTouch ? "Toca cualquier verso" : "Resalta cualquier verso") : (isTouch ? "Tap any lyric" : "Highlight any lyric")}
+          </strong>
+          {es
+            ? " para empezar una anotación — explica la jerga, las referencias y la cultura detrás de las palabras."
+            : " to start an annotation — explain the slang, references, and culture behind the words."}
         </div>
       )}
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 12, paddingBottom: 8, borderBottom: "2px solid var(--border-strong)" }}>
-        <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-faint)" }}>한국어 (Korean)</div>
-        <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-faint)" }}>English Translation</div>
+        <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-faint)" }}>{es ? "한국어 (Coreano)" : "한국어 (Korean)"}</div>
+        {/* The right column holds the ENGLISH translation — the ES label says so rather than implying Spanish lyrics. */}
+        <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-faint)" }}>{es ? "Traducción al inglés" : "English Translation"}</div>
       </div>
 
       <div ref={lyricsRef} style={isTouch ? { WebkitUserSelect: "none", userSelect: "none", WebkitTouchCallout: "none" } : undefined}>
@@ -235,7 +247,9 @@ export default function AnnotationLyrics({
             boxShadow: "0 8px 24px rgba(0,0,0,0.4)", whiteSpace: "nowrap",
           }}
         >
-          {isLoggedIn ? "✏️ Annotate" : "Sign Up to Start Annotating"}
+          {isLoggedIn
+            ? (es ? "✏️ Anotar" : "✏️ Annotate")
+            : (es ? "Regístrate para empezar a anotar" : "Sign Up to Start Annotating")}
         </button>
       )}
 
@@ -264,8 +278,8 @@ export default function AnnotationLyrics({
         {open && (
           <div style={{ padding: "20px 22px 48px" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-              <span style={{ fontFamily: "var(--mono)", fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--sakura)" }}>Annotation</span>
-              <button type="button" onClick={close} aria-label="Close annotation" style={{ background: "none", border: "none", color: "var(--ink-dim)", fontSize: "1.6rem", lineHeight: 1, cursor: "pointer" }}>×</button>
+              <span style={{ fontFamily: "var(--mono)", fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--sakura)" }}>{es ? "Anotación" : "Annotation"}</span>
+              <button type="button" onClick={close} aria-label={es ? "Cerrar anotación" : "Close annotation"} style={{ background: "none", border: "none", color: "var(--ink-dim)", fontSize: "1.6rem", lineHeight: 1, cursor: "pointer" }}>×</button>
             </div>
 
             <div style={{ fontWeight: 600, fontSize: "1.05rem", color: "var(--ink)", lineHeight: 1.5, marginBottom: roLines[activeLine!] ? 2 : 14 }}>
@@ -280,7 +294,7 @@ export default function AnnotationLyrics({
                 <div style={{ color: "var(--ink)", lineHeight: 1.7, fontSize: "0.95rem" }}>{a.note}</div>
                 {a.termSlug && (
                   <Link href={`/korean-slang/${a.termSlug}`} style={{ display: "inline-block", marginTop: 10, fontSize: "0.8rem", color: "var(--sakura)", fontWeight: 600, textDecoration: "none" }}>
-                    See full definition: {a.termName} →
+                    {es ? "Ver definición completa" : "See full definition"}: {a.termName} →
                   </Link>
                 )}
                 {a.authorName && (
@@ -291,7 +305,7 @@ export default function AnnotationLyrics({
                       <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--ink)" }}>— {a.authorName}</span>
                     )}
                     {a.href && (
-                      <Link href={a.href} style={{ fontSize: "0.76rem", color: "var(--ink-faint)", textDecoration: "none", marginLeft: "auto" }}>view full →</Link>
+                      <Link href={a.href} style={{ fontSize: "0.76rem", color: "var(--ink-faint)", textDecoration: "none", marginLeft: "auto" }}>{es ? "ver completa →" : "view full →"}</Link>
                     )}
                   </div>
                 )}
@@ -303,7 +317,7 @@ export default function AnnotationLyrics({
                 <ContributeForm songId={songId} songTitle={songTitle} lineIndex={activeLine!} selectedText={selText} onClose={() => { setContribOpen(false); setSelText(""); }} />
               ) : (
                 <button type="button" onClick={onContribute} style={{ width: "100%", padding: "11px", borderRadius: 8, border: "1px solid var(--sakura)", background: "transparent", color: "var(--sakura)", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer" }}>
-                  + Suggest an annotation
+                  {es ? "+ Sugerir una anotación" : "+ Suggest an annotation"}
                 </button>
               )}
             </div>
@@ -317,6 +331,8 @@ export default function AnnotationLyrics({
 }
 
 function ContributeForm({ songTitle, selectedText, onClose }: { songId: string; songTitle?: string; lineIndex: number; selectedText?: string; onClose: () => void }) {
+  const { lang } = useLang();
+  const es = lang === "es";
   const [text, setText] = useState("");
   const [state, setState] = useState<"idle" | "saving" | "done" | "error">("idle");
 
@@ -340,49 +356,55 @@ function ContributeForm({ songTitle, selectedText, onClose }: { songId: string; 
   }
 
   if (state === "done") {
-    return <div style={{ color: "var(--volt)", fontSize: "0.88rem", textAlign: "center", padding: "10px" }}>✓ Thanks! Your annotation was submitted to the moderation queue for review.</div>;
+    return <div style={{ color: "var(--volt)", fontSize: "0.88rem", textAlign: "center", padding: "10px" }}>
+      {es ? "✓ ¡Gracias! Tu anotación se envió a la cola de moderación para revisión." : "✓ Thanks! Your annotation was submitted to the moderation queue for review."}
+    </div>;
   }
 
   return (
     <div>
       {selectedText && (
         <div style={{ marginBottom: 10, fontSize: "0.82rem", color: "var(--ink-dim)" }}>
-          Annotating: <span style={{ color: "var(--sakura)", fontWeight: 700 }}>&ldquo;{selectedText}&rdquo;</span>
+          {es ? "Anotando" : "Annotating"}: <span style={{ color: "var(--sakura)", fontWeight: 700 }}>&ldquo;{selectedText}&rdquo;</span>
         </div>
       )}
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Explain the slang, reference, or cultural meaning of this line…"
+        placeholder={es ? "Explica la jerga, la referencia o el significado cultural de esta línea…" : "Explain the slang, reference, or cultural meaning of this line…"}
         rows={4}
         autoFocus
         style={{ width: "100%", background: "var(--surface)", border: "1px solid var(--border-strong)", borderRadius: 8, padding: "10px 12px", color: "var(--ink)", fontFamily: "var(--sans)", fontSize: "0.9rem", resize: "vertical", boxSizing: "border-box" }}
       />
-      {state === "error" && <div style={{ color: "var(--sakura)", fontSize: "0.78rem", marginTop: 6 }}>Something went wrong — please try again.</div>}
+      {state === "error" && <div style={{ color: "var(--sakura)", fontSize: "0.78rem", marginTop: 6 }}>{es ? "Algo salió mal — inténtalo de nuevo." : "Something went wrong — please try again."}</div>}
       <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
         <button type="button" onClick={submit} disabled={state === "saving" || !text.trim()} style={{ flex: 1, padding: "10px", borderRadius: 8, border: "none", background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer", opacity: state === "saving" || !text.trim() ? 0.6 : 1 }}>
-          {state === "saving" ? "Submitting…" : "Submit"}
+          {state === "saving" ? (es ? "Enviando…" : "Submitting…") : (es ? "Enviar" : "Submit")}
         </button>
-        <button type="button" onClick={onClose} style={{ padding: "10px 14px", borderRadius: 8, border: "1px solid var(--border-strong)", background: "transparent", color: "var(--ink-dim)", fontWeight: 600, fontSize: "0.85rem", cursor: "pointer" }}>Cancel</button>
+        <button type="button" onClick={onClose} style={{ padding: "10px 14px", borderRadius: 8, border: "1px solid var(--border-strong)", background: "transparent", color: "var(--ink-dim)", fontWeight: 600, fontSize: "0.85rem", cursor: "pointer" }}>{es ? "Cancelar" : "Cancel"}</button>
       </div>
     </div>
   );
 }
 
 function SignUpGate({ onClose }: { onClose: () => void }) {
+  const { lang } = useLang();
+  const es = lang === "es";
   return (
     <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 300, background: "rgba(0,0,0,0.62)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
       <div onClick={(e) => e.stopPropagation()} style={{ width: "min(380px, 94vw)", background: "var(--bg-card)", border: "1px solid var(--sakura)", borderRadius: 16, padding: "32px 28px", textAlign: "center", position: "relative", boxShadow: "0 24px 64px rgba(0,0,0,0.55)" }}>
-        <button type="button" onClick={onClose} aria-label="Close" style={{ position: "absolute", top: 14, right: 16, background: "none", border: "none", color: "var(--ink-faint)", fontSize: "1.5rem", lineHeight: 1, cursor: "pointer" }}>×</button>
-        <div style={{ fontFamily: "var(--serif)", fontSize: "1.9rem", fontWeight: 700, color: "var(--ink)", marginBottom: 8 }}>Sign up to annotate</div>
+        <button type="button" onClick={onClose} aria-label={es ? "Cerrar" : "Close"} style={{ position: "absolute", top: 14, right: 16, background: "none", border: "none", color: "var(--ink-faint)", fontSize: "1.5rem", lineHeight: 1, cursor: "pointer" }}>×</button>
+        <div style={{ fontFamily: "var(--serif)", fontSize: "1.9rem", fontWeight: 700, color: "var(--ink)", marginBottom: 8 }}>{es ? "Regístrate para anotar" : "Sign up to annotate"}</div>
         <div style={{ color: "var(--ink-dim)", fontSize: "0.92rem", lineHeight: 1.6, marginBottom: 24 }}>
-          Create a free Aegyo Arena account to contribute annotations, suggest edits, and earn Daebak Rewards.
+          {es
+            ? "Crea una cuenta gratis en Aegyo Arena para contribuir con anotaciones, sugerir ediciones y ganar Daebak Rewards."
+            : "Create a free Aegyo Arena account to contribute annotations, suggest edits, and earn Daebak Rewards."}
         </div>
         <Link href="/signup" style={{ display: "block", padding: "13px", borderRadius: 100, background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.95rem", textDecoration: "none", marginBottom: 14 }}>
-          Sign Up
+          {es ? "Registrarse" : "Sign Up"}
         </Link>
         <div style={{ fontSize: "0.85rem", color: "var(--ink-dim)" }}>
-          Already have an account? <Link href="/login" style={{ color: "var(--sakura)", fontWeight: 700 }}>Sign in</Link>
+          {es ? "¿Ya tienes una cuenta?" : "Already have an account?"} <Link href="/login" style={{ color: "var(--sakura)", fontWeight: 700 }}>{es ? "Inicia sesión" : "Sign in"}</Link>
         </div>
       </div>
     </div>

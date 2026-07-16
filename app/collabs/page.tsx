@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import CollabNetwork, { type GraphNode, type GraphLink } from "@/components/CollabNetwork";
 import QuizButton from "@/components/QuizButton";
+import { T, LangToggle } from "@/components/LangProvider";
 
 export const revalidate = 1800;
 
@@ -18,13 +19,27 @@ const WESTERN_SLUGS = new Set([
 ]);
 
 // Key cross-cultural producers — spotlight these explicitly
-const PRODUCER_SPOTLIGHTS = [
+// `songsEs` only exists where an entry is descriptive copy rather than a real
+// song title; real titles fall back to the English array.
+const PRODUCER_SPOTLIGHTS: {
+  slug: string;
+  name: string;
+  groups: string[];
+  role: string;
+  roleEs: string;
+  note: string;
+  noteEs: string;
+  songs: string[];
+  songsEs?: string[];
+}[] = [
   {
     slug: "teddy-park",
     name: "Teddy Park",
     groups: ["BLACKPINK"],
     role: "Chief Songwriter & Producer",
+    roleEs: "Compositor Principal y Productor",
     note: "Produced every major BLACKPINK title track. LA-raised, Seoul-based architect of the YG × western hip-hop sound.",
+    noteEs: "Produjo todos los title tracks importantes de BLACKPINK. Criado en LA y radicado en Seoul, es el arquitecto del sonido YG × hip-hop occidental.",
     songs: ["DDU-DU DDU-DU", "Kill This Love", "How You Like That", "Pink Venom"],
   },
   {
@@ -32,7 +47,9 @@ const PRODUCER_SPOTLIGHTS = [
     name: "Pharrell Williams",
     groups: ["BTS"],
     role: "Producer & Collaborator",
+    roleEs: "Productor y Colaborador",
     note: "Collaborated with J-Hope on 'On the Street' (2023). Pharrell's Neptunes-era funk DNA meets HYBE's idol production.",
+    noteEs: "Colaboró con J-Hope en 'On the Street' (2023). El ADN funk de la era Neptunes de Pharrell se encuentra con la producción idol de HYBE.",
     songs: ["On the Street (feat. J. Cole)"],
   },
   {
@@ -40,7 +57,9 @@ const PRODUCER_SPOTLIGHTS = [
     name: "Nile Rodgers",
     groups: ["aespa"],
     role: "Guitar Producer",
+    roleEs: "Productor de Guitarra",
     note: "Co-creator of CHIC. Brought signature disco-funk guitar stabs to aespa's 'Girls' — SM's most prestigious western collab.",
+    noteEs: "Cocreador de CHIC. Llevó sus icónicos acordes disco-funk a 'Girls' de aespa, la colab occidental más prestigiosa de SM.",
     songs: ["Girls"],
   },
   {
@@ -48,7 +67,9 @@ const PRODUCER_SPOTLIGHTS = [
     name: "Maxx Song",
     groups: ["NewJeans"],
     role: "Songwriter & Producer",
+    roleEs: "Compositor y Productor",
     note: "Korean-American producer who co-crafted NewJeans' Y2K-minimalist sound. Primary architect of 'Attention' and 'Super Shy'.",
+    noteEs: "Productor coreano-estadounidense que ayudó a crear el sonido Y2K minimalista de NewJeans. Arquitecto principal de 'Attention' y 'Super Shy'.",
     songs: ["Attention", "Super Shy", "Hype Boy"],
   },
   {
@@ -56,7 +77,9 @@ const PRODUCER_SPOTLIGHTS = [
     name: "Ryan Tedder",
     groups: ["BTS"],
     role: "Songwriter",
+    roleEs: "Compositor",
     note: "OneRepublic frontman and Grammy producer. Contributed to HYBE's international songwriter recruitment — part of the LA-Seoul pipeline.",
+    noteEs: "Vocalista de OneRepublic y productor ganador del Grammy. Participó en el reclutamiento internacional de compositores de HYBE, parte del pipeline LA-Seoul.",
     songs: ["Life Goes On (co-write)"],
   },
   {
@@ -64,8 +87,11 @@ const PRODUCER_SPOTLIGHTS = [
     name: "Diplo",
     groups: ["BLACKPINK"],
     role: "Producer",
+    roleEs: "Productor",
     note: "Major Lazer founder, global bass music pioneer. Contributed production within YG's extended creative network.",
+    noteEs: "Fundador de Major Lazer y pionero global del bass music. Aportó producción dentro de la red creativa extendida de YG.",
     songs: ["Extended collab credits"],
+    songsEs: ["Créditos de colab extendidos"],
   },
 ];
 
@@ -155,13 +181,23 @@ export default async function CollabsPage() {
     <main>
       <section style={{ background: "#000", color: "#fff", padding: "60px 24px 40px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <LangToggle align="flex-start" marginBottom={16} />
           <div style={{ fontSize: "0.7rem", color: "var(--genius-yellow)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>
-            Collaboration Map
+            <T en="Collaboration Map" es="Mapa de Colaboraciones" />
           </div>
-          <h1 style={{ fontSize: "2.8rem", fontWeight: 800, margin: "0 0 12px" }}>How Artists Connect</h1>
+          <h1 style={{ fontSize: "2.8rem", fontWeight: 800, margin: "0 0 12px" }}>
+            <T en="How Artists Connect" es="Cómo se Conectan los Artistas" />
+          </h1>
           <p style={{ color: "rgba(255,255,255,0.6)", maxWidth: 600, fontSize: "0.95rem", lineHeight: 1.6 }}>
-            An interactive web of every collaboration — K-pop artists connected to their western features, group members, and cross-cultural song credits.
-            <span style={{ color: "#FFFF64" }}> Lisa sits at the center</span> of the western collab network.
+            <T
+              en="An interactive web of every collaboration — K-pop artists connected to their western features, group members, and cross-cultural song credits."
+              es="Una red interactiva de cada colaboración: artistas de K-pop conectados con sus featurings occidentales, miembros de grupo y créditos de canciones interculturales."
+            />
+            <span style={{ color: "#FFFF64" }}>
+              {" "}
+              <T en="Lisa sits at the center" es="Lisa está en el centro" />
+            </span>{" "}
+            <T en="of the western collab network." es="de la red de colabs occidentales." />
           </p>
         </div>
       </section>
@@ -183,7 +219,7 @@ export default async function CollabsPage() {
             {/* Song Collaborations list */}
             {collabEdges.length > 0 && (
               <section style={{ marginBottom: 48 }}>
-                <div className="section-header">Cross-Artist Song Credits</div>
+                <div className="section-header"><T en="Cross-Artist Song Credits" es="Créditos de Canciones entre Artistas" /></div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {collabEdges.map((edge, i) => (
                     <div key={i} className="genius-card" style={{ padding: 16 }}>
@@ -193,7 +229,7 @@ export default async function CollabsPage() {
                           {edge.a}
                         </Link>
                         <span style={{ fontSize: "0.68rem", background: isWestern(edge.aSlug) || isWestern(edge.bSlug) ? "#e879f9" : "var(--genius-yellow)", color: "#000", padding: "2px 8px", borderRadius: 999, fontWeight: 700 }}>
-                          {isWestern(edge.aSlug) || isWestern(edge.bSlug) ? "CROSSOVER" : "COLLAB"}
+                          {isWestern(edge.aSlug) || isWestern(edge.bSlug) ? "CROSSOVER" : <T en="COLLAB" es="COLAB" />}
                         </span>
                         <Link href={`/artists/${edge.bSlug}`} style={{ fontWeight: 700, fontSize: "0.9rem", color: "#000", textDecoration: "none", display: "flex", alignItems: "center", gap: 7 }}>
                           {edge.bImg && <img src={edge.bImg} alt={edge.b} style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />}
@@ -211,7 +247,7 @@ export default async function CollabsPage() {
 
             {/* Group Rosters */}
             <section>
-              <div className="section-header">Group Rosters</div>
+              <div className="section-header"><T en="Group Rosters" es="Integrantes de los Grupos" /></div>
               <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                 {memberEdges.map((g) => (
                   <div key={g.groupSlug} className="genius-card" style={{ padding: 18 }}>
@@ -238,7 +274,7 @@ export default async function CollabsPage() {
           <aside>
             {/* Producer Spotlight */}
             <div style={{ marginBottom: 28 }}>
-              <div className="section-header">Producers Driving the Crossover</div>
+              <div className="section-header"><T en="Producers Driving the Crossover" es="Productores que Impulsan el Crossover" /></div>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {PRODUCER_SPOTLIGHTS.map((p) => (
                   <Link key={p.slug} href={`/artists/${p.slug}`} style={{ textDecoration: "none" }}>
@@ -246,16 +282,20 @@ export default async function CollabsPage() {
                       <div style={{ display: "flex", gap: 6, alignItems: "flex-start", flexWrap: "wrap", marginBottom: 4 }}>
                         <span style={{ fontWeight: 800, fontSize: "0.9rem", color: "#000" }}>{p.name}</span>
                         <span style={{ background: "#e879f9", color: "#fff", fontSize: "0.62rem", fontWeight: 700, padding: "2px 7px", borderRadius: 999, whiteSpace: "nowrap" }}>
-                          {p.role.toUpperCase()}
+                          <T en={p.role.toUpperCase()} es={p.roleEs.toUpperCase()} />
                         </span>
                       </div>
                       <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginBottom: 4 }}>
                         → {p.groups.join(", ")}
                       </div>
-                      <div style={{ fontSize: "0.78rem", color: "#444", lineHeight: 1.55 }}>{p.note}</div>
+                      <div style={{ fontSize: "0.78rem", color: "#444", lineHeight: 1.55 }}>
+                        <T en={p.note} es={p.noteEs} />
+                      </div>
                       <div style={{ marginTop: 6, display: "flex", flexWrap: "wrap", gap: 4 }}>
-                        {p.songs.map((s) => (
-                          <span key={s} style={{ background: "#f0f0f0", fontSize: "0.65rem", padding: "1px 7px", borderRadius: 999, color: "#555" }}>{s}</span>
+                        {p.songs.map((s, i) => (
+                          <span key={s} style={{ background: "#f0f0f0", fontSize: "0.65rem", padding: "1px 7px", borderRadius: 999, color: "#555" }}>
+                            <T en={s} es={p.songsEs?.[i] ?? s} />
+                          </span>
                         ))}
                       </div>
                     </div>
@@ -264,7 +304,7 @@ export default async function CollabsPage() {
               </div>
             </div>
 
-            <div className="section-header">Most Connected Artists</div>
+            <div className="section-header"><T en="Most Connected Artists" es="Artistas Más Conectados" /></div>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
               {topArtists.map((a, i) => (
                 <Link key={a.slug} href={`/artists/${a.slug}`} style={{ textDecoration: "none" }}>
@@ -278,8 +318,15 @@ export default async function CollabsPage() {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#000", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{a.name}</div>
                       <div style={{ fontSize: "0.7rem", color: "var(--genius-gray)" }}>
-                        {a.count} credit{a.count !== 1 ? "s" : ""}
-                        {isWestern(a.slug) && <span style={{ marginLeft: 4, color: "#e879f9", fontWeight: 700 }}>· western</span>}
+                        <T
+                          en={`${a.count} credit${a.count !== 1 ? "s" : ""}`}
+                          es={`${a.count} crédito${a.count !== 1 ? "s" : ""}`}
+                        />
+                        {isWestern(a.slug) && (
+                          <span style={{ marginLeft: 4, color: "#e879f9", fontWeight: 700 }}>
+                            · <T en="western" es="occidental" />
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -288,16 +335,16 @@ export default async function CollabsPage() {
             </div>
 
             <div style={{ marginTop: 24 }}>
-              <div className="section-header">Crossover Hotspots</div>
+              <div className="section-header"><T en="Crossover Hotspots" es="Focos del Crossover" /></div>
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {[
-                  { label: "🇺🇸 US Market", desc: "Lisa, BLACKPINK, BTS", color: "#FFFF64" },
-                  { label: "🇧🇷 Brazil", desc: "ATEEZ, Stray Kids, BTS", color: "#ACFA52" },
-                  { label: "🇲🇽 Mexico", desc: "BLACKPINK, TWICE, BTS", color: "#fb923c" },
-                  { label: "🇪🇺 Europe", desc: "BTS, BLACKPINK, Rosalía×Lisa", color: "#e879f9" },
-                ].map(({ label, desc, color }) => (
+                  { label: "🇺🇸 US Market", labelEs: "🇺🇸 Mercado de EE.UU.", desc: "Lisa, BLACKPINK, BTS", color: "#FFFF64" },
+                  { label: "🇧🇷 Brazil", labelEs: "🇧🇷 Brasil", desc: "ATEEZ, Stray Kids, BTS", color: "#ACFA52" },
+                  { label: "🇲🇽 Mexico", labelEs: "🇲🇽 México", desc: "BLACKPINK, TWICE, BTS", color: "#fb923c" },
+                  { label: "🇪🇺 Europe", labelEs: "🇪🇺 Europa", desc: "BTS, BLACKPINK, Rosalía×Lisa", color: "#e879f9" },
+                ].map(({ label, labelEs, desc, color }) => (
                   <div key={label} className="genius-card" style={{ padding: "10px 14px", borderLeft: `3px solid ${color}` }}>
-                    <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "#000" }}>{label}</div>
+                    <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "#000" }}><T en={label} es={labelEs} /></div>
                     <div style={{ fontSize: "0.72rem", color: "var(--genius-gray)", marginTop: 2 }}>{desc}</div>
                   </div>
                 ))}
@@ -310,13 +357,16 @@ export default async function CollabsPage() {
       <section style={{ background: "#000", padding: "56px 24px", textAlign: "center" }}>
         <div style={{ maxWidth: 560, margin: "0 auto" }}>
           <div style={{ fontSize: "0.7rem", color: "var(--genius-yellow)", letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 12 }}>
-            Stan Mode: Activated
+            <T en="Stan Mode: Activated" es="Modo Stan: Activado" />
           </div>
           <h2 style={{ color: "#fff", fontWeight: 800, fontSize: "1.8rem", margin: "0 0 12px" }}>
-            Think you know your collabs?
+            <T en="Think you know your collabs?" es="¿Crees que te sabes todas las colabs?" />
           </h2>
           <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.9rem", lineHeight: 1.6, margin: "0 0 28px" }}>
-            Put your knowledge to the test — artist history, lyrics challenges, mukbang moments, and more.
+            <T
+              en="Put your knowledge to the test — artist history, lyrics challenges, mukbang moments, and more."
+              es="Pon a prueba tus conocimientos: historia de los artistas, retos de letras, momentos mukbang y más."
+            />
           </p>
           <QuizButton />
         </div>

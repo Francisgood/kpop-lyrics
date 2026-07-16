@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { CONTRIBUTORS } from "@/app/leaderboard/data";
+import { T, LangToggle } from "@/components/LangProvider";
 
 export const revalidate = 3600;
 
@@ -786,16 +787,29 @@ export async function generateStaticParams() {
 }
 
 // Category styling for live scanned events (mirrors /events so the two stay visually consistent).
-const EVENT_CAT: Record<string, { label: string; emoji: string; color: string }> = {
-  kpop:    { label: "K-pop",     emoji: "💜", color: "#C77DFF" },
-  kbeauty: { label: "K-Beauty",  emoji: "💄", color: "#FF6FA8" },
-  dance:   { label: "Dance",     emoji: "🕺", color: "#4AC8F0" },
-  anime:   { label: "Anime",     emoji: "🎌", color: "#FF8C42" },
-  comicon: { label: "Comic-Con", emoji: "🦸", color: "#C8F04A" },
-  store:   { label: "Store",     emoji: "🛍", color: "#B8A0FF" },
-  meetup:  { label: "Meetup",    emoji: "🗓", color: "#4ECDC4" },
-  other:   { label: "Event",     emoji: "✨", color: "#FFD700" },
+const EVENT_CAT: Record<string, { label: string; labelEs: string; emoji: string; color: string }> = {
+  kpop:    { label: "K-pop",     labelEs: "K-pop",     emoji: "💜", color: "#C77DFF" },
+  kbeauty: { label: "K-Beauty",  labelEs: "K-Beauty",  emoji: "💄", color: "#FF6FA8" },
+  dance:   { label: "Dance",     labelEs: "Baile",     emoji: "🕺", color: "#4AC8F0" },
+  anime:   { label: "Anime",     labelEs: "Anime",     emoji: "🎌", color: "#FF8C42" },
+  comicon: { label: "Comic-Con", labelEs: "Comic-Con", emoji: "🦸", color: "#C8F04A" },
+  store:   { label: "Store",     labelEs: "Tienda",    emoji: "🛍", color: "#B8A0FF" },
+  meetup:  { label: "Meetup",    labelEs: "Meetup",    emoji: "🗓", color: "#4ECDC4" },
+  other:   { label: "Event",     labelEs: "Evento",    emoji: "✨", color: "#FFD700" },
 };
+
+// The controlled vocabulary behind each K-pop spot's category chip. Only the
+// chip label is translated — the spot's name and description stay as authored.
+const SPOT_TYPE_ES: Record<string, string> = {
+  "shopping": "Compras",
+  "district": "Barrio",
+  "record store": "Tienda de Discos",
+  "museum": "Museo",
+  "fan space": "Espacio Fan",
+  "store": "Tienda",
+  "cultural center": "Centro Cultural",
+};
+const spotTypeEs = (type: string): string => SPOT_TYPE_ES[type.toLowerCase()] ?? type;
 
 type CityEvent = {
   id: string; title: string; category: string; venue: string | null;
@@ -803,11 +817,18 @@ type CityEvent = {
   source: string | null; sourceUrl: string;
 };
 
-function fmtEventDate(e: CityEvent): string {
+function fmtEventDate(e: CityEvent, locale = "en-US"): string {
   if (e.startsAt) {
-    try { return new Date(e.startsAt).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" }); } catch { /* fall through */ }
+    try { return new Date(e.startsAt).toLocaleDateString(locale, { weekday: "short", month: "short", day: "numeric", year: "numeric" }); } catch { /* fall through */ }
   }
   return e.dateText ?? "";
+}
+
+// "12k+ members" localises cleanly; the "Active" placeholder some cities use for
+// an unknown member count needs a real phrase rather than a suffix swap.
+function membersLabel(members: string): { en: string; es: string } {
+  if (members.toLowerCase() === "active") return { en: "Active members", es: "Miembros activos" };
+  return { en: `${members} members`, es: `${members} miembros` };
 }
 
 export default async function CityPage({ params }: { params: Promise<{ city: string }> }) {
@@ -849,17 +870,20 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
       {/* Hero */}
       <section style={{ background: `linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%)`, color: "#fff", padding: "60px 24px 48px", borderBottom: `4px solid ${data.color}` }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <LangToggle align="flex-start" marginBottom={16} />
           <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 16 }}>
             <Link href="/" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Aegyo Arena</Link>
             {" / "}
-            <Link href="/cities" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Cities</Link>
+            <Link href="/cities" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}><T en="Cities" es="Ciudades" /></Link>
             {" / "}
             {data.name}
           </div>
           <div style={{ display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap" }}>
             <span style={{ fontSize: "3.5rem" }}>{data.flag}</span>
             <div>
-              <h1 style={{ fontSize: "2.8rem", fontWeight: 800, margin: "0 0 8px" }}>K-pop in {data.name}</h1>
+              <h1 style={{ fontSize: "2.8rem", fontWeight: 800, margin: "0 0 8px" }}>
+                <T en={`K-pop in ${data.name}`} es={`K-pop en ${data.name}`} />
+              </h1>
               <div style={{ display: "flex", gap: 16, fontSize: "0.82rem", color: "rgba(255,255,255,0.5)", flexWrap: "wrap" }}>
                 <span>{data.country}</span>
                 <span>{data.timezone}</span>
@@ -879,39 +903,43 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
             {/* Happening Soon — live scanned events for this city (synced with /events) */}
             {liveEvents.length > 0 && (
               <section style={{ marginBottom: 48 }}>
-                <div className="section-header">Happening Soon</div>
+                <div className="section-header"><T en="Happening Soon" es="Próximamente" /></div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
                   {liveEvents.map((e) => {
                     const c = EVENT_CAT[e.category] ?? EVENT_CAT.other;
                     const when = fmtEventDate(e);
+                    const whenEs = fmtEventDate(e, "es-MX");
                     return (
                       <div key={e.id} className="genius-card" style={{ padding: 18, display: "flex", flexDirection: "column", borderLeft: `3px solid ${c.color}` }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                          <span style={{ background: `${c.color}22`, color: "var(--ink)", fontSize: "0.62rem", fontWeight: 800, letterSpacing: "0.06em", padding: "3px 9px", borderRadius: 999, textTransform: "uppercase" }}>{c.emoji} {c.label}</span>
+                          <span style={{ background: `${c.color}22`, color: "var(--ink)", fontSize: "0.62rem", fontWeight: 800, letterSpacing: "0.06em", padding: "3px 9px", borderRadius: 999, textTransform: "uppercase" }}>{c.emoji} <T en={c.label} es={c.labelEs} /></span>
                         </div>
                         <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "var(--ink)", lineHeight: 1.35, marginBottom: 6 }}>{e.title}</div>
                         {(e.venue || when) && (
                           <div style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.68)", marginBottom: 8 }}>
-                            {e.venue && <span>📍 {e.venue}</span>}{e.venue && when ? " · " : ""}{when && <span>🗓 {when}</span>}
+                            {e.venue && <span>📍 {e.venue}</span>}{e.venue && when ? " · " : ""}{when && <span>🗓 <T en={when} es={whenEs} /></span>}
                           </div>
                         )}
                         {e.description && <div style={{ fontSize: "0.84rem", color: "rgba(255,255,255,0.82)", lineHeight: 1.55, marginBottom: 12, flex: 1 }}>{e.description}</div>}
                         <a href={e.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ marginTop: "auto", fontSize: "0.78rem", color: c.color, fontWeight: 800, textDecoration: "none" }}>
-                          Details{e.source ? ` on ${e.source}` : ""} →
+                          <T
+                            en={`Details${e.source ? ` on ${e.source}` : ""} →`}
+                            es={`Detalles${e.source ? ` en ${e.source}` : ""} →`}
+                          />
                         </a>
                       </div>
                     );
                   })}
                 </div>
                 <Link href="/events" style={{ display: "inline-block", marginTop: 14, fontSize: "0.8rem", color: "var(--sakura)", fontWeight: 700, textDecoration: "none" }}>
-                  See all fan events →
+                  <T en="See all fan events →" es="Ver todos los eventos de fans →" />
                 </Link>
               </section>
             )}
 
             {/* Upcoming Concerts */}
             <section style={{ marginBottom: 48 }}>
-              <div className="section-header">Upcoming Concerts</div>
+              <div className="section-header"><T en="Upcoming Concerts" es="Próximos Conciertos" /></div>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {data.concerts.map((c, i) => {
                   const artistSlug = concertArtistSlug(c.artist);
@@ -929,10 +957,10 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                       </div>
                       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                         <a href={c.ticketUrl} target="_blank" rel="noopener noreferrer" className="btn-yellow" style={{ fontSize: "0.72rem", textAlign: "center" }}>
-                          FIND TICKETS
+                          <T en="FIND TICKETS" es="BUSCAR BOLETOS" />
                         </a>
                         <a href={`https://www.songkick.com/search?query=${encodeURIComponent(c.artist + " " + data.name)}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.68)", textAlign: "center", textDecoration: "none" }}>
-                          Check Songkick →
+                          <T en="Check Songkick →" es="Ver en Songkick →" />
                         </a>
                       </div>
                     </div>
@@ -944,7 +972,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
 
             {/* Fan Meetups */}
             <section style={{ marginBottom: 48 }}>
-              <div className="section-header">Fan Meetups</div>
+              <div className="section-header"><T en="Fan Meetups" es="Encuentros de Fans" /></div>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {data.meetups.map((m, i) => (
                   <div key={i} className="genius-card" style={{ padding: 20 }}>
@@ -952,7 +980,9 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                     <div style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.68)", marginBottom: 4 }}>📍 {m.location} &middot; 🗓 {m.date}</div>
                     <div style={{ fontSize: "0.88rem", color: "rgba(255,255,255,0.82)", lineHeight: 1.6 }}>{m.description}</div>
                     <a href={m.url ?? `https://www.google.com/search?q=${encodeURIComponent(`${m.title} ${data.name} K-pop meetup`)}`} target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", marginTop: 10, fontSize: "0.78rem", color: "var(--sakura)", fontWeight: 700, textDecoration: "none" }}>
-                      {m.url ? "More info & socials →" : "Find this meetup →"}
+                      {m.url
+                        ? <T en="More info & socials →" es="Más info y redes →" />
+                        : <T en="Find this meetup →" es="Busca este meetup →" />}
                     </a>
                   </div>
                 ))}
@@ -961,13 +991,13 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
 
             {/* K-pop Spots */}
             <section>
-              <div className="section-header">K-pop Spots</div>
+              <div className="section-header"><T en="K-pop Spots" es="Lugares K-pop" /></div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
                 {data.kpopSpots.map((s, i) => (
                   <div key={i} className="genius-card" style={{ padding: 18 }}>
                     <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 8 }}>
                       <span style={{ background: "var(--genius-yellow)", color: "var(--on-accent)", fontSize: "0.65rem", fontWeight: 700, padding: "2px 8px", borderRadius: 999, whiteSpace: "nowrap", letterSpacing: "0.06em" }}>
-                        {s.type.toUpperCase()}
+                        <T en={s.type.toUpperCase()} es={spotTypeEs(s.type).toUpperCase()} />
                       </span>
                     </div>
                     <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--ink)", marginBottom: 6 }}>{s.name}</div>
@@ -983,7 +1013,9 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
             {/* Top leaderboard contributors based in this city */}
             {cityContributors.length > 0 && (
               <div style={{ marginBottom: 28 }}>
-                <div className="section-header">Top contributors in {data.name}</div>
+                <div className="section-header">
+                  <T en={`Top contributors in ${data.name}`} es={`Top de colaboradores en ${data.name}`} />
+                </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {cityContributors.map((c) => (
                     <Link key={c.slug} href={`/u/${c.slug}`} style={{ textDecoration: "none" }}>
@@ -992,7 +1024,9 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                         <img src={c.avatar} alt="" width={34} height={34} loading="lazy" style={{ width: 34, height: 34, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: `2px solid ${c.tierColor}`, background: c.tierColor }} />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "var(--ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.username}</div>
-                          <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.68)" }}>#{c.rank} · {c.points.toLocaleString("en-US")} pts</div>
+                          <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.68)" }}>
+                            #{c.rank} · <T en={`${c.points.toLocaleString("en-US")} pts`} es={`${c.points.toLocaleString("es-MX")} pts`} />
+                          </div>
                         </div>
                       </div>
                     </Link>
@@ -1003,7 +1037,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
 
             {/* Hotel Recommendations */}
             <div style={{ marginBottom: 28 }}>
-              <div className="section-header">Hotel Picks</div>
+              <div className="section-header"><T en="Hotel Picks" es="Hoteles Recomendados" /></div>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {data.hotels.map((h, i) => (
                   <div key={i} className="genius-card" style={{ padding: 16 }}>
@@ -1022,32 +1056,37 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
 
             {/* Communities */}
             <div style={{ marginBottom: 28 }}>
-              <div className="section-header">Online Communities</div>
+              <div className="section-header"><T en="Online Communities" es="Comunidades en Línea" /></div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {data.communities.map((c, i) => (
+                {data.communities.map((c, i) => {
+                  const members = membersLabel(c.members);
+                  return (
                   <a key={i} href={c.url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
                     <div className="genius-card" style={{ padding: "12px 14px", display: "flex", alignItems: "center", gap: 10 }}>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontWeight: 700, fontSize: "0.85rem", color: "var(--ink)" }}>{c.name}</div>
-                        <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.68)" }}>{c.platform} · {c.members} members</div>
+                        <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.68)" }}>
+                          {c.platform} · <T en={members.en} es={members.es} />
+                        </div>
                       </div>
                       <span style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.68)" }}>→</span>
                     </div>
                   </a>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
             {/* Quick links */}
             <div>
-              <div className="section-header">Find Events</div>
+              <div className="section-header"><T en="Find Events" es="Buscar Eventos" /></div>
               {[
                 { label: "Songkick", href: `https://www.songkick.com/search?query=kpop+${encodeURIComponent(data.name)}`, bg: "#f80046" },
                 { label: "Seatgeek", href: `https://seatgeek.com/search#?q=kpop+${encodeURIComponent(data.name)}`, bg: "#fa5252" },
               ].map(({ label, href, bg }) => (
                 <a key={label} href={href} target="_blank" rel="noopener noreferrer"
                   style={{ display: "block", background: bg, color: "#fff", textAlign: "center", fontWeight: 700, fontSize: "0.78rem", padding: "10px", borderRadius: 4, textDecoration: "none", marginBottom: 8, letterSpacing: "0.04em" }}>
-                  Search {label} for {data.name}
+                  <T en={`Search ${label} for ${data.name}`} es={`Busca ${data.name} en ${label}`} />
                 </a>
               ))}
             </div>
@@ -1058,7 +1097,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
       {/* Other cities */}
       <section style={{ background: "#f8f8f8", borderTop: "2px solid #000", padding: "40px 24px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div className="section-header">Explore Other Cities</div>
+          <div className="section-header"><T en="Explore Other Cities" es="Explora Otras Ciudades" /></div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             {Object.entries(CITY_DATA).filter(([slug]) => slug !== city).slice(0, 10).map(([slug, c]) => (
               <Link key={slug} href={`/cities/${slug}`} style={{ textDecoration: "none" }}>
@@ -1069,7 +1108,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
             ))}
             <Link href="/cities" style={{ textDecoration: "none" }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "var(--genius-yellow)", border: "1px solid var(--genius-yellow)", borderRadius: 999, padding: "5px 14px", fontSize: "0.82rem", fontWeight: 700, color: "var(--on-accent)" }}>
-                View all cities →
+                <T en="View all cities →" es="Ver todas las ciudades →" />
               </span>
             </Link>
           </div>

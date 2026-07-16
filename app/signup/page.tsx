@@ -4,13 +4,30 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { trackSignupPageView, trackAccountCreated } from "@/lib/conversions";
+import { T, LangToggle, useT } from "@/components/LangProvider";
+
+/**
+ * The signup API answers in English, so keep both languages on the error and let
+ * <T> pick at render time — that way the message follows the toggle even after
+ * it is on screen. Covers the strings app/api/auth/signup/route.ts can return
+ * plus our local fallbacks; anything unrecognised falls through in English.
+ */
+const ES_ERRORS: Record<string, string> = {
+  "Signup failed": "No se pudo crear la cuenta.",
+  "Something went wrong. Please try again.": "Algo salió mal. Inténtalo de nuevo.",
+  "Valid email required": "Ingresa un correo válido.",
+  "Password must be at least 6 characters": "La contraseña debe tener al menos 6 caracteres.",
+  "An account with this email already exists": "Ya existe una cuenta con este correo.",
+};
+const err = (en: string) => ({ en, es: ES_ERRORS[en] ?? en });
 
 export default function SignupPage() {
   const router = useRouter();
+  const t = useT();
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<{ en: string; es: string } | null>(null);
   const [loading, setLoading] = useState(false);
 
   // Pageview conversion (GA4 / Reddit / TikTok / Taboola).
@@ -18,7 +35,7 @@ export default function SignupPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError("");
+    setError(null);
     setLoading(true);
     try {
       const res = await fetch("/api/auth/signup", {
@@ -27,12 +44,12 @@ export default function SignupPage() {
         body: JSON.stringify({ email, password, displayName }),
       });
       const data = await res.json();
-      if (!res.ok) { setError(data.error ?? "Signup failed"); return; }
+      if (!res.ok) { setError(err(data.error ?? "Signup failed")); return; }
       trackAccountCreated();
       router.push("/");
       router.refresh();
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError(err("Something went wrong. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -44,6 +61,8 @@ export default function SignupPage() {
   return (
     <main style={{ minHeight: "82vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "48px 24px" }}>
       <div style={{ width: "100%", maxWidth: 440 }}>
+        <LangToggle align="center" marginBottom={16} />
+
         {/* Card */}
         <div style={{ background: "var(--bg-card)", border: "8px solid #fff", borderRadius: 18, padding: "30px 30px 34px", boxShadow: "0 18px 50px rgba(0,0,0,0.35)" }}>
           {/* Fun welcome GIF */}
@@ -53,47 +72,52 @@ export default function SignupPage() {
           </div>
 
           <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <h1 style={{ fontFamily: "var(--serif)", fontSize: "2rem", fontWeight: 700, color: "var(--ink)", margin: "0 0 6px" }}>Join the fandom</h1>
-            <p style={{ color: "var(--ink-dim)", fontSize: "0.92rem", margin: 0 }}>Save artists, comment on songs, suggest edits</p>
+            <h1 style={{ fontFamily: "var(--serif)", fontSize: "2rem", fontWeight: 700, color: "var(--ink)", margin: "0 0 6px" }}>
+              <T en="Join the fandom" es="Únete al fandom" />
+            </h1>
+            <p style={{ color: "var(--ink-dim)", fontSize: "0.92rem", margin: 0 }}>
+              <T en="Save artists, comment on songs, suggest edits" es="Guarda artistas, comenta canciones, sugiere ediciones" />
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 15 }}>
             {error && (
               <div style={{ background: "rgba(255,90,90,0.1)", border: "1px solid rgba(255,90,90,0.35)", borderRadius: 9, padding: "10px 14px", fontSize: "0.85rem", color: "#ff9a9a" }}>
-                {error}
+                <T en={error.en} es={error.es} />
               </div>
             )}
 
             <div>
-              <label style={labelStyle}>Display Name</label>
-              <input type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your fan name" style={field} />
+              <label style={labelStyle}><T en="Display Name" es="Nombre visible" /></label>
+              <input type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder={t("Your fan name", "Tu nombre de fan")} style={field} />
             </div>
 
             <div>
-              <label style={labelStyle}>Email</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@example.com" style={field} />
+              <label style={labelStyle}><T en="Email" es="Correo" /></label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder={t("you@example.com", "tu@ejemplo.com")} style={field} />
             </div>
 
             <div>
-              <label style={labelStyle}>Password</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} placeholder="Min. 6 characters" style={field} />
+              <label style={labelStyle}><T en="Password" es="Contraseña" /></label>
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} placeholder={t("Min. 6 characters", "Mín. 6 caracteres")} style={field} />
             </div>
 
             <button type="submit" disabled={loading} className="btn-yellow" style={{ width: "100%", padding: "13px", fontSize: "0.85rem", marginTop: 4, opacity: loading ? 0.6 : 1 }}>
-              {loading ? "Creating account…" : "CREATE ACCOUNT"}
+              {loading ? <T en="Creating account…" es="Creando cuenta…" /> : <T en="CREATE ACCOUNT" es="CREAR CUENTA" />}
             </button>
           </form>
         </div>
 
         <div style={{ textAlign: "center", marginTop: 22, fontSize: "0.88rem", color: "var(--ink-dim)" }}>
-          Already a member?{" "}
+          <T en="Already a member?" es="¿Ya tienes cuenta?" />{" "}
           <Link href="/login" style={{ color: "var(--sakura)", fontWeight: 700, textDecoration: "none" }}>
-            Sign in
+            <T en="Sign in" es="Inicia sesión" />
           </Link>
         </div>
 
         <div style={{ marginTop: 18, fontSize: "0.72rem", color: "var(--ink-faint)", textAlign: "center", lineHeight: 1.6 }}>
-          By creating an account you agree this is a fan-made site.<br />No personal data is sold or shared.
+          <T en="By creating an account you agree this is a fan-made site." es="Al crear una cuenta aceptas que este es un sitio hecho por fans." /><br />
+          <T en="No personal data is sold or shared." es="No vendemos ni compartimos datos personales." />
         </div>
       </div>
     </main>

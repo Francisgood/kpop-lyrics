@@ -4,9 +4,12 @@ import { useState } from "react";
 import Link from "next/link";
 import type { Contributor, City } from "@/app/leaderboard/data";
 import UserAvatar from "@/components/UserAvatar";
+import { useLang, LangToggle } from "@/components/LangProvider";
 
-const TABS: { key: "All" | City; label: string; flag: string }[] = [
-  { key: "All", label: "All Cities", flag: "🌐" },
+// `key` drives the city filter and must stay canonical. City names are proper
+// nouns and are not translated — only the "All Cities" tab has a Spanish label.
+const TABS: { key: "All" | City; label: string; labelEs?: string; flag: string }[] = [
+  { key: "All", label: "All Cities", labelEs: "Todas las Ciudades", flag: "🌐" },
   { key: "Mexico City", label: "Mexico City", flag: "🇲🇽" },
   { key: "New York", label: "New York", flag: "🇺🇸" },
   { key: "Paris", label: "Paris", flag: "🇫🇷" },
@@ -30,6 +33,8 @@ function Stat({ label, value, accent }: { label: string; value: string; accent?:
 
 export default function LeaderboardClient({ contributors }: { contributors: Contributor[] }) {
   const [city, setCity] = useState<"All" | City>("All");
+  const { lang } = useLang();
+  const es = lang === "es";
 
   const ranked = (city === "All" ? contributors : contributors.filter((c) => c.city === city))
     .slice()
@@ -51,14 +56,25 @@ export default function LeaderboardClient({ contributors }: { contributors: Cont
       {/* Header */}
       <section style={{ background: "var(--bg-card)", borderBottom: "1px solid var(--border)", padding: "48px 24px 34px" }}>
         <div style={{ maxWidth: 1080, margin: "0 auto" }}>
-          <div style={{ fontFamily: "var(--mono)", fontSize: "0.72rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 12 }}>Community Leaderboard</div>
-          <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(2.2rem,6vw,3.2rem)", fontWeight: 700, color: "var(--ink)", margin: "0 0 12px", lineHeight: 1.05 }}>Top Contributors</h1>
+          <LangToggle align="flex-start" marginBottom={16} />
+          <div style={{ fontFamily: "var(--mono)", fontSize: "0.72rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 12 }}>
+            {es ? "Ranking de la Comunidad" : "Community Leaderboard"}
+          </div>
+          <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(2.2rem,6vw,3.2rem)", fontWeight: 700, color: "var(--ink)", margin: "0 0 12px", lineHeight: 1.05 }}>
+            {es ? "Mejores Colaboradores" : "Top Contributors"}
+          </h1>
           <p style={{ color: "var(--ink-dim)", fontSize: "1.05rem", lineHeight: 1.6, maxWidth: 580, margin: 0 }}>
-            The fans shaping the wiki — ranked by points earned from annotations, edits, and community love.
+            {es
+              ? "Los fans que le dan forma a la wiki — rankeados por los puntos que ganan con anotaciones, ediciones y amor de la comunidad."
+              : "The fans shaping the wiki — ranked by points earned from annotations, edits, and community love."}
           </p>
           <div style={{ display: "flex", gap: 32, marginTop: 24, flexWrap: "wrap" }}>
-            {([["Players", fmt(totals.players)], ["Total Points", fmt(totals.points)], ["Annotations", fmt(totals.annotations)]] as const).map(([label, val]) => (
-              <div key={label}>
+            {[
+              { key: "players", label: es ? "Jugadores" : "Players", val: fmt(totals.players) },
+              { key: "points", label: es ? "Puntos Totales" : "Total Points", val: fmt(totals.points) },
+              { key: "annotations", label: es ? "Anotaciones" : "Annotations", val: fmt(totals.annotations) },
+            ].map(({ key, label, val }) => (
+              <div key={key}>
                 <div style={{ fontFamily: "var(--serif)", fontSize: "1.6rem", fontWeight: 700, color: "var(--ink)" }}>{val}</div>
                 <div style={{ fontSize: "0.68rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--ink-faint)" }}>{label}</div>
               </div>
@@ -78,7 +94,7 @@ export default function LeaderboardClient({ contributors }: { contributors: Cont
                   border: active ? "1px solid var(--sakura)" : "1px solid var(--border)",
                   background: active ? "var(--sakura)" : "var(--bg-card)",
                   color: active ? "var(--on-accent)" : "var(--ink-dim)", fontWeight: 700, fontSize: "0.85rem" }}>
-                <span>{t.flag}</span>{t.label}
+                <span>{t.flag}</span>{es && t.labelEs ? t.labelEs : t.label}
               </button>
             );
           })}
@@ -99,10 +115,10 @@ export default function LeaderboardClient({ contributors }: { contributors: Cont
                     <div style={{ fontWeight: 800, color: "var(--ink)", fontSize: first ? "clamp(0.8rem,2.6vw,1rem)" : "clamp(0.72rem,2.3vw,0.88rem)", marginBottom: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.username}</div>
                     <div style={{ fontSize: "0.74rem", color: "var(--ink-faint)", marginBottom: 10 }}>{c.flag} {c.city}</div>
                     <div style={{ fontFamily: "var(--serif)", fontWeight: 800, fontSize: first ? "clamp(1.25rem,5vw,1.7rem)" : "clamp(1.05rem,4vw,1.35rem)", color: "var(--sakura)", lineHeight: 1 }}>{fmt(c.points)}</div>
-                    <div style={{ fontSize: "0.62rem", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--ink-faint)", marginBottom: 10 }}>points</div>
+                    <div style={{ fontSize: "0.62rem", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--ink-faint)", marginBottom: 10 }}>{es ? "puntos" : "points"}</div>
                     <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "clamp(4px,1.5vw,12px)", fontSize: "clamp(0.62rem,2vw,0.72rem)", color: "var(--ink-dim)" }}>
-                      <span><strong style={{ color: "var(--ink)" }}>{c.annotations}</strong> ann.</span>
-                      <span><strong style={{ color: "var(--ink)" }}>{fmt(c.followers)}</strong> followers</span>
+                      <span><strong style={{ color: "var(--ink)" }}>{c.annotations}</strong> {es ? "anot." : "ann."}</span>
+                      <span><strong style={{ color: "var(--ink)" }}>{fmt(c.followers)}</strong> {es ? "seguidores" : "followers"}</span>
                     </div>
                   </div>
                 </Link>
@@ -123,9 +139,9 @@ export default function LeaderboardClient({ contributors }: { contributors: Cont
                 <span style={{ display: "block", fontSize: "0.76rem", color: "var(--ink-faint)" }}>{c.flag} {c.city} · {c.tier}</span>
               </span>
               <span style={{ display: "flex", gap: 20, alignItems: "center", marginLeft: "auto" }}>
-                <Stat label="Annotations" value={fmt(c.annotations)} />
-                <Stat label="Followers" value={fmt(c.followers)} />
-                <Stat label="Points" value={fmt(c.points)} accent />
+                <Stat label={es ? "Anotaciones" : "Annotations"} value={fmt(c.annotations)} />
+                <Stat label={es ? "Seguidores" : "Followers"} value={fmt(c.followers)} />
+                <Stat label={es ? "Puntos" : "Points"} value={fmt(c.points)} accent />
               </span>
             </Link>
           ))}

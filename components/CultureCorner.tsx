@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CULTURE, TOPIC_ORDER, type CultureTopic, type Embed } from "@/app/culture/content";
+import { useLang, youtubeWithLang } from "@/components/LangProvider";
 
 const ACCENT: Record<CultureTopic, string> = {
   dance: "linear-gradient(135deg,#ff6fa8,#b14cff)",
@@ -12,28 +13,33 @@ const ACCENT: Record<CultureTopic, string> = {
 };
 
 function EmbedView({ e }: { e: Embed }) {
+  const { lang } = useLang();
+  const es = lang === "es";
   if (e.kind === "youtube")
     return (
       <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, borderRadius: 10, overflow: "hidden", background: "#000" }}>
-        <iframe src={`https://www.youtube.com/embed/${e.id}`} title="culture video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0 }} />
+        {/* youtubeWithLang turns on Spanish CC + player UI when the site is in ES. */}
+        <iframe src={youtubeWithLang(`https://www.youtube.com/embed/${e.id}`, lang)} title="culture video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0 }} />
       </div>
     );
   if (e.kind === "instagram")
     return (
       <blockquote className="instagram-media" data-instgrm-permalink={e.permalink} data-instgrm-version="14" style={{ background: "#fff", border: 0, borderRadius: 10, margin: 0, padding: 0, width: "100%", minWidth: 0, maxWidth: "100%" }}>
-        <a href={e.permalink} target="_blank" rel="noopener noreferrer" style={{ display: "block", padding: 14, color: "#888", fontSize: "0.82rem" }}>View on Instagram</a>
+        <a href={e.permalink} target="_blank" rel="noopener noreferrer" style={{ display: "block", padding: 14, color: "#888", fontSize: "0.82rem" }}>{es ? "Ver en Instagram" : "View on Instagram"}</a>
       </blockquote>
     );
   return (
     <a href={e.url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 160, borderRadius: 10, background: "linear-gradient(135deg,#010101,#1b1b22)", color: "#fff", padding: 20, textAlign: "center" }}>
       <span style={{ fontSize: "2rem" }}>🎵</span>
-      <span style={{ fontWeight: 800 }}>Watch on TikTok</span>
-      <span style={{ fontSize: "0.74rem", color: "#9a9aa6" }}>tap to play ↗</span>
+      <span style={{ fontWeight: 800 }}>{es ? "Ver en TikTok" : "Watch on TikTok"}</span>
+      <span style={{ fontSize: "0.74rem", color: "#9a9aa6" }}>{es ? "toca para reproducir ↗" : "tap to play ↗"}</span>
     </a>
   );
 }
 
 export default function CultureCorner() {
+  const { lang } = useLang();
+  const es = lang === "es";
   const [open, setOpen] = useState<CultureTopic | null>(null);
 
   // (Re)process Instagram embeds whenever a modal with IG content opens.
@@ -66,11 +72,14 @@ export default function CultureCorner() {
   return (
     <section style={{ marginTop: 56, paddingTop: 40, borderTop: "2px solid #000" }}>
       <div style={{ display: "flex", alignItems: "baseline", gap: 16, marginBottom: 6 }}>
+        {/* "Culture Vulture" is the feature's brand name — kept in both languages. */}
         <div className="section-header" style={{ margin: 0 }}>Culture Vulture</div>
-        <span style={{ fontSize: "0.68rem", background: "#000", color: "#FFFF64", padding: "2px 9px", borderRadius: 999, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}>Watch &amp; Explore</span>
+        <span style={{ fontSize: "0.68rem", background: "#000", color: "#FFFF64", padding: "2px 9px", borderRadius: 999, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}>{es ? "Ver y Explorar" : "Watch & Explore"}</span>
       </div>
       <p style={{ fontSize: "0.82rem", color: "var(--genius-gray)", marginBottom: 24, lineHeight: 1.6 }}>
-        More from the fandom — dance, fashion, beauty &amp; mukbang. Tap a category to keep watching.
+        {es
+          ? "Más del fandom — baile, moda, belleza y mukbang. Toca una categoría para seguir viendo."
+          : "More from the fandom — dance, fashion, beauty & mukbang. Tap a category to keep watching."}
       </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px,100%), 1fr))", gap: 16 }}>
@@ -89,7 +98,9 @@ export default function CultureCorner() {
                 <div style={{ fontWeight: 800, fontSize: "1.05rem" }}>{m.title}</div>
                 <div style={{ fontSize: "0.76rem", opacity: 0.9, marginTop: 2 }}>{m.tagline}</div>
                 <div style={{ marginTop: "auto", paddingTop: 12, fontSize: "0.74rem", fontWeight: 700 }}>
-                  {count > 0 ? `${count} clip${count > 1 ? "s" : ""} · Explore →` : "Coming soon"}
+                  {count > 0
+                    ? `${count} clip${count > 1 ? "s" : ""} · ${es ? "Explorar" : "Explore"} →`
+                    : (es ? "Próximamente" : "Coming soon")}
                 </div>
               </div>
             </button>
@@ -99,8 +110,14 @@ export default function CultureCorner() {
 
       {/* Future: creator uploads (age-gated) */}
       <div style={{ marginTop: 18, padding: "12px 16px", background: "#faf7fb", border: "1px solid #f0e6ef", borderRadius: 8, fontSize: "0.78rem", color: "#7a5c72", lineHeight: 1.6 }}>
-        <strong>Coming soon:</strong> post your own culture clips. To keep it safe, creators verify they&rsquo;re 18+ (or their country&rsquo;s minimum age) with a quick{" "}
-        <a href="https://didit.me/products/id-verification/" target="_blank" rel="noopener noreferrer" style={{ color: "#ff6fa8", fontWeight: 700, textDecoration: "none" }}>didit.me ID check</a> sent to your email.
+        <strong>{es ? "Próximamente:" : "Coming soon:"}</strong>{" "}
+        {es ? (
+          <>publica tus propios clips de cultura. Para mantenerlo seguro, los creadores verifican que son mayores de 18 años (o la edad mínima de su país) con una rápida{" "}
+          <a href="https://didit.me/products/id-verification/" target="_blank" rel="noopener noreferrer" style={{ color: "#ff6fa8", fontWeight: 700, textDecoration: "none" }}>verificación de identidad de didit.me</a> que llega a tu correo.</>
+        ) : (
+          <>post your own culture clips. To keep it safe, creators verify they&rsquo;re 18+ (or their country&rsquo;s minimum age) with a quick{" "}
+          <a href="https://didit.me/products/id-verification/" target="_blank" rel="noopener noreferrer" style={{ color: "#ff6fa8", fontWeight: 700, textDecoration: "none" }}>didit.me ID check</a> sent to your email.</>
+        )}
       </div>
 
       {/* Modal */}
@@ -112,7 +129,7 @@ export default function CultureCorner() {
           <div onClick={(ev) => ev.stopPropagation()} style={{ width: "min(560px, 96vw)", background: "var(--bg-card)", border: "1px solid var(--border-strong)", borderRadius: 18, padding: "20px 22px 26px", boxShadow: "0 24px 70px rgba(0,0,0,0.5)" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
               <span style={{ fontFamily: "var(--serif)", fontSize: "1.3rem", fontWeight: 700, color: "var(--ink)" }}>{active.emoji} {active.title}</span>
-              <button type="button" onClick={() => setOpen(null)} aria-label="Close" style={{ background: "none", border: "none", color: "var(--ink-dim)", fontSize: "1.7rem", lineHeight: 1, cursor: "pointer" }}>×</button>
+              <button type="button" onClick={() => setOpen(null)} aria-label={es ? "Cerrar" : "Close"} style={{ background: "none", border: "none", color: "var(--ink-dim)", fontSize: "1.7rem", lineHeight: 1, cursor: "pointer" }}>×</button>
             </div>
             <div style={{ display: "grid", gap: 16 }}>
               {preview.map((e, i) => (
@@ -122,7 +139,7 @@ export default function CultureCorner() {
               ))}
             </div>
             <Link href={`/culture/${active.key}`} style={{ display: "block", textAlign: "center", marginTop: 18, padding: "11px", borderRadius: 100, background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.85rem", textDecoration: "none" }}>
-              See all {active.title} on Culture Vulture →
+              {es ? <>Ver todo {active.title} en Culture Vulture →</> : <>See all {active.title} on Culture Vulture →</>}
             </Link>
           </div>
         </div>

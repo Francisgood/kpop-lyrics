@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import SlangDefinitions from "@/components/SlangDefinitions";
+import { T, LangToggle } from "@/components/LangProvider";
 
 export const revalidate = 86400;
 
@@ -32,19 +33,25 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
       {/* Term Header */}
       <section style={{ background: "#000", color: "#fff", padding: "60px 24px 40px" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <LangToggle align="flex-start" marginBottom={16} />
           <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 20 }}>
             <Link href="/" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Aegyo Arena</Link>
             {" / "}
-            <Link href="/korean-slang" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Korean Slang</Link>
+            <Link href="/korean-slang" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>
+              <T en="Korean Slang" es="Jerga Coreana" />
+            </Link>
             {" / "}
             {term.term}
           </div>
           <div style={{ fontSize: "0.7rem", color: "var(--genius-yellow)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>
-            Korean Slang
+            <T en="Korean Slang" es="Jerga Coreana" />
           </div>
           <h1 style={{ fontSize: "3rem", fontWeight: 800, margin: "0 0 8px" }}>{term.term}</h1>
           <div style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.9rem" }}>
-            {term.definitions.length} definition{term.definitions.length !== 1 ? "s" : ""}
+            <T
+              en={`${term.definitions.length} definition${term.definitions.length !== 1 ? "s" : ""}`}
+              es={`${term.definitions.length} ${term.definitions.length !== 1 ? "definiciones" : "definición"}`}
+            />
           </div>
         </div>
       </section>
@@ -59,7 +66,7 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
         {/* Songs whose lyrics use this slang term */}
         {heardInSongs.length > 0 && (
           <section style={{ marginTop: 40 }}>
-            <div className="section-header">Heard in these songs</div>
+            <div className="section-header"><T en="Heard in these songs" es="Se escucha en estas canciones" /></div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
               {heardInSongs.map((song) => (
                 <Link key={song.id} href={`/songs/${song.slug}`} style={{ textDecoration: "none" }}>
@@ -77,7 +84,7 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
 
         <div style={{ textAlign: "center", marginTop: 32 }}>
           <Link href="/korean-slang" style={{ color: "var(--genius-gray)", textDecoration: "none", fontSize: "0.9rem" }}>
-            ← Back to Korean Slang
+            <T en="← Back to Korean Slang" es="← Volver a Jerga Coreana" />
           </Link>
         </div>
       </div>

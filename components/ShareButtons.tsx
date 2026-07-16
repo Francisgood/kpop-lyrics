@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useLang } from "@/components/LangProvider";
 
 interface ShareButtonsProps {
   title: string;
@@ -11,11 +12,15 @@ interface ShareButtonsProps {
 const BASE_URL = "https://kpop-lyrics-production.up.railway.app";
 
 export default function ShareButtons({ title, artist, slug, firstKoLine }: ShareButtonsProps) {
+  const { lang } = useLang();
+  const es = lang === "es";
   const [copied, setCopied] = useState(false);
 
   const url       = `${BASE_URL}/songs/${slug}`;
   const hashtags  = `kpop ${artist.replace(/[\s()]/g, "")} AegyoAnnotate`;
-  const tweetText = `🎵 "${title}" by ${artist}${firstKoLine ? `\n\n${firstKoLine}` : ""}\n\nKorean lyrics, translations & K-pop slang explained 👇`;
+  const tweetText = es
+    ? `🎵 "${title}" de ${artist}${firstKoLine ? `\n\n${firstKoLine}` : ""}\n\nLetras en coreano, traducciones y jerga K-pop explicada 👇`
+    : `🎵 "${title}" by ${artist}${firstKoLine ? `\n\n${firstKoLine}` : ""}\n\nKorean lyrics, translations & K-pop slang explained 👇`;
 
   const twitterHref =
     `https://twitter.com/intent/tweet` +
@@ -61,7 +66,7 @@ export default function ShareButtons({ title, artist, slug, firstKoLine }: Share
   return (
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
       <span style={{ fontSize: "0.7rem", color: "var(--genius-gray)", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700 }}>
-        Share
+        {es ? "Compartir" : "Share"}
       </span>
       <a
         href={twitterHref}
@@ -69,13 +74,13 @@ export default function ShareButtons({ title, artist, slug, firstKoLine }: Share
         rel="noopener noreferrer"
         style={{ ...pill, background: "#000", color: "#fff", border: "1px solid #000" }}
       >
-        𝕏 Post
+        𝕏 {es ? "Publicar" : "Post"}
       </a>
       <button
         onClick={copyLink}
         style={{ ...pill, background: copied ? "#FFFF64" : "#fff", border: "1px solid var(--genius-border)" }}
       >
-        {copied ? "✓ Copied!" : "🔗 Copy link"}
+        {copied ? (es ? "✓ ¡Copiado!" : "✓ Copied!") : (es ? "🔗 Copiar enlace" : "🔗 Copy link")}
       </button>
     </div>
   );

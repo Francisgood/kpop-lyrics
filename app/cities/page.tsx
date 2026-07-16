@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { T, LangToggle } from "@/components/LangProvider";
 
 export const metadata: Metadata = {
   title: "K-pop City Guides — Aegyo Arena",
@@ -53,16 +54,22 @@ export default function CitiesPage() {
     <main>
       <section style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%)", color: "#fff", padding: "60px 24px 48px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <LangToggle align="flex-start" marginBottom={16} />
           <div style={{ fontSize: "0.7rem", color: "var(--genius-yellow)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>
-            Community Discovery
+            <T en="Community Discovery" es="Descubre la Comunidad" />
           </div>
-          <h1 style={{ fontSize: "2.8rem", fontWeight: 800, margin: "0 0 12px" }}>K-pop Around the World</h1>
+          <h1 style={{ fontSize: "2.8rem", fontWeight: 800, margin: "0 0 12px" }}>
+            <T en="K-pop Around the World" es="K-pop en Todo el Mundo" />
+          </h1>
           <p style={{ color: "rgba(255,255,255,0.6)", maxWidth: 600, fontSize: "0.95rem", lineHeight: 1.6 }}>
-            Discover upcoming concerts, fan meetups, and local K-pop communities in 33 cities across 6 continents — with a growing focus on Latin America.
+            <T
+              en={`Discover upcoming concerts, fan meetups, and local K-pop communities in ${CITIES.length} cities across 6 continents — with a growing focus on Latin America.`}
+              es={`Descubre próximos conciertos, encuentros de fans y comunidades locales de K-pop en ${CITIES.length} ciudades de 6 continentes — con un enfoque cada vez mayor en América Latina.`}
+            />
           </p>
           <div style={{ marginTop: 18 }}>
             <Link href="/cities/meetups" style={{ color: "var(--genius-yellow)", fontWeight: 700, textDecoration: "none", fontSize: "0.9rem" }}>
-              🗓 Find a fan meetup near you →
+              <T en="🗓 Find a fan meetup near you →" es="🗓 Encuentra un meetup cerca de ti →" />
             </Link>
           </div>
         </div>
@@ -75,7 +82,9 @@ export default function CitiesPage() {
               <div className="genius-card" style={{ padding: "22px 20px", borderLeft: `4px solid ${city.color}` }}>
                 <div style={{ fontSize: "1.8rem", marginBottom: 8 }}>{city.flag}</div>
                 <div style={{ fontWeight: 800, fontSize: "1rem", color: "var(--ink)" }}>{city.name}</div>
-                <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.72)", marginTop: 4 }}>{city.country} · View events</div>
+                <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.72)", marginTop: 4 }}>
+                  {city.country} · <T en="View events" es="Ver eventos" />
+                </div>
               </div>
             </Link>
           ))}
