@@ -4,6 +4,7 @@ import "./globals.css";
 import Link from "next/link";
 import FooterNewsletter from "@/components/FooterNewsletter";
 import HamburgerMenu from "@/components/HamburgerMenu";
+import { LangProvider } from "@/components/LangProvider";
 import { getSession } from "@/lib/auth";
 import Script from "next/script";
 
@@ -22,6 +23,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body>
+        {/* One EN/ES language state for the whole site (persisted; ES-default for es-* browsers). */}
+        <LangProvider>
         <nav className="genius-nav" style={{ position: "sticky", top: 0, zIndex: 100 }}>
           {/* Primary row: logo + search + hamburger */}
           <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", gap: 20, height: 64 }}>
@@ -161,6 +164,7 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
   ttq.page();
 }(window, document, 'ttq');`}
         </Script>
+        </LangProvider>
       </body>
     </html>
   );

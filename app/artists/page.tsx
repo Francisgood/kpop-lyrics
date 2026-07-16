@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import { T, LangToggle } from "@/components/LangProvider";
 
 export const revalidate = 3600;
 
@@ -46,25 +47,29 @@ export default async function ArtistsPage() {
     <main>
       <section style={{ background: "#000", color: "#fff", padding: "60px 24px 40px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <LangToggle align="flex-start" marginBottom={16} />
           <div style={{ fontSize: "0.7rem", color: "var(--genius-yellow)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>
-            Artist Directory
+            <T en="Artist Directory" es="Directorio de Artistas" />
           </div>
-          <h1 style={{ fontSize: "2.8rem", fontWeight: 800, margin: "0 0 12px" }}>Artists</h1>
+          <h1 style={{ fontSize: "2.8rem", fontWeight: 800, margin: "0 0 12px" }}><T en="Artists" es="Artistas" /></h1>
           <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.95rem" }}>
-            {total} artists &middot; {groups.length} K-pop groups &middot; {soloists.length} soloists &middot; {collabs.length} western collaborators
+            <T
+              en={`${total} artists · ${groups.length} K-pop groups · ${soloists.length} soloists · ${collabs.length} western collaborators`}
+              es={`${total} artistas · ${groups.length} grupos de K-pop · ${soloists.length} solistas · ${collabs.length} colaboradores occidentales`}
+            />
           </p>
           <div style={{ marginTop: 20, display: "flex", gap: 12 }}>
             <Link href="/collabs" style={{ background: "var(--genius-yellow)", color: "#000", fontWeight: 700, fontSize: "0.78rem", padding: "8px 18px", borderRadius: 4, textDecoration: "none", letterSpacing: "0.06em", textTransform: "uppercase" }}>
-              Collab Network
+              <T en="Collab Network" es="Red de Colaboraciones" />
             </Link>
             <Link href="/korean-slang" style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.7)", fontWeight: 600, fontSize: "0.78rem", padding: "8px 18px", borderRadius: 4, textDecoration: "none" }}>
-              K-pop Dictionary
+              <T en="K-pop Dictionary" es="Diccionario K-pop" />
             </Link>
             <Link href="/cities" style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.7)", fontWeight: 600, fontSize: "0.78rem", padding: "8px 18px", borderRadius: 4, textDecoration: "none" }}>
-              Cities
+              <T en="Cities" es="Ciudades" />
             </Link>
             <Link href="/culture/dance" style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.7)", fontWeight: 600, fontSize: "0.78rem", padding: "8px 18px", borderRadius: 4, textDecoration: "none" }}>
-              Culture
+              <T en="Culture" es="Cultura" />
             </Link>
           </div>
         </div>
@@ -74,7 +79,7 @@ export default async function ArtistsPage() {
 
         {/* Groups */}
         <section style={{ marginBottom: 56 }}>
-          <div className="section-header">K-pop Groups</div>
+          <div className="section-header"><T en="K-pop Groups" es="Grupos de K-pop" /></div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 }}>
             {groups.map((group) => (
               <Link key={group.id} href={`/artists/${group.slug}`} style={{ textDecoration: "none" }}>
@@ -93,15 +98,15 @@ export default async function ArtistsPage() {
                         {group.label?.name} &middot; Debut {group.debutYear}
                       </div>
                       <div style={{ display: "flex", gap: 10, marginTop: 8, fontSize: "0.75rem", color: "var(--genius-gray)" }}>
-                        <span>{group.groupOf.length} members</span>
-                        <span>{group.albums.length} albums</span>
-                        <span>{totalSongs(group)} songs</span>
+                        <span><T en={`${group.groupOf.length} members`} es={`${group.groupOf.length} miembros`} /></span>
+                        <span><T en={`${group.albums.length} albums`} es={`${group.albums.length} álbumes`} /></span>
+                        <span><T en={`${totalSongs(group)} songs`} es={`${totalSongs(group)} canciones`} /></span>
                       </div>
                     </div>
                   </div>
                   {group.albums[0] && (
                     <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--genius-border)", fontSize: "0.78rem", color: "var(--genius-gray)" }}>
-                      Latest: <span style={{ color: "#ff6fa8", fontWeight: 600 }}>{group.albums[0].title}</span> ({group.albums[0].releaseYear})
+                      <T en="Latest:" es="Último:" /> <span style={{ color: "#ff6fa8", fontWeight: 600 }}>{group.albums[0].title}</span> ({group.albums[0].releaseYear})
                     </div>
                   )}
                 </div>
@@ -113,7 +118,7 @@ export default async function ArtistsPage() {
         {/* Soloists */}
         {soloists.length > 0 && (
           <section style={{ marginBottom: 56 }}>
-            <div className="section-header">Solo Artists</div>
+            <div className="section-header"><T en="Solo Artists" es="Artistas Solistas" /></div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 }}>
               {soloists.map((artist) => (
                 <Link key={artist.id} href={`/artists/${artist.slug}`} style={{ textDecoration: "none" }}>
@@ -157,7 +162,7 @@ export default async function ArtistsPage() {
         {collabs.length > 0 && (
           <section>
             <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 6 }}>
-              <div className="section-header" style={{ margin: 0 }}>Western Artists &amp; Collaborators</div>
+              <div className="section-header" style={{ margin: 0 }}><T en="Western Artists & Collaborators" es="Artistas Occidentales y Colaboradores" /></div>
               <span style={{ fontSize: "0.65rem", background: "#e879f9", color: "#000", padding: "2px 8px", borderRadius: 999, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase" }}>
                 CROSSOVER
               </span>

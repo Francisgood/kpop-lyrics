@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useLang, LangToggle, type Lang } from "@/components/LangProvider";
 
 export type NewsRow = {
   id: string; headline: string; subheadline: string | null; body: string | null;
@@ -10,8 +11,6 @@ export type NewsRow = {
   artistSlug: string | null; artistName: string | null; sourceName: string | null; sourceUrl: string;
   readMins: number; publishedAt: string | null;
 };
-
-type Lang = "en" | "es";
 
 // Category pill color + per-language label.
 const CAT: Record<string, { color: string; en: string; es: string }> = {
@@ -174,27 +173,13 @@ function ArticleCard({ p, featured, c }: { p: NewsRow; featured?: boolean; c: Co
 }
 
 export default function NewsFeed({ initial, initialOffset, initialHasMore }: { initial: NewsRow[]; initialOffset: number; initialHasMore: boolean }) {
-  const [lang, setLang] = useState<Lang>("en");
+  const { lang } = useLang(); // site-wide EN/ES state (provider lives in the root layout)
   const [posts, setPosts] = useState<NewsRow[]>(initial);
   const [offset, setOffset] = useState(initialOffset);
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [loading, setLoading] = useState(false);
   const sentinel = useRef<HTMLDivElement>(null);
   const c = COPY[lang];
-
-  // Language: saved preference wins, otherwise default Spanish browsers to ES.
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("aegyo-lang");
-      if (saved === "en" || saved === "es") setLang(saved);
-      else if ((navigator.language || "").toLowerCase().startsWith("es")) setLang("es");
-    } catch { /* localStorage/navigator unavailable */ }
-  }, []);
-
-  function switchLang(l: Lang) {
-    setLang(l);
-    try { localStorage.setItem("aegyo-lang", l); } catch { /* ignore */ }
-  }
 
   const loadMore = useCallback(async () => {
     if (loading || !hasMore) return;
@@ -219,20 +204,6 @@ export default function NewsFeed({ initial, initialOffset, initialHasMore }: { i
     io.observe(el);
     return () => io.disconnect();
   }, [loadMore]);
-
-  // Identical language toggle to the /bts-giveaway page.
-  const LangToggle = () => (
-    <div style={{ display: "flex", justifyContent: "center", marginBottom: 22 }}>
-      <div style={{ display: "inline-flex", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 100, padding: 3 }}>
-        {(["en", "es"] as Lang[]).map((l) => (
-          <button key={l} type="button" onClick={() => switchLang(l)} aria-pressed={lang === l}
-            style={{ padding: "6px 16px", borderRadius: 100, border: "none", cursor: "pointer", fontSize: "0.78rem", fontWeight: 800, letterSpacing: "0.02em", background: lang === l ? "var(--sakura)" : "transparent", color: lang === l ? "var(--on-accent)" : "var(--ink-dim)", transition: "background 0.15s, color 0.15s" }}>
-            {l === "en" ? "English" : "Español"}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
 
   // Build the feed: every 5 articles, insert the next cross-promo unit (cycled).
   const nodes: React.ReactNode[] = [];
