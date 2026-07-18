@@ -2,15 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useT } from "@/components/LangProvider";
+import { useT, useLang } from "@/components/LangProvider";
 
-type Def = { id: string; body: string; example: string | null; votesUp: number; votesDown: number };
+type Def = { id: string; body: string; bodyEs?: string | null; example: string | null; exampleEs?: string | null; votesUp: number; votesDown: number };
 
 export default function SlangDefinitions({ termName, definitions }: { termName: string; definitions: Def[] }) {
   const router = useRouter();
-  // Only the UI chrome is translated here. The definition bodies/examples are DB
-  // content with no ES column, and termName is a Korean term — both render as-is.
+  // UI chrome + the definition body/example translate; termName is a Korean term
+  // (rendered as-is). def.bodyEs/exampleEs fall back to English when not yet translated.
   const t = useT();
+  const { lang } = useLang();
   const [counts, setCounts] = useState<Record<string, { up: number; down: number }>>(
     Object.fromEntries(definitions.map((d) => [d.id, { up: d.votesUp, down: d.votesDown }])),
   );
@@ -113,12 +114,12 @@ export default function SlangDefinitions({ termName, definitions }: { termName: 
                 </div>
               </div>
 
-              <p style={{ fontSize: "1.05rem", lineHeight: 1.8, color: "#fff", margin: "0 0 16px" }}>{def.body}</p>
+              <p style={{ fontSize: "1.05rem", lineHeight: 1.8, color: "#fff", margin: "0 0 16px" }}>{lang === "es" && def.bodyEs ? def.bodyEs : def.body}</p>
 
               {def.example && (
                 <div style={{ background: "rgba(255,111,168,0.18)", borderLeft: "3px solid var(--sakura)", padding: "12px 16px", borderRadius: "0 4px 4px 0", marginTop: 12 }}>
                   <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--genius-gray)", marginBottom: 6 }}>{t("Example", "Ejemplo")}</div>
-                  <div style={{ fontSize: "0.95rem", fontStyle: "italic", color: "#fff" }}>&ldquo;{def.example}&rdquo;</div>
+                  <div style={{ fontSize: "0.95rem", fontStyle: "italic", color: "#fff" }}>&ldquo;{lang === "es" && def.exampleEs ? def.exampleEs : def.example}&rdquo;</div>
                 </div>
               )}
             </div>

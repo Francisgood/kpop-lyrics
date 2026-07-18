@@ -60,7 +60,7 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px 24px" }}>
         <SlangDefinitions
           termName={term.term}
-          definitions={term.definitions.map((d) => ({ id: d.id, body: d.body, example: d.example, votesUp: d.votesUp, votesDown: d.votesDown }))}
+          definitions={term.definitions.map((d) => ({ id: d.id, body: d.body, bodyEs: d.bodyEs, example: d.example, exampleEs: d.exampleEs, votesUp: d.votesUp, votesDown: d.votesDown }))}
         />
 
         {/* Songs whose lyrics use this slang term */}

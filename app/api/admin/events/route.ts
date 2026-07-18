@@ -28,6 +28,8 @@ async function ensureTable() {
       "status"      TEXT NOT NULL DEFAULT 'live',
       "createdAt"   TIMESTAMP NOT NULL DEFAULT now()
     )`);
+  await prisma.$executeRawUnsafe(`ALTER TABLE "ScannedEvent" ADD COLUMN IF NOT EXISTS "titleEs" TEXT`);
+  await prisma.$executeRawUnsafe(`ALTER TABLE "ScannedEvent" ADD COLUMN IF NOT EXISTS "descriptionEs" TEXT`);
   await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "ScannedEvent_sourceUrl_key" ON "ScannedEvent" ("sourceUrl")`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "ScannedEvent_citySlug_idx" ON "ScannedEvent" ("citySlug")`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "ScannedEvent_createdAt_idx" ON "ScannedEvent" ("createdAt")`);
@@ -58,8 +60,8 @@ function slugify(s: string): string {
 }
 
 type EventIn = {
-  title?: string; category?: string; city?: string; citySlug?: string; country?: string;
-  venue?: string; startsAt?: string; dateText?: string; description?: string; source?: string; sourceUrl?: string;
+  title?: string; titleEs?: string; category?: string; city?: string; citySlug?: string; country?: string;
+  venue?: string; startsAt?: string; dateText?: string; description?: string; descriptionEs?: string; source?: string; sourceUrl?: string;
 };
 
 // Ingest a batch of discovered events. Idempotent: dedup + upsert by sourceUrl.
@@ -84,20 +86,24 @@ export async function POST(req: NextRequest) {
       const venue = e.venue ? String(e.venue).trim() : null;
       const dateText = e.dateText ? String(e.dateText).trim() : null;
       const description = e.description ? String(e.description).trim() : null;
+      const titleEs = e.titleEs ? String(e.titleEs).trim() : null;
+      const descriptionEs = e.descriptionEs ? String(e.descriptionEs).trim() : null;
       const source = e.source ? String(e.source).trim() : null;
       let startsAt: Date | null = null;
       if (e.startsAt) { const d = new Date(e.startsAt); if (!isNaN(d.getTime())) startsAt = d; }
 
       const n = await prisma.$executeRaw`
         INSERT INTO "ScannedEvent"
-          ("id","title","category","city","citySlug","country","venue","startsAt","dateText","description","source","sourceUrl","status")
+          ("id","title","titleEs","category","city","citySlug","country","venue","startsAt","dateText","description","descriptionEs","source","sourceUrl","status")
         VALUES
-          (${randomUUID()}, ${title}, ${category}, ${city}, ${citySlug}, ${country}, ${venue}, ${startsAt}, ${dateText}, ${description}, ${source}, ${sourceUrl}, 'live')
+          (${randomUUID()}, ${title}, ${titleEs}, ${category}, ${city}, ${citySlug}, ${country}, ${venue}, ${startsAt}, ${dateText}, ${description}, ${descriptionEs}, ${source}, ${sourceUrl}, 'live')
         ON CONFLICT ("sourceUrl") DO UPDATE SET
           "title" = EXCLUDED."title", "category" = EXCLUDED."category", "city" = EXCLUDED."city",
           "citySlug" = EXCLUDED."citySlug", "country" = EXCLUDED."country", "venue" = EXCLUDED."venue",
           "startsAt" = EXCLUDED."startsAt", "dateText" = EXCLUDED."dateText",
-          "description" = EXCLUDED."description", "source" = EXCLUDED."source"`;
+          "description" = EXCLUDED."description", "source" = EXCLUDED."source",
+          "titleEs" = COALESCE(EXCLUDED."titleEs", "ScannedEvent"."titleEs"),
+          "descriptionEs" = COALESCE(EXCLUDED."descriptionEs", "ScannedEvent"."descriptionEs")`;
       upserted += Number(n);
     }
     const total = await prisma.$queryRaw<{ c: number }[]>`SELECT COUNT(*)::int AS c FROM "ScannedEvent" WHERE "status" = 'live'`;

@@ -864,10 +864,31 @@ const MEETUP_DATE_ES: Record<string, string> = {
 const meetupDateEs = (date: string): string => MEETUP_DATE_ES[date] ?? date;
 
 type CityEvent = {
-  id: string; title: string; category: string; venue: string | null;
-  startsAt: Date | null; dateText: string | null; description: string | null;
+  id: string; title: string; titleEs: string | null; category: string; venue: string | null;
+  startsAt: Date | null; dateText: string | null; description: string | null; descriptionEs: string | null;
   source: string | null; sourceUrl: string;
 };
+
+// Localise the free-form concert date strings (month abbreviations + a handful of
+// placeholder phrases). Absolute dates keep their numbers; only the words change.
+const CONCERT_MONTHS: Record<string, string> = {
+  Jan: "ene", Feb: "feb", Mar: "mar", Apr: "abr", May: "may", Jun: "jun",
+  Jul: "jul", Aug: "ago", Sep: "sep", Sept: "sep", Oct: "oct", Nov: "nov", Dec: "dic",
+};
+const CONCERT_PHRASES: Record<string, string> = {
+  "Year-round": "Todo el año",
+  "Check current listings": "Consulta la cartelera",
+  "TBA": "Por confirmar",
+  "TBD": "Por confirmar",
+  "Various": "Varias fechas",
+  "Ongoing": "En curso",
+};
+function concertDateEs(date: string): string {
+  let out = date;
+  for (const [en, es] of Object.entries(CONCERT_PHRASES)) out = out.replaceAll(en, es);
+  out = out.replace(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\b/g, (m) => CONCERT_MONTHS[m] ?? m);
+  return out;
+}
 
 function fmtEventDate(e: CityEvent, locale = "en-US"): string {
   if (e.startsAt) {
@@ -895,8 +916,10 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   // to this city so the two pages stay in sync. Matched by citySlug or city name.
   let liveEvents: CityEvent[] = [];
   try {
+    await prisma.$executeRawUnsafe(`ALTER TABLE "ScannedEvent" ADD COLUMN IF NOT EXISTS "titleEs" TEXT`);
+    await prisma.$executeRawUnsafe(`ALTER TABLE "ScannedEvent" ADD COLUMN IF NOT EXISTS "descriptionEs" TEXT`);
     liveEvents = await prisma.$queryRawUnsafe<CityEvent[]>(
-      `SELECT "id","title","category","venue","startsAt","dateText","description","source","sourceUrl"
+      `SELECT "id","title","titleEs","category","venue","startsAt","dateText","description","descriptionEs","source","sourceUrl"
        FROM "ScannedEvent"
        WHERE "status" = 'live'
          AND ("startsAt" IS NULL OR "startsAt" >= now() - interval '1 day')
@@ -966,13 +989,13 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
                           <span style={{ background: `${c.color}22`, color: "var(--ink)", fontSize: "0.62rem", fontWeight: 800, letterSpacing: "0.06em", padding: "3px 9px", borderRadius: 999, textTransform: "uppercase" }}>{c.emoji} <T en={c.label} es={c.labelEs} /></span>
                         </div>
-                        <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "var(--ink)", lineHeight: 1.35, marginBottom: 6 }}>{e.title}</div>
+                        <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "var(--ink)", lineHeight: 1.35, marginBottom: 6 }}><T en={e.title} es={e.titleEs} /></div>
                         {(e.venue || when) && (
                           <div style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.68)", marginBottom: 8 }}>
                             {e.venue && <span>📍 {e.venue}</span>}{e.venue && when ? " · " : ""}{when && <span>🗓 <T en={when} es={whenEs} /></span>}
                           </div>
                         )}
-                        {e.description && <div style={{ fontSize: "0.84rem", color: "rgba(255,255,255,0.82)", lineHeight: 1.55, marginBottom: 12, flex: 1 }}>{e.description}</div>}
+                        {e.description && <div style={{ fontSize: "0.84rem", color: "rgba(255,255,255,0.82)", lineHeight: 1.55, marginBottom: 12, flex: 1 }}><T en={e.description} es={e.descriptionEs} /></div>}
                         <a href={e.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ marginTop: "auto", fontSize: "0.78rem", color: c.color, fontWeight: 800, textDecoration: "none" }}>
                           <T
                             en={`Details${e.source ? ` on ${e.source}` : ""} →`}
@@ -1005,7 +1028,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                           ) : c.artist}
                         </div>
                         <div style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.68)" }}>📍 {c.venue}</div>
-                        <div style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.68)", marginTop: 2 }}>📅 {c.date}</div>
+                        <div style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.68)", marginTop: 2 }}>📅 <T en={c.date} es={concertDateEs(c.date)} /></div>
                       </div>
                       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                         <a href={c.ticketUrl} target="_blank" rel="noopener noreferrer" className="btn-yellow" style={{ fontSize: "0.72rem", textAlign: "center" }}>

@@ -18,9 +18,9 @@ export const metadata: Metadata = {
 };
 
 type Row = {
-  id: string; title: string; category: string; city: string | null; citySlug: string | null;
+  id: string; title: string; titleEs: string | null; category: string; city: string | null; citySlug: string | null;
   country: string | null; venue: string | null; startsAt: Date | null; dateText: string | null;
-  description: string | null; source: string | null; sourceUrl: string;
+  description: string | null; descriptionEs: string | null; source: string | null; sourceUrl: string;
 };
 
 const CAT: Record<string, { label: string; labelEs: string; emoji: string; color: string }> = {
@@ -43,8 +43,11 @@ async function getEvents(): Promise<Row[]> {
         "city" TEXT, "citySlug" TEXT, "country" TEXT, "venue" TEXT, "startsAt" TIMESTAMP,
         "dateText" TEXT, "description" TEXT, "source" TEXT, "sourceUrl" TEXT NOT NULL,
         "status" TEXT NOT NULL DEFAULT 'live', "createdAt" TIMESTAMP NOT NULL DEFAULT now())`);
+    // Spanish columns are added additively (the migration may lag); safe + idempotent.
+    await prisma.$executeRawUnsafe(`ALTER TABLE "ScannedEvent" ADD COLUMN IF NOT EXISTS "titleEs" TEXT`);
+    await prisma.$executeRawUnsafe(`ALTER TABLE "ScannedEvent" ADD COLUMN IF NOT EXISTS "descriptionEs" TEXT`);
     return await prisma.$queryRawUnsafe<Row[]>(
-      `SELECT "id","title","category","city","citySlug","country","venue","startsAt","dateText","description","source","sourceUrl"
+      `SELECT "id","title","titleEs","category","city","citySlug","country","venue","startsAt","dateText","description","descriptionEs","source","sourceUrl"
        FROM "ScannedEvent"
        WHERE "status" = 'live' AND ("startsAt" IS NULL OR "startsAt" >= now() - interval '1 day')
        ORDER BY ("startsAt" IS NULL), "startsAt" ASC, "createdAt" DESC
@@ -129,13 +132,13 @@ export default async function EventsPage() {
                     </span>
                     {e.country && <span style={{ marginLeft: "auto", fontSize: "0.72rem", color: "var(--ink-faint)" }}>{e.country}</span>}
                   </div>
-                  <div style={{ fontWeight: 800, fontSize: "1rem", color: "var(--ink)", lineHeight: 1.35, marginBottom: 6 }}>{e.title}</div>
+                  <div style={{ fontWeight: 800, fontSize: "1rem", color: "var(--ink)", lineHeight: 1.35, marginBottom: 6 }}><T en={e.title} es={e.titleEs} /></div>
                   {(place || whenEn) && (
                     <div style={{ fontSize: "0.8rem", color: "var(--ink-dim)", marginBottom: 8 }}>
                       {place && <span>📍 {place}</span>}{place && whenEn ? " · " : ""}{whenEn && <span>🗓 <T en={whenEn} es={whenEs} /></span>}
                     </div>
                   )}
-                  {e.description && <div style={{ fontSize: "0.85rem", color: "var(--ink-dim)", lineHeight: 1.55, marginBottom: 12, flex: 1 }}>{e.description}</div>}
+                  {e.description && <div style={{ fontSize: "0.85rem", color: "var(--ink-dim)", lineHeight: 1.55, marginBottom: 12, flex: 1 }}><T en={e.description} es={e.descriptionEs} /></div>}
                   <a href={e.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ marginTop: "auto", fontSize: "0.78rem", color: cat.color, fontWeight: 800, textDecoration: "none" }}>
                     <T
                       en={e.source ? `Details on ${e.source}` : "Details"}

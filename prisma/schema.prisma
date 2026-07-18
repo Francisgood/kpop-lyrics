@@ -28,6 +28,7 @@ model Artist {
   realName    String?
   debutYear   Int?
   bio         String?
+  bioEs       String?
   imageUrl    String?
   labelId     String?
   label       Label?            @relation(fields: [labelId], references: [id])
@@ -128,7 +129,9 @@ model TermDefinition {
   termId    String
   term      CodedTerm @relation(fields: [termId], references: [id])
   body      String
+  bodyEs    String?
   example   String?
+  exampleEs String?
   votesUp   Int       @default(0)
   votesDown Int       @default(0)
   createdAt DateTime  @default(now())

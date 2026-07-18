@@ -139,7 +139,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
 
           {artist.bio && (
             <div style={{ marginTop: 16, color: "rgba(255,255,255,0.8)", maxWidth: 780, lineHeight: 1.85, fontSize: "0.95rem", whiteSpace: "pre-line" }}>
-              {artist.bio}
+              <T en={artist.bio} es={artist.bioEs} />
             </div>
           )}
         </div>
