@@ -37,7 +37,7 @@ export default function HomeInteractions() {
       const res = await fetch("/api/newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, source: "home-hero" }),
       });
       if (!res.ok) {
         const d = await res.json().catch(() => ({}));

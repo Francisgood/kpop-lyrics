@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, generateToken } from "@/lib/auth";
+import { subscribeToBeehiiv } from "@/lib/beehiiv";
 
 export async function POST(req: NextRequest) {
   const { email, password, displayName } = await req.json().catch(() => ({})) as {
@@ -35,6 +36,11 @@ export async function POST(req: NextRequest) {
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
     },
   });
+
+  // Every account email flows into the Beehiiv newsletter audience too, so no
+  // collected email is missed. Best-effort (never throws) and silent — account
+  // creation isn't an explicit newsletter opt-in, so we skip the welcome email.
+  await subscribeToBeehiiv({ email: email.toLowerCase(), source: "account-signup", sendWelcome: false });
 
   const res = NextResponse.json({ ok: true, user: { id: user.id, email: user.email, displayName: user.displayName } });
   res.cookies.set("session", token, {
