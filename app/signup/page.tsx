@@ -27,6 +27,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [password, setPassword] = useState("");
+  const [subscribe, setSubscribe] = useState(true); // "email me K-pop rumors" opt-in
   const [error, setError] = useState<{ en: string; es: string } | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -41,7 +42,7 @@ export default function SignupPage() {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, displayName }),
+        body: JSON.stringify({ email, password, displayName, subscribe }),
       });
       const data = await res.json();
       if (!res.ok) { setError(err(data.error ?? "Signup failed")); return; }
@@ -101,6 +102,16 @@ export default function SignupPage() {
               <label style={labelStyle}><T en="Password" es="Contraseña" /></label>
               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} placeholder={t("Min. 6 characters", "Mín. 6 caracteres")} style={field} />
             </div>
+
+            <label style={{ display: "flex", alignItems: "flex-start", gap: 10, cursor: "pointer", fontSize: "0.86rem", color: "var(--ink-dim)", lineHeight: 1.4 }}>
+              <input
+                type="checkbox"
+                checked={subscribe}
+                onChange={(e) => setSubscribe(e.target.checked)}
+                style={{ width: 18, height: 18, accentColor: "var(--sakura)", marginTop: 1, flexShrink: 0, cursor: "pointer" }}
+              />
+              <span><T en="Email me K-pop rumors, gossip & comebacks 💌" es="Envíame chismes, rumores y comebacks de K-pop 💌" /></span>
+            </label>
 
             <button type="submit" disabled={loading} className="btn-yellow" style={{ width: "100%", padding: "13px", fontSize: "0.85rem", marginTop: 4, opacity: loading ? 0.6 : 1 }}>
               {loading ? <T en="Creating account…" es="Creando cuenta…" /> : <T en="CREATE ACCOUNT" es="CREAR CUENTA" />}

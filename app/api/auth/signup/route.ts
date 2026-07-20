@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, generateToken } from "@/lib/auth";
+import { subscribeToBeehiiv } from "@/lib/beehiiv";
 
 export async function POST(req: NextRequest) {
-  const { email, password, displayName } = await req.json().catch(() => ({})) as {
-    email?: string; password?: string; displayName?: string;
+  const { email, password, displayName, subscribe } = await req.json().catch(() => ({})) as {
+    email?: string; password?: string; displayName?: string; subscribe?: boolean;
   };
 
   if (!email || !email.includes("@")) {
@@ -35,6 +36,14 @@ export async function POST(req: NextRequest) {
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
     },
   });
+
+  // When the user ticks "email me K-pop rumors" on the form, add them to the
+  // Beehiiv newsletter audience and send Beehiiv's welcome email. Best-effort
+  // (never throws, so it never blocks account creation). Defaults to true so an
+  // older client that doesn't send the flag still opts in.
+  if (subscribe !== false) {
+    await subscribeToBeehiiv({ email: email.toLowerCase(), source: "account-signup", sendWelcome: true });
+  }
 
   const res = NextResponse.json({ ok: true, user: { id: user.id, email: user.email, displayName: user.displayName } });
   res.cookies.set("session", token, {
