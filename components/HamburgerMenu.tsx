@@ -106,7 +106,7 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
 
             {/* GOT A TIP? — the marquee CTA */}
             <Link
-              href="/contribute"
+              href="/tips"
               onClick={close}
               style={{
                 display: "block", textAlign: "center", textDecoration: "none",

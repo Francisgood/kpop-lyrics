@@ -94,6 +94,7 @@ export default async function ContributePage() {
                 <T en="Start Earning" es="Empieza a Ganar" />
                 <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
               </Link>
+              <Link href="/tips" className="btn-ghost"><T en="Got a Tip?" es="¿Tienes un Chisme?" /></Link>
               <Link href="/artists" className="btn-ghost"><T en="Explore Artists" es="Explora Artistas" /></Link>
             </div>
           </div>
