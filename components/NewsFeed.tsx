@@ -36,6 +36,8 @@ type Copy = {
   ex: { eyebrow: string; title: string; items: { href: string; tag: string; label: string; color: string }[] };
   ev: PromoCopy; qz: PromoCopy;
   emptyTitle: string; emptyBody: string; emptyLink: string; loading: string; caughtUp: string;
+  // Rumor gate: subheadline is blurred behind an email capture.
+  rumorTease: string; rumorPh: string; rumorBtn: string; rumorSaving: string; rumorDone: string; rumorErr: string;
 };
 
 const COPY: Record<Lang, Copy> = {
@@ -59,6 +61,8 @@ const COPY: Record<Lang, Copy> = {
     qz: { eyebrow: "Play · Test yourself", title: "How well do you know K-pop?", body: "Aegyo, Korean slang & idol trivia — quick quizzes to prove your bias knowledge.", cta: "Take the quiz →" },
     emptyTitle: "The feed is warming up", emptyBody: "Fresh K-pop news, gossip & rumors are published here daily. Meanwhile,", emptyLink: "explore the universe →",
     loading: "Loading more…", caughtUp: "You're all caught up — check back soon for more. 💜",
+    rumorTease: "subscribe to get the juicy details…", rumorPh: "you@email.com",
+    rumorBtn: "Subscribe", rumorSaving: "…", rumorDone: "✓ you're in — check your inbox 💌", rumorErr: "hmm, try again",
   },
   es: {
     lang: "es",
@@ -80,6 +84,8 @@ const COPY: Record<Lang, Copy> = {
     qz: { eyebrow: "Juega · Ponte a prueba", title: "¿Cuánto sabes de K-pop?", body: "Aegyo, jerga coreana y trivia de idols — quizzes rápidos para demostrar cuánto sabes de tu bias.", cta: "Hacer el quiz →" },
     emptyTitle: "El feed se está calentando", emptyBody: "Cada día publicamos noticias, chismes y rumores de K-pop. Mientras tanto,", emptyLink: "explora el universo →",
     loading: "Cargando más…", caughtUp: "Estás al día — vuelve pronto para ver más. 💜",
+    rumorTease: "suscríbete para el chisme completo…", rumorPh: "tu@correo.com",
+    rumorBtn: "Suscríbete", rumorSaving: "…", rumorDone: "✓ ¡ya estás! revisa tu inbox 💌", rumorErr: "ups, intenta de nuevo",
   },
 };
 
@@ -138,6 +144,63 @@ function QuizUnit({ c }: { c: Copy }) {
 
 const PROMOS = [ExploreUnit, EventsUnit, QuizUnit];
 
+// ── Rumor gate ──────────────────────────────────────────────────────────────
+// For "rumor" posts we tease the sub-header: the real text is rendered blurred
+// and unreadable, with an email-capture overlaid on top. Lives inside the card's
+// <a>, so every handler stops propagation to avoid opening the source link.
+function RumorGate({ text, c }: { text: string; c: Copy }) {
+  const [email, setEmail] = useState("");
+  const [state, setState] = useState<"idle" | "saving" | "done" | "error">("idle");
+  const stop = (e: React.SyntheticEvent) => { e.preventDefault(); e.stopPropagation(); };
+
+  // Runs from both the form's onSubmit (Enter key) and the button's onClick. We
+  // can't rely on native submit: the gate lives inside the card's <a>, and the
+  // preventDefault that stops the link from navigating also cancels a native
+  // submit — so submission has to be programmatic (button is type="button").
+  async function submit(e: React.SyntheticEvent) {
+    stop(e);
+    if (!email.trim() || state === "saving") return;
+    setState("saving");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, source: "rumor-gate" }),
+      });
+      setState(res.ok ? "done" : "error");
+    } catch { setState("error"); }
+  }
+
+  return (
+    <div onClick={stop} style={{ position: "relative", margin: "0 0 12px", borderRadius: 12, overflow: "hidden", minHeight: 104, border: "1px solid var(--border)" }}>
+      {/* Real sub-header, blurred so it reads as "there's something here" but stays unreadable. */}
+      <p aria-hidden style={{ fontSize: "0.92rem", color: "var(--ink-dim)", lineHeight: 1.55, margin: 0, padding: "16px 18px", filter: "blur(6px)", userSelect: "none", pointerEvents: "none", opacity: 0.65 }}>{text}</p>
+      {/* Email-capture overlay */}
+      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 9, textAlign: "center", padding: "10px 14px", background: "linear-gradient(180deg, rgba(184,160,255,0.14), rgba(184,160,255,0.06))" }}>
+        <div style={{ fontFamily: "var(--mono)", fontSize: "0.82rem", fontWeight: 700, color: "var(--ink)", letterSpacing: "0.01em" }}>
+          <span aria-hidden style={{ marginRight: 6 }}>🔒</span>{c.rumorTease}
+        </div>
+        {state === "done" ? (
+          <div style={{ color: "#16a34a", fontWeight: 700, fontSize: "0.85rem" }}>{c.rumorDone}</div>
+        ) : (
+          <form onSubmit={submit} style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", width: "100%", maxWidth: 380 }}>
+            <input
+              type="email" required value={email} onClick={stop}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={c.rumorPh} aria-label={c.rumorPh}
+              style={{ flex: "1 1 180px", minWidth: 0, padding: "9px 14px", borderRadius: 100, border: "1px solid var(--border-strong)", fontSize: "0.85rem", color: "var(--ink)", background: "var(--bg-card)" }}
+            />
+            <button type="button" onClick={submit} disabled={state === "saving"} style={{ padding: "9px 18px", borderRadius: 100, border: "none", background: "#B8A0FF", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.82rem", cursor: "pointer", whiteSpace: "nowrap", opacity: state === "saving" ? 0.6 : 1 }}>
+              {state === "saving" ? c.rumorSaving : c.rumorBtn}
+            </button>
+          </form>
+        )}
+        {state === "error" && <div style={{ color: "#ef4444", fontSize: "0.72rem" }}>{c.rumorErr}</div>}
+      </div>
+    </div>
+  );
+}
+
 // ── Article card ────────────────────────────────────────────────────────────
 function ArticleCard({ p, featured, c }: { p: NewsRow; featured?: boolean; c: Copy }) {
   const cc = catOf(p.category);
@@ -162,7 +225,11 @@ function ArticleCard({ p, featured, c }: { p: NewsRow; featured?: boolean; c: Co
           {p.artistName && <span style={{ fontSize: "0.72rem", color: "var(--ink-faint)" }}>{p.artistName}</span>}
         </div>
         <h2 style={{ fontFamily: "var(--serif)", fontSize: featured ? "1.7rem" : "1.25rem", fontWeight: 700, color: "var(--ink)", lineHeight: 1.2, margin: "0 0 8px" }}>{headline}</h2>
-        {subheadline && <p style={{ fontSize: "0.92rem", color: "var(--ink-dim)", lineHeight: 1.55, margin: "0 0 12px" }}>{subheadline}</p>}
+        {subheadline && (
+          p.category === "rumor"
+            ? <RumorGate text={subheadline} c={c} />
+            : <p style={{ fontSize: "0.92rem", color: "var(--ink-dim)", lineHeight: 1.55, margin: "0 0 12px" }}>{subheadline}</p>
+        )}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
           <span style={{ fontSize: "0.72rem", color: "var(--ink-faint)" }}>{meta}</span>
           <span style={{ fontSize: "0.76rem", color: cc.color, fontWeight: 800 }}>{c.readMore}</span>
