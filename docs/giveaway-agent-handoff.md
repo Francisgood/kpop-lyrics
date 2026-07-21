@@ -10,6 +10,7 @@ This is the exact production handoff for the agent operating the Chainlink draw.
 - Source CSV SHA-256: `900ebc4ad3ef9013da5bb78c739214021c07dbf66891b59f62335e46ea9b4b53`
 - Production publication target: `/bts-giveaway/draw` in this repository.
 - The separate Railway raffle demo currently displays 188 placeholder IDs (`1001`–`1188`). Its Admin page can consume a pasted seed, but it does not obtain the Chainlink word. Do not use its local “Run demo draw” result as the production draw, and do not publish its placeholder roster.
+- This repository does **not** send the Chainlink transaction. Its scripts consume the raw result and record the evidence after an authorized operator requests VRF through the already-deployed consumer.
 - One Chainlink VRF v2.5 `uint256` word is sufficient. This repository expands it into one deterministic full ordering. Positions 1–5 become the grand-prize candidate queue; positions 6–10 become the runner-up candidate queue.
 - Never request multiple production words, choose among outputs, cancel because of the result, or modify the roster after requesting randomness.
 
@@ -73,7 +74,11 @@ Expected: `verified: true`, `mode: test`, 186 eligible entries, five grand-prize
 
 ## B. Obtain the one production VRF word
 
-The Railway Admin field labeled “VRF seed” is an input field, not a Chainlink requester. Obtain the word from the deployed consumer:
+The Railway Admin field labeled “VRF seed” is an input field, not a Chainlink requester. The live request happens outside this repository through the deployed Chainlink consumer. Merging or running these scripts will not create an on-chain transaction.
+
+The finalizer validates the evidence format and proves that the published candidate order follows from the committed manifest and supplied word. It does **not** query an RPC endpoint or prove by itself that the supplied transaction hashes emitted that word. Before finalization, the operator must inspect the real block-explorer records and match the consumer, request ID, fulfillment, and raw callback word. Fabricated, placeholder, testnet, or unrelated hashes would make the public page misleading and must never be supplied.
+
+Obtain and verify the word from the deployed consumer:
 
 1. Open the source/configuration for the deployed raffle consumer.
 2. Record these values before sending anything:
@@ -102,13 +107,15 @@ The Railway Admin field labeled “VRF seed” is an input field, not a Chainlin
    VRF_RANDOM_WORD=the raw uint256 randomWords[0], decimal or 0x-hex
    ```
 
-6. Open both transactions in the explorer and independently confirm:
+6. Open both transactions in the block explorer and confirm all of the following before continuing:
 
-   - both are on `CHAIN_ID`;
-   - the request came from `VRF_CONSUMER_ADDRESS`;
-   - the fulfillment matches `VRF_REQUEST_ID`;
-   - fulfillment reports success;
-   - the recorded raw word is the value delivered to the consumer.
+   - The request transaction targets the recorded consumer and represents the one authorized production request.
+   - The recorded request ID belongs to that transaction and requested exactly one word.
+   - The fulfillment/callback is for that same request ID and consumer, and it succeeded.
+   - `VRF_RANDOM_WORD` is the unmodified raw `randomWords[0]` delivered by that fulfillment.
+   - The network, chain ID, consumer address, request transaction, and fulfillment transaction all agree.
+
+   If any item cannot be demonstrated from the consumer state/events and explorer records, stop. Do not run the production finalizer and do not substitute a locally generated number.
 
 If the request reverts, no request exists; fix funding/configuration and retry the transaction. If a request is mined but fulfillment or its callback fails, stop and preserve all evidence. Do not submit a second request merely to obtain a different word.
 
