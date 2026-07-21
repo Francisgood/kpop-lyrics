@@ -31,7 +31,20 @@ Chainlink references: [VRF v2.5 request/receive flow](https://docs.chain.link/vr
    /secure/path/bts-2026.private.csv
    ```
 
-   The roster custodian must transfer this file through Myosin-controlled private storage. The public manifest alone cannot map selected IDs back to emails. Set the two private paths before finalization:
+   Simon already has the exact final source CSV. His agent should keep it outside Git and regenerate the private manifest locally with:
+
+   ```bash
+   npm run giveaway:prepare -- \
+     --input /secure/path/aegyo-arena-basic_subscriber-2026-07-21.csv \
+     --public-output /tmp/bts-2026.manifest.check.json \
+     --private-output /secure/path/bts-2026.private.csv \
+     --cutoff 2026-07-17T23:59:59-04:00 \
+     --frozen-at 2026-07-21T19:39:29.265Z
+   ```
+
+   Stop unless the command reports all three committed values: source SHA-256 `900ebc4ad3ef9013da5bb78c739214021c07dbf66891b59f62335e46ea9b4b53`, private-roster hash `fa44d7397bde2ee9735bb6b164b2a6116bbd205cbf35e8b3e6470c9c0130320b`, and manifest hash `9fddd6971f8bb7c94a0b4e7705c0cbfab58d545fa4e26316221e8d853b6cad7b`. The generated `/secure/path/bts-2026.private.csv` is the ID-to-email mapping. Never commit or post either private CSV. The public manifest alone cannot map selected IDs back to emails.
+
+   Set the two private paths before finalization:
 
    ```bash
    export PRIVATE_MANIFEST_PATH=/secure/path/bts-2026.private.csv
