@@ -44,13 +44,17 @@ Never contact anyone from the rehearsal list.
 
 ## Production: agent steps 1–7
 
+The copy/paste operator handoff is in [`docs/giveaway-agent-handoff.md`](giveaway-agent-handoff.md). It is authoritative for the live execution sequence, evidence fields, stop conditions, and Simon handoff.
+
 ### 1. Merge and deploy the frozen manifest
 
 The manifest must be committed and clean before requesting VRF. Record its `manifestHash`, `source.sha256`, `privateRosterHash`, and `eligibleCount` in the operations log.
 
 ### 2. Request one Chainlink VRF v2.5 random word
 
-Use the existing funded consumer and the intended production network. Request exactly one word after Step 1. Do not cancel, reroll, or request a replacement because of the result. Save:
+Use the existing funded consumer and the intended production network. Request exactly one word after Step 1. The separate Railway raffle Admin page's “VRF seed” field consumes an already-fulfilled word; it does not make this request. Do not use its local demo draw or its 188 placeholder IDs as production evidence.
+
+The operating agent must identify the deployed consumer's network, address, request function, payment mode, funding, and raw-word storage/event before sending the transaction. Request exactly `numWords = 1`, match fulfillment by `requestId`, confirm callback success, and retain the raw `randomWords[0]`. Do not cancel, reroll, or request a replacement because of the result. Save:
 
 - chain name and numeric chain ID;
 - consumer contract address;
@@ -59,6 +63,8 @@ Use the existing funded consumer and the intended production network. Request ex
 - fulfillment transaction hash;
 - fulfilled random word;
 - block explorer base URL.
+
+If a request is mined but fulfillment or its callback fails, stop and preserve the evidence. Do not silently submit another request. See the full agent handoff for the recovery boundary.
 
 ### 3. Finalize the draw once
 
