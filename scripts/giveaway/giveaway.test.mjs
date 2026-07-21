@@ -11,6 +11,7 @@ import {
   parseCsv,
   proofCommitment,
   rankEntries,
+  readJson,
   sha256,
   validateManifest,
   validateProof,
@@ -53,8 +54,8 @@ function fixtureProof(manifest) {
 }
 
 test("CSV parser handles quoted commas, escaped quotes, CRLF, and BOM", () => {
-  const rows = parseCsv('\uFEFFemail,tags,created_at\r\n"fan@example.com","army, \"\"vip\"\"",2026-07-17T01:00:00Z\r\n');
-  assert.deepEqual(rows, [{ email: "fan@example.com", tags: 'army, "vip"', created_at: "2026-07-17T01:00:00Z" }]);
+  const rows = parseCsv('\uFEFFemail,tags,created_at\r\n"fan@example.test","army, \"\"vip\"\"",2026-07-17T01:00:00Z\r\n');
+  assert.deepEqual(rows, [{ email: "fan@example.test", tags: 'army, "vip"', created_at: "2026-07-17T01:00:00Z" }]);
 });
 
 test("random words normalize identically from decimal and hex", () => {
@@ -101,4 +102,32 @@ test("production proofs fail closed without complete Chainlink evidence", () => 
 
 test("canonical JSON ignores object insertion order", () => {
   assert.equal(canonicalJson({ b: 2, a: { d: 4, c: 3 } }), canonicalJson({ a: { c: 3, d: 4 }, b: 2 }));
+});
+
+test("committed manifest and rehearsal proof reproduce", async () => {
+  const manifest = validateManifest(await readJson("public/giveaway/bts-2026/manifest.json"));
+  const proof = await readJson("public/giveaway/bts-2026/test-proof.json");
+  const verified = validateProof(manifest, proof);
+  assert.equal(manifest.eligibleCount, 186);
+  assert.equal(proof.mode, "test");
+  assert.equal(verified.grandPrizeCandidates.length, 5);
+  assert.equal(verified.runnerUpCandidates.length, 5);
+});
+
+test("committed production proof is pending or independently valid", async () => {
+  const manifest = validateManifest(await readJson("public/giveaway/bts-2026/manifest.json"));
+  const proof = await readJson("public/giveaway/bts-2026/production-proof.json");
+  if (proof.status === "pending") {
+    assert.deepEqual(proof, {
+      campaignId: CAMPAIGN_ID,
+      mode: "production",
+      proofVersion: PROOF_VERSION,
+      status: "pending",
+    });
+    return;
+  }
+  assert.equal(proof.mode, "production");
+  const verified = validateProof(manifest, proof);
+  assert.equal(verified.grandPrizeCandidates.length, 5);
+  assert.equal(verified.runnerUpCandidates.length, 5);
 });

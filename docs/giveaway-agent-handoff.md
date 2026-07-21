@@ -25,13 +25,13 @@ Chainlink references: [VRF v2.5 request/receive flow](https://docs.chain.link/vr
    git diff --quiet HEAD -- public/giveaway/bts-2026/manifest.json
    ```
 
-3. The private manifest exists outside Git and hashes to the public `privateRosterHash`. For the current operator machine it is:
+3. The private manifest exists outside Git and hashes to the public `privateRosterHash`:
 
    ```text
-   /Users/mateodazab/Documents/myosin/giveaway-private/bts-2026.private.csv
+   /secure/path/bts-2026.private.csv
    ```
 
-   If the live agent runs elsewhere, Mateo must transfer this file through Myosin-controlled private storage. The public manifest alone cannot map selected IDs back to emails. Set the two private paths before finalization:
+   The roster custodian must transfer this file through Myosin-controlled private storage. The public manifest alone cannot map selected IDs back to emails. Set the two private paths before finalization:
 
    ```bash
    export PRIVATE_MANIFEST_PATH=/secure/path/bts-2026.private.csv
