@@ -9,6 +9,9 @@ export const dynamic = "force-dynamic";
 const MAX_REFERRALS = 50;
 const SITE = "https://www.aegyoarena.com";
 const linkFor = (code: string) => `${SITE}/bts-giveaway?ref=${code}`;
+// Friday July 17, 2026 at 11:59:59 p.m. Eastern Daylight Time.
+// The roster is frozen from the designated database/export after this instant.
+const GIVEAWAY_CUTOFF_MS = Date.parse("2026-07-18T03:59:59.999Z");
 
 // Self-contained store: the table is created additively on first use (the app
 // runs inside Railway with internal DB access). This never touches other tables.
@@ -48,6 +51,9 @@ function ageOf(d: Date): number {
 
 export async function POST(req: NextRequest) {
   try {
+    if (Date.now() > GIVEAWAY_CUTOFF_MS) {
+      return NextResponse.json({ error: "This giveaway is closed." }, { status: 410 });
+    }
     await ensureTable();
     const b = await req.json().catch(() => ({}));
     const firstName = String(b.firstName ?? "").trim();

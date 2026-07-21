@@ -1,0 +1,75 @@
+{
+  "algorithm": {
+    "description": "For every public entry ID, SHA-256(domain separator, manifest hash, normalized uint256 random word, public ID); sort ascending by score then public ID.",
+    "domainSeparator": "AEGYO_ARENA_BTS_GIVEAWAY_2026_V1",
+    "version": "sha256-rank-v1"
+  },
+  "campaignId": "bts-giveaway-2026",
+  "completeOrderHash": "966f43a585a3715d70a233a0485f40d103ce1ea5f34b0003da8570e7a40404a0",
+  "eligibleCount": 186,
+  "manifestHash": "9fddd6971f8bb7c94a0b4e7705c0cbfab58d545fa4e26316221e8d853b6cad7b",
+  "mode": "test",
+  "grandPrizeCandidates": [
+    {
+      "publicId": "AA-0067",
+      "score": "0047b5e8b54da37482093b8daf97a71ac44f9e88383408dfd8a1070aa63c08cb",
+      "position": 1
+    },
+    {
+      "publicId": "AA-0140",
+      "score": "014bc2e5dcb36ce5b4f25d96af387a00a96118c25b312a9f0b635e88754e35bb",
+      "position": 2
+    },
+    {
+      "publicId": "AA-0104",
+      "score": "01653e154af26d9dd2ab245809f4cffbddf9e5b024ee7806b021b260309ae5f3",
+      "position": 3
+    },
+    {
+      "publicId": "AA-0111",
+      "score": "039da87b0b23b54dcefac3ba9e5b23ea89b9a287ee9d1653ebae76c7a8dd0803",
+      "position": 4
+    },
+    {
+      "publicId": "AA-0165",
+      "score": "07f82b9fb401d94a3e7ed7146d6eaff8d93ed1a6be4ddd66a558aafb4bde82b1",
+      "position": 5
+    }
+  ],
+  "producedAt": "2026-07-21T00:00:00.000Z",
+  "proofVersion": "aegyo-vrf-draw-v1",
+  "randomness": {
+    "randomWord": "0x2e4db3f81afaebc153f63226ccedf77aaf25d726bf11807cfc7dcbb9a9802d38",
+    "source": "deterministic-rehearsal-fixture",
+    "testOnly": true
+  },
+  "runnerUpCandidates": [
+    {
+      "publicId": "AA-0042",
+      "score": "085a3f7e31d29d173ad0e53b66c5b758a509b3d2d86c9cc30381f7f0fbf5b9c7",
+      "position": 1
+    },
+    {
+      "publicId": "AA-0132",
+      "score": "0ba175254f39098708abc18d69469378c26307cffddc23656675c3871cc84fd3",
+      "position": 2
+    },
+    {
+      "publicId": "AA-0170",
+      "score": "1005c41ec2e997c064a97d8133e167808b99b3f28a25e57dc4727a1677ce4e16",
+      "position": 3
+    },
+    {
+      "publicId": "AA-0097",
+      "score": "10344d32eeec2107b8f4c7f35da3b2c44fe88e16ca1b6ec6626ddf6d1e8c3a47",
+      "position": 4
+    },
+    {
+      "publicId": "AA-0112",
+      "score": "10aefba41791fd53a8f211a5601d1cb92f746daf730ce6ea060b63709259a3a9",
+      "position": 5
+    }
+  ],
+  "status": "complete",
+  "proofHash": "e7889d7cc1a101f6e165b28c3342e29e117a92c9d29281d915b8657f95e634b8"
+}

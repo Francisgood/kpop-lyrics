@@ -44,6 +44,7 @@ const PRIZE_META = [
 
 type Copy = {
   eyebrow: string; heroPre: string; heroEm: string; subhead: string; cta: string; referred: string;
+  closedTitle: string; closedBody: string; closedCta: string;
   prizesLabel: string;
   prizes: { badge: string; title: string; sub: string }[];
   disclaimerPre: string; disclaimerLink: string; disclaimerPost: string;
@@ -65,6 +66,9 @@ const COPY: Record<Lang, Copy> = {
     heroPre: "BTS ARMY ", heroEm: "Giveaway.",
     subhead: "Enter for your chance to win exclusive BTS merch, signed albums & concert tickets. Refer friends to multiply your entries.",
     cta: "Enter Now →",
+    closedTitle: "Entries are closed",
+    closedBody: "The subscriber roster is frozen. Follow the public draw page for the manifest commitment, rehearsal, and Chainlink verification evidence.",
+    closedCta: "View draw transparency →",
     referred: "A friend referred you — enter below so their referral counts! 💜",
     prizesLabel: "Prizes",
     prizes: [
@@ -96,6 +100,9 @@ const COPY: Record<Lang, Copy> = {
     heroPre: "Sorteo ", heroEm: "BTS ARMY.",
     subhead: "Participa por la oportunidad de ganar merch exclusivo de BTS, álbumes firmados y boletos para el concierto. Invita a tus amigos para multiplicar tus participaciones.",
     cta: "Participa ahora →",
+    closedTitle: "Las inscripciones están cerradas",
+    closedBody: "La lista de suscriptores ya está congelada. Sigue la página pública del sorteo para ver el manifiesto, el ensayo y la evidencia de verificación de Chainlink.",
+    closedCta: "Ver la transparencia del sorteo →",
     referred: "Un amigo te invitó — participa abajo para que su invitación cuente. 💜",
     prizesLabel: "Premios",
     prizes: [
@@ -125,6 +132,7 @@ const COPY: Record<Lang, Copy> = {
 };
 
 export default function BtsGiveawayPage() {
+  const entryClosed = true;
   const thisYear = new Date().getFullYear();
   const years = Array.from({ length: 100 }, (_, i) => thisYear - i);
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
@@ -247,8 +255,8 @@ export default function BtsGiveawayPage() {
           <p style={{ color: "var(--ink-dim)", fontSize: "clamp(1rem, 3.5vw, 1.15rem)", lineHeight: 1.6, maxWidth: 540, margin: "0 auto 28px" }}>
             {c.subhead}
           </p>
-          <a href="#enter" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 34px", borderRadius: 100, background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.03em", textTransform: "uppercase", textDecoration: "none" }}>
-            {c.cta}
+          <a href={entryClosed ? "/bts-giveaway/draw" : "#enter"} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 34px", borderRadius: 100, background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.03em", textTransform: "uppercase", textDecoration: "none" }}>
+            {entryClosed ? c.closedCta : c.cta}
           </a>
           {ref && <p style={{ marginTop: 16, fontSize: "0.85rem", color: "var(--volt)" }}>{c.referred}</p>}
         </div>
@@ -286,6 +294,14 @@ export default function BtsGiveawayPage() {
 
       {/* Entry form */}
       <section id="enter" style={{ maxWidth: 560, margin: "0 auto", padding: "32px 24px 0", scrollMarginTop: 24 }}>
+        {entryClosed ? (
+          <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 16, padding: "28px 24px", textAlign: "center" }}>
+            <h2 style={{ fontFamily: "var(--serif)", fontSize: "clamp(1.7rem, 5vw, 2.2rem)", fontWeight: 700, color: "var(--ink)", margin: "0 0 10px" }}>{c.closedTitle}</h2>
+            <p style={{ color: "var(--ink-dim)", fontSize: "0.98rem", lineHeight: 1.6, margin: "0 0 20px" }}>{c.closedBody}</p>
+            <Link href="/bts-giveaway/draw" className="btn-yellow">{c.closedCta}</Link>
+          </div>
+        ) : (
+          <>
         <h2 style={{ fontFamily: "var(--serif)", fontSize: "clamp(1.7rem, 5vw, 2.2rem)", fontWeight: 700, color: "var(--ink)", textAlign: "center", margin: "0 0 8px" }}>{c.formTitle}</h2>
         <p style={{ textAlign: "center", color: "var(--ink-dim)", fontSize: "0.98rem", lineHeight: 1.6, marginBottom: 28 }}>
           {c.formSubtitle}
@@ -342,6 +358,8 @@ export default function BtsGiveawayPage() {
             <Link href="/bts-sweepstakes-terms" style={{ color: "var(--sakura)", fontWeight: 600 }}>{c.fineLink}</Link>{c.finePost}
           </p>
         </form>
+          </>
+        )}
       </section>
     </main>
   );

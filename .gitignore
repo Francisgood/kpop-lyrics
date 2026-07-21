@@ -7,6 +7,11 @@ prisma/dev.db-journal
 .env*.local
 *.log
 
+# Giveaway draw PII and candidate outreach files must never be committed.
+*.private.csv
+*.candidates.csv
+giveaway-private/
+
 # TS incremental build artifact — never commit
 tsconfig.tsbuildinfo
 
