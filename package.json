@@ -10,7 +10,11 @@
     "giveaway:prepare": "node scripts/giveaway/prepare-manifest.mjs",
     "giveaway:finalize": "node scripts/giveaway/finalize-draw.mjs",
     "giveaway:verify": "node scripts/giveaway/verify-draw.mjs",
-    "test:giveaway": "node --test scripts/giveaway/*.test.mjs"
+    "giveaway:chainlink:build": "forge build",
+    "giveaway:chainlink:test": "forge test --no-match-path 'chainlink/test/*Fork*' -vvv",
+    "giveaway:chainlink:test:fork": "forge test --match-path 'chainlink/test/*Fork*' -vvv",
+    "giveaway:chainlink:draw": "node scripts/giveaway/chainlink/run-draw.mjs",
+    "test:giveaway": "node --test scripts/giveaway/*.test.mjs scripts/giveaway/chainlink/*.test.mjs"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.19.1",

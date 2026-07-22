@@ -5,8 +5,13 @@ import { dirname } from "node:path";
 export const CAMPAIGN_ID = "bts-giveaway-2026";
 export const MANIFEST_VERSION = "aegyo-giveaway-manifest-v1";
 export const PROOF_VERSION = "aegyo-vrf-draw-v1";
+export const DRAW_SPEC_VERSION = "aegyo-chainlink-draw-spec-v1";
 export const ALGORITHM_VERSION = "sha256-rank-v1";
 export const DOMAIN_SEPARATOR = "AEGYO_ARENA_BTS_GIVEAWAY_2026_V1";
+export const BASE_CHAIN_ID = 8453;
+export const BASE_CHAIN_NAME = "Base Mainnet";
+export const BASE_EXPLORER = "https://basescan.org";
+export const BASE_VRF_WRAPPER = "0xb0407dbe851f8318bd31404A49e658143C982F23";
 export const TEST_SEED_PHRASE = "AEGYO BTS GIVEAWAY REHEARSAL 2026-07-21 — NOT FOR PRODUCTION";
 export const TEST_RANDOM_WORD = `0x${createHash("sha256").update(TEST_SEED_PHRASE).digest("hex")}`;
 
@@ -149,6 +154,45 @@ export function proofCommitment(proof) {
   return hashCanonical(payload);
 }
 
+export function drawSpecCommitment(drawSpec) {
+  const { drawSpecHash: _drawSpecHash, ...payload } = drawSpec;
+  return hashCanonical(payload);
+}
+
+export function validateDrawSpec(drawSpec, manifest) {
+  validateManifest(manifest);
+  if (drawSpec.drawSpecVersion !== DRAW_SPEC_VERSION) throw new Error("Unsupported draw spec version");
+  if (drawSpec.campaignId !== CAMPAIGN_ID || drawSpec.manifestHash !== manifest.manifestHash) {
+    throw new Error("Draw spec is for a different campaign or manifest");
+  }
+  if (drawSpec.eligibleCount !== manifest.eligibleCount) throw new Error("Draw spec eligible count mismatch");
+  if (drawSpecCommitment(drawSpec) !== drawSpec.drawSpecHash) throw new Error("Draw spec hash mismatch");
+  if (
+    drawSpec.randomness?.provider !== "Chainlink VRF v2.5"
+    || drawSpec.randomness?.chainName !== BASE_CHAIN_NAME
+    || drawSpec.randomness?.chainId !== BASE_CHAIN_ID
+    || drawSpec.randomness?.paymentMode !== "native-direct-funding"
+    || drawSpec.randomness?.wrapperAddress?.toLowerCase() !== BASE_VRF_WRAPPER.toLowerCase()
+    || drawSpec.randomness?.numWords !== 1
+    || drawSpec.randomness?.requestConfirmations !== 20
+    || drawSpec.randomness?.callbackGasLimit !== 100000
+    || drawSpec.randomness?.fulfillmentPublicationConfirmations !== 20
+    || !/^0x[0-9a-fA-F]{40}$/.test(drawSpec.randomness?.wrapperAddress ?? "")
+  ) {
+    throw new Error("Draw spec Chainlink configuration mismatch");
+  }
+  if (
+    drawSpec.selection?.algorithmVersion !== ALGORITHM_VERSION
+    || drawSpec.selection?.domainSeparator !== DOMAIN_SEPARATOR
+    || canonicalJson(drawSpec.selection?.grandPrizePositions) !== canonicalJson([1, 2, 3, 4, 5])
+    || canonicalJson(drawSpec.selection?.runnerUpPositions) !== canonicalJson([6, 7, 8, 9, 10])
+    || drawSpec.selection?.rerollsAllowed !== false
+  ) {
+    throw new Error("Draw spec selection policy mismatch");
+  }
+  return drawSpec;
+}
+
 export function rankEntries(manifest, randomWordInput) {
   const randomWord = normalizeRandomWord(randomWordInput);
   const entries = manifest.entries.map(({ publicId }) => ({
@@ -172,7 +216,23 @@ export function validateManifest(manifest) {
   return manifest;
 }
 
-export function validateProof(manifest, proof) {
+export function validatePrivateRoster(manifest, privateRows) {
+  validateManifest(manifest);
+  if (!Array.isArray(privateRows) || privateRows.length !== manifest.eligibleCount) {
+    throw new Error("Private manifest count mismatch");
+  }
+  if (hashCanonical(privateRows) !== manifest.privateRosterHash) {
+    throw new Error("Private manifest does not match the committed privateRosterHash");
+  }
+  const privateIds = privateRows.map((row) => row.publicId);
+  const publicIds = manifest.entries.map((entry) => entry.publicId);
+  if (new Set(privateIds).size !== privateIds.length || canonicalJson(privateIds) !== canonicalJson(publicIds)) {
+    throw new Error("Private manifest public IDs do not exactly match the frozen manifest");
+  }
+  return privateRows;
+}
+
+export function validateProof(manifest, proof, drawSpec) {
   validateManifest(manifest);
   if (proof.proofVersion !== PROOF_VERSION) throw new Error("Unsupported proof version");
   if (proof.status !== "complete") throw new Error("Draw proof is not complete");
@@ -188,23 +248,37 @@ export function validateProof(manifest, proof) {
   if (proof.mode === "test") {
     if (proof.randomness.testOnly !== true) throw new Error("Test proof must be marked test-only");
   } else {
+    if (!drawSpec) throw new Error("Production proof validation requires the committed draw spec");
+    validateDrawSpec(drawSpec, manifest);
     if (proof.randomness.source !== "chainlink-vrf-v2.5" || proof.randomness.testOnly !== false) {
       throw new Error("Production proof must contain Chainlink VRF v2.5 evidence");
     }
+    const requestId = normalizeRandomWord(proof.randomness.requestId ?? "invalid");
+    const randomWord = normalizeRandomWord(proof.randomness.randomWord);
+    const transactionHashes = [
+      proof.randomness.deploymentTx,
+      proof.randomness.requestTx,
+      proof.randomness.fulfillmentTx,
+    ];
     if (
-      !Number.isInteger(proof.randomness.chainId)
-      || proof.randomness.chainId <= 0
-      || typeof proof.randomness.chainName !== "string"
+      proof.randomness.chainId !== drawSpec.randomness.chainId
+      || proof.randomness.chainName !== drawSpec.randomness.chainName
+      || proof.randomness.wrapperAddress?.toLowerCase() !== drawSpec.randomness.wrapperAddress.toLowerCase()
+      || proof.randomness.drawSpecHash !== drawSpec.drawSpecHash
       || !/^0x[0-9a-fA-F]{40}$/.test(proof.randomness.consumerAddress ?? "")
       || !/^(?:0x[0-9a-fA-F]+|[0-9]+)$/.test(proof.randomness.requestId ?? "")
+      || !/^0x[0-9a-fA-F]{64}$/.test(proof.randomness.deploymentTx ?? "")
       || !/^0x[0-9a-fA-F]{64}$/.test(proof.randomness.requestTx ?? "")
       || !/^0x[0-9a-fA-F]{64}$/.test(proof.randomness.fulfillmentTx ?? "")
-      || typeof proof.randomness.explorerBaseUrl !== "string"
-      || !proof.randomness.explorerBaseUrl.startsWith("https://")
+      || !/^[0-9a-f]{40}$/.test(proof.randomness.codeCommit ?? "")
+      || proof.randomness.explorerBaseUrl !== BASE_EXPLORER
+      || requestId === normalizeRandomWord("0")
+      || randomWord === TEST_RANDOM_WORD
+      || proof.randomness.consumerAddress?.toLowerCase() === proof.randomness.wrapperAddress?.toLowerCase()
+      || new Set(transactionHashes.map((hash) => hash?.toLowerCase())).size !== transactionHashes.length
     ) {
       throw new Error("Production proof Chainlink evidence is incomplete or invalid");
     }
-    normalizeRandomWord(proof.randomness.requestId);
   }
 
   const order = rankEntries(manifest, proof.randomness.randomWord);

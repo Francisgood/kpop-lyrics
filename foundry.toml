@@ -1,0 +1,19 @@
+[profile.default]
+src = "chainlink/src"
+test = "chainlink/test"
+out = "chainlink/out"
+cache_path = "chainlink/cache"
+libs = []
+solc_version = "0.8.24"
+evm_version = "cancun"
+optimizer = true
+optimizer_runs = 200
+bytecode_hash = "ipfs"
+cbor_metadata = true
+
+[fuzz]
+runs = 512
+
+[invariant]
+runs = 128
+depth = 32

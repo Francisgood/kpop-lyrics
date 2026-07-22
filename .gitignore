@@ -12,6 +12,15 @@ prisma/dev.db-journal
 *.candidates.csv
 giveaway-private/
 
+# One-shot Chainlink draw build/runtime artifacts. Public proof JSON is tracked
+# separately under public/giveaway/bts-2026/; local operator state is not.
+chainlink/out/
+chainlink/cache/
+chainlink/broadcast/
+chainlink/draw-state/
+*.draw-state.json
+*.keystore-password
+
 # TS incremental build artifact — never commit
 tsconfig.tsbuildinfo
 
