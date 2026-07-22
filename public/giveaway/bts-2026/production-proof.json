@@ -1,6 +1,86 @@
 {
+  "algorithm": {
+    "description": "For every public entry ID, SHA-256(domain separator, manifest hash, normalized uint256 random word, public ID); sort ascending by score then public ID.",
+    "domainSeparator": "AEGYO_ARENA_BTS_GIVEAWAY_2026_V1",
+    "version": "sha256-rank-v1"
+  },
   "campaignId": "bts-giveaway-2026",
+  "completeOrderHash": "8645600e53cd72761ad9172dda75cae7309cd808e7133349cc75d5f3af69bfd8",
+  "eligibleCount": 186,
+  "manifestHash": "9fddd6971f8bb7c94a0b4e7705c0cbfab58d545fa4e26316221e8d853b6cad7b",
   "mode": "production",
+  "grandPrizeCandidates": [
+    {
+      "publicId": "AA-0014",
+      "score": "013042c8a2f1cc7e76901235b6f3d942b8f73a6f25acde38b178ad6432f64c46",
+      "position": 1
+    },
+    {
+      "publicId": "AA-0081",
+      "score": "015b5ee15f5dcf0e3f9d3d31f3e0ffc668a694a1a33092c6ff6296156e7727dc",
+      "position": 2
+    },
+    {
+      "publicId": "AA-0178",
+      "score": "01bdaa5acc0d3e7fd0855b893dceb5101ffb092f2e708cf044205b7d3661e80b",
+      "position": 3
+    },
+    {
+      "publicId": "AA-0159",
+      "score": "01ce870689ab2438ff7b7e846758ee34de7fe60e3975867d90260adee912a235",
+      "position": 4
+    },
+    {
+      "publicId": "AA-0048",
+      "score": "032f85c6aa28b90e828fa731ed67ba59a620eb48ce9b3aa22e4e4a929570bf8b",
+      "position": 5
+    }
+  ],
+  "producedAt": "2026-07-22T19:31:44.392Z",
   "proofVersion": "aegyo-vrf-draw-v1",
-  "status": "pending"
+  "randomness": {
+    "chainId": 8453,
+    "chainName": "Base Mainnet",
+    "codeCommit": "b85073bd1f9f468726b9b33588b6194b3100d798",
+    "consumerAddress": "0x0468BE016cbeE6aE57EDE4DBc977465e504c88e0",
+    "deploymentTx": "0xccc9bdbb24d6d3aab849c9bc62aadd06d2d4a8cacfd75284776ba71dcdb2f5da",
+    "drawSpecHash": "14b3e4f19ec1723664d8f26e5c370eec248c105a361f4738f649fe959b5cd46a",
+    "explorerBaseUrl": "https://basescan.org",
+    "fulfillmentTx": "0x74f50f6340f1ef8f37aaeff393dfa314b5e987db3ae6fe690e59052ed0fdd566",
+    "randomWord": "0xac341dc16f8a2fc1d89e61c7cf58eae6b5a36f07264efd52c793230fb404d0c1",
+    "requestId": "39739693015164471587621501511093703024017868672235404125884228199188152067387",
+    "requestTx": "0xe9aa79d73a2873e93576601b408983187c6ea071858d83cb7baf2a4415efb962",
+    "source": "chainlink-vrf-v2.5",
+    "testOnly": false,
+    "wrapperAddress": "0xb0407dbe851f8318bd31404A49e658143C982F23"
+  },
+  "runnerUpCandidates": [
+    {
+      "publicId": "AA-0122",
+      "score": "042614b6387f4d198ce1896ed605ed666c4b3116c1e473d9b1ab708ca20751fe",
+      "position": 1
+    },
+    {
+      "publicId": "AA-0068",
+      "score": "0475001a6f3e9e0b11d734631e01682b5599c742d5e2cd7e517f9dd13d0ebd58",
+      "position": 2
+    },
+    {
+      "publicId": "AA-0044",
+      "score": "06cdd72e8fd38b1d39f65fc11a97839981d9103d9628fc53df1ca348d107c590",
+      "position": 3
+    },
+    {
+      "publicId": "AA-0155",
+      "score": "06ec91d66882b117be59b55879208b33979fb33003ba2436dadf3806ae5baf42",
+      "position": 4
+    },
+    {
+      "publicId": "AA-0162",
+      "score": "070d66c4c178f6a9ee69fd57b7ed55cd8e09c92f5a4911ca6165ac2d726450ef",
+      "position": 5
+    }
+  ],
+  "status": "complete",
+  "proofHash": "44459c830582ee58ec4e32d57c42c396da3563cea0711b0ba4907cc31f5c2117"
 }
