@@ -1,0 +1,580 @@
+{
+  "campaignId": "bts-giveaway-2026",
+  "cutoff": "2026-07-17T23:59:59-04:00",
+  "eligibilityRule": "One entry per unique normalized email with created_at on or before the cutoff; current subscription status does not remove an entry.",
+  "eligibleCount": 186,
+  "entries": [
+    {
+      "publicId": "AA-0001"
+    },
+    {
+      "publicId": "AA-0002"
+    },
+    {
+      "publicId": "AA-0003"
+    },
+    {
+      "publicId": "AA-0004"
+    },
+    {
+      "publicId": "AA-0005"
+    },
+    {
+      "publicId": "AA-0006"
+    },
+    {
+      "publicId": "AA-0007"
+    },
+    {
+      "publicId": "AA-0008"
+    },
+    {
+      "publicId": "AA-0009"
+    },
+    {
+      "publicId": "AA-0010"
+    },
+    {
+      "publicId": "AA-0011"
+    },
+    {
+      "publicId": "AA-0012"
+    },
+    {
+      "publicId": "AA-0013"
+    },
+    {
+      "publicId": "AA-0014"
+    },
+    {
+      "publicId": "AA-0015"
+    },
+    {
+      "publicId": "AA-0016"
+    },
+    {
+      "publicId": "AA-0017"
+    },
+    {
+      "publicId": "AA-0018"
+    },
+    {
+      "publicId": "AA-0019"
+    },
+    {
+      "publicId": "AA-0020"
+    },
+    {
+      "publicId": "AA-0021"
+    },
+    {
+      "publicId": "AA-0022"
+    },
+    {
+      "publicId": "AA-0023"
+    },
+    {
+      "publicId": "AA-0024"
+    },
+    {
+      "publicId": "AA-0025"
+    },
+    {
+      "publicId": "AA-0026"
+    },
+    {
+      "publicId": "AA-0027"
+    },
+    {
+      "publicId": "AA-0028"
+    },
+    {
+      "publicId": "AA-0029"
+    },
+    {
+      "publicId": "AA-0030"
+    },
+    {
+      "publicId": "AA-0031"
+    },
+    {
+      "publicId": "AA-0032"
+    },
+    {
+      "publicId": "AA-0033"
+    },
+    {
+      "publicId": "AA-0034"
+    },
+    {
+      "publicId": "AA-0035"
+    },
+    {
+      "publicId": "AA-0036"
+    },
+    {
+      "publicId": "AA-0037"
+    },
+    {
+      "publicId": "AA-0038"
+    },
+    {
+      "publicId": "AA-0039"
+    },
+    {
+      "publicId": "AA-0040"
+    },
+    {
+      "publicId": "AA-0041"
+    },
+    {
+      "publicId": "AA-0042"
+    },
+    {
+      "publicId": "AA-0043"
+    },
+    {
+      "publicId": "AA-0044"
+    },
+    {
+      "publicId": "AA-0045"
+    },
+    {
+      "publicId": "AA-0046"
+    },
+    {
+      "publicId": "AA-0047"
+    },
+    {
+      "publicId": "AA-0048"
+    },
+    {
+      "publicId": "AA-0049"
+    },
+    {
+      "publicId": "AA-0050"
+    },
+    {
+      "publicId": "AA-0051"
+    },
+    {
+      "publicId": "AA-0052"
+    },
+    {
+      "publicId": "AA-0053"
+    },
+    {
+      "publicId": "AA-0054"
+    },
+    {
+      "publicId": "AA-0055"
+    },
+    {
+      "publicId": "AA-0056"
+    },
+    {
+      "publicId": "AA-0057"
+    },
+    {
+      "publicId": "AA-0058"
+    },
+    {
+      "publicId": "AA-0059"
+    },
+    {
+      "publicId": "AA-0060"
+    },
+    {
+      "publicId": "AA-0061"
+    },
+    {
+      "publicId": "AA-0062"
+    },
+    {
+      "publicId": "AA-0063"
+    },
+    {
+      "publicId": "AA-0064"
+    },
+    {
+      "publicId": "AA-0065"
+    },
+    {
+      "publicId": "AA-0066"
+    },
+    {
+      "publicId": "AA-0067"
+    },
+    {
+      "publicId": "AA-0068"
+    },
+    {
+      "publicId": "AA-0069"
+    },
+    {
+      "publicId": "AA-0070"
+    },
+    {
+      "publicId": "AA-0071"
+    },
+    {
+      "publicId": "AA-0072"
+    },
+    {
+      "publicId": "AA-0073"
+    },
+    {
+      "publicId": "AA-0074"
+    },
+    {
+      "publicId": "AA-0075"
+    },
+    {
+      "publicId": "AA-0076"
+    },
+    {
+      "publicId": "AA-0077"
+    },
+    {
+      "publicId": "AA-0078"
+    },
+    {
+      "publicId": "AA-0079"
+    },
+    {
+      "publicId": "AA-0080"
+    },
+    {
+      "publicId": "AA-0081"
+    },
+    {
+      "publicId": "AA-0082"
+    },
+    {
+      "publicId": "AA-0083"
+    },
+    {
+      "publicId": "AA-0084"
+    },
+    {
+      "publicId": "AA-0085"
+    },
+    {
+      "publicId": "AA-0086"
+    },
+    {
+      "publicId": "AA-0087"
+    },
+    {
+      "publicId": "AA-0088"
+    },
+    {
+      "publicId": "AA-0089"
+    },
+    {
+      "publicId": "AA-0090"
+    },
+    {
+      "publicId": "AA-0091"
+    },
+    {
+      "publicId": "AA-0092"
+    },
+    {
+      "publicId": "AA-0093"
+    },
+    {
+      "publicId": "AA-0094"
+    },
+    {
+      "publicId": "AA-0095"
+    },
+    {
+      "publicId": "AA-0096"
+    },
+    {
+      "publicId": "AA-0097"
+    },
+    {
+      "publicId": "AA-0098"
+    },
+    {
+      "publicId": "AA-0099"
+    },
+    {
+      "publicId": "AA-0100"
+    },
+    {
+      "publicId": "AA-0101"
+    },
+    {
+      "publicId": "AA-0102"
+    },
+    {
+      "publicId": "AA-0103"
+    },
+    {
+      "publicId": "AA-0104"
+    },
+    {
+      "publicId": "AA-0105"
+    },
+    {
+      "publicId": "AA-0106"
+    },
+    {
+      "publicId": "AA-0107"
+    },
+    {
+      "publicId": "AA-0108"
+    },
+    {
+      "publicId": "AA-0109"
+    },
+    {
+      "publicId": "AA-0110"
+    },
+    {
+      "publicId": "AA-0111"
+    },
+    {
+      "publicId": "AA-0112"
+    },
+    {
+      "publicId": "AA-0113"
+    },
+    {
+      "publicId": "AA-0114"
+    },
+    {
+      "publicId": "AA-0115"
+    },
+    {
+      "publicId": "AA-0116"
+    },
+    {
+      "publicId": "AA-0117"
+    },
+    {
+      "publicId": "AA-0118"
+    },
+    {
+      "publicId": "AA-0119"
+    },
+    {
+      "publicId": "AA-0120"
+    },
+    {
+      "publicId": "AA-0121"
+    },
+    {
+      "publicId": "AA-0122"
+    },
+    {
+      "publicId": "AA-0123"
+    },
+    {
+      "publicId": "AA-0124"
+    },
+    {
+      "publicId": "AA-0125"
+    },
+    {
+      "publicId": "AA-0126"
+    },
+    {
+      "publicId": "AA-0127"
+    },
+    {
+      "publicId": "AA-0128"
+    },
+    {
+      "publicId": "AA-0129"
+    },
+    {
+      "publicId": "AA-0130"
+    },
+    {
+      "publicId": "AA-0131"
+    },
+    {
+      "publicId": "AA-0132"
+    },
+    {
+      "publicId": "AA-0133"
+    },
+    {
+      "publicId": "AA-0134"
+    },
+    {
+      "publicId": "AA-0135"
+    },
+    {
+      "publicId": "AA-0136"
+    },
+    {
+      "publicId": "AA-0137"
+    },
+    {
+      "publicId": "AA-0138"
+    },
+    {
+      "publicId": "AA-0139"
+    },
+    {
+      "publicId": "AA-0140"
+    },
+    {
+      "publicId": "AA-0141"
+    },
+    {
+      "publicId": "AA-0142"
+    },
+    {
+      "publicId": "AA-0143"
+    },
+    {
+      "publicId": "AA-0144"
+    },
+    {
+      "publicId": "AA-0145"
+    },
+    {
+      "publicId": "AA-0146"
+    },
+    {
+      "publicId": "AA-0147"
+    },
+    {
+      "publicId": "AA-0148"
+    },
+    {
+      "publicId": "AA-0149"
+    },
+    {
+      "publicId": "AA-0150"
+    },
+    {
+      "publicId": "AA-0151"
+    },
+    {
+      "publicId": "AA-0152"
+    },
+    {
+      "publicId": "AA-0153"
+    },
+    {
+      "publicId": "AA-0154"
+    },
+    {
+      "publicId": "AA-0155"
+    },
+    {
+      "publicId": "AA-0156"
+    },
+    {
+      "publicId": "AA-0157"
+    },
+    {
+      "publicId": "AA-0158"
+    },
+    {
+      "publicId": "AA-0159"
+    },
+    {
+      "publicId": "AA-0160"
+    },
+    {
+      "publicId": "AA-0161"
+    },
+    {
+      "publicId": "AA-0162"
+    },
+    {
+      "publicId": "AA-0163"
+    },
+    {
+      "publicId": "AA-0164"
+    },
+    {
+      "publicId": "AA-0165"
+    },
+    {
+      "publicId": "AA-0166"
+    },
+    {
+      "publicId": "AA-0167"
+    },
+    {
+      "publicId": "AA-0168"
+    },
+    {
+      "publicId": "AA-0169"
+    },
+    {
+      "publicId": "AA-0170"
+    },
+    {
+      "publicId": "AA-0171"
+    },
+    {
+      "publicId": "AA-0172"
+    },
+    {
+      "publicId": "AA-0173"
+    },
+    {
+      "publicId": "AA-0174"
+    },
+    {
+      "publicId": "AA-0175"
+    },
+    {
+      "publicId": "AA-0176"
+    },
+    {
+      "publicId": "AA-0177"
+    },
+    {
+      "publicId": "AA-0178"
+    },
+    {
+      "publicId": "AA-0179"
+    },
+    {
+      "publicId": "AA-0180"
+    },
+    {
+      "publicId": "AA-0181"
+    },
+    {
+      "publicId": "AA-0182"
+    },
+    {
+      "publicId": "AA-0183"
+    },
+    {
+      "publicId": "AA-0184"
+    },
+    {
+      "publicId": "AA-0185"
+    },
+    {
+      "publicId": "AA-0186"
+    }
+  ],
+  "excludedAfterCutoffCount": 28,
+  "frozenAt": "2026-07-21T19:39:29.265Z",
+  "manifestVersion": "aegyo-giveaway-manifest-v1",
+  "privateRosterHash": "fa44d7397bde2ee9735bb6b164b2a6116bbd205cbf35e8b3e6470c9c0130320b",
+  "source": {
+    "filename": "aegyo-arena-basic_subscriber-2026-07-21.csv",
+    "rowCount": 214,
+    "sha256": "900ebc4ad3ef9013da5bb78c739214021c07dbf66891b59f62335e46ea9b4b53"
+  },
+  "statusCounts": {
+    "active": 180,
+    "inactive": 6
+  },
+  "manifestHash": "9fddd6971f8bb7c94a0b4e7705c0cbfab58d545fa4e26316221e8d853b6cad7b"
+}
