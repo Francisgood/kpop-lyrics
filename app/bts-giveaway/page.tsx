@@ -72,7 +72,7 @@ const COPY: Record<Lang, Copy> = {
     referred: "A friend referred you — enter below so their referral counts! 💜",
     prizesLabel: "Prizes",
     prizes: [
-      { badge: "🏆 Grand Prize", title: "2 Luxury Box Seat Tickets", sub: "BTS Arirang World Tour · MetLife Stadium, East Rutherford NJ · August 1, 2026" },
+      { badge: "🏆 Grand Prize", title: "2 Luxury Box Seat Tickets", sub: "$2,200 value · BTS Arirang World Tour · MetLife Stadium, East Rutherford NJ · August 1, 2026" },
       { badge: "Runner-up Prize", title: "BTS Merch Bundle", sub: "$300 value · hoodies, photobooks, official lightstick & more" },
     ],
     disclaimerPre: "No purchase necessary. Open to entrants 18+ where permitted by law. Prizes shown are illustrative. See the ",
@@ -106,7 +106,7 @@ const COPY: Record<Lang, Copy> = {
     referred: "Un amigo te invitó — participa abajo para que su invitación cuente. 💜",
     prizesLabel: "Premios",
     prizes: [
-      { badge: "🏆 Premio mayor", title: "2 boletos de palco de lujo", sub: "BTS Arirang World Tour · MetLife Stadium, East Rutherford NJ · 1 de agosto de 2026" },
+      { badge: "🏆 Premio mayor", title: "2 boletos de palco de lujo", sub: "Valor de $2,200 · BTS Arirang World Tour · MetLife Stadium, East Rutherford NJ · 1 de agosto de 2026" },
       { badge: "Premio secundario", title: "Paquete de merch de BTS", sub: "Valor de $300 · sudaderas, photobooks, lightstick oficial y más" },
     ],
     disclaimerPre: "No es necesario comprar. Abierto a mayores de 18 años donde lo permita la ley. Las imágenes de los premios son ilustrativas. Consulta las ",
