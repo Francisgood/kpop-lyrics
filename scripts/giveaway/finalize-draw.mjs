@@ -10,7 +10,6 @@ import {
   PROOF_VERSION,
   TEST_RANDOM_WORD,
   atomicWrite,
-  hashCanonical,
   normalizeRandomWord,
   parseArgs,
   parseCsv,
@@ -20,7 +19,9 @@ import {
   requireArg,
   sha256,
   stringifyCsv,
+  validateDrawSpec,
   validateManifest,
+  validatePrivateRoster,
   validateProof,
 } from "./lib.mjs";
 
@@ -29,10 +30,12 @@ const mode = requireArg(args, "mode");
 if (mode !== "test" && mode !== "production") throw new Error("--mode must be test or production");
 
 const manifestPath = resolve(args.manifest ?? "public/giveaway/bts-2026/manifest.json");
+const drawSpecPath = resolve(args["draw-spec"] ?? "public/giveaway/bts-2026/draw-spec.json");
 const proofOutputPath = resolve(requireArg(args, "proof-output"));
 const privateManifestPath = resolve(requireArg(args, "private-manifest"));
 const privateOutputPath = resolve(requireArg(args, "private-output"));
 const manifest = validateManifest(await readJson(manifestPath));
+const drawSpec = validateDrawSpec(await readJson(drawSpecPath), manifest);
 
 if (mode === "production") {
   const manifestRepoPath = relative(process.cwd(), manifestPath);
@@ -41,8 +44,9 @@ if (mode === "production") {
   }
   const tracked = spawnSync("git", ["ls-files", "--error-unmatch", "--", manifestRepoPath], { encoding: "utf8" });
   const clean = spawnSync("git", ["diff", "--quiet", "HEAD", "--", manifestRepoPath]);
-  if (tracked.status !== 0 || clean.status !== 0) {
-    throw new Error("Production draw refused: the frozen manifest must be committed and clean before VRF fulfillment");
+  const worktree = spawnSync("git", ["status", "--porcelain=v1"], { encoding: "utf8" });
+  if (tracked.status !== 0 || clean.status !== 0 || worktree.status !== 0 || worktree.stdout.trim() !== "") {
+    throw new Error("Production draw refused: the manifest and draw implementation must be committed and the worktree clean");
   }
 }
 
@@ -60,12 +64,8 @@ if (mode === "production" && randomWord === TEST_RANDOM_WORD) {
   throw new Error("Production draw refused: the rehearsal random word cannot be reused");
 }
 
-const privateRows = parseCsv(await readFile(privateManifestPath, "utf8"));
-if (hashCanonical(privateRows) !== manifest.privateRosterHash) {
-  throw new Error("Private manifest does not match the committed privateRosterHash");
-}
+const privateRows = validatePrivateRoster(manifest, parseCsv(await readFile(privateManifestPath, "utf8")));
 const privateById = new Map(privateRows.map((row) => [row.publicId, row]));
-if (privateById.size !== manifest.eligibleCount) throw new Error("Private manifest count mismatch");
 
 let randomness;
 if (mode === "test") {
@@ -77,6 +77,10 @@ if (mode === "test") {
 } else {
   const chainId = Number(requireArg(args, "chain-id"));
   const consumerAddress = requireArg(args, "consumer-address");
+  const wrapperAddress = requireArg(args, "wrapper-address");
+  const deploymentTx = requireArg(args, "deployment-tx");
+  const drawSpecHash = requireArg(args, "draw-spec-hash");
+  const codeCommit = requireArg(args, "code-commit");
   const requestId = requireArg(args, "request-id");
   const requestTx = requireArg(args, "request-tx");
   const fulfillmentTx = requireArg(args, "fulfillment-tx");
@@ -84,13 +88,24 @@ if (mode === "test") {
   if (!Number.isInteger(chainId) || chainId <= 0) throw new Error("Invalid --chain-id");
   normalizeRandomWord(requestId);
   if (!/^0x[0-9a-fA-F]{40}$/.test(consumerAddress)) throw new Error("Invalid --consumer-address");
+  if (!/^0x[0-9a-fA-F]{40}$/.test(wrapperAddress)) throw new Error("Invalid --wrapper-address");
+  if (!/^0x[0-9a-fA-F]{64}$/.test(deploymentTx)) throw new Error("Invalid --deployment-tx");
+  if (!/^[0-9a-f]{64}$/.test(drawSpecHash)) throw new Error("Invalid --draw-spec-hash");
+  if (!/^[0-9a-f]{40}$/.test(codeCommit)) throw new Error("Invalid --code-commit");
+  const currentCommit = spawnSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" });
+  if (currentCommit.status !== 0 || currentCommit.stdout.trim() !== codeCommit) {
+    throw new Error("--code-commit must equal the currently checked-out draw implementation commit");
+  }
   if (!/^0x[0-9a-fA-F]{64}$/.test(requestTx)) throw new Error("Invalid --request-tx");
   if (!/^0x[0-9a-fA-F]{64}$/.test(fulfillmentTx)) throw new Error("Invalid --fulfillment-tx");
   if (new URL(explorerBaseUrl).protocol !== "https:") throw new Error("--explorer-base-url must use HTTPS");
   randomness = {
     chainId,
     chainName: requireArg(args, "chain-name"),
+    codeCommit,
     consumerAddress,
+    deploymentTx,
+    drawSpecHash,
     explorerBaseUrl,
     fulfillmentTx,
     randomWord,
@@ -98,6 +113,7 @@ if (mode === "test") {
     requestTx,
     source: "chainlink-vrf-v2.5",
     testOnly: false,
+    wrapperAddress,
   };
 }
 
@@ -123,7 +139,7 @@ const proofPayload = {
   status: "complete",
 };
 const proof = { ...proofPayload, proofHash: proofCommitment(proofPayload) };
-validateProof(manifest, proof);
+validateProof(manifest, proof, drawSpec);
 
 const contactRows = [
   ...grandPrizeCandidates.map((candidate) => ({ group: "grand-prize", ...candidate })),
@@ -142,12 +158,14 @@ const contactRows = [
   };
 });
 
-await atomicWrite(proofOutputPath, `${JSON.stringify(proof, null, 2)}\n`);
 await atomicWrite(
   privateOutputPath,
   stringifyCsv(contactRows, ["group", "position", "publicId", "email", "subscriberId", "status", "createdAt"]),
   0o600,
 );
+// The public write-once proof is the final marker. If the process crashes after this
+// write, the private mapping is already durable and a recovery run can verify both.
+await atomicWrite(proofOutputPath, `${JSON.stringify(proof, null, 2)}\n`);
 
 process.stdout.write(
   `${JSON.stringify({

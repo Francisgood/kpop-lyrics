@@ -1,11 +1,19 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  ALGORITHM_VERSION,
+  BASE_CHAIN_ID,
+  BASE_CHAIN_NAME,
+  BASE_EXPLORER,
+  BASE_VRF_WRAPPER,
   CAMPAIGN_ID,
+  DRAW_SPEC_VERSION,
   MANIFEST_VERSION,
   PROOF_VERSION,
   TEST_RANDOM_WORD,
   canonicalJson,
+  drawSpecCommitment,
+  hashCanonical,
   manifestCommitment,
   normalizeRandomWord,
   parseCsv,
@@ -14,7 +22,9 @@ import {
   readJson,
   sha256,
   validateManifest,
+  validatePrivateRoster,
   validateProof,
+  validateDrawSpec,
 } from "./lib.mjs";
 
 function fixtureManifest(count = 20) {
@@ -47,6 +57,69 @@ function fixtureProof(manifest) {
     producedAt: "2026-07-21T00:00:00.000Z",
     proofVersion: PROOF_VERSION,
     randomness: { randomWord: TEST_RANDOM_WORD, source: "fixture", testOnly: true },
+    runnerUpCandidates: order.slice(5, 10).map((entry, index) => ({ ...entry, position: index + 1 })),
+    status: "complete",
+  };
+  return { ...payload, proofHash: proofCommitment(payload) };
+}
+
+function fixtureDrawSpec(manifest) {
+  const payload = {
+    campaignId: CAMPAIGN_ID,
+    drawSpecVersion: DRAW_SPEC_VERSION,
+    eligibleCount: manifest.eligibleCount,
+    manifestHash: manifest.manifestHash,
+    randomness: {
+      callbackGasLimit: 100000,
+      chainId: BASE_CHAIN_ID,
+      chainName: BASE_CHAIN_NAME,
+      fulfillmentPublicationConfirmations: 20,
+      numWords: 1,
+      paymentMode: "native-direct-funding",
+      provider: "Chainlink VRF v2.5",
+      requestConfirmations: 20,
+      wrapperAddress: BASE_VRF_WRAPPER,
+    },
+    selection: {
+      algorithmVersion: ALGORITHM_VERSION,
+      domainSeparator: "AEGYO_ARENA_BTS_GIVEAWAY_2026_V1",
+      grandPrizePositions: [1, 2, 3, 4, 5],
+      rerollsAllowed: false,
+      runnerUpPositions: [6, 7, 8, 9, 10],
+    },
+  };
+  return { ...payload, drawSpecHash: drawSpecCommitment(payload) };
+}
+
+function fixtureProductionProof(manifest, drawSpec) {
+  const randomWord = normalizeRandomWord("42");
+  const order = rankEntries(manifest, randomWord);
+  const payload = {
+    algorithm: { description: "fixture", domainSeparator: "fixture", version: ALGORITHM_VERSION },
+    campaignId: CAMPAIGN_ID,
+    completeOrderHash: sha256(order.map((entry) => entry.publicId).join("\n")),
+    eligibleCount: manifest.eligibleCount,
+    grandPrizeCandidates: order.slice(0, 5).map((entry, index) => ({ ...entry, position: index + 1 })),
+    manifestHash: manifest.manifestHash,
+    mode: "production",
+    producedAt: "2026-07-22T00:00:00.000Z",
+    proofVersion: PROOF_VERSION,
+    randomness: {
+      chainId: BASE_CHAIN_ID,
+      chainName: BASE_CHAIN_NAME,
+      codeCommit: "a".repeat(40),
+      consumerAddress: "0x1111111111111111111111111111111111111111",
+      deploymentTx: `0x${"b".repeat(64)}`,
+      drawSpecHash: drawSpec.drawSpecHash,
+      explorerBaseUrl: BASE_EXPLORER,
+      fulfillmentTx: `0x${"c".repeat(64)}`,
+      randomWord,
+      requestId: "123",
+      requestTx: `0x${"d".repeat(64)}`,
+      source: "chainlink-vrf-v2.5",
+      testOnly: false,
+      wrapperAddress: BASE_VRF_WRAPPER,
+    },
     runnerUpCandidates: order.slice(5, 10).map((entry, index) => ({ ...entry, position: index + 1 })),
     status: "complete",
   };
@@ -91,13 +164,46 @@ test("manifest or proof tampering fails verification", () => {
   assert.throws(() => validateProof(manifest, changed), /hash|reproduce/);
 });
 
+test("private roster must match the committed hash, count, and public-ID order", () => {
+  const privateRows = Array.from({ length: 20 }, (_, index) => ({
+    publicId: `AA-${String(index + 1).padStart(4, "0")}`,
+    email: `fan-${index + 1}@example.test`,
+  }));
+  const manifest = fixtureManifest();
+  manifest.privateRosterHash = hashCanonical(privateRows);
+  manifest.manifestHash = manifestCommitment(manifest);
+  validatePrivateRoster(manifest, privateRows);
+
+  const reordered = structuredClone(privateRows);
+  [reordered[0], reordered[1]] = [reordered[1], reordered[0]];
+  assert.throws(() => validatePrivateRoster(manifest, reordered), /privateRosterHash|public IDs/);
+});
+
 test("production proofs fail closed without complete Chainlink evidence", () => {
   const manifest = fixtureManifest();
+  const drawSpec = fixtureDrawSpec(manifest);
   const proof = fixtureProof(manifest);
   proof.mode = "production";
   proof.randomness = { randomWord: TEST_RANDOM_WORD, source: "fixture", testOnly: false };
   proof.proofHash = proofCommitment(proof);
-  assert.throws(() => validateProof(manifest, proof), /Chainlink VRF v2.5 evidence/);
+  assert.throws(() => validateProof(manifest, proof, drawSpec), /Chainlink VRF v2.5 evidence/);
+});
+
+test("production proof binds the wrapper, draw spec, deployment, and source commit", () => {
+  const manifest = fixtureManifest();
+  const drawSpec = fixtureDrawSpec(manifest);
+  const proof = fixtureProductionProof(manifest, drawSpec);
+  validateProof(manifest, proof, drawSpec);
+
+  const tampered = structuredClone(proof);
+  tampered.randomness.wrapperAddress = "0x2222222222222222222222222222222222222222";
+  tampered.proofHash = proofCommitment(tampered);
+  assert.throws(() => validateProof(manifest, tampered, drawSpec), /evidence is incomplete/);
+
+  const rehearsalWord = structuredClone(proof);
+  rehearsalWord.randomness.randomWord = TEST_RANDOM_WORD;
+  rehearsalWord.proofHash = proofCommitment(rehearsalWord);
+  assert.throws(() => validateProof(manifest, rehearsalWord, drawSpec), /evidence is incomplete/);
 });
 
 test("canonical JSON ignores object insertion order", () => {
@@ -127,7 +233,20 @@ test("committed production proof is pending or independently valid", async () =>
     return;
   }
   assert.equal(proof.mode, "production");
-  const verified = validateProof(manifest, proof);
+  const drawSpec = validateDrawSpec(await readJson("public/giveaway/bts-2026/draw-spec.json"), manifest);
+  const verified = validateProof(manifest, proof, drawSpec);
   assert.equal(verified.grandPrizeCandidates.length, 5);
   assert.equal(verified.runnerUpCandidates.length, 5);
+});
+
+test("committed one-shot draw spec binds Base VRF and the frozen selection policy", async () => {
+  const manifest = validateManifest(await readJson("public/giveaway/bts-2026/manifest.json"));
+  const drawSpec = await readJson("public/giveaway/bts-2026/draw-spec.json");
+  assert.equal(drawSpec.drawSpecVersion, DRAW_SPEC_VERSION);
+  assert.equal(drawSpec.drawSpecHash, drawSpecCommitment(drawSpec));
+  validateDrawSpec(drawSpec, manifest);
+
+  const rerollable = structuredClone(drawSpec);
+  rerollable.selection.rerollsAllowed = true;
+  assert.throws(() => validateDrawSpec(rerollable, manifest), /hash|policy/);
 });

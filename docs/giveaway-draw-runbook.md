@@ -1,116 +1,65 @@
 # BTS Giveaway — Chainlink VRF draw runbook
 
-This repository owns the frozen roster commitment, deterministic selection algorithm, public proof, and independent verifier. PII remains in local gitignored CSV files. The production draw is write-once.
+The authoritative operator procedure is [`docs/giveaway-agent-handoff.md`](giveaway-agent-handoff.md). This page explains the design and the evidence an independent reviewer should expect.
 
 ## Frozen policy
 
-- Source: `aegyo-arena-basic_subscriber-2026-07-21.csv` supplied as the final roster.
-- Eligibility: one entry per unique normalized email created on or before Friday, July 17, 2026 at 11:59:59 p.m. EDT.
-- Current subscription status does not remove an entry; the rule is based on having subscribed by the cutoff.
-- Selection: five ordered grand-prize candidate positions followed by five ordered runner-up-prize candidate positions, with no overlap.
-- Public output contains IDs only. Email mapping remains private.
-- Test output is never a winner selection and cannot be reused in production.
+- The final source is `aegyo-arena-basic_subscriber-2026-07-21.csv`.
+- Eligibility is one entry per unique normalized email created by July 17, 2026 at 11:59:59 p.m. EDT.
+- The frozen manifest contains 186 anonymous public IDs. Emails remain in a mode-`0600` CSV outside Git.
+- One Chainlink VRF v2.5 word creates one complete deterministic ordering.
+- Positions 1–5 are the ordered grand-prize candidate queue; positions 6–10 are the ordered runner-up queue.
+- Candidates never overlap, and the contract cannot request a second word.
+- A candidate is not a confirmed winner until private eligibility, response, KYC, and agreement checks pass.
 
-## What the VRF value is
+## How one VRF word selects ten candidates
 
-Chainlink VRF fulfills a request with one or more `uint256` random words. This draw needs one word. The finalizer accepts the word as decimal or `0x` hex and normalizes it to 32-byte hex. It ranks every frozen public ID by:
+For every frozen public ID, the verifier computes:
 
 ```text
 SHA-256(
   domain separator + "\n" +
   frozen manifest hash + "\n" +
-  normalized VRF random word + "\n" +
+  normalized uint256 VRF word + "\n" +
   public entry ID
 )
 ```
 
-Scores sort ascending. Positions 1–5 form the grand-prize candidate queue and positions 6–10 form the runner-up-prize candidate queue. The first eligible accepter in each queue receives that queue's prize. The remaining deterministic order is committed by `completeOrderHash`. A different roster, word, or ID changes the result.
+Scores sort ascending, with the public ID as a deterministic tie-break. Taking the first ten produces two disjoint ordered queues. The public proof also commits the complete 186-entry ordering by hash. Anyone can download the manifest, raw VRF word, and verifier and reproduce the result.
+
+## Why this is one-shot
+
+`chainlink/src/AegyoBtsGiveawayDraw.sol` is deployed with four immutable facts: the fixed owner, the official Base VRF v2.5 wrapper, the roster manifest hash, and the draw-spec hash. Its state moves only:
+
+```text
+Open → Requested → Fulfilled
+```
+
+Only the fixed owner can call `requestDraw()`. The authenticated wrapper callback stores exactly one raw word. There is deliberately no reset, cancellation, reroll, owner transfer, arbitrary callback, or second-request path. Unexpected or duplicate callbacks cannot overwrite the accepted word.
+
+The committed draw spec fixes Base Mainnet (`8453`), native direct funding, one word, 20 request confirmations, 100,000 callback gas, 20 additional Base blocks before publication, the official wrapper address, the selection algorithm, and the no-reroll policy. Its hash is stored in the contract and published with the proof.
+
+## Public evidence chain
+
+A completed proof publishes no personal data. It contains:
+
+- manifest and draw-spec hashes;
+- exact public source commit;
+- Base chain ID and official Chainlink wrapper;
+- consumer address and deployment transaction;
+- request ID and request transaction;
+- fulfillment transaction and raw word;
+- proof hash and complete-order hash;
+- five grand-prize public IDs and five runner-up public IDs.
+
+The draw page links the source commit and all three BaseScan records. `scripts/giveaway/verify-draw.mjs` rejects any proof whose roster, spec, wrapper, chain, evidence shape, rankings, complete-order hash, or proof hash does not reproduce.
+
+## Recovery boundary
+
+The operator writes private state before deployment and before the request. If a process crashes after signing, it recovers the exact transaction by wallet nonce and checks on-chain contract state before doing anything else. A mined request is final even if the local process did not see its response. Rerunning the same command resumes; it does not reroll.
+
+The final public proof is write-once. The private candidate mapping is generated only after fulfillment, stored outside Git, and never shown on the public page.
 
 ## Rules reconciliation before outreach
 
-The repository's existing Official Rules page predates the supplied winner agreements and current operating direction. It describes a July 15 cutoff and one combined $2,500 prize, while the final CSV instruction uses July 17 and the agreements split the $2,200 grand prize from the $300 runner-up prize. The draw tooling implements the final CSV and current two-queue direction, but the Administrator must reconcile the controlling public rules before contacting or awarding candidates. This is a legal/operations check, not a randomness reroll.
-
-## Rehearsal already included in the PR
-
-The committed `test-proof.json` uses a deterministic, visibly test-only 256-bit word. Reproduce it with:
-
-```bash
-npm run giveaway:verify -- \
-  --manifest public/giveaway/bts-2026/manifest.json \
-  --proof public/giveaway/bts-2026/test-proof.json
-```
-
-Never contact anyone from the rehearsal list.
-
-## Production: agent steps 1–7
-
-The copy/paste operator handoff is in [`docs/giveaway-agent-handoff.md`](giveaway-agent-handoff.md). It is authoritative for the live execution sequence, evidence fields, stop conditions, and Simon handoff.
-
-### 1. Merge and deploy the frozen manifest
-
-The manifest must be committed and clean before requesting VRF. Record its `manifestHash`, `source.sha256`, `privateRosterHash`, and `eligibleCount` in the operations log.
-
-### 2. Request one Chainlink VRF v2.5 random word
-
-Use the existing funded consumer and the intended production network. Request exactly one word after Step 1. The separate Railway raffle Admin page's “VRF seed” field consumes an already-fulfilled word; it does not make this request. Do not use its local demo draw or its 188 placeholder IDs as production evidence.
-
-The operating agent must identify the deployed consumer's network, address, request function, payment mode, funding, and raw-word storage/event before sending the transaction. Request exactly `numWords = 1`, match fulfillment by `requestId`, confirm callback success, and retain the raw `randomWords[0]`. Do not cancel, reroll, or request a replacement because of the result. Save:
-
-- chain name and numeric chain ID;
-- consumer contract address;
-- request ID;
-- request transaction hash;
-- fulfillment transaction hash;
-- fulfilled random word;
-- block explorer base URL.
-
-If a request is mined but fulfillment or its callback fails, stop and preserve the evidence. Do not silently submit another request. See the full agent handoff for the recovery boundary.
-
-### 3. Finalize the draw once
-
-Keep the private files outside the repository. Replace the example values with the fulfilled evidence:
-
-```bash
-npm run giveaway:finalize -- \
-  --mode production \
-  --manifest public/giveaway/bts-2026/manifest.json \
-  --private-manifest /secure/path/bts-2026.private.csv \
-  --private-output /secure/path/bts-2026.candidates.csv \
-  --proof-output public/giveaway/bts-2026/production-proof.json \
-  --random-word "$VRF_RANDOM_WORD" \
-  --chain-name "$CHAIN_NAME" \
-  --chain-id "$CHAIN_ID" \
-  --consumer-address "$VRF_CONSUMER_ADDRESS" \
-  --request-id "$VRF_REQUEST_ID" \
-  --request-tx "$VRF_REQUEST_TX" \
-  --fulfillment-tx "$VRF_FULFILLMENT_TX" \
-  --explorer-base-url "$BLOCK_EXPLORER_BASE_URL"
-```
-
-The command refuses an uncommitted manifest, the rehearsal word, invalid chain evidence, a mismatched private manifest, or overwriting a completed production proof.
-
-### 4. Independently reproduce it
-
-```bash
-npm run giveaway:verify -- \
-  --manifest public/giveaway/bts-2026/manifest.json \
-  --proof public/giveaway/bts-2026/production-proof.json
-```
-
-Have a second operator run the same command from a clean checkout and compare the ten public IDs and proof hash.
-
-### 5. Check the private mapping
-
-Open `/secure/path/bts-2026.candidates.csv` privately. Confirm it contains exactly five `grand-prize` rows and five `runner-up` rows and that every public ID matches the public proof. Never commit or paste this file into chat.
-
-### 6. Publish the proof
-
-Commit only `public/giveaway/bts-2026/production-proof.json`, push, and deploy. Verify `/bts-giveaway/draw` shows “Production draw complete,” the same ten public IDs, and working transaction links.
-
-### 7. Archive the evidence
-
-Archive the original private CSV, private manifest, candidate mapping, manifest/proof JSON, commit SHA, request/fulfillment transactions, and verifier output in Myosin-controlled storage.
-
-## Step 8 — Simon only
-
-After the Administrator confirms the rules reconciliation above, Simon contacts position 1 in the grand-prize queue and position 1 in the runner-up queue. If either candidate is ineligible, unreachable, unable to attend, or declines within the applicable response window, move to the next position in that same queue. Candidate selection is not final prize award; KYC and the applicable agreement still control acceptance.
+The repository's older Official Rules describe a July 15 cutoff and one combined $2,500 prize. Current operating materials use the July 17 cutoff and separate $2,200 grand-prize / $300 runner-up agreements. The tooling implements the final roster and two-queue instruction, but the Administrator must reconcile the controlling rules before contacting or awarding candidates. That is a legal/operations correction, never a reason to rerun the random draw.

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import manifestJson from "@/public/giveaway/bts-2026/manifest.json";
+import drawSpecJson from "@/public/giveaway/bts-2026/draw-spec.json";
 import productionProofJson from "@/public/giveaway/bts-2026/production-proof.json";
 import testProofJson from "@/public/giveaway/bts-2026/test-proof.json";
 
@@ -26,15 +27,20 @@ type DrawProof = {
     testOnly: boolean;
     chainName?: string;
     chainId?: number;
+    codeCommit?: string;
     consumerAddress?: string;
+    deploymentTx?: string;
+    drawSpecHash?: string;
     requestId?: string;
     requestTx?: string;
     fulfillmentTx?: string;
     explorerBaseUrl?: string;
+    wrapperAddress?: string;
   };
 };
 
 const manifest = manifestJson;
+const drawSpec = drawSpecJson;
 const productionProof = productionProofJson as DrawProof;
 const testProof = testProofJson as DrawProof;
 const card: CSSProperties = {
@@ -83,6 +89,15 @@ function CompleteProof({ proof, rehearsal = false }: { proof: DrawProof; rehears
   const requestUrl = randomness?.explorerBaseUrl && randomness.requestTx
     ? `${randomness.explorerBaseUrl}/tx/${randomness.requestTx}`
     : null;
+  const deploymentUrl = randomness?.explorerBaseUrl && randomness.deploymentTx
+    ? `${randomness.explorerBaseUrl}/tx/${randomness.deploymentTx}`
+    : null;
+  const consumerUrl = randomness?.explorerBaseUrl && randomness.consumerAddress
+    ? `${randomness.explorerBaseUrl}/address/${randomness.consumerAddress}`
+    : null;
+  const sourceUrl = randomness?.codeCommit
+    ? `https://github.com/mateodaza/kpop-lyrics/commit/${randomness.codeCommit}`
+    : null;
 
   return (
     <div style={{ display: "grid", gap: 18 }}>
@@ -102,13 +117,19 @@ function CompleteProof({ proof, rehearsal = false }: { proof: DrawProof; rehears
           <Evidence label="Randomness">{randomness?.source}</Evidence>
           <Evidence label="Random word">{randomness?.randomWord}</Evidence>
           <Evidence label="Manifest hash">{proof.manifestHash}</Evidence>
+          {randomness?.drawSpecHash && <Evidence label="Draw-spec hash">{randomness.drawSpecHash}</Evidence>}
           <Evidence label="Proof hash">{proof.proofHash}</Evidence>
           {randomness?.chainName && <Evidence label="Network">{randomness.chainName} ({randomness.chainId})</Evidence>}
           {randomness?.consumerAddress && <Evidence label="Consumer">{randomness.consumerAddress}</Evidence>}
+          {randomness?.wrapperAddress && <Evidence label="Chainlink wrapper">{randomness.wrapperAddress}</Evidence>}
           {randomness?.requestId && <Evidence label="Request ID">{randomness.requestId}</Evidence>}
+          {randomness?.codeCommit && <Evidence label="Source commit">{randomness.codeCommit}</Evidence>}
         </dl>
-        {(requestUrl || fulfillmentUrl) && (
+        {(deploymentUrl || consumerUrl || requestUrl || fulfillmentUrl || sourceUrl) && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 18px", marginTop: 16 }}>
+            {sourceUrl && <a href={sourceUrl} target="_blank" rel="noreferrer" style={{ color: "var(--sky)", fontWeight: 700 }}>Open source commit ↗</a>}
+            {deploymentUrl && <a href={deploymentUrl} target="_blank" rel="noreferrer" style={{ color: "var(--sky)", fontWeight: 700 }}>Open deployment transaction ↗</a>}
+            {consumerUrl && <a href={consumerUrl} target="_blank" rel="noreferrer" style={{ color: "var(--sky)", fontWeight: 700 }}>Open consumer contract ↗</a>}
             {requestUrl && <a href={requestUrl} target="_blank" rel="noreferrer" style={{ color: "var(--sky)", fontWeight: 700 }}>Open request transaction ↗</a>}
             {fulfillmentUrl && <a href={fulfillmentUrl} target="_blank" rel="noreferrer" style={{ color: "var(--sky)", fontWeight: 700 }}>Open fulfillment transaction ↗</a>}
           </div>
@@ -140,8 +161,11 @@ export default function GiveawayDrawPage() {
         <div style={{ marginTop: 18, paddingTop: 16, borderTop: "1px solid var(--border)" }}>
           <div style={{ color: "var(--ink-faint)", fontSize: "0.75rem", marginBottom: 5 }}>FROZEN MANIFEST HASH</div>
           <code style={{ ...mono, color: "var(--volt)", fontSize: "0.78rem" }}>{manifest.manifestHash}</code>
+          <div style={{ color: "var(--ink-faint)", fontSize: "0.75rem", margin: "14px 0 5px" }}>FROZEN DRAW-SPEC HASH</div>
+          <code style={{ ...mono, color: "var(--volt)", fontSize: "0.78rem" }}>{drawSpec.drawSpecHash}</code>
           <div style={{ marginTop: 10, display: "flex", gap: 16, flexWrap: "wrap" }}>
             <a href="/giveaway/bts-2026/manifest.json" style={{ color: "var(--sky)", fontWeight: 700 }}>Download public manifest</a>
+            <a href="/giveaway/bts-2026/draw-spec.json" style={{ color: "var(--sky)", fontWeight: 700 }}>Download draw spec</a>
             <a href="https://github.com/Francisgood/kpop-lyrics/tree/main/scripts/giveaway" target="_blank" rel="noreferrer" style={{ color: "var(--sky)", fontWeight: 700 }}>View verifier source ↗</a>
           </div>
         </div>
