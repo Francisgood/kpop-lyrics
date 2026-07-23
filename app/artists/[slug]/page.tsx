@@ -49,6 +49,24 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
   ]);
 
   if (!artist) notFound();
+
+  // Aegyo Arena's own articles about this artist (published by the news publisher
+  // to /news/<artistSlug>/<slug>). Featured at the top of News & Gossip below.
+  type HostedArticle = {
+    slug: string; headline: string; esHeadline: string | null;
+    subheadline: string | null; esSubheadline: string | null;
+    category: string | null; imageUrl: string | null; publishedAt: Date | null;
+  };
+  let hostedArticles: HostedArticle[] = [];
+  try {
+    hostedArticles = await prisma.$queryRaw<HostedArticle[]>`
+      SELECT "slug","headline","esHeadline","subheadline","esSubheadline","category","imageUrl","publishedAt"
+      FROM "NewsPost"
+      WHERE "status" = 'live' AND "artistSlug" = ${slug} AND "slug" IS NOT NULL
+      ORDER BY "publishedAt" DESC NULLS LAST, "createdAt" DESC
+      LIMIT 12`;
+  } catch { hostedArticles = []; }
+
   const isLoggedIn = !!session;
   const isGroup = artist.type === "GROUP";
   const members = artist.groupOf;
@@ -216,10 +234,44 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
             </section>
 
             {/* Gossip & News */}
-            {artist.news.length > 0 && (
+            {(hostedArticles.length > 0 || artist.news.length > 0) && (
               <section>
                 <div className="section-header"><T en="News & Gossip" es="Noticias y Chismes" /></div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  {/* Aegyo Arena articles about this artist — click through to the full story. */}
+                  {hostedArticles.map((a) => (
+                    <Link key={a.slug} href={`/news/${slug}/${a.slug}`} style={{ textDecoration: "none" }}>
+                      <div className="genius-card" style={{ padding: 22, display: "flex", gap: 16, alignItems: "flex-start", borderLeft: "3px solid #ff6fa8" }}>
+                        {a.imageUrl && (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={a.imageUrl} alt="" width={92} height={68} style={{ width: 92, height: 68, objectFit: "cover", borderRadius: 8, flexShrink: 0 }} />
+                        )}
+                        <div style={{ minWidth: 0 }}>
+                          <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 6, flexWrap: "wrap" }}>
+                            <span style={{ background: "rgba(255,111,168,0.15)", color: "#ff6fa8", fontWeight: 800, fontSize: "0.62rem", letterSpacing: "0.08em", padding: "3px 10px", borderRadius: 999, textTransform: "uppercase" }}>
+                              {a.category ?? "news"}
+                            </span>
+                            {a.publishedAt && (
+                              <span style={{ fontSize: "0.75rem", color: "var(--genius-gray)" }}>
+                                <T
+                                  en={new Date(a.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                                  es={new Date(a.publishedAt).toLocaleDateString("es-MX", { month: "short", day: "numeric", year: "numeric" })}
+                                />
+                              </span>
+                            )}
+                          </div>
+                          <div style={{ fontWeight: 700, fontSize: "1rem", color: "#ff6fa8", marginBottom: 6, lineHeight: 1.3 }}>
+                            <T en={a.headline} es={a.esHeadline} />
+                          </div>
+                          {a.subheadline && (
+                            <div style={{ fontSize: "0.88rem", color: "rgba(255,255,255,0.72)", lineHeight: 1.7 }}>
+                              <T en={a.subheadline} es={a.esSubheadline} />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
                   {artist.news.map((item) => {
                     const style = CATEGORY_STYLES[item.category] ?? CATEGORY_STYLES["milestone"];
                     return (

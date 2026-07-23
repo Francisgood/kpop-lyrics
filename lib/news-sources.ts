@@ -16,7 +16,7 @@ export const NEWS_SOURCES: NewsSource[] = [
   // ── K-pop aggregators / fan news ─────────────────────────────────────────
   { name: "Soompi",          url: "https://www.soompi.com/",                            feed: "https://www.soompi.com/feed",          kind: "aggregator" },
   { name: "Koreaboo",        url: "https://www.koreaboo.com/",                          feed: "https://www.koreaboo.com/feed/",       kind: "aggregator" },
-  { name: "allkpop",         url: "https://www.allkpop.com/",                           feed: "https://www.allkpop.com/rss",          kind: "aggregator" },
+  { name: "allkpop",         url: "https://www.allkpop.com/",                           feed: "https://www.allkpop.com/rss_xml/lab.php", kind: "aggregator" },
   { name: "Asian Junkie",    url: "https://www.asianjunkie.com/",                       feed: "https://www.asianjunkie.com/feed/",    kind: "aggregator" },
   { name: "kbizoom",         url: "https://kbizoom.com/",                               feed: "https://kbizoom.com/feed/",            kind: "aggregator" },
   { name: "Hellokpop",       url: "https://www.hellokpop.com/",                         feed: "https://www.hellokpop.com/feed/",      kind: "aggregator" },
@@ -27,7 +27,10 @@ export const NEWS_SOURCES: NewsSource[] = [
   { name: "Kpopangel",       url: "https://www.kpopangel.com/",                                                                       kind: "aggregator" },
   { name: "United Kpop",     url: "https://unitedkpop.com/",                            feed: "https://unitedkpop.com/feed/",         kind: "aggregator" },
   { name: "asianfeed",       url: "https://asianfeed.com/category/music/",                                                            kind: "aggregator" },
-  { name: "Kpopping",        url: "https://kpopping.com/",                                                                            kind: "aggregator" },
+  { name: "Kpopping",        url: "https://kpopping.com/community",                                                                   kind: "aggregator" },
+  // Feedspot is a DIRECTORY of K-pop RSS feeds — mine it to discover additional
+  // publisher feeds, not as an article source itself.
+  { name: "Feedspot K-pop",  url: "https://rss.feedspot.com/kpop_rss_feeds/",                                                         kind: "aggregator" },
 
   // ── Wire / mainstream Korea desks ────────────────────────────────────────
   { name: "Yonhap",          url: "https://m-en.yna.co.kr/culture/k-pop",                                                             kind: "wire" },
@@ -45,7 +48,7 @@ export const NEWS_SOURCES: NewsSource[] = [
   { name: "Rolling Stone",   url: "https://www.rollingstone.com/t/k-pop/",              feed: "https://www.rollingstone.com/music/feed/", kind: "culture" },
   { name: "Teen Vogue",      url: "https://www.teenvogue.com/tag/k-pop",                feed: "https://www.teenvogue.com/feed/rss",   kind: "culture" },
   { name: "Paper Magazine",  url: "https://www.papermag.com/",                          feed: "https://www.papermag.com/rss.xml",     kind: "culture" },
-  { name: "Pinkvilla",       url: "https://www.pinkvilla.com/entertainment/hallyu",                                                   kind: "culture" },
+  { name: "Pinkvilla",       url: "https://www.pinkvilla.com/entertainment/korean",                                                   kind: "culture" },
   { name: "Sportskeeda",     url: "https://www.sportskeeda.com/pop-culture",                                                          kind: "culture" },
   { name: "Times of India",  url: "https://timesofindia.indiatimes.com/etimes/k-pop",                                                 kind: "culture" },
   { name: "The Conversation",url: "https://theconversation.com/topics/k-pop-8167",                                                    kind: "explainer" },
