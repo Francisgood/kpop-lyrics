@@ -103,16 +103,24 @@ function timeAgo(iso: string | null, c: Copy): string {
 }
 
 // ── Cross-promo units (cycled after every 5 articles) ───────────────────────
+// In-house ad units wear a bold pink outline so they read as promos, not articles.
+const PROMO_FRAME: React.CSSProperties = {
+  border: "3px solid var(--sakura)",
+  borderRadius: 18,
+  boxShadow: "0 0 0 1px rgba(255,111,168,0.3), 0 10px 34px rgba(255,111,168,0.14)",
+};
+
 function ExploreUnit({ c }: { c: Copy }) {
   return (
-    <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)", borderRadius: 18, padding: "24px 22px" }}>
+    <div style={{ ...PROMO_FRAME, background: "var(--bg-card)", padding: "28px 24px" }}>
       <div style={{ fontFamily: "var(--mono)", fontSize: "0.66rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 6 }}>{c.ex.eyebrow}</div>
       <div style={{ fontFamily: "var(--serif)", fontSize: "1.5rem", fontWeight: 700, color: "var(--ink)", marginBottom: 16 }}>{c.ex.title}</div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 10 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12 }}>
         {c.ex.items.map((it) => (
-          <Link key={it.href} href={it.href} style={{ display: "block", background: "rgba(255,255,255,0.04)", border: "1px solid var(--border)", borderRadius: 12, padding: "12px 14px", textDecoration: "none" }}>
-            <div style={{ fontFamily: "var(--mono)", fontSize: "0.6rem", letterSpacing: "0.1em", textTransform: "uppercase", color: it.color, fontWeight: 700, marginBottom: 4 }}>{it.tag}</div>
-            <div style={{ fontSize: "0.85rem", color: "var(--ink)", fontWeight: 600, lineHeight: 1.35 }}>{it.label}</div>
+          <Link key={it.href} href={it.href} style={{ display: "block", background: "rgba(255,255,255,0.04)", border: "1px solid var(--border)", borderRadius: 12, padding: "18px 20px", textDecoration: "none" }}>
+            <div style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase", color: it.color, fontWeight: 700, marginBottom: 8 }}>{it.tag}</div>
+            {/* Doubled (0.85rem → 1.7rem); clamped so it scales on phones. */}
+            <div style={{ fontSize: "clamp(1.25rem, 4.6vw, 1.7rem)", color: "var(--ink)", fontWeight: 700, lineHeight: 1.25 }}>{it.label}</div>
           </Link>
         ))}
       </div>
@@ -122,9 +130,10 @@ function ExploreUnit({ c }: { c: Copy }) {
 
 function EventsUnit({ c }: { c: Copy }) {
   return (
-    <div style={{ background: "linear-gradient(135deg, rgba(74,200,240,0.14), var(--bg-card))", border: "1px solid var(--sky)", borderRadius: 18, padding: "26px 24px" }}>
-      <div style={{ fontFamily: "var(--mono)", fontSize: "0.66rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sky)", marginBottom: 6 }}>{c.ev.eyebrow}</div>
-      <div style={{ fontFamily: "var(--serif)", fontSize: "1.6rem", fontWeight: 700, color: "var(--ink)", marginBottom: 6 }}>{c.ev.title}</div>
+    <div style={{ ...PROMO_FRAME, background: "linear-gradient(135deg, rgba(74,200,240,0.14), var(--bg-card))", padding: "30px 26px" }}>
+      <div style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sky)", marginBottom: 8 }}>{c.ev.eyebrow}</div>
+      {/* Matched to the quiz headline so the units in the rotation stay consistent. */}
+      <div style={{ fontFamily: "var(--serif)", fontSize: "clamp(2rem, 8vw, 3.2rem)", fontWeight: 700, color: "var(--ink)", marginBottom: 10, lineHeight: 1.1 }}>{c.ev.title}</div>
       <p style={{ fontSize: "0.85rem", color: "var(--ink-dim)", margin: "0 0 14px", maxWidth: 380 }}>{c.ev.body}</p>
       <Link href="/events" style={{ display: "inline-flex", padding: "10px 20px", borderRadius: 100, background: "var(--sky)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.82rem", letterSpacing: "0.03em", textTransform: "uppercase", textDecoration: "none" }}>{c.ev.cta}</Link>
     </div>
@@ -133,9 +142,10 @@ function EventsUnit({ c }: { c: Copy }) {
 
 function QuizUnit({ c }: { c: Copy }) {
   return (
-    <div style={{ background: "linear-gradient(135deg, rgba(200,240,74,0.14), var(--bg-card))", border: "1px solid var(--volt)", borderRadius: 18, padding: "26px 24px" }}>
-      <div style={{ fontFamily: "var(--mono)", fontSize: "0.66rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--volt)", marginBottom: 6 }}>{c.qz.eyebrow}</div>
-      <div style={{ fontFamily: "var(--serif)", fontSize: "1.6rem", fontWeight: 700, color: "var(--ink)", marginBottom: 6 }}>{c.qz.title}</div>
+    <div style={{ ...PROMO_FRAME, background: "linear-gradient(135deg, rgba(200,240,74,0.14), var(--bg-card))", padding: "30px 26px" }}>
+      <div style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--volt)", marginBottom: 8 }}>{c.qz.eyebrow}</div>
+      {/* Doubled (1.6rem → 3.2rem); clamped for mobile. */}
+      <div style={{ fontFamily: "var(--serif)", fontSize: "clamp(2rem, 8vw, 3.2rem)", fontWeight: 700, color: "var(--ink)", marginBottom: 10, lineHeight: 1.1 }}>{c.qz.title}</div>
       <p style={{ fontSize: "0.85rem", color: "var(--ink-dim)", margin: "0 0 14px", maxWidth: 380 }}>{c.qz.body}</p>
       <Link href="/quiz" style={{ display: "inline-flex", padding: "10px 20px", borderRadius: 100, background: "var(--volt)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.82rem", letterSpacing: "0.03em", textTransform: "uppercase", textDecoration: "none" }}>{c.qz.cta}</Link>
     </div>
