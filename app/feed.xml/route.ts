@@ -11,14 +11,16 @@ function esc(s: string | null | undefined): string {
 type Row = {
   headline: string; subheadline: string | null; body: string | null; category: string | null;
   sourceName: string | null; sourceUrl: string; imageUrl: string | null; publishedAt: Date | null;
+  slug: string | null; artistSlug: string | null;
 };
 
-// RSS 2.0 feed of the homepage news posts (each links back to the original source).
+// RSS 2.0 feed of the news posts. Items link to our hosted article (which credits
+// and links the original at the end); pre-hosting posts still link to the source.
 export async function GET() {
   let rows: Row[] = [];
   try {
     rows = await prisma.$queryRawUnsafe<Row[]>(
-      `SELECT "headline","subheadline","body","category","sourceName","sourceUrl","imageUrl","publishedAt"
+      `SELECT "headline","subheadline","body","category","sourceName","sourceUrl","imageUrl","publishedAt","slug","artistSlug"
        FROM "NewsPost" WHERE "status" = 'live'
        ORDER BY "publishedAt" DESC NULLS LAST, "createdAt" DESC LIMIT 50`
     );
@@ -29,10 +31,11 @@ export async function GET() {
     const img = r.imageUrl ? `<enclosure url="${esc(r.imageUrl)}" type="image/jpeg" />` : "";
     const pub = r.publishedAt ? new Date(r.publishedAt).toUTCString() : new Date().toUTCString();
     const src = r.sourceName ? ` (via ${esc(r.sourceName)})` : "";
+    const link = r.slug && r.artistSlug ? `${SITE}/news/${r.artistSlug}/${r.slug}` : r.sourceUrl;
     return `    <item>
       <title>${esc(r.headline)}</title>
-      <link>${esc(r.sourceUrl)}</link>
-      <guid isPermaLink="true">${esc(r.sourceUrl)}</guid>
+      <link>${esc(link)}</link>
+      <guid isPermaLink="true">${esc(link)}</guid>
       ${r.category ? `<category>${esc(r.category)}</category>` : ""}
       <description>${esc(desc)}${esc(src)}</description>
       <pubDate>${pub}</pubDate>

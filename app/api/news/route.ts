@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 // Public, paginated news feed for the homepage infinite scroll.
 export type NewsRow = {
-  id: string; headline: string; subheadline: string | null; body: string | null;
+  id: string; slug: string | null; headline: string; subheadline: string | null; body: string | null;
   esHeadline: string | null; esSubheadline: string | null;
   imageUrl: string | null; imageCredit: string | null; category: string | null; tag: string | null;
   artistSlug: string | null; artistName: string | null; sourceName: string | null; sourceUrl: string;
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
   const offset = Math.max(0, Number(url.searchParams.get("offset") ?? 0));
   try {
     const rows = await prisma.$queryRawUnsafe<NewsRow[]>(
-      `SELECT "id","headline","subheadline","body","esHeadline","esSubheadline","imageUrl","imageCredit","category","tag",
+      `SELECT "id","slug","headline","subheadline","body","esHeadline","esSubheadline","imageUrl","imageCredit","category","tag",
               "artistSlug","artistName","sourceName","sourceUrl","readMins","publishedAt"
        FROM "NewsPost" WHERE "status" = 'live'
        ORDER BY "publishedAt" DESC NULLS LAST, "createdAt" DESC

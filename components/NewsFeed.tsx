@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLang, LangToggle, type Lang } from "@/components/LangProvider";
 
 export type NewsRow = {
-  id: string; headline: string; subheadline: string | null; body: string | null;
+  id: string; slug: string | null; headline: string; subheadline: string | null; body: string | null;
   esHeadline: string | null; esSubheadline: string | null;
   imageUrl: string | null; imageCredit: string | null; category: string | null; tag: string | null;
   artistSlug: string | null; artistName: string | null; sourceName: string | null; sourceUrl: string;
@@ -210,9 +210,12 @@ function ArticleCard({ p, featured, c }: { p: NewsRow; featured?: boolean; c: Co
   const headline = es ? (p.esHeadline ?? p.headline) : p.headline;
   const subheadline = es ? (p.esSubheadline ?? p.subheadline) : p.subheadline;
   const meta = [p.sourceName, timeAgo(p.publishedAt, c), c.readLabel(p.readMins)].filter(Boolean).join(" · ");
-  return (
-    <a href={p.sourceUrl} target="_blank" rel="noopener noreferrer"
-      className="news-card" style={{ display: "block", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 16, overflow: "hidden", textDecoration: "none" }}>
+  // Stories we host go to our own article page; anything published before the
+  // hosted-article model (no slug) still links out to the source.
+  const hosted = p.slug && p.artistSlug ? `/news/${p.artistSlug}/${p.slug}` : null;
+  const cardStyle: React.CSSProperties = { display: "block", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 16, overflow: "hidden", textDecoration: "none" };
+  const inner = (
+    <>
       {p.imageUrl && (
         <div style={{ position: "relative", width: "100%", aspectRatio: featured ? "16 / 8" : "16 / 9", overflow: "hidden", background: "rgba(255,255,255,0.04)" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -235,7 +238,12 @@ function ArticleCard({ p, featured, c }: { p: NewsRow; featured?: boolean; c: Co
           <span style={{ fontSize: "0.76rem", color: cc.color, fontWeight: 800 }}>{c.readMore}</span>
         </div>
       </div>
-    </a>
+    </>
+  );
+  return hosted ? (
+    <Link href={hosted} className="news-card" style={cardStyle}>{inner}</Link>
+  ) : (
+    <a href={p.sourceUrl} target="_blank" rel="noopener noreferrer" className="news-card" style={cardStyle}>{inner}</a>
   );
 }
 

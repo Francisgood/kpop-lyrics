@@ -30,14 +30,15 @@ async function getFirstPage(): Promise<NewsRow[]> {
     // Older tables may predate the ES columns — add them defensively so the SELECT never fails.
     await prisma.$executeRawUnsafe(`ALTER TABLE "NewsPost" ADD COLUMN IF NOT EXISTS "esHeadline" TEXT`);
     await prisma.$executeRawUnsafe(`ALTER TABLE "NewsPost" ADD COLUMN IF NOT EXISTS "esSubheadline" TEXT`);
+    await prisma.$executeRawUnsafe(`ALTER TABLE "NewsPost" ADD COLUMN IF NOT EXISTS "slug" TEXT`);
     const rows = await prisma.$queryRawUnsafe<Array<Record<string, unknown>>>(
-      `SELECT "id","headline","subheadline","body","esHeadline","esSubheadline","imageUrl","imageCredit","category","tag",
+      `SELECT "id","slug","headline","subheadline","body","esHeadline","esSubheadline","imageUrl","imageCredit","category","tag",
               "artistSlug","artistName","sourceName","sourceUrl","readMins","publishedAt"
        FROM "NewsPost" WHERE "status" = 'live'
        ORDER BY "publishedAt" DESC NULLS LAST, "createdAt" DESC LIMIT ${PAGE}`
     );
     return rows.map((r) => ({
-      id: String(r.id), headline: String(r.headline),
+      id: String(r.id), slug: (r.slug as string) ?? null, headline: String(r.headline),
       subheadline: (r.subheadline as string) ?? null, body: (r.body as string) ?? null,
       esHeadline: (r.esHeadline as string) ?? null, esSubheadline: (r.esSubheadline as string) ?? null,
       imageUrl: (r.imageUrl as string) ?? null, imageCredit: (r.imageCredit as string) ?? null,

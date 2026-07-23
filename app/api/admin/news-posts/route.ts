@@ -16,11 +16,13 @@ async function ensureTable() {
   await prisma.$executeRawUnsafe(`
     CREATE TABLE IF NOT EXISTS "NewsPost" (
       "id"              TEXT PRIMARY KEY,
+      "slug"            TEXT,
       "headline"        TEXT NOT NULL,
       "subheadline"     TEXT,
       "body"            TEXT,
       "esHeadline"      TEXT,
       "esSubheadline"   TEXT,
+      "bodyEs"          TEXT,
       "origHeadline"    TEXT,
       "origSubheadline" TEXT,
       "imageUrl"        TEXT,
@@ -37,6 +39,10 @@ async function ensureTable() {
       "createdAt"       TIMESTAMP NOT NULL DEFAULT now()
     )`);
   // Additive migration for tables created before the original/rewritten/es split.
+  await prisma.$executeRawUnsafe(`ALTER TABLE "NewsPost" ADD COLUMN IF NOT EXISTS "slug" TEXT`);
+  await prisma.$executeRawUnsafe(`ALTER TABLE "NewsPost" ADD COLUMN IF NOT EXISTS "bodyEs" TEXT`);
+  // Articles are hosted at /news/<artistSlug>/<slug>, so slugs must be unique.
+  await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "NewsPost_slug_key" ON "NewsPost" ("slug") WHERE "slug" IS NOT NULL`);
   await prisma.$executeRawUnsafe(`ALTER TABLE "NewsPost" ADD COLUMN IF NOT EXISTS "esHeadline" TEXT`);
   await prisma.$executeRawUnsafe(`ALTER TABLE "NewsPost" ADD COLUMN IF NOT EXISTS "esSubheadline" TEXT`);
   await prisma.$executeRawUnsafe(`ALTER TABLE "NewsPost" ADD COLUMN IF NOT EXISTS "origHeadline" TEXT`);
@@ -72,8 +78,26 @@ function readMins(body: string): number {
   return Math.max(1, Math.min(9, Math.round(words / 200) || 2));
 }
 
+function slugify(s: string): string {
+  return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/['’]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 90);
+}
+
+// Articles live at /news/<artistSlug>/<slug>, so a slug can't collide with a
+// DIFFERENT story. Re-publishing the same sourceUrl keeps its slug (stable URLs).
+async function uniqueSlug(desired: string, sourceUrl: string): Promise<string> {
+  const base = slugify(desired) || "story";
+  for (let i = 0; i < 25; i++) {
+    const candidate = i === 0 ? base : `${base}-${i + 1}`;
+    const taken = await prisma.$queryRaw<{ sourceUrl: string }[]>`
+      SELECT "sourceUrl" FROM "NewsPost" WHERE "slug" = ${candidate} LIMIT 1`;
+    if (!taken.length || taken[0].sourceUrl === sourceUrl) return candidate;
+  }
+  return `${base}-${Date.now().toString(36)}`;
+}
+
 type PostIn = {
-  headline?: string; subheadline?: string; body?: string;
+  slug?: string; headline?: string; subheadline?: string; body?: string; bodyEs?: string;
   esHeadline?: string; esSubheadline?: string;
   origHeadline?: string; origSubheadline?: string;
   imageUrl?: string; imageCredit?: string;
@@ -100,6 +124,9 @@ export async function POST(req: NextRequest) {
       const body = p.body ? String(p.body).trim() : null;
       const esHeadline = p.esHeadline ? String(p.esHeadline).trim() : null;
       const esSubheadline = p.esSubheadline ? String(p.esSubheadline).trim() : null;
+      const bodyEs = p.bodyEs ? String(p.bodyEs).trim() : null;
+      // Slug from the publisher, else derived from the rewritten headline.
+      const slug = await uniqueSlug(String(p.slug ?? "").trim() || headline, sourceUrl);
       const origHeadline = p.origHeadline ? String(p.origHeadline).trim() : null;
       const origSubheadline = p.origSubheadline ? String(p.origSubheadline).trim() : null;
       const imageUrl = p.imageUrl ? String(p.imageUrl).trim() : null;
@@ -123,10 +150,12 @@ export async function POST(req: NextRequest) {
 
       const n = await prisma.$executeRaw`
         INSERT INTO "NewsPost"
-          ("id","headline","subheadline","body","esHeadline","esSubheadline","origHeadline","origSubheadline","imageUrl","imageCredit","category","tag","artistSlug","artistName","sourceName","sourceUrl","readMins","publishedAt","status")
+          ("id","slug","headline","subheadline","body","bodyEs","esHeadline","esSubheadline","origHeadline","origSubheadline","imageUrl","imageCredit","category","tag","artistSlug","artistName","sourceName","sourceUrl","readMins","publishedAt","status")
         VALUES
-          (${randomUUID()}, ${headline}, ${subheadline}, ${body}, ${esHeadline}, ${esSubheadline}, ${origHeadline}, ${origSubheadline}, ${imageUrl}, ${imageCredit}, ${category}, ${tag}, ${artistSlug}, ${artistName}, ${sourceName}, ${sourceUrl}, ${rm}, ${publishedAt}, 'live')
+          (${randomUUID()}, ${slug}, ${headline}, ${subheadline}, ${body}, ${bodyEs}, ${esHeadline}, ${esSubheadline}, ${origHeadline}, ${origSubheadline}, ${imageUrl}, ${imageCredit}, ${category}, ${tag}, ${artistSlug}, ${artistName}, ${sourceName}, ${sourceUrl}, ${rm}, ${publishedAt}, 'live')
         ON CONFLICT ("sourceUrl") DO UPDATE SET
+          "slug"            = COALESCE("NewsPost"."slug", EXCLUDED."slug"),
+          "bodyEs"          = COALESCE(EXCLUDED."bodyEs",          "NewsPost"."bodyEs"),
           "headline" = EXCLUDED."headline",
           "subheadline"     = COALESCE(EXCLUDED."subheadline",     "NewsPost"."subheadline"),
           "body"            = COALESCE(EXCLUDED."body",            "NewsPost"."body"),
