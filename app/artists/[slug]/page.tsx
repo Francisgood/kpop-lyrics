@@ -195,9 +195,16 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
               {artist.albums.map((album) => (
                 <div key={album.id} style={{ marginBottom: 32 }}>
                   <div style={{ display: "flex", gap: 16, alignItems: "center", marginBottom: 12 }}>
-                    <div style={{ width: 72, height: 72, borderRadius: 6, background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.8rem", flexShrink: 0 }}>
-                      💿
-                    </div>
+                    {/* Real cover art when we have it; the disc placeholder only as a fallback. */}
+                    {album.coverArt ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={album.coverArt} alt="" width={72} height={72} loading="lazy"
+                        style={{ width: 72, height: 72, borderRadius: 6, objectFit: "cover", flexShrink: 0, background: "linear-gradient(135deg, #1a1a2e, #0f3460)" }} />
+                    ) : (
+                      <div style={{ width: 72, height: 72, borderRadius: 6, background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.8rem", flexShrink: 0 }}>
+                        💿
+                      </div>
+                    )}
                     <div>
                       <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#ff6fa8" }}>{album.title}</div>
                       <div style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginTop: 4 }}>
