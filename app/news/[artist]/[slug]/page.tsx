@@ -84,12 +84,13 @@ function MetaRow({ a }: { a: Article }) {
   );
 }
 
-function ArticleImage({ a }: { a: Article }) {
+function ArticleImage({ a, priority }: { a: Article; priority?: boolean }) {
   if (!a.imageUrl) return null;
   return (
     <figure style={{ margin: "0 0 26px" }}>
+      {/* Lead article image is the LCP — eager + high priority; below-fold ones lazy. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={a.imageUrl} alt="" style={{ width: "100%", borderRadius: 16, display: "block", border: "1px solid var(--border)" }} />
+      <img src={a.imageUrl} alt="" loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : "auto"} decoding="async" style={{ width: "100%", borderRadius: 16, display: "block", border: "1px solid var(--border)" }} />
       {a.imageCredit && (
         <figcaption style={{ fontSize: "0.72rem", color: "var(--ink-faint)", marginTop: 8 }}>
           <T en={`Photo: ${a.imageCredit}`} es={`Foto: ${a.imageCredit}`} />
@@ -147,7 +148,7 @@ function FullArticle({ a, lead }: { a: Article; lead?: boolean }) {
           <T en={a.subheadline} es={a.esSubheadline} />
         </p>
       )}
-      <ArticleImage a={a} />
+      <ArticleImage a={a} priority={lead} />
       <Body a={a} />
       <Attribution a={a} />
     </>

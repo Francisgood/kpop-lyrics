@@ -8,6 +8,13 @@ import NavSearch from "@/components/NavSearch";
 import { LangProvider, T } from "@/components/LangProvider";
 import { getSession } from "@/lib/auth";
 import Script from "next/script";
+import { Cormorant_Garamond, DM_Sans, Space_Mono } from "next/font/google";
+
+// Self-hosted, preloaded fonts — replaces the render-blocking CSS @import chain
+// to fonts.googleapis.com. Exposed as CSS variables consumed by globals.css.
+const serif = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "600", "700"], style: ["normal", "italic"], display: "swap", variable: "--font-serif" });
+const sans = DM_Sans({ subsets: ["latin"], display: "swap", variable: "--font-sans" });
+const mono = Space_Mono({ subsets: ["latin"], weight: ["400", "700"], display: "swap", variable: "--font-mono" });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.aegyoarena.com"),
@@ -22,7 +29,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const userId      = session?.user.id;
 
   return (
-    <html lang="en">
+    <html lang="en" className={`${serif.variable} ${sans.variable} ${mono.variable}`}>
       <body>
         {/* One EN/ES language state for the whole site (persisted; ES-default for es-* browsers). */}
         <LangProvider>
@@ -139,7 +146,7 @@ gtag('config', 'G-700MXJM1FW');`}
         </Script>
 
         {/* Taboola Pixel — paid-ads conversion tracking (account 2066412) */}
-        <Script id="taboola-tfa" strategy="afterInteractive">
+        <Script id="taboola-tfa" strategy="lazyOnload">
           {`window._tfa = window._tfa || [];
 window._tfa.push({notify: 'event', name: 'page_view', id: 2066412});
 !function (t, f, a, x) {
@@ -153,12 +160,12 @@ document.getElementsByTagName('script')[0],
         </Script>
 
         {/* Reddit Pixel — paid-ads conversion tracking (a2_j9m653pqhzu7) */}
-        <Script id="reddit-pixel" strategy="afterInteractive">
+        <Script id="reddit-pixel" strategy="lazyOnload">
           {`!function(w,d){if(!w.rdt){var p=w.rdt=function(){p.sendEvent?p.sendEvent.apply(p,arguments):p.callQueue.push(arguments)};p.callQueue=[];var t=d.createElement("script");t.src="https://www.redditstatic.com/ads/pixel.js?pixel_id=a2_j9m653pqhzu7",t.async=!0;var s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}}(window,document);rdt('init','a2_j9m653pqhzu7');rdt('track', 'PageVisit');`}
         </Script>
 
         {/* TikTok Pixel — paid-ads conversion tracking (D9AFTIJC77U1026600GG) */}
-        <Script id="tiktok-pixel" strategy="afterInteractive">
+        <Script id="tiktok-pixel" strategy="lazyOnload">
           {`!function (w, d, t) {
   w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
 var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
