@@ -30,7 +30,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en" className={`${serif.variable} ${sans.variable} ${mono.variable}`}>
-      <body>
+      {/* sans.className on <body> makes DM Sans (the dominant body font) an
+          actually-applied font so next/font preloads it, not just self-hosts it. */}
+      <body className={sans.className}>
         {/* One EN/ES language state for the whole site (persisted; ES-default for es-* browsers). */}
         <LangProvider>
         <nav className="genius-nav" style={{ position: "sticky", top: 0, zIndex: 100 }}>
