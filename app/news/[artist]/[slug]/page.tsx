@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { T, LangToggle } from "@/components/LangProvider";
 import NewsletterGate from "@/components/NewsletterGate";
+import SmartImage from "@/components/SmartImage";
 
 export const dynamic = "force-dynamic";
 
@@ -88,9 +89,10 @@ function ArticleImage({ a, priority }: { a: Article; priority?: boolean }) {
   if (!a.imageUrl) return null;
   return (
     <figure style={{ margin: "0 0 26px" }}>
-      {/* Lead article image is the LCP — eager + high priority; below-fold ones lazy. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={a.imageUrl} alt="" loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : "auto"} decoding="async" style={{ width: "100%", borderRadius: 16, display: "block", border: "1px solid var(--border)" }} />
+      {/* Optimized (resized + AVIF/WebP). Lead article image is the LCP → priority. */}
+      <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 9", overflow: "hidden", borderRadius: 16, border: "1px solid var(--border)", background: "rgba(255,255,255,0.04)" }}>
+        <SmartImage src={a.imageUrl} fill priority={priority} sizes="(max-width: 760px) 100vw, 672px" style={{ objectFit: "cover" }} />
+      </div>
       {a.imageCredit && (
         <figcaption style={{ fontSize: "0.72rem", color: "var(--ink-faint)", marginTop: 8 }}>
           <T en={`Photo: ${a.imageCredit}`} es={`Foto: ${a.imageCredit}`} />
@@ -161,9 +163,8 @@ function RecCard({ a }: { a: Article }) {
     <Link href={`/news/${a.artistSlug}/${a.slug}`} className="news-card"
       style={{ display: "block", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 14, overflow: "hidden", textDecoration: "none" }}>
       {a.imageUrl && (
-        <div style={{ width: "100%", aspectRatio: "16 / 9", overflow: "hidden", background: "rgba(255,255,255,0.04)" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={a.imageUrl} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 9", overflow: "hidden", background: "rgba(255,255,255,0.04)" }}>
+          <SmartImage src={a.imageUrl} fill sizes="(max-width: 760px) 100vw, 340px" style={{ objectFit: "cover" }} />
         </div>
       )}
       <div style={{ padding: "14px 16px 16px" }}>

@@ -8,6 +8,7 @@ import NavSearch from "@/components/NavSearch";
 import { LangProvider, T } from "@/components/LangProvider";
 import { getSession } from "@/lib/auth";
 import Script from "next/script";
+import Image from "next/image";
 import { Cormorant_Garamond, DM_Sans, Space_Mono } from "next/font/google";
 
 // Self-hosted, preloaded fonts — replaces the render-blocking CSS @import chain
@@ -39,8 +40,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {/* Primary row: logo + search + hamburger */}
           <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", gap: 20, height: 64 }}>
             <Link href="/" style={{ display: "flex", alignItems: "center", flexShrink: 0, textDecoration: "none" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/aegyo-logo.png" alt="Aegyo Arena" style={{ height: 34, width: "auto", display: "block" }} />
+              <Image src="/images/aegyo-logo.png" alt="Aegyo Arena" width={130} height={34} priority style={{ height: 34, width: "auto", display: "block" }} />
             </Link>
 
             <NavSearch />
@@ -65,8 +65,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <div style={{ maxWidth: 1240, margin: "0 auto", padding: "56px 24px 36px", display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 48 }} className="footer-top-grid">
             <div>
               <Link href="/" style={{ display: "inline-block", marginBottom: 16 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/images/aegyo-logo-footer.png" alt="Aegyo Arena" style={{ height: 34, width: "auto", display: "block" }} />
+                <Image src="/images/aegyo-logo-footer.png" alt="Aegyo Arena" width={113} height={34} style={{ height: 34, width: "auto", display: "block" }} />
               </Link>
               <div style={{ fontSize: "1rem", fontWeight: 300, lineHeight: 1.7, color: "var(--ink-faint)", maxWidth: 240, marginBottom: 22 }}>
                 <T

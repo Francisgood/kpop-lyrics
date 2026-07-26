@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useLang, LangToggle, type Lang } from "@/components/LangProvider";
+import SmartImage from "@/components/SmartImage";
 
 export type NewsRow = {
   id: string; slug: string | null; headline: string; subheadline: string | null; body: string | null;
@@ -228,9 +229,8 @@ function ArticleCard({ p, featured, c }: { p: NewsRow; featured?: boolean; c: Co
     <>
       {p.imageUrl && (
         <div style={{ position: "relative", width: "100%", aspectRatio: featured ? "16 / 8" : "16 / 9", overflow: "hidden", background: "rgba(255,255,255,0.04)" }}>
-          {/* The featured (first) card is the LCP element — load it eagerly + high priority; lazy-load the rest. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={p.imageUrl} alt="" loading={featured ? "eager" : "lazy"} fetchPriority={featured ? "high" : "auto"} decoding="async" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+          {/* Optimized (resized + AVIF/WebP). Featured card is the LCP → priority; rest lazy. */}
+          <SmartImage src={p.imageUrl} fill priority={featured} sizes="(max-width: 760px) 100vw, 672px" style={{ objectFit: "cover" }} />
         </div>
       )}
       <div style={{ padding: featured ? "22px 24px 24px" : "18px 20px 20px" }}>
