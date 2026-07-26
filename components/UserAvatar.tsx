@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import SmartImage from "@/components/SmartImage";
 
 // Shared contributor avatar — renders the profile image when present, else the
 // initial on the tier color. Plain component (no hooks) so it works in both server
@@ -20,9 +21,18 @@ export default function UserAvatar({
   const base: CSSProperties = { width: size, height: size, borderRadius: "50%", flexShrink: 0, border };
 
   if (avatar) {
+    // `size` may be a CSS length (clamp, etc.); the style below drives the real
+    // rendered size, so `px` only feeds the optimizer's intrinsic (square) box.
+    const px = typeof size === "number" ? size : 96;
     return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img src={avatar} alt={initial} style={{ ...base, display: "block", objectFit: "cover", background: color }} />
+      <SmartImage
+        src={avatar}
+        alt={initial}
+        width={px}
+        height={px}
+        sizes={`${px}px`}
+        style={{ ...base, display: "block", objectFit: "cover", background: color }}
+      />
     );
   }
   const fontSize = typeof size === "number" ? size * 0.42 : `calc(${size} * 0.42)`;

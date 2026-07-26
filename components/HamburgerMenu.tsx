@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { T, LangToggle, useT } from "@/components/LangProvider";
+import SmartImage from "@/components/SmartImage";
 
 interface Props {
   isLoggedIn: boolean;
@@ -92,8 +93,7 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
             {/* Top bar: logo + close */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 22 }}>
               <Link href="/" onClick={close} style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/images/aegyo-logo.png" alt="Aegyo Arena" style={{ height: 30, width: "auto", display: "block" }} />
+                <SmartImage src="/images/aegyo-logo.png" alt="Aegyo Arena" width={344} height={90} sizes="115px" style={{ height: 30, width: "auto", display: "block" }} />
               </Link>
               <button
                 onClick={close}

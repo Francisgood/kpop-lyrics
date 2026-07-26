@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { trackSignupPageView, trackAccountCreated } from "@/lib/conversions";
 import { T, LangToggle, useT } from "@/components/LangProvider";
+import SmartImage from "@/components/SmartImage";
 
 /**
  * The signup API answers in English, so keep both languages on the error and let
@@ -68,8 +69,8 @@ export default function SignupPage() {
         <div style={{ background: "var(--bg-card)", border: "8px solid #fff", borderRadius: 18, padding: "30px 30px 34px", boxShadow: "0 18px 50px rgba(0,0,0,0.35)" }}>
           {/* Fun welcome GIF */}
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/aegyo-signup.gif" alt="" aria-hidden="true" style={{ width: 168, height: 168, objectFit: "cover", borderRadius: 18, border: "1px solid var(--border)", boxShadow: "0 8px 30px rgba(255,111,168,0.25)" }} />
+            {/* SmartImage keeps .gif as a plain <img> so it stays animated */}
+            <SmartImage src="/images/aegyo-signup.gif" alt="" width={168} height={168} sizes="168px" style={{ objectFit: "cover", borderRadius: 18, border: "1px solid var(--border)", boxShadow: "0 8px 30px rgba(255,111,168,0.25)" }} />
           </div>
 
           <div style={{ textAlign: "center", marginBottom: 24 }}>

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { T, LangToggle } from "@/components/LangProvider";
+import SmartImage from "@/components/SmartImage";
 
 export const revalidate = 3600;
 
@@ -86,7 +87,7 @@ export default async function ArtistsPage() {
                 <div className="genius-card" style={{ padding: 20 }}>
                   <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
                     {group.imageUrl ? (
-                      <img src={group.imageUrl} alt={group.stageName} style={{ width: 56, height: 56, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} />
+                      <SmartImage src={group.imageUrl} alt={group.stageName} width={56} height={56} sizes="56px" style={{ width: 56, height: 56, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} />
                     ) : (
                       <div style={{ width: 56, height: 56, borderRadius: 8, background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.6rem", flexShrink: 0 }}>
                         🎤
@@ -125,7 +126,7 @@ export default async function ArtistsPage() {
                   <div className="genius-card" style={{ padding: 20 }}>
                     <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
                       {artist.imageUrl ? (
-                        <img src={artist.imageUrl} alt={artist.stageName} style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
+                        <SmartImage src={artist.imageUrl} alt={artist.stageName} width={56} height={56} sizes="56px" style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
                       ) : (
                         <div style={{ width: 56, height: 56, borderRadius: "50%", background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.6rem", flexShrink: 0 }}>
                           ⭐
@@ -185,7 +186,7 @@ export default async function ArtistsPage() {
                     <div className="genius-card" style={{ padding: 20, borderTop: "3px solid #e879f9" }}>
                       <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
                         {artist.imageUrl ? (
-                          <img src={artist.imageUrl} alt={artist.stageName} style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid #e879f9" }} />
+                          <SmartImage src={artist.imageUrl} alt={artist.stageName} width={56} height={56} sizes="56px" style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid #e879f9" }} />
                         ) : (
                           <div style={{ width: 56, height: 56, borderRadius: "50%", background: "linear-gradient(135deg, #581c87, #1a1a2e)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.6rem", flexShrink: 0 }}>
                             🌍

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { CONTRIBUTORS } from "@/app/leaderboard/data";
 import HomeInteractions from "@/components/HomeInteractions";
 import { T, LangToggle } from "@/components/LangProvider";
+import SmartImage from "@/components/SmartImage";
 
 export const dynamic = "force-dynamic";
 
@@ -75,8 +76,7 @@ export default async function ContributePage() {
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <section className="hero">
         <div className="hero-image-bg">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/images/redesign/hero-plush.png" alt="Aegyo Arena Plush Collection — all seven chibi characters holding hands" />
+          <SmartImage src="/images/redesign/hero-plush.png" alt="Aegyo Arena Plush Collection — all seven chibi characters holding hands" fill priority sizes="(max-width: 760px) 100vw, 1200px" style={{ objectFit: "cover" }} />
         </div>
 
         <div className="hero-content">
@@ -149,8 +149,7 @@ export default async function ContributePage() {
                   <span className={`lb-rank ${rankCls}`}>#{i + 1}</span>
                   <div className="lb-avatar" style={{ background: tint.bg, color: tint.color, overflow: "hidden", padding: 0 }}>
                     {c.avatar ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={c.avatar} alt={c.username} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                      <SmartImage src={c.avatar} alt={c.username} width={38} height={38} sizes="38px" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                     ) : (
                       c.initial
                     )}
@@ -258,8 +257,7 @@ export default async function ContributePage() {
         <div className="merch-scroll" id="merchScroll">
           {MERCH.map((m) => (
             <div className={`merch-card ${m.size}`} key={m.tag}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={m.img} alt={m.text} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center", display: "block" }} />
+              <SmartImage src={m.img} alt={m.text} fill sizes="(max-width: 760px) 80vw, 520px" style={{ objectFit: "cover", objectPosition: "top center" }} />
               <div className="merch-caption">
                 <div className="merch-caption-tag">{m.tag}</div>
                 <div className="merch-caption-text">{m.text}</div>

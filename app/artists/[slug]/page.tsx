@@ -5,6 +5,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import CommentsSection from "@/components/CommentsSection";
 import { getSession } from "@/lib/auth";
 import { T, LangToggle } from "@/components/LangProvider";
+import SmartImage from "@/components/SmartImage";
 
 export const revalidate = 3600;
 
@@ -101,7 +102,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
 
           <div style={{ display: "flex", gap: 32, alignItems: "flex-end", flexWrap: "wrap" }}>
             {artist.imageUrl ? (
-              <img src={artist.imageUrl} alt={artist.stageName} style={{ width: 160, height: 160, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid rgba(255,255,100,0.3)" }} />
+              <SmartImage src={artist.imageUrl} alt={artist.stageName} width={160} height={160} sizes="160px" priority style={{ width: 160, height: 160, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid rgba(255,255,100,0.3)" }} />
             ) : (
               <div style={{ width: 160, height: 160, borderRadius: "50%", flexShrink: 0, background: "linear-gradient(135deg, rgba(255,255,100,0.2), rgba(255,255,100,0.05))", border: "2px solid rgba(255,255,100,0.3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "4rem" }}>
                 {isGroup ? "🎤" : artist.type === "SOLOIST" ? "⭐" : "👤"}
@@ -175,7 +176,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                     <Link key={member.id} href={`/artists/${member.slug}`} style={{ textDecoration: "none" }}>
                       <div className="member-card">
                         {member.imageUrl ? (
-                          <img src={member.imageUrl} alt={member.stageName} style={{ width: 60, height: 60, borderRadius: "50%", objectFit: "cover", marginBottom: 8 }} />
+                          <SmartImage src={member.imageUrl} alt={member.stageName} width={60} height={60} sizes="60px" style={{ width: 60, height: 60, borderRadius: "50%", objectFit: "cover", marginBottom: 8 }} />
                         ) : (
                           <div style={{ fontSize: "1.8rem", marginBottom: 8 }}>👤</div>
                         )}
@@ -197,8 +198,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                   <div style={{ display: "flex", gap: 16, alignItems: "center", marginBottom: 12 }}>
                     {/* Real cover art when we have it; the disc placeholder only as a fallback. */}
                     {album.coverArt ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={album.coverArt} alt="" width={72} height={72} loading="lazy"
+                      <SmartImage src={album.coverArt} alt="" width={72} height={72} sizes="72px"
                         style={{ width: 72, height: 72, borderRadius: 6, objectFit: "cover", flexShrink: 0, background: "linear-gradient(135deg, #1a1a2e, #0f3460)" }} />
                     ) : (
                       <div style={{ width: 72, height: 72, borderRadius: 6, background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.8rem", flexShrink: 0 }}>
@@ -250,8 +250,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                     <Link key={a.slug} href={`/news/${slug}/${a.slug}`} style={{ textDecoration: "none" }}>
                       <div className="genius-card" style={{ padding: 22, display: "flex", gap: 16, alignItems: "flex-start", borderLeft: "3px solid #ff6fa8" }}>
                         {a.imageUrl && (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={a.imageUrl} alt="" width={92} height={68} style={{ width: 92, height: 68, objectFit: "cover", borderRadius: 8, flexShrink: 0 }} />
+                          <SmartImage src={a.imageUrl} alt="" width={92} height={68} sizes="92px" style={{ width: 92, height: 68, objectFit: "cover", borderRadius: 8, flexShrink: 0 }} />
                         )}
                         <div style={{ minWidth: 0 }}>
                           <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 6, flexWrap: "wrap" }}>
@@ -285,7 +284,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                       <div key={item.id} className="genius-card" style={{ padding: 22, overflow: "hidden", position: "relative" }}>
                         {artist.imageUrl && (
                           <div style={{ position: "absolute", top: 0, right: 0, width: 130, height: 130, overflow: "hidden", opacity: 0.07, borderRadius: "0 4px 0 50%", pointerEvents: "none" }}>
-                            <img src={artist.imageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                            <SmartImage src={artist.imageUrl} alt="" width={130} height={130} sizes="130px" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                           </div>
                         )}
                         <div style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 10 }}>
@@ -326,7 +325,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                   <Link key={group.id} href={`/artists/${group.slug}`} style={{ textDecoration: "none", display: "block", marginBottom: 8 }}>
                     <div className="genius-card" style={{ padding: "12px 16px", fontWeight: 700, fontSize: "0.9rem", display: "flex", alignItems: "center", gap: 10 }}>
                       {group.imageUrl ? (
-                        <img src={group.imageUrl} alt={group.stageName} style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
+                        <SmartImage src={group.imageUrl} alt={group.stageName} width={32} height={32} sizes="32px" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
                       ) : (
                         <span style={{ fontSize: "1.2rem" }}>🎤</span>
                       )}

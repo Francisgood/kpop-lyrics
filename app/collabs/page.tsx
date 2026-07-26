@@ -3,6 +3,7 @@ import Link from "next/link";
 import CollabNetwork, { type GraphNode, type GraphLink } from "@/components/CollabNetwork";
 import QuizButton from "@/components/QuizButton";
 import { T, LangToggle } from "@/components/LangProvider";
+import SmartImage from "@/components/SmartImage";
 
 export const revalidate = 1800;
 
@@ -225,14 +226,14 @@ export default async function CollabsPage() {
                     <div key={i} className="genius-card" style={{ padding: 16 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                         <Link href={`/artists/${edge.aSlug}`} style={{ fontWeight: 700, fontSize: "0.9rem", color: "#000", textDecoration: "none", display: "flex", alignItems: "center", gap: 7 }}>
-                          {edge.aImg && <img src={edge.aImg} alt={edge.a} style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />}
+                          {edge.aImg && <SmartImage src={edge.aImg} alt={edge.a} width={28} height={28} sizes="28px" style={{ borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />}
                           {edge.a}
                         </Link>
                         <span style={{ fontSize: "0.68rem", background: isWestern(edge.aSlug) || isWestern(edge.bSlug) ? "#e879f9" : "var(--genius-yellow)", color: "#000", padding: "2px 8px", borderRadius: 999, fontWeight: 700 }}>
                           {isWestern(edge.aSlug) || isWestern(edge.bSlug) ? "CROSSOVER" : <T en="COLLAB" es="COLAB" />}
                         </span>
                         <Link href={`/artists/${edge.bSlug}`} style={{ fontWeight: 700, fontSize: "0.9rem", color: "#000", textDecoration: "none", display: "flex", alignItems: "center", gap: 7 }}>
-                          {edge.bImg && <img src={edge.bImg} alt={edge.b} style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />}
+                          {edge.bImg && <SmartImage src={edge.bImg} alt={edge.b} width={28} height={28} sizes="28px" style={{ borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />}
                           {edge.b}
                         </Link>
                       </div>
@@ -313,7 +314,7 @@ export default async function CollabsPage() {
                       {i + 1}
                     </div>
                     {a.imageUrl && (
-                      <img src={a.imageUrl} alt={a.name} style={{ width: 34, height: 34, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid #eee" }} />
+                      <SmartImage src={a.imageUrl} alt={a.name} width={34} height={34} sizes="34px" style={{ borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid #eee" }} />
                     )}
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#000", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{a.name}</div>

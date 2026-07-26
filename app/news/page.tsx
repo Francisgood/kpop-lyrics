@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { T, LangToggle } from "@/components/LangProvider";
+import SmartImage from "@/components/SmartImage";
 
 export const revalidate = 1800;
 
@@ -338,7 +339,7 @@ export default async function NewsPage() {
                   { src: "/scraped/images/groups-vs-soloists-breakdown.jpg", label: "Groups vs Soloists Breakdown", labelEs: "Grupos vs. Solistas en detalle" },
                 ].map(({ src, label, labelEs }) => (
                   <div key={src} style={{ borderRadius: 6, overflow: "hidden", border: "1px solid var(--genius-border)" }}>
-                    <img src={src} alt={label} style={{ width: "100%", display: "block", objectFit: "cover", maxHeight: 160 }} />
+                    <img src={src} alt={label} loading="lazy" decoding="async" style={{ width: "100%", display: "block", objectFit: "cover", maxHeight: 160 }} />
                     <div style={{ padding: "6px 10px", fontSize: "0.68rem", color: "var(--ink-dim)", background: "rgba(255,255,255,0.06)", fontWeight: 600 }}>
                       <T en={label} es={labelEs} />
                     </div>
@@ -374,7 +375,7 @@ function NewsCard({ item }: {
       <div className="genius-card" style={{ padding: 18, borderLeft: `3px solid ${color}` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
           {item.artist.imageUrl ? (
-            <img src={item.artist.imageUrl} alt={item.artist.stageName} style={{ width: 30, height: 30, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "1px solid #eee" }} />
+            <SmartImage src={item.artist.imageUrl} alt={item.artist.stageName} width={30} height={30} sizes="30px" style={{ borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "1px solid #eee" }} />
           ) : (
             <div style={{ width: 30, height: 30, borderRadius: "50%", background: "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.85rem", flexShrink: 0 }}>🎤</div>
           )}

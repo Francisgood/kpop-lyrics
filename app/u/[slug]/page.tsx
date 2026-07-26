@@ -8,6 +8,7 @@ import { getSession } from "@/lib/auth";
 import { roleForUser, ROLE_LABEL, ROLE_COLOR, type Role } from "@/lib/roles";
 import { getUserAnnotations, getUserComments, type AnnRow } from "@/lib/community-db";
 import FollowButton from "@/components/FollowButton";
+import SmartImage from "@/components/SmartImage";
 import { T, LangToggle } from "@/components/LangProvider";
 
 export const dynamic = "force-dynamic";
@@ -113,8 +114,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ slug: 
           <LangToggle align="flex-start" marginBottom={16} />
           <div style={{ display: "flex", gap: 24, alignItems: "center", flexWrap: "wrap" }}>
             {p.avatar ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={p.avatar} alt={p.name} style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", flexShrink: 0, display: "block", background: p.tierColor, border: "4px solid var(--bg-card)", boxShadow: "0 8px 28px rgba(0,0,0,0.3)" }} />
+              <SmartImage src={p.avatar} alt={p.name} width={96} height={96} sizes="96px" style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", flexShrink: 0, display: "block", background: p.tierColor, border: "4px solid var(--bg-card)", boxShadow: "0 8px 28px rgba(0,0,0,0.3)" }} />
             ) : (
               <div style={{ width: 96, height: 96, borderRadius: "50%", flexShrink: 0, display: "grid", placeItems: "center", background: p.tierColor, color: "#fff", fontWeight: 800, fontSize: "2.6rem", border: "4px solid var(--bg-card)", boxShadow: "0 8px 28px rgba(0,0,0,0.3)" }}>
                 {p.initial}

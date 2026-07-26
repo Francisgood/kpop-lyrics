@@ -15,6 +15,7 @@ import { contributorBySlug } from "@/app/leaderboard/data";
 import UserAvatar from "@/components/UserAvatar";
 import songSourceLinks from "@/lib/song-source-links.json";
 import { T, LangToggle } from "@/components/LangProvider";
+import SmartImage from "@/components/SmartImage";
 
 // Credit-role labels. The DB stores raw role keys ("producer", "PRIMARY", …); this
 // maps the ones we know to display labels, falling back to the raw key for the rest.
@@ -177,7 +178,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
 
           <div style={{ display: "flex", gap: 32, alignItems: "flex-start", flexWrap: "wrap" }}>
             {(song.coverArt || song.album?.coverArt) ? (
-              <img src={song.coverArt || song.album?.coverArt || ""} alt={song.album?.title ?? song.title} style={{ width: 140, height: 140, borderRadius: 6, objectFit: "cover", flexShrink: 0, boxShadow: "0 4px 24px rgba(0,0,0,0.5)" }} />
+              <SmartImage src={song.coverArt || song.album?.coverArt || ""} alt={song.album?.title ?? song.title} width={140} height={140} priority sizes="140px" style={{ borderRadius: 6, objectFit: "cover", flexShrink: 0, boxShadow: "0 4px 24px rgba(0,0,0,0.5)" }} />
             ) : (
               <div style={{ width: 140, height: 140, borderRadius: 6, flexShrink: 0, background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "3rem" }}>
                 🎵
@@ -364,7 +365,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                   <Link key={a.id} href={`/artists/${a.slug}`} style={{ textDecoration: "none" }}>
                     <div className="genius-card" style={{ padding: "14px 18px", display: "flex", alignItems: "center", gap: 14, minWidth: 200 }}>
                       {a.imageUrl ? (
-                        <img src={a.imageUrl} alt={a.name} style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid #eee" }} />
+                        <SmartImage src={a.imageUrl} alt={a.name} width={52} height={52} sizes="52px" style={{ borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid #eee" }} />
                       ) : (
                         <div style={{ width: 52, height: 52, borderRadius: "50%", background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem", flexShrink: 0 }}>🎤</div>
                       )}
@@ -387,7 +388,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
             <div className="section-header"><T en="From the Album" es="Del Álbum" /></div>
             <div className="genius-card" style={{ marginTop: 4, padding: 18, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 18 }}>
               {song.album.coverArt && (
-                <img src={song.album.coverArt} alt={song.album.title} style={{ width: 110, height: 110, borderRadius: 6, objectFit: "cover", flexShrink: 0 }} />
+                <SmartImage src={song.album.coverArt} alt={song.album.title} width={110} height={110} sizes="110px" style={{ borderRadius: 6, objectFit: "cover", flexShrink: 0 }} />
               )}
               <div style={{ flex: "1 1 220px", minWidth: 0 }}>
                 <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#ff6fa8" }}>{song.album.title}</div>
@@ -418,7 +419,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                 <Link key={s.id} href={`/songs/${s.slug}`} style={{ textDecoration: "none" }}>
                   <div className="genius-card" style={{ padding: 14, display: "flex", alignItems: "center", gap: 12 }}>
                     {s.album?.coverArt ? (
-                      <img src={s.album.coverArt} alt={s.album.title} style={{ width: 46, height: 46, borderRadius: 4, objectFit: "cover", flexShrink: 0 }} />
+                      <SmartImage src={s.album.coverArt} alt={s.album.title} width={46} height={46} sizes="46px" style={{ borderRadius: 4, objectFit: "cover", flexShrink: 0 }} />
                     ) : (
                       <div style={{ width: 46, height: 46, borderRadius: 4, background: "linear-gradient(135deg, #1a1a2e, #0f3460)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.1rem", flexShrink: 0 }}>🎵</div>
                     )}
@@ -442,12 +443,12 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
                 <Link key={item.id} href={`/artists/${item.artist.slug}`} style={{ textDecoration: "none" }}>
                   <div className="genius-card" style={{ padding: 20, position: "relative", overflow: "hidden" }}>
                     {item.artist.imageUrl && (
-                      <img src={item.artist.imageUrl} alt="" style={{ position: "absolute", top: 0, right: 0, width: 90, height: "100%", objectFit: "cover", opacity: 0.07, borderRadius: "0 4px 4px 0" }} />
+                      <img src={item.artist.imageUrl} alt="" loading="lazy" decoding="async" style={{ position: "absolute", top: 0, right: 0, width: 90, height: "100%", objectFit: "cover", opacity: 0.07, borderRadius: "0 4px 4px 0" }} />
                     )}
                     <div style={{ position: "relative" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                         {item.artist.imageUrl ? (
-                          <img src={item.artist.imageUrl} alt={item.artist.stageName} style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "1px solid #eee" }} />
+                          <SmartImage src={item.artist.imageUrl} alt={item.artist.stageName} width={32} height={32} sizes="32px" style={{ borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "1px solid #eee" }} />
                         ) : (
                           <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.9rem", flexShrink: 0 }}>🎤</div>
                         )}

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { trackLead } from "@/lib/conversions";
 import { useLang, LangToggle, type Lang } from "@/components/LangProvider";
+import SmartImage from "@/components/SmartImage";
 
 const MONTHS: Record<Lang, string[]> = {
   en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -272,8 +273,7 @@ export default function BtsGiveawayPage() {
             return (
               <div key={i} style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 18, overflow: "hidden", display: "flex", flexDirection: "column" }}>
                 <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 10", overflow: "hidden" }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={m.img} alt={p.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <SmartImage src={m.img} alt={p.title} fill sizes="(max-width: 760px) 100vw, 500px" style={{ objectFit: "cover" }} />
                   <span style={{ position: "absolute", top: 14, left: 14, background: "rgba(15,15,18,0.82)", color: "#fff", fontFamily: "var(--mono)", fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", padding: "6px 12px", borderRadius: 100, border: `1px solid ${m.accent}` }}>
                     {p.badge}
                   </span>

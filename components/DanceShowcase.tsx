@@ -3,6 +3,7 @@
 import type { RichTopic, RightNowCard, Tutorial } from "@/app/culture/content";
 import NewsletterCard from "@/components/NewsletterCard";
 import { useLang, useT, youtubeWithLang, type Lang } from "@/components/LangProvider";
+import SmartImage from "@/components/SmartImage";
 
 /** Watch links: routed through youtubeWithLang so ES viewers land on Spanish captions + player UI. */
 const yt = (id: string, lang: Lang) => youtubeWithLang(`https://www.youtube.com/watch?v=${id}`, lang);
@@ -63,8 +64,7 @@ function RightNow({ c }: { c: RightNowCard }) {
     <a href={href} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
       <div style={{ background: "#fff", border: "1px solid #ececf0", borderRadius: 14, overflow: "hidden" }}>
         <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, background: "#000" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={img} alt={c.title} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+          <SmartImage src={img} alt={c.title} fill sizes="(max-width: 760px) 50vw, 480px" style={{ objectFit: "cover" }} />
           <PlayOverlay />
           <span style={{ position: "absolute", top: 8, left: 8, background: "rgba(0,0,0,0.7)", color: "#fff", fontWeight: 800, fontSize: "0.62rem", padding: "2px 7px", borderRadius: 6 }}>{c.rank}</span>
           <span style={{ position: "absolute", top: 8, right: 8, background: c.source === "youtube" ? "#ff0000" : "#fff", color: c.source === "youtube" ? "#fff" : "#15131f", fontWeight: 800, fontSize: "0.6rem", letterSpacing: "0.06em", textTransform: "uppercase", padding: "2px 7px", borderRadius: 999 }}>{c.source === "youtube" ? "YouTube" : "Reels"}</span>
@@ -97,8 +97,7 @@ export default function DanceShowcase({ data }: { data: RichTopic }) {
         <a href={yt(f.youtubeId, lang)} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
           <div style={{ background: "#fff", border: "1px solid #ececf0", borderRadius: 18, overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.06)" }}>
             <div style={{ position: "relative", paddingBottom: "48%", height: 0, background: "#000" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={thumb(f.youtubeId)} alt={f.title} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+              <SmartImage src={thumb(f.youtubeId)} alt={f.title} fill priority sizes="(max-width: 760px) 100vw, 1200px" style={{ objectFit: "cover" }} />
               <PlayOverlay />
               <span style={{ position: "absolute", top: 12, left: 12, background: "#ff0000", color: "#fff", fontWeight: 800, fontSize: "0.62rem", letterSpacing: "0.08em", textTransform: "uppercase", padding: "4px 10px", borderRadius: 999 }}>{t(f.label, esOf(f.label))}</span>
             </div>
@@ -134,8 +133,7 @@ export default function DanceShowcase({ data }: { data: RichTopic }) {
           <a key={tut.youtubeId} href={yt(tut.youtubeId, lang)} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
             <div style={{ background: "#fff", border: "1px solid #ececf0", borderRadius: 14, padding: 12, display: "flex", gap: 14, alignItems: "center" }}>
               <div style={{ position: "relative", width: 132, flexShrink: 0, borderRadius: 10, overflow: "hidden", aspectRatio: "16/9", background: "#000" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={thumb(tut.youtubeId)} alt={tut.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <SmartImage src={thumb(tut.youtubeId)} alt={tut.title} fill sizes="132px" style={{ objectFit: "cover" }} />
                 <PlayOverlay />
               </div>
               <div style={{ minWidth: 0 }}>

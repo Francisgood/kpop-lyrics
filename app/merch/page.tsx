@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import RestockAlert from "@/components/RestockAlert";
 import { T, LangToggle } from "@/components/LangProvider";
+import SmartImage from "@/components/SmartImage";
 
 export const metadata: Metadata = {
   title: "Merch — Aegyo Arena",
@@ -53,11 +54,12 @@ export default function MerchPage() {
           {TEES.map((t) => (
             <div key={t.name} style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 16, overflow: "hidden", display: "flex", flexDirection: "column" }}>
               <div style={{ position: "relative", aspectRatio: "3 / 4", overflow: "hidden" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <SmartImage
                   src={t.img}
                   alt={t.name}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center", display: "block", filter: "grayscale(35%) brightness(0.82)" }}
+                  fill
+                  sizes="(max-width: 760px) 50vw, 380px"
+                  style={{ objectFit: "cover", objectPosition: "top center", filter: "grayscale(35%) brightness(0.82)" }}
                 />
                 {/* Sold-out scrim + badge */}
                 <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.45) 100%)" }} />

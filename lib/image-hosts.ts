@@ -24,6 +24,8 @@ export const OPTIMIZED_IMAGE_HOSTS = [
   "**.mzstatic.com", // Apple Music / iTunes album art
   "**.pinkvilla.com",
   "static.billboard.com",
+  "img.youtube.com",   // video thumbnails
+  "i.ytimg.com",
 ] as const;
 
 function hostMatches(hostname: string, pattern: string): boolean {
@@ -38,7 +40,10 @@ function hostMatches(hostname: string, pattern: string): boolean {
 // only if its host is allow-listed above (and therefore in remotePatterns).
 export function canOptimize(src: string | null | undefined): boolean {
   if (!src) return false;
-  if (src.startsWith("/")) return true;
+  // Animated GIFs would be frozen to a single frame by the optimizer — never optimize.
+  const path = src.split("?")[0].toLowerCase();
+  if (path.endsWith(".gif")) return false;
+  if (src.startsWith("/")) return true; // same-origin (public/)
   try {
     return OPTIMIZED_IMAGE_HOSTS.some((p) => hostMatches(new URL(src).hostname, p));
   } catch {

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { CONTRIBUTORS } from "@/app/leaderboard/data";
+import SmartImage from "@/components/SmartImage";
 import { T, LangToggle } from "@/components/LangProvider";
 
 export const revalidate = 3600;
@@ -1095,8 +1096,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                   {cityContributors.map((c) => (
                     <Link key={c.slug} href={`/u/${c.slug}`} style={{ textDecoration: "none" }}>
                       <div className="genius-card" style={{ padding: "10px 12px", display: "flex", alignItems: "center", gap: 10 }}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={c.avatar} alt="" width={34} height={34} loading="lazy" style={{ width: 34, height: 34, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: `2px solid ${c.tierColor}`, background: c.tierColor }} />
+                        <SmartImage src={c.avatar} alt="" width={34} height={34} sizes="34px" style={{ width: 34, height: 34, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: `2px solid ${c.tierColor}`, background: c.tierColor }} />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontWeight: 700, fontSize: "0.82rem", color: "var(--ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.username}</div>
                           <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.68)" }}>

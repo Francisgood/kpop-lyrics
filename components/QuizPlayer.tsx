@@ -2,6 +2,7 @@
 import { useState } from "react";
 import type { QuizCategory } from "@/lib/quiz-data";
 import { useLang, useT, youtubeWithLang } from "@/components/LangProvider";
+import SmartImage from "@/components/SmartImage";
 
 // Inline, page-embedded player for a SINGLE quiz category (the /quiz/<slug> pages).
 // Mirrors the homepage QuizModal's question/result UI, minus the modal chrome, plus
@@ -129,8 +130,7 @@ export default function QuizPlayer({ category }: { category: QuizCategory }) {
         <div style={{ fontWeight: 800, fontSize: "1.08rem", lineHeight: 1.5, color: "#111", marginBottom: 20 }}>{t(current.q, current.qEs)}</div>
 
         {current.image && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={current.image} alt={t(current.imageAlt, current.imageAltEs) ?? ""} style={{ display: "block", width: "100%", maxWidth: 320, margin: "0 auto 20px", borderRadius: 12, border: "1px solid #ececec" }} />
+          <SmartImage src={current.image} alt={t(current.imageAlt, current.imageAltEs) ?? ""} style={{ display: "block", width: "100%", maxWidth: 320, margin: "0 auto 20px", borderRadius: 12, border: "1px solid #ececec" }} />
         )}
 
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>

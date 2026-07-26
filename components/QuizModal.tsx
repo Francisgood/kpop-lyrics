@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 
 import { QUIZZES as CATEGORIES, type QuizCategory as Category } from "@/lib/quiz-data";
 import { useLang, useT, youtubeWithLang } from "@/components/LangProvider";
+import SmartImage from "@/components/SmartImage";
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
@@ -202,8 +203,7 @@ export default function QuizModal({ onClose }: QuizModalProps) {
             </div>
 
             {current.image && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={current.image} alt={t(current.imageAlt, current.imageAltEs) ?? ""} style={{ display: "block", width: "100%", maxWidth: 300, margin: "0 auto 20px", borderRadius: 12, border: "1px solid #ececec" }} />
+              <SmartImage src={current.image} alt={t(current.imageAlt, current.imageAltEs) ?? ""} style={{ display: "block", width: "100%", maxWidth: 300, margin: "0 auto 20px", borderRadius: 12, border: "1px solid #ececec" }} />
             )}
 
             {/* Options — iterate the CANONICAL options so `i` always matches `current.answer`;
