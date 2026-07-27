@@ -270,7 +270,7 @@ export default function SlangDeck({ terms }: { terms: DeckTerm[] }) {
       {/* mode + progress bar */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
         <div style={{ display: "inline-flex", background: "var(--bg-card,#141414)", border: "1px solid var(--border,#262626)", borderRadius: 100, padding: 3 }}>
-          {([["daily", tr("Daily 10", "10 del día")], ["all", tr("All 247", "Todas")]] as [Mode, string][]).map(([m, label]) => (
+          {([["daily", tr("Daily 10", "10 del día")], ["all", tr(`All ${terms.length}`, "Todas")]] as [Mode, string][]).map(([m, label]) => (
             <button key={m} type="button" onClick={() => restart(m)} aria-pressed={mode === m}
               style={{ padding: "7px 15px", borderRadius: 100, border: "none", cursor: "pointer", fontSize: "0.78rem", fontWeight: 800, background: mode === m ? "#FF6FA8" : "transparent", color: mode === m ? "#0a0a0a" : "var(--ink-dim,#9aa)", transition: "all .15s" }}>
               {label}
@@ -321,15 +321,13 @@ export default function SlangDeck({ terms }: { terms: DeckTerm[] }) {
               >
                 <div className="card-flip" style={{ transform: top && flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}>
                   {/* FRONT */}
-                  <div className="face front" style={{ background: media ? "#0a0a0a" : grad, backgroundSize: "200% 200%" }}>
-                    {media ? (
+                  <div className={`face front${media ? "" : " front-grad"}`} style={{ background: media ? "#0a0a0a" : grad, backgroundSize: "200% 200%" }}>
+                    {media && (
                       // Giphy/host GIFs: plain img (never run through the optimizer — keeps them animated)
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={media} alt="" className="card-media" loading={depth === 0 ? "eager" : "lazy"} />
-                    ) : (
-                      <div className="card-grad-word" aria-hidden>{t.hangul || t.term}</div>
                     )}
-                    <div className="card-scrim" />
+                    {media && <div className="card-scrim" />}
                     {top && (
                       <>
                         <div className="stamp stamp-save" style={{ opacity: drag.dx > 20 ? Math.min((drag.dx - 20) / 80, 1) : 0 }}>{tr("SAVE", "GUARDAR")}</div>
@@ -337,8 +335,9 @@ export default function SlangDeck({ terms }: { terms: DeckTerm[] }) {
                       </>
                     )}
                     <div className="card-meta">
-                      {t.hangul && media && <div className="card-hangul">{t.hangul}</div>}
+                      {/* Romanized term, then the Korean below it for reading practice. */}
                       <div className="card-term">{t.term}</div>
+                      {t.hangul && <div className="card-hangul" lang="ko">{t.hangul}</div>}
                       <div className="card-chips">
                         {t.songCount > 0 && <span className="chip chip-song">🎵 {t.songCount} {tr(t.songCount === 1 ? "song" : "songs", t.songCount === 1 ? "canción" : "canciones")}</span>}
                         <span className="chip chip-tap">{tr("tap to flip", "toca para girar")} ↻</span>
@@ -391,7 +390,7 @@ export default function SlangDeck({ terms }: { terms: DeckTerm[] }) {
               <div className="done-actions">
                 {saved.length > 0 && <button type="button" className="pill-btn" onClick={() => restart("saved")}>❤ {tr("Study my deck", "Estudiar mi mazo")} ({saved.length})</button>}
                 {mode === "daily"
-                  ? <button type="button" className="pill-btn ghost" onClick={() => restart("all")}>{tr("Keep going — all 247 →", "Seguir — las 247 →")}</button>
+                  ? <button type="button" className="pill-btn ghost" onClick={() => restart("all")}>{tr(`Keep going — all ${terms.length} →`, `Seguir — las ${terms.length} →`)}</button>
                   : <button type="button" className="pill-btn ghost" onClick={() => restart(mode)}>{tr("Start over", "Empezar de nuevo")}</button>}
               </div>
             </div>
@@ -461,13 +460,16 @@ const deckCss = `
 .card-flip{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.8,.3,1);}
 .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.08);}
 .face.front{display:flex;align-items:flex-end;animation:gradShift 7s ease infinite;}
+.face.front-grad{align-items:center;justify-content:center;text-align:center;}
 .face.back{transform:rotateY(180deg);background:#111114;display:flex;padding:22px;}
 .card-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;user-select:none;-webkit-user-drag:none;pointer-events:none;}
-.card-grad-word{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:2.6rem;color:rgba(255,255,255,.96);text-align:center;padding:24px;letter-spacing:-.01em;text-shadow:0 3px 24px rgba(0,0,0,.35);}
 .card-scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.82) 0%,rgba(0,0,0,.28) 42%,rgba(0,0,0,0) 68%);}
 .card-meta{position:relative;padding:20px;width:100%;z-index:2;}
-.card-hangul{color:rgba(255,255,255,.82);font-size:1rem;font-weight:700;margin-bottom:2px;}
 .card-term{color:#fff;font-weight:900;font-size:2rem;line-height:1.05;letter-spacing:-.02em;text-shadow:0 2px 14px rgba(0,0,0,.5);}
+.card-hangul{color:rgba(255,255,255,.94);font-size:1.4rem;font-weight:700;line-height:1.2;margin-top:7px;letter-spacing:.01em;text-shadow:0 2px 14px rgba(0,0,0,.55);}
+.front-grad .card-term{font-size:2.6rem;}
+.front-grad .card-hangul{font-size:1.9rem;margin-top:10px;}
+.front-grad .card-chips{justify-content:center;}
 .card-chips{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;}
 .chip{font-size:.68rem;font-weight:800;padding:4px 10px;border-radius:999px;backdrop-filter:blur(4px);}
 .chip-song{background:rgba(0,0,0,.55);color:#FFD166;}

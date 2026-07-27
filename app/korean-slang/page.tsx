@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { T, LangToggle } from "@/components/LangProvider";
 import SlangDeck, { type DeckTerm } from "@/components/SlangDeck";
+import { hangulFromDefinition } from "@/lib/hangul";
 
 export const revalidate = 3600;
 
@@ -36,7 +37,8 @@ export default async function DefinePage() {
       return {
         slug: t.slug,
         term: t.term,
-        hangul: m?.hangul ?? null,
+        // Prefer the curated Hangul (SlangMedia), else pull it from the definition.
+        hangul: m?.hangul ?? hangulFromDefinition(d.body),
         gifUrl: m?.gifUrl ?? null,
         imageUrl: m?.imageUrl ?? null,
         def: d.body,
