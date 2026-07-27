@@ -19,10 +19,18 @@ export function LangProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("aegyo-lang");
-      if (saved === "en" || saved === "es") setLangState(saved);
-      else if ((navigator.language || "").toLowerCase().startsWith("es")) setLangState("es");
-    } catch { /* localStorage/navigator unavailable */ }
+      const cookie = (n: string) => document.cookie.match(new RegExp("(?:^|;\\s*)" + n + "=(en|es)"))?.[1];
+      // Priority: explicit choice (toggle → aegyo-lang cookie or localStorage) always
+      // wins; then the geo hint seeded by middleware (aegyo_geo); then browser language.
+      const explicit = cookie("aegyo-lang") ?? localStorage.getItem("aegyo-lang");
+      const geo = cookie("aegyo_geo");
+      const pref =
+        explicit === "en" || explicit === "es" ? explicit
+        : geo === "en" || geo === "es" ? geo
+        : (navigator.language || "").toLowerCase().startsWith("es") ? "es"
+        : null;
+      if (pref === "en" || pref === "es") setLangState(pref);
+    } catch { /* localStorage/cookie/navigator unavailable */ }
   }, []);
 
   useEffect(() => {
@@ -31,7 +39,10 @@ export function LangProvider({ children }: { children: ReactNode }) {
 
   function setLang(l: Lang) {
     setLangState(l);
+    // Persist the explicit choice in BOTH localStorage and a cookie so it survives
+    // and outranks the geo hint (the middleware never overwrites aegyo-lang).
     try { localStorage.setItem("aegyo-lang", l); } catch { /* ignore */ }
+    try { document.cookie = `aegyo-lang=${l}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`; } catch { /* ignore */ }
   }
 
   return <LangCtx.Provider value={{ lang, setLang }}>{children}</LangCtx.Provider>;
