@@ -19,6 +19,7 @@ export type DeckTerm = {
   slug: string;
   term: string;
   hangul?: string | null;
+  roman?: string | null;
   gifUrl?: string | null;
   imageUrl?: string | null;
   def: string;
@@ -335,9 +336,10 @@ export default function SlangDeck({ terms }: { terms: DeckTerm[] }) {
                       </>
                     )}
                     <div className="card-meta">
-                      {/* Romanized term, then the Korean below it for reading practice. */}
+                      {/* Romanized term, the Korean below it, then a pronunciation hint. */}
                       <div className="card-term">{t.term}</div>
                       {t.hangul && <div className="card-hangul" lang="ko">{t.hangul}</div>}
+                      {t.roman && <div className="card-roman">{t.roman}</div>}
                       <div className="card-chips">
                         {t.songCount > 0 && <span className="chip chip-song">🎵 {t.songCount} {tr(t.songCount === 1 ? "song" : "songs", t.songCount === 1 ? "canción" : "canciones")}</span>}
                         <span className="chip chip-tap">{tr("tap to flip", "toca para girar")} ↻</span>
@@ -347,7 +349,8 @@ export default function SlangDeck({ terms }: { terms: DeckTerm[] }) {
                   {/* BACK */}
                   <div className="face back">
                     <div className="back-scroll">
-                      <div className="back-term">{t.term}{t.hangul ? <span className="back-hangul"> · {t.hangul}</span> : null}</div>
+                      <div className="back-term">{t.term}{t.hangul ? <span className="back-hangul" lang="ko"> · {t.hangul}</span> : null}</div>
+                      {t.roman && <div className="back-roman">{t.roman}</div>}
                       <p className="back-def">{es && t.defEs ? t.defEs : t.def}</p>
                       {(es && t.exampleEs ? t.exampleEs : t.example) && (
                         <p className="back-ex">“{es && t.exampleEs ? t.exampleEs : t.example}”</p>
@@ -467,9 +470,12 @@ const deckCss = `
 .card-meta{position:relative;padding:20px;width:100%;z-index:2;}
 .card-term{color:#fff;font-weight:900;font-size:2rem;line-height:1.05;letter-spacing:-.02em;text-shadow:0 2px 14px rgba(0,0,0,.5);}
 .card-hangul{color:rgba(255,255,255,.94);font-size:1.4rem;font-weight:700;line-height:1.2;margin-top:7px;letter-spacing:.01em;text-shadow:0 2px 14px rgba(0,0,0,.55);}
+.card-roman{color:rgba(255,255,255,.66);font-size:.82rem;font-weight:500;letter-spacing:.05em;margin-top:5px;text-shadow:0 1px 8px rgba(0,0,0,.6);}
 .front-grad .card-term{font-size:2.6rem;}
 .front-grad .card-hangul{font-size:1.9rem;margin-top:10px;}
+.front-grad .card-roman{font-size:.9rem;margin-top:7px;}
 .front-grad .card-chips{justify-content:center;}
+.back-roman{color:var(--ink-dim,#9aa);font-size:.82rem;letter-spacing:.05em;margin:-6px 0 14px;}
 .card-chips{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;}
 .chip{font-size:.68rem;font-weight:800;padding:4px 10px;border-radius:999px;backdrop-filter:blur(4px);}
 .chip-song{background:rgba(0,0,0,.55);color:#FFD166;}

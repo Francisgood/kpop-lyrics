@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { T, LangToggle } from "@/components/LangProvider";
 import SlangDeck, { type DeckTerm } from "@/components/SlangDeck";
-import { hangulFromDefinition } from "@/lib/hangul";
+import { hangulFromDefinition, romanizeHangul } from "@/lib/hangul";
 
 export const revalidate = 3600;
 
@@ -28,17 +28,24 @@ export default async function DefinePage() {
     for (const r of rows) media.set(r.slug, r);
   } catch { /* table not created yet → gradient cards */ }
 
+  // Hangul for a term: prefer the curated SlangMedia value, else pull it from the
+  // definition (which conventionally leads with the Korean). Shared by the deck and
+  // the A–Z grid so both show the same Korean + pronunciation hint.
+  const hangulOf = (slug: string, body: string | null | undefined) =>
+    media.get(slug)?.hangul ?? hangulFromDefinition(body);
+
   // Only terms that actually have a definition make good flash-cards.
   const deckTerms: DeckTerm[] = terms
     .filter((t) => t.definitions[0])
     .map((t) => {
       const d = t.definitions[0];
       const m = media.get(t.slug);
+      const hangul = hangulOf(t.slug, d.body);
       return {
         slug: t.slug,
         term: t.term,
-        // Prefer the curated Hangul (SlangMedia), else pull it from the definition.
-        hangul: m?.hangul ?? hangulFromDefinition(d.body),
+        hangul,
+        roman: romanizeHangul(hangul),
         gifUrl: m?.gifUrl ?? null,
         imageUrl: m?.imageUrl ?? null,
         def: d.body,
@@ -91,12 +98,20 @@ export default async function DefinePage() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 14 }}>
           {terms.map((term) => {
             const topDef = term.definitions[0];
+            const hangul = hangulOf(term.slug, topDef?.body);
+            const roman = romanizeHangul(hangul);
             return (
               <Link key={term.id} href={`/korean-slang/${term.slug}`} style={{ textDecoration: "none" }}>
                 <div className="genius-card" style={{ padding: 18, height: "100%" }}>
-                  <div style={{ fontWeight: 800, fontSize: "1.1rem", color: "#ff6fa8", marginBottom: 8 }}>
+                  <div style={{ fontWeight: 800, fontSize: "1.1rem", color: "#ff6fa8", marginBottom: hangul ? 2 : 8 }}>
                     {term.term}
                   </div>
+                  {hangul && (
+                    <div style={{ marginBottom: 8, display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
+                      <span lang="ko" style={{ color: "#fff", fontSize: "1rem", fontWeight: 700 }}>{hangul}</span>
+                      {roman && <span style={{ color: "var(--genius-gray)", fontSize: "0.72rem", letterSpacing: "0.03em" }}>{roman}</span>}
+                    </div>
+                  )}
                   {term._count.annotations > 0 && (
                     <div style={{ display: "inline-block", background: "#000", color: "var(--genius-yellow)", fontSize: "0.7rem", fontWeight: 700, padding: "2px 9px", borderRadius: 999, marginBottom: 8 }}>
                       🎵 <T
