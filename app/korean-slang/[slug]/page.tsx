@@ -63,10 +63,10 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
           definitions={term.definitions.map((d) => ({ id: d.id, body: d.body, bodyEs: d.bodyEs, example: d.example, exampleEs: d.exampleEs, votesUp: d.votesUp, votesDown: d.votesDown }))}
         />
 
-        {/* Songs whose lyrics use this slang term */}
-        {heardInSongs.length > 0 && (
-          <section style={{ marginTop: 40 }}>
-            <div className="section-header"><T en="Heard in these songs" es="Se escucha en estas canciones" /></div>
+        {/* Songs whose lyrics use this slang term (anchor target for the deck's "link a song" CTA) */}
+        <section id="songs" style={{ marginTop: 40, scrollMarginTop: 80 }}>
+          <div className="section-header"><T en="Heard in these songs" es="Se escucha en estas canciones" /></div>
+          {heardInSongs.length > 0 ? (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
               {heardInSongs.map((song) => (
                 <Link key={song.id} href={`/songs/${song.slug}`} style={{ textDecoration: "none" }}>
@@ -79,8 +79,15 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
                 </Link>
               ))}
             </div>
-          </section>
-        )}
+          ) : (
+            <p style={{ color: "var(--genius-gray)", fontSize: "0.9rem", lineHeight: 1.6 }}>
+              <T en="No songs linked yet." es="Aún no hay canciones vinculadas." />
+            </p>
+          )}
+          <Link href="/contribute" style={{ display: "inline-block", marginTop: 14, background: "rgba(255,111,168,0.12)", color: "#ff6fa8", fontWeight: 700, fontSize: "0.82rem", padding: "9px 16px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(255,111,168,0.35)" }}>
+            <T en={`＋ Know a song that uses “${term.term}”? Add an annotation`} es={`＋ ¿Conoces una canción que use “${term.term}”? Agrega una anotación`} />
+          </Link>
+        </section>
 
         <div style={{ textAlign: "center", marginTop: 32 }}>
           <Link href="/korean-slang" style={{ color: "var(--genius-gray)", textDecoration: "none", fontSize: "0.9rem" }}>
