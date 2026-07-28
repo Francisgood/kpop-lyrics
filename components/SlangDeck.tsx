@@ -70,13 +70,15 @@ function todayKey(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+// Soft white → pink → purple pastels, on-brand with the site's sakura pink.
+// Light cards, so the front text is a deep plum (see .front-grad overrides below).
 const GRADIENTS = [
-  "linear-gradient(135deg,#FF6FA8 0%,#7B61FF 100%)",
-  "linear-gradient(135deg,#00E0C6 0%,#0A84FF 100%)",
-  "linear-gradient(135deg,#FFD166 0%,#FF6FA8 100%)",
-  "linear-gradient(135deg,#A78BFA 0%,#EC4899 100%)",
-  "linear-gradient(135deg,#22D3EE 0%,#818CF8 100%)",
-  "linear-gradient(135deg,#FB7185 0%,#FBBF24 100%)",
+  "linear-gradient(145deg,#FFFFFF 0%,#FFD9EC 50%,#EEB4FF 100%)",
+  "linear-gradient(145deg,#FFEAF4 0%,#FFB6DD 50%,#D4A5FF 100%)",
+  "linear-gradient(145deg,#F7EDFF 0%,#DDB8FF 50%,#FFB3D9 100%)",
+  "linear-gradient(145deg,#FFFFFF 0%,#F0C6FF 50%,#C4A0FF 100%)",
+  "linear-gradient(145deg,#FFDCEC 0%,#EFB0FF 50%,#BEB0FF 100%)",
+  "linear-gradient(145deg,#FFF2F8 0%,#FFBFE0 50%,#CBB0FF 100%)",
 ];
 
 const SAVED_KEY = "aegyo_slang_saved";
@@ -477,10 +479,13 @@ const deckCss = `
 .card-term{color:#fff;font-weight:900;font-size:2rem;line-height:1.05;letter-spacing:-.02em;text-shadow:0 2px 14px rgba(0,0,0,.5);}
 .card-hangul{color:rgba(255,255,255,.94);font-size:1.4rem;font-weight:700;line-height:1.2;margin-top:7px;letter-spacing:.01em;text-shadow:0 2px 14px rgba(0,0,0,.55);}
 .card-roman{color:rgba(255,255,255,.66);font-size:.82rem;font-weight:500;letter-spacing:.05em;margin-top:5px;text-shadow:0 1px 8px rgba(0,0,0,.6);}
-.front-grad .card-term{font-size:2.6rem;}
-.front-grad .card-hangul{font-size:1.9rem;margin-top:10px;}
-.front-grad .card-roman{font-size:.9rem;margin-top:7px;}
+/* Light gradient cards use dark (deep-plum) text instead of the white used on GIF cards. */
+.front-grad .card-term{font-size:2.6rem;color:#3A1550;text-shadow:none;}
+.front-grad .card-hangul{font-size:1.9rem;margin-top:10px;color:#5A2270;text-shadow:none;}
+.front-grad .card-roman{font-size:.9rem;margin-top:7px;color:rgba(58,21,80,.62);text-shadow:none;}
 .front-grad .card-chips{justify-content:center;}
+.front-grad .chip-song{background:#3A1550;color:#FFD166;}
+.front-grad .chip-tap{background:rgba(58,21,80,.1);color:#3A1550;}
 .back-roman{color:var(--ink-dim,#9aa);font-size:.82rem;letter-spacing:.05em;margin:-6px 0 14px;}
 .card-chips{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;}
 .chip{font-size:.68rem;font-weight:800;padding:4px 10px;border-radius:999px;backdrop-filter:blur(4px);}
