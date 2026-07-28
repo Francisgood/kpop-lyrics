@@ -320,7 +320,7 @@ export default function SlangDeck({ terms }: { terms: DeckTerm[] }) {
                   pointerEvents: top ? "auto" : "none",
                 }}
               >
-                <div className="card-flip" style={{ transform: top && flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}>
+                <div className={`card-flip${top && flipped ? " is-flipped" : ""}`} style={{ transform: top && flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}>
                   {/* FRONT */}
                   <div className={`face front${media ? "" : " front-grad"}`} style={{ background: media ? "#0a0a0a" : grad, backgroundSize: "200% 200%" }}>
                     {media && (
@@ -460,11 +460,17 @@ const deckCss = `
 .deck-stage{position:relative;height:460px;perspective:1200px;margin:0 auto;max-width:360px;}
 .card-wrap{position:absolute;inset:0;width:100%;height:100%;will-change:transform;touch-action:none;cursor:grab;}
 .card-wrap:active{cursor:grabbing;}
-.card-flip{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.8,.3,1);}
+.card-flip{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s ease-in-out;}
 .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.08);}
-.face.front{display:flex;align-items:flex-end;animation:gradShift 7s ease infinite;}
+/* backface-visibility is unreliable in mobile in-app WebViews (and the front's
+   gradient animation defeats it), so we also hard-swap face opacity at the 90°
+   midpoint: an instant change after a .25s delay = half of the .5s flip. This
+   guarantees the outgoing face is gone before it can mirror through the other. */
+.face.front{display:flex;align-items:flex-end;animation:gradShift 7s ease infinite;opacity:1;transition:opacity 0s linear .25s;}
+.card-flip.is-flipped .face.front{opacity:0;}
+.card-flip.is-flipped .face.back{opacity:1;}
 .face.front-grad{align-items:center;justify-content:center;text-align:center;}
-.face.back{transform:rotateY(180deg);background:#111114;display:flex;padding:22px;}
+.face.back{transform:rotateY(180deg);background:#111114;display:flex;padding:22px;opacity:0;transition:opacity 0s linear .25s;}
 .card-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;user-select:none;-webkit-user-drag:none;pointer-events:none;}
 .card-scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.82) 0%,rgba(0,0,0,.28) 42%,rgba(0,0,0,0) 68%);}
 .card-meta{position:relative;padding:20px;width:100%;z-index:2;}
