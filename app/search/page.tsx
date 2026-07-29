@@ -55,10 +55,10 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               {grouped[t].map((h, i) => (
                 <Link key={i} href={h.url} style={{ textDecoration: "none" }}>
                   <div className="genius-card" style={{ padding: 16 }}>
-                    <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "#000", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.title}</div>
-                    {h.subtitle && <div style={{ fontSize: "0.78rem", color: "var(--genius-gray)", marginTop: 2 }}>{h.subtitle}</div>}
+                    <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.title}</div>
+                    {h.subtitle && <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.8)", marginTop: 2 }}>{h.subtitle}</div>}
                     {h.body && (
-                      <div style={{ fontSize: "0.82rem", color: "#555", lineHeight: 1.5, marginTop: 6, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                      <div style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.9)", lineHeight: 1.5, marginTop: 6, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                         {h.body}
                       </div>
                     )}
@@ -70,9 +70,9 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         ))}
 
         {query && total === 0 && (
-          <div style={{ textAlign: "center", padding: "60px 0", color: "var(--genius-gray)" }}>
+          <div style={{ textAlign: "center", padding: "60px 0", color: "rgba(255,255,255,0.8)" }}>
             <div style={{ fontSize: "2rem", marginBottom: 16 }}>🔍</div>
-            <div style={{ fontSize: "1.1rem", fontWeight: 600 }}>
+            <div style={{ fontSize: "1.1rem", fontWeight: 600, color: "#fff" }}>
               <T en={`No results for “${query}”`} es={`Sin resultados para “${query}”`} />
             </div>
             <div style={{ marginTop: 8 }}>

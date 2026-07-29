@@ -35,7 +35,7 @@ type Copy = {
   readLabel: (n: number) => string; readMore: string;
   agoM: (n: number) => string; agoH: (n: number) => string; agoD: (n: number) => string; dateLocale: string;
   ex: { eyebrow: string; title: string; items: { href: string; tag: string; label: string; color: string }[] };
-  ev: PromoCopy; qz: PromoCopy;
+  ar: PromoCopy; ev: PromoCopy; qz: PromoCopy;
   emptyTitle: string; emptyBody: string; emptyLink: string; loading: string; caughtUp: string;
   // Rumor gate: subheadline is blurred behind an email capture.
   rumorTease: string; rumorPh: string; rumorBtn: string; rumorSaving: string; rumorDone: string; rumorErr: string;
@@ -58,6 +58,7 @@ const COPY: Record<Lang, Copy> = {
         { href: "/cities", tag: "Cities", label: "Global K-pop cities & meetups", color: "var(--volt)" },
       ],
     },
+    ar: { eyebrow: "New · Arcade", title: "K-pop mini-games.", body: "Claw machines, Bias Flap, slang-guessing & more — light, fast, one-handed. Play them free at the arcade.", cta: "Enter the arcade →" },
     ev: { eyebrow: "Community · Live feed", title: "Fan events near you.", body: "K-pop meetups, dance meets, K-beauty pop-ups & comic cons — updated daily, sorted by city.", cta: "See what's on →" },
     qz: { eyebrow: "Play · Test yourself", title: "How well do you know K-pop?", body: "Aegyo, Korean slang & idol trivia — quick quizzes to prove your bias knowledge.", cta: "Take the quiz →" },
     emptyTitle: "The feed is warming up", emptyBody: "Fresh K-pop news, gossip & rumors are published here daily. Meanwhile,", emptyLink: "explore the universe →",
@@ -81,6 +82,7 @@ const COPY: Record<Lang, Copy> = {
         { href: "/cities", tag: "Ciudades", label: "Ciudades y quedadas K-pop", color: "var(--volt)" },
       ],
     },
+    ar: { eyebrow: "Nuevo · Arcade", title: "Minijuegos de K-pop.", body: "Máquinas de garra, Bias Flap, adivina la jerga y más — ligeros, rápidos, con una mano. Juega gratis en el arcade.", cta: "Entra al arcade →" },
     ev: { eyebrow: "Comunidad · En vivo", title: "Eventos de fans cerca de ti.", body: "Quedadas K-pop, dance meets, pop-ups de K-beauty y comic cons — actualizado a diario, por ciudad.", cta: "Ver qué hay →" },
     qz: { eyebrow: "Juega · Ponte a prueba", title: "¿Cuánto sabes de K-pop?", body: "Aegyo, jerga coreana y trivia de idols — quizzes rápidos para demostrar cuánto sabes de tu bias.", cta: "Hacer el quiz →" },
     emptyTitle: "El feed se está calentando", emptyBody: "Cada día publicamos noticias, chismes y rumores de K-pop. Mientras tanto,", emptyLink: "explora el universo →",
@@ -153,7 +155,26 @@ function QuizUnit({ c }: { c: Copy }) {
   );
 }
 
-const PROMOS = [ExploreUnit, EventsUnit, QuizUnit];
+// The arcade (arcade.aegyoarena.com) — the flagship in-house unit, so it leads
+// the rotation. External subdomain, so a plain <a>, not next/link.
+function ArcadeUnit({ c }: { c: Copy }) {
+  return (
+    <div style={{ ...PROMO_FRAME, background: "linear-gradient(135deg, rgba(255,111,168,0.20), rgba(184,160,255,0.12), var(--bg-card))", padding: "30px 26px" }}>
+      <div style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 8 }}>{c.ar.eyebrow}</div>
+      {/* Matched to the events/quiz headline size so the rotation stays consistent. */}
+      <div style={{ fontFamily: "var(--serif)", fontSize: "clamp(2rem, 8vw, 3.2rem)", fontWeight: 700, color: "var(--ink)", marginBottom: 10, lineHeight: 1.1 }}>{c.ar.title}</div>
+      <p style={{ fontSize: "0.85rem", color: "var(--ink-dim)", margin: "0 0 14px", maxWidth: 400 }}>{c.ar.body}</p>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18 }}>
+        {["🕹️ Aegyo Claw", "Bias Flap", "Guess the Slang"].map((g) => (
+          <span key={g} style={{ fontFamily: "var(--mono)", fontSize: "0.68rem", fontWeight: 700, color: "var(--ink-dim)", background: "rgba(255,255,255,0.05)", border: "1px solid var(--border)", borderRadius: 999, padding: "5px 11px" }}>{g}</span>
+        ))}
+      </div>
+      <a href="https://arcade.aegyoarena.com" style={{ display: "inline-flex", padding: "11px 22px", borderRadius: 100, background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.85rem", letterSpacing: "0.03em", textTransform: "uppercase", textDecoration: "none" }}>{c.ar.cta}</a>
+    </div>
+  );
+}
+
+const PROMOS = [ArcadeUnit, ExploreUnit, EventsUnit, QuizUnit];
 
 // ── Rumor gate ──────────────────────────────────────────────────────────────
 // For "rumor" posts we tease the sub-header: the real text is rendered blurred
