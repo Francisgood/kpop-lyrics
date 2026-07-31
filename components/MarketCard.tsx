@@ -1,89 +1,100 @@
 "use client";
 
-import { useState } from "react";
 import { useLang } from "@/components/LangProvider";
 
 /**
- * A prediction-game promo attached to a specific article. Link-out to Daebak,
- * not an embedded surface. This is a POINTS game — players use Daebak Rewards
- * points (earned on Aegyo Arena), NOT real money, and redeem them for merch and
- * concert tickets. Aegyo Arena doesn't take real-money bets or hold funds.
+ * A compact replica of the Daebak market's mobile card — the market question,
+ * the current YES/NO odds, and Yes/No chips — with Daebak's Buy/Sell controls,
+ * the DBK amount input, and trade volume intentionally left OUT. The ENTIRE unit
+ * is a single link: a click anywhere pushes the reader to the Daebak market.
  *
- * The audience is assumed to be new to this, so there's a plain-language "how it
- * works" explainer. EN/ES like the rest of the site.
+ * Why a replica instead of an iframe: you can't hide elements inside a
+ * cross-origin iframe, and Daebak exposes no per-market odds API (prices are read
+ * on-chain), so the odds are passed in from ARTICLE_MARKETS config. They're a
+ * snapshot, not auto-live — swap in a fetch here once Daebak ships a read endpoint.
+ *
+ * It's a points game (Daebak Rewards points → merch/tickets), not real money.
  */
-export default function MarketCard({ marketUrl }: { marketUrl: string }) {
+export default function MarketCard({
+  marketUrl,
+  question,
+  questionEs,
+  yes,
+  no,
+}: {
+  marketUrl: string;
+  question: string;
+  questionEs?: string;
+  yes: number; // 0–100
+  no: number; // 0–100
+}) {
   const { lang } = useLang();
   const es = lang === "es";
   const t = (en: string, e: string) => (es ? e : en);
-  const [open, setOpen] = useState(false);
+  const q = es && questionEs ? questionEs : question;
 
   return (
-    <section
-      aria-label={t("Prediction game", "Juego de predicción")}
+    <a
+      href={marketUrl}
+      target="_blank"
+      rel="noopener noreferrer nofollow"
+      aria-label={t("Predict on Daebak", "Predecir en Daebak")}
       style={{
+        display: "block",
+        textDecoration: "none",
         marginTop: 34,
-        border: "2px solid #B8A0FF",
+        border: "1px solid #2a2333",
         borderRadius: 18,
-        background: "linear-gradient(135deg, rgba(184,160,255,0.16), var(--bg-card))",
-        boxShadow: "0 0 0 1px rgba(184,160,255,0.22)",
-        padding: "24px 22px",
+        background: "linear-gradient(180deg, #16121d, #0f0d13)",
+        boxShadow: "0 0 0 1px rgba(184,160,255,0.14), 0 10px 30px rgba(0,0,0,0.35)",
+        padding: "20px 20px 18px",
+        color: "#fff",
       }}
     >
-      <div style={{ fontFamily: "var(--mono)", fontSize: "0.66rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "#B8A0FF", fontWeight: 700, marginBottom: 8 }}>
-        {t("Prediction game", "Juego de predicción")} · Daebak Rewards
+      {/* eyebrow */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+        <span style={{ fontFamily: "var(--mono)", fontSize: "0.64rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "#B8A0FF", fontWeight: 700 }}>
+          {t("K-pop prediction", "Predicción K-pop")} · Daebak
+        </span>
+        <span style={{ fontFamily: "var(--mono)", fontSize: "0.58rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "#22e06b", background: "rgba(34,224,107,0.12)", border: "1px solid rgba(34,224,107,0.4)", borderRadius: 999, padding: "2px 9px", fontWeight: 700 }}>
+          {t("Open", "Abierto")}
+        </span>
       </div>
-      <div style={{ fontFamily: "var(--serif)", fontSize: "clamp(1.5rem, 5vw, 2rem)", fontWeight: 700, color: "var(--ink)", lineHeight: 1.15, marginBottom: 10 }}>
-        {t("Got a take on where this goes?", "¿Tienes un pronóstico de cómo termina esto?")}
-      </div>
-      <p style={{ fontSize: "0.9rem", color: "var(--ink-dim)", lineHeight: 1.6, margin: "0 0 14px", maxWidth: 460 }}>
-        {t(
-          "Predict this story on Daebak with your Daebak Rewards points — no real money. Call it right and stack points you can redeem for merch and concert tickets.",
-          "Predice esta historia en Daebak con tus puntos de Daebak Rewards — sin dinero real. Acierta y acumula puntos que puedes canjear por merch y boletos de conciertos.",
-        )}
-      </p>
 
-      {/* Plain-language explainer — the audience is assumed to be new to this. */}
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        style={{ background: "transparent", border: "none", color: "#B8A0FF", fontWeight: 700, fontSize: "0.82rem", cursor: "pointer", padding: 0, marginBottom: open ? 10 : 16 }}
-      >
-        {open ? "▾ " : "▸ "}{t("New to this? How it works", "¿Nuevo en esto? Cómo funciona")}
-      </button>
-      {open && (
-        <div style={{ fontSize: "0.85rem", color: "var(--ink-dim)", lineHeight: 1.65, margin: "0 0 16px", padding: "14px 16px", background: "rgba(255,255,255,0.04)", border: "1px solid var(--border)", borderRadius: 12 }}>
-          <p style={{ margin: "0 0 8px" }}>
-            {t(
-              "Daebak is a prediction game: you back what you think will happen using points. Right → you win more points; wrong → you don't. It's for fun and bragging rights.",
-              "Daebak es un juego de predicción: apuestas por lo que crees que va a pasar usando puntos. Aciertas → ganas más puntos; fallas → no. Es por diversión y para presumir.",
-            )}
-          </p>
-          <p style={{ margin: 0 }}>
-            {t(
-              "You play with Daebak Rewards points earned here on Aegyo Arena — not real money — and redeem them for merch and concert tickets. Daebak walks you through getting set up.",
-              "Juegas con puntos de Daebak Rewards que ganas aquí en Aegyo Arena — no con dinero real — y los canjeas por merch y boletos de conciertos. Daebak te guía para empezar.",
-            )}
-          </p>
+      {/* market question */}
+      <div style={{ fontSize: "1.12rem", fontWeight: 800, lineHeight: 1.28, marginBottom: 16, color: "#fff" }}>{q}</div>
+
+      {/* odds tiles */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
+        <div style={{ background: "#141019", border: "1px solid #2a2333", borderRadius: 12, padding: "12px 14px", textAlign: "center" }}>
+          <div style={{ fontFamily: "var(--mono)", fontSize: "0.6rem", letterSpacing: "0.14em", color: "#9a90ab", fontWeight: 700, marginBottom: 4 }}>YES</div>
+          <div style={{ fontSize: "1.7rem", fontWeight: 900, color: "#22e06b", lineHeight: 1 }}>{yes}%</div>
         </div>
-      )}
+        <div style={{ background: "#141019", border: "1px solid #2a2333", borderRadius: 12, padding: "12px 14px", textAlign: "center" }}>
+          <div style={{ fontFamily: "var(--mono)", fontSize: "0.6rem", letterSpacing: "0.14em", color: "#9a90ab", fontWeight: 700, marginBottom: 4 }}>NO</div>
+          <div style={{ fontSize: "1.7rem", fontWeight: 900, color: "#ff5b6e", lineHeight: 1 }}>{no}%</div>
+        </div>
+      </div>
 
-      <a
-        href={marketUrl}
-        target="_blank"
-        rel="noopener noreferrer nofollow"
-        style={{ display: "inline-flex", alignItems: "center", padding: "12px 24px", borderRadius: 100, background: "#B8A0FF", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.88rem", letterSpacing: "0.02em", textDecoration: "none" }}
-      >
-        {t("Predict on Daebak", "Predecir en Daebak")} →
-      </a>
+      {/* Yes / No chips (visual — the whole card links to Daebak) */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
+        <span style={{ display: "block", textAlign: "center", background: "rgba(34,224,107,0.14)", border: "1px solid rgba(34,224,107,0.55)", color: "#22e06b", borderRadius: 10, padding: "11px 0", fontWeight: 800, fontSize: "0.92rem" }}>
+          {t("Yes", "Sí")} {yes}%
+        </span>
+        <span style={{ display: "block", textAlign: "center", background: "rgba(255,91,110,0.12)", border: "1px solid rgba(255,91,110,0.5)", color: "#ff5b6e", borderRadius: 10, padding: "11px 0", fontWeight: 800, fontSize: "0.92rem" }}>
+          {t("No", "No")} {no}%
+        </span>
+      </div>
 
-      <p style={{ fontSize: "0.68rem", color: "var(--ink-faint)", lineHeight: 1.5, margin: "14px 0 0", maxWidth: 480 }}>
-        {t(
-          "Play with Daebak Rewards points, not real money. Points have no cash value; redeem them for merch and concert tickets where available. Eligibility and rules are set by Daebak.",
-          "Juega con puntos de Daebak Rewards, no con dinero real. Los puntos no tienen valor en efectivo; canjéalos por merch y boletos de conciertos donde estén disponibles. La elegibilidad y las reglas las define Daebak.",
-        )}
-      </p>
-    </section>
+      {/* footer CTA + points note */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
+        <span style={{ color: "#B8A0FF", fontWeight: 800, fontSize: "0.9rem" }}>
+          {t("Tap to predict on Daebak", "Toca para predecir en Daebak")} →
+        </span>
+        <span style={{ color: "#6f6880", fontSize: "0.66rem" }}>
+          {t("Points, not real money", "Puntos, no dinero real")}
+        </span>
+      </div>
+    </a>
   );
 }

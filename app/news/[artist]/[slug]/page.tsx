@@ -12,10 +12,18 @@ export const dynamic = "force-dynamic";
 const SITE = "https://www.aegyoarena.com";
 
 // Articles that carry a Daebak prediction-market card (shown right below the story).
-// Link-out only — Daebak's licensed site handles wagering, wallets, geo + age checks.
-const ARTICLE_MARKETS: Record<string, string> = {
-  "jennie-is-vaselines-global-ambassador":
-    "https://www.daebakmarkets.com/markets/0x54820de5d91d2dfe94ec63110c5ca24528202198ca65fbea8e12478df4091c3c",
+// Link-out only — Daebak's site handles the actual points wager. Odds are a snapshot
+// (Daebak has no per-market odds API — prices are on-chain); update `yes`/`no` when the
+// market moves, or wire a fetch in MarketCard once Daebak ships a read endpoint.
+type ArticleMarket = { url: string; question: string; questionEs: string; yes: number; no: number };
+const ARTICLE_MARKETS: Record<string, ArticleMarket> = {
+  "jennie-is-vaselines-global-ambassador": {
+    url: "https://www.daebakmarkets.com/markets/0x54820de5d91d2dfe94ec63110c5ca24528202198ca65fbea8e12478df4091c3c",
+    question: "Will another K-pop idol sign with Vaseline as a brand ambassador by October 31, 2026?",
+    questionEs: "¿Otra idol del K-pop firmará con Vaseline como embajadora de marca antes del 31 de octubre de 2026?",
+    yes: 50,
+    no: 50,
+  },
 };
 
 type Article = {
@@ -215,8 +223,11 @@ export default async function NewsArticlePage({ params }: { params: Promise<{ ar
         {/* Article 1 — the story the reader came for */}
         <FullArticle a={a} lead />
 
-        {/* Prediction market for this story (link-out to Daebak; see ARTICLE_MARKETS) */}
-        {ARTICLE_MARKETS[a.slug] && <MarketCard marketUrl={ARTICLE_MARKETS[a.slug]} />}
+        {/* Prediction market for this story (Daebak-style odds card; see ARTICLE_MARKETS) */}
+        {(() => {
+          const m = ARTICLE_MARKETS[a.slug];
+          return m ? <MarketCard marketUrl={m.url} question={m.question} questionEs={m.questionEs} yes={m.yes} no={m.no} /> : null;
+        })()}
 
         {/* Content you may like — more of the same artist (fallback: same category) */}
         {recs.length > 0 && (
