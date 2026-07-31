@@ -5,10 +5,18 @@ import { prisma } from "@/lib/prisma";
 import { T, LangToggle } from "@/components/LangProvider";
 import NewsletterGate from "@/components/NewsletterGate";
 import SmartImage from "@/components/SmartImage";
+import MarketCard from "@/components/MarketCard";
 
 export const dynamic = "force-dynamic";
 
 const SITE = "https://www.aegyoarena.com";
+
+// Articles that carry a Daebak prediction-market card (shown right below the story).
+// Link-out only — Daebak's licensed site handles wagering, wallets, geo + age checks.
+const ARTICLE_MARKETS: Record<string, string> = {
+  "jennie-is-vaselines-global-ambassador":
+    "https://www.daebakmarkets.com/markets/0x54820de5d91d2dfe94ec63110c5ca24528202198ca65fbea8e12478df4091c3c",
+};
 
 type Article = {
   id: string; slug: string; headline: string; subheadline: string | null; body: string | null;
@@ -206,6 +214,9 @@ export default async function NewsArticlePage({ params }: { params: Promise<{ ar
 
         {/* Article 1 — the story the reader came for */}
         <FullArticle a={a} lead />
+
+        {/* Prediction market for this story (link-out to Daebak; see ARTICLE_MARKETS) */}
+        {ARTICLE_MARKETS[a.slug] && <MarketCard marketUrl={ARTICLE_MARKETS[a.slug]} />}
 
         {/* Content you may like — more of the same artist (fallback: same category) */}
         {recs.length > 0 && (
