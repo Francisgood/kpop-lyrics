@@ -1,6 +1,7 @@
 "use client";
 
 import { useLang } from "@/components/LangProvider";
+import { trackEvent } from "@/lib/gtag";
 
 /**
  * A compact replica of the Daebak market's mobile card — the market question,
@@ -34,15 +35,26 @@ export default function MarketCard({
   const q = es && questionEs ? questionEs : question;
 
   return (
-    <a
+    <div style={{ marginTop: 34 }}>
+      {/* "Advertisement" label — editorial distance between this promo unit and the site. */}
+      <div style={{ fontFamily: "var(--mono)", fontSize: "0.6rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-faint)", marginBottom: 7 }}>
+        {t("Advertisement", "Publicidad")}
+      </div>
+      <a
       href={marketUrl}
       target="_blank"
       rel="noopener noreferrer nofollow"
       aria-label={t("Predict on Daebak", "Predecir en Daebak")}
+      onClick={() =>
+        trackEvent("prediction_market_click", {
+          promotion_id: "daebak-market",
+          promotion_name: question,
+          link_url: marketUrl,
+        })
+      }
       style={{
         display: "block",
         textDecoration: "none",
-        marginTop: 34,
         border: "1px solid #2a2333",
         borderRadius: 18,
         background: "linear-gradient(180deg, #16121d, #0f0d13)",
@@ -96,5 +108,6 @@ export default function MarketCard({
         </span>
       </div>
     </a>
+    </div>
   );
 }
