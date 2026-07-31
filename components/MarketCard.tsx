@@ -44,6 +44,7 @@ export default function MarketCard({
       href={marketUrl}
       target="_blank"
       rel="noopener noreferrer nofollow"
+      data-no-outbound="1"
       aria-label={t("Predict on Daebak", "Predecir en Daebak")}
       onClick={() =>
         trackEvent("prediction_market_click", {

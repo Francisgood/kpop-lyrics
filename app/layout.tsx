@@ -4,6 +4,7 @@ import "./globals.css";
 import Link from "next/link";
 import FooterNewsletter from "@/components/FooterNewsletter";
 import SocialLinks from "@/components/SocialLinks";
+import OutboundTracker from "@/components/OutboundTracker";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import NavSearch from "@/components/NavSearch";
 import { LangProvider, T } from "@/components/LangProvider";
@@ -37,6 +38,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className={sans.className}>
         {/* One EN/ES language state for the whole site (persisted; ES-default for es-* browsers). */}
         <LangProvider>
+        {/* Site-wide outbound-click analytics (social_click / outbound_click). */}
+        <OutboundTracker />
         <nav className="genius-nav" style={{ position: "sticky", top: 0, zIndex: 100 }}>
           {/* Primary row: logo + search + hamburger */}
           <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", gap: 20, height: 64 }}>
@@ -88,6 +91,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <div>
               {/* "Culture Vulture" is a brand name — stays EN. */}
               <div className="footer-col-title">Culture Vulture</div>
+              {/* Arcade is a separate subdomain app, so a plain <a>, not next/link. */}
+              <a href="https://arcade.aegyoarena.com" style={{ display: "block", fontSize: "1rem", fontWeight: 300, color: "var(--ink-dim)", textDecoration: "none", marginBottom: 10 }}>
+                Arcade
+              </a>
               {[["Dance", "/culture/dance", "Baile"], ["Fashion", "/culture/fashion", "Moda"], ["Beauty", "/culture/beauty", "Belleza"], ["Mukbang", "/culture/mukbang", "Mukbang"]].map(([label, href, labelEs]) => (
                 <Link key={href} href={href} style={{ display: "block", fontSize: "1rem", fontWeight: 300, color: "var(--ink-dim)", textDecoration: "none", marginBottom: 10 }}>
                   <T en={label} es={labelEs} />
