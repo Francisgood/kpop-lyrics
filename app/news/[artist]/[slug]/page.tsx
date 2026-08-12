@@ -151,10 +151,15 @@ function Attribution({ a }: { a: Article }) {
   );
 }
 
+// Juicy categories are gated on the article page too (not just the feed teaser):
+// the body is blurred behind an email capture to grow the newsletter list.
+const GATED_ARTICLE_CATEGORIES = new Set(["rumor", "gossip"]);
+
 // A full article body (headline → sub → image → body → attribution). Lead article
-// gets an h1; continue-reading articles get an h2.
+// gets an h1; continue-reading articles get an h2. Gossip/rumor bodies are gated.
 function FullArticle({ a, lead }: { a: Article; lead?: boolean }) {
   const Heading = lead ? "h1" : "h2";
+  const gated = GATED_ARTICLE_CATEGORIES.has(a.category ?? "");
   return (
     <>
       <MetaRow a={a} />
@@ -167,7 +172,20 @@ function FullArticle({ a, lead }: { a: Article; lead?: boolean }) {
         </p>
       )}
       <ArticleImage a={a} priority={lead} />
-      <Body a={a} />
+      {gated ? (
+        <>
+          {/* Juicy gossip: body blurred behind the email gate. Headline + sub stay
+              visible as the hook; source credit still renders below. */}
+          <div aria-hidden style={{ position: "relative", maxHeight: 260, overflow: "hidden", filter: "blur(6px)", userSelect: "none", pointerEvents: "none", WebkitMaskImage: "linear-gradient(to bottom, #000 22%, transparent)", maskImage: "linear-gradient(to bottom, #000 22%, transparent)" }}>
+            <Body a={a} />
+          </div>
+          <div style={{ marginTop: -48, position: "relative", zIndex: 2 }}>
+            <NewsletterGate source="gossip-gate" />
+          </div>
+        </>
+      ) : (
+        <Body a={a} />
+      )}
       <Attribution a={a} />
     </>
   );
