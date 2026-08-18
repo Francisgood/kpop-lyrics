@@ -50,6 +50,7 @@ const PRIZES = [
 ];
 
 const DATES = [
+  { k: "Entries close", v: "Wed, Sept 23, 2026 · 11:59 PM ET" },
   { k: "Winners drawn", v: "Thursday, Sept 24, 2026" },
   { k: "Outreach begins", v: "Friday, Sept 25, 2026" },
   { k: "Concert", v: "Thursday, Oct 8, 2026 - 7:30 PM" },
