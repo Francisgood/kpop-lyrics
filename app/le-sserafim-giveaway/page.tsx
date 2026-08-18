@@ -41,7 +41,7 @@ const PRIZES = [
     sub: "Two (2) Section D floor seats to LE SSERAFIM's PUREFLOW tour at the Prudential Center in Newark, NJ on Thursday, October 8, 2026 - close to the action, with a clear view of the stage - plus access to a private merch line. A $935 value.",
   },
   {
-    img: "",
+    img: "/giveaway/le-sserafim-merch.jpg",
     accent: "var(--volt)",
     badge: "Runner-Up",
     title: "$200 in official LE SSERAFIM merch",

@@ -49,7 +49,7 @@ const CARDS: Card[] = [
     status: "soon",
     artist: "aespa",
     tour: "Next up",
-    img: "",
+    img: "/giveaway/aespa.jpg",
     accent: "var(--ink-dim)",
     blurb: "Our next drop: aespa concert tickets. Enter any giveaway above to join the newsletter and hear first.",
     when: "Mon, Jan 26, 2027",
