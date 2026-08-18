@@ -35,6 +35,13 @@ const NAV: NavItem[] = [
       { en: "Rewards",     es: "Recompensas", href: "/daebak-rewards" },
     ],
   },
+  {
+    en: "Giveaways", es: "Sorteos", href: "/giveaways",
+    subs: [
+      { en: "LE SSERAFIM", es: "LE SSERAFIM", href: "/le-sserafim-giveaway" },
+      { en: "BTS", es: "BTS", href: "/bts-giveaway" },
+    ],
+  },
 ];
 
 export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props) {
