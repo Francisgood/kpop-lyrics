@@ -9,7 +9,7 @@ export type NewsSource = {
   name: string;
   url: string;      // section / homepage
   feed?: string;    // RSS feed if known (else the publisher derives it)
-  kind: "aggregator" | "wire" | "culture" | "kbeauty" | "explainer";
+  kind: "aggregator" | "wire" | "culture" | "kbeauty" | "explainer" | "specialty";
 };
 
 export const NEWS_SOURCES: NewsSource[] = [
@@ -59,4 +59,14 @@ export const NEWS_SOURCES: NewsSource[] = [
   { name: "Allure",          url: "https://www.allure.com/",                            feed: "https://www.allure.com/feed/rss",      kind: "kbeauty" },
   { name: "Dazed Beauty",    url: "https://www.dazeddigital.com/beauty",                                                              kind: "kbeauty" },
   { name: "Byrdie",          url: "https://www.byrdie.com/",                                                                          kind: "kbeauty" },
+
+  // ── Mainstream global desk (occasional K-pop / Korea culture coverage) ────
+  { name: "BBC News",        url: "https://www.bbc.com/news",                           feed: "https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml", kind: "wire" },
+
+  // ── Specialty references — NOT RSS news feeds. The publisher uses these
+  //    contextually, never by scraping a feed: eBay for photocard / resale-market
+  //    stories (asking prices, rare or signed cards), YouTube for official content
+  //    (MVs, documentaries like LE SSERAFIM's "Make It Look Easy", variety clips). ─
+  { name: "eBay",            url: "https://www.ebay.com/sch/i.html?_nkw=kpop+photocard",                                              kind: "specialty" },
+  { name: "YouTube",         url: "https://www.youtube.com/results?search_query=kpop",                                                 kind: "specialty" },
 ];
