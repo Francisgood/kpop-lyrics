@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import FavoriteButton from "@/components/FavoriteButton";
@@ -51,27 +52,94 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
 
   if (!artist) notFound();
 
-  // Aegyo Arena's own articles about this artist (published by the news publisher
-  // to /news/<artistSlug>/<slug>). Featured at the top of News & Gossip below.
-  type HostedArticle = {
-    slug: string; headline: string; esHeadline: string | null;
-    subheadline: string | null; esSubheadline: string | null;
-    category: string | null; imageUrl: string | null; publishedAt: Date | null;
-  };
-  let hostedArticles: HostedArticle[] = [];
-  try {
-    hostedArticles = await prisma.$queryRaw<HostedArticle[]>`
-      SELECT "slug","headline","esHeadline","subheadline","esSubheadline","category","imageUrl","publishedAt"
-      FROM "NewsPost"
-      WHERE "status" = 'live' AND "artistSlug" = ${slug} AND "slug" IS NOT NULL
-      ORDER BY "publishedAt" DESC NULLS LAST, "createdAt" DESC
-      LIMIT 12`;
-  } catch { hostedArticles = []; }
-
   const isLoggedIn = !!session;
   const isGroup = artist.type === "GROUP";
   const members = artist.groupOf;
   const totalSongs = artist.albums.reduce((n, a) => n + a.songs.length, 0);
+
+  // For a group, its members' news + articles surface on the group page too, so
+  // fans land here for anything about anyone in the group.
+  const memberSlugs = members.map((m) => m.member.slug);
+  const memberIds = members.map((m) => m.member.id);
+  const newsSlugs = [slug, ...memberSlugs];
+
+  // Aegyo Arena's own hosted articles (NewsPost) about this artist — or, for a
+  // group, any member. Each links to /news/<its own artistSlug>/<slug>.
+  type HostedArticle = {
+    slug: string; headline: string; esHeadline: string | null;
+    subheadline: string | null; esSubheadline: string | null;
+    category: string | null; imageUrl: string | null; publishedAt: Date | null;
+    artistSlug: string | null; artistName: string | null;
+  };
+  let hostedArticles: HostedArticle[] = [];
+  try {
+    hostedArticles = await prisma.$queryRaw<HostedArticle[]>`
+      SELECT "slug","headline","esHeadline","subheadline","esSubheadline","category","imageUrl","publishedAt","artistSlug","artistName"
+      FROM "NewsPost"
+      WHERE "status" = 'live' AND "artistSlug" IN (${Prisma.join(newsSlugs)}) AND "slug" IS NOT NULL
+      ORDER BY "publishedAt" DESC NULLS LAST, "createdAt" DESC
+      LIMIT 12`;
+  } catch { hostedArticles = []; }
+
+  // Member ArtistNews merged with the group's own, newest first (each tagged by who).
+  const memberNews = isGroup && memberIds.length
+    ? await prisma.artistNews.findMany({
+        where: { artistId: { in: memberIds } },
+        include: { artist: { select: { slug: true, stageName: true } } },
+        orderBy: { publishedAt: "desc" },
+        take: 12,
+      })
+    : [];
+  type NewsItem = {
+    id: string; headline: string; body: string; source: string | null;
+    sourceUrl: string | null; category: string; publishedAt: Date | null;
+    whoSlug: string; whoName: string;
+  };
+  const artistNewsMerged: NewsItem[] = [
+    ...artist.news.map((n) => ({ id: n.id, headline: n.headline, body: n.body, source: n.source, sourceUrl: n.sourceUrl, category: n.category, publishedAt: n.publishedAt, whoSlug: slug, whoName: artist.stageName })),
+    ...memberNews.map((n) => ({ id: n.id, headline: n.headline, body: n.body, source: n.source, sourceUrl: n.sourceUrl, category: n.category, publishedAt: n.publishedAt, whoSlug: n.artist.slug, whoName: n.artist.stageName })),
+  ].sort((a, b) => (b.publishedAt?.getTime() ?? 0) - (a.publishedAt?.getTime() ?? 0));
+  const newsCount = hostedArticles.length + artistNewsMerged.length;
+
+  // Same-label artists — contextual internal links (SEO + fan discovery).
+  const relatedArtists = artist.labelId
+    ? await prisma.artist.findMany({
+        where: { labelId: artist.labelId, id: { not: artist.id } },
+        select: { slug: true, stageName: true, imageUrl: true, type: true },
+        orderBy: [{ debutYear: "asc" }, { stageName: "asc" }],
+        take: 12,
+      })
+    : [];
+
+  // Structured data — helps Google understand the entity + render breadcrumbs.
+  const SITE = "https://www.aegyoarena.com";
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "MusicGroup",
+        name: artist.stageName,
+        url: `${SITE}/artists/${slug}`,
+        ...(artist.imageUrl ? { image: artist.imageUrl } : {}),
+        ...(artist.debutYear ? { foundingDate: String(artist.debutYear) } : {}),
+        ...(artist.label ? { recordLabel: artist.label.name } : {}),
+        ...(isGroup && members.length
+          ? { member: members.map((m) => ({ "@type": "Person", name: m.member.stageName, url: `${SITE}/artists/${m.member.slug}` })) }
+          : {}),
+        ...(artist.albums.length
+          ? { album: artist.albums.slice(0, 25).map((al) => ({ "@type": "MusicAlbum", name: al.title, ...(al.releaseYear ? { datePublished: String(al.releaseYear) } : {}) })) }
+          : {}),
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Aegyo Arena", item: SITE },
+          { "@type": "ListItem", position: 2, name: "Artists", item: `${SITE}/artists` },
+          { "@type": "ListItem", position: 3, name: artist.stageName, item: `${SITE}/artists/${slug}` },
+        ],
+      },
+    ],
+  };
 
   // Distinct K-pop slang terms annotated across all of this artist's songs (deduped by slug).
   const slangInLyrics = (() => {
@@ -88,6 +156,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
 
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* Hero */}
       <section className="artist-hero">
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
@@ -241,13 +310,13 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
             </section>
 
             {/* Gossip & News */}
-            {(hostedArticles.length > 0 || artist.news.length > 0) && (
+            {(hostedArticles.length > 0 || artistNewsMerged.length > 0) && (
               <section>
                 <div className="section-header"><T en="News & Gossip" es="Noticias y Chismes" /></div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                   {/* Aegyo Arena articles about this artist — click through to the full story. */}
                   {hostedArticles.map((a) => (
-                    <Link key={a.slug} href={`/news/${slug}/${a.slug}`} style={{ textDecoration: "none" }}>
+                    <Link key={a.slug} href={`/news/${a.artistSlug ?? slug}/${a.slug}`} style={{ textDecoration: "none" }}>
                       <div className="genius-card" style={{ padding: 22, display: "flex", gap: 16, alignItems: "flex-start", borderLeft: "3px solid #ff6fa8" }}>
                         {a.imageUrl && (
                           <SmartImage src={a.imageUrl} alt="" width={92} height={68} sizes="92px" style={{ width: 92, height: 68, objectFit: "cover", borderRadius: 8, flexShrink: 0 }} />
@@ -257,6 +326,9 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                             <span style={{ background: "rgba(255,111,168,0.15)", color: "#ff6fa8", fontWeight: 800, fontSize: "0.62rem", letterSpacing: "0.08em", padding: "3px 10px", borderRadius: 999, textTransform: "uppercase" }}>
                               {a.category ?? "news"}
                             </span>
+                            {a.artistSlug && a.artistSlug !== slug && a.artistName && (
+                              <span style={{ fontSize: "0.72rem", color: "var(--genius-gray)", fontWeight: 600 }}>{a.artistName}</span>
+                            )}
                             {a.publishedAt && (
                               <span style={{ fontSize: "0.75rem", color: "var(--genius-gray)" }}>
                                 <T
@@ -278,7 +350,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                       </div>
                     </Link>
                   ))}
-                  {artist.news.map((item) => {
+                  {artistNewsMerged.map((item) => {
                     const style = CATEGORY_STYLES[item.category] ?? CATEGORY_STYLES["milestone"];
                     return (
                       <div key={item.id} className="genius-card" style={{ padding: 22, overflow: "hidden", position: "relative" }}>
@@ -291,6 +363,9 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                           <span style={{ background: style.bg, color: style.color, fontWeight: 700, fontSize: "0.67rem", letterSpacing: "0.08em", padding: "3px 10px", borderRadius: 999, whiteSpace: "nowrap" }}>
                             <T en={style.label} es={style.labelEs} />
                           </span>
+                          {item.whoSlug !== slug && (
+                            <Link href={`/artists/${item.whoSlug}`} style={{ fontSize: "0.72rem", color: "#ff6fa8", fontWeight: 700, textDecoration: "none", marginTop: 3 }}>{item.whoName}</Link>
+                          )}
                           {item.publishedAt && (
                             <span style={{ fontSize: "0.75rem", color: "var(--genius-gray)", marginTop: 3 }}>
                               <T
@@ -367,6 +442,29 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
               </div>
             )}
 
+            {/* Related artists on the same label — internal links for discovery + SEO */}
+            {relatedArtists.length > 0 && (
+              <div style={{ marginBottom: 24 }}>
+                <div className="section-header">
+                  {artist.label
+                    ? <T en={`More from ${artist.label.name}`} es={`Más de ${artist.label.name}`} />
+                    : <T en="Related artists" es="Artistas relacionados" />}
+                </div>
+                {relatedArtists.map((r) => (
+                  <Link key={r.slug} href={`/artists/${r.slug}`} style={{ textDecoration: "none", display: "block", marginBottom: 8 }}>
+                    <div className="genius-card" style={{ padding: "12px 16px", fontWeight: 700, fontSize: "0.9rem", display: "flex", alignItems: "center", gap: 10 }}>
+                      {r.imageUrl ? (
+                        <SmartImage src={r.imageUrl} alt={r.stageName} width={32} height={32} sizes="32px" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
+                      ) : (
+                        <span style={{ fontSize: "1.2rem" }}>{r.type === "GROUP" ? "🎤" : "⭐"}</span>
+                      )}
+                      <span style={{ color: "#ff6fa8" }}>{r.stageName}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+
             {/* Quick stats */}
             <div className="genius-card" style={{ padding: 20 }}>
               <div className="section-header" style={{ margin: "0 0 14px" }}><T en="Quick Stats" es="Datos Rápidos" /></div>
@@ -375,7 +473,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                 { en: "Label", es: "Sello", value: artist.label?.name ?? <T en="Independent" es="Independiente" /> },
                 { en: "Albums", es: "Álbumes", value: artist.albums.length },
                 { en: "Songs", es: "Canciones", value: totalSongs },
-                { en: "News Items", es: "Noticias", value: artist.news.length },
+                { en: "News Items", es: "Noticias", value: newsCount },
               ].map(({ en, es, value }) => (
                 <div key={en} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid var(--genius-border)", fontSize: "0.83rem" }}>
                   <span style={{ color: "var(--genius-gray)" }}><T en={en} es={es} /></span>
@@ -388,6 +486,28 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
               <Link href="/collabs" style={{ display: "block" }}>
                 <span className="btn-yellow" style={{ display: "block", textAlign: "center" }}><T en="VIEW COLLAB NETWORK" es="VER RED DE COLABORACIONES" /></span>
               </Link>
+            </div>
+
+            {/* Explore — internal links to the site's hubs (SEO crawl depth + discovery) */}
+            <div style={{ marginTop: 24 }}>
+              <div className="section-header"><T en="Explore Aegyo Arena" es="Explora Aegyo Arena" /></div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {[
+                  { href: "/artists", en: "All artists", es: "Artistas" },
+                  { href: "/news", en: "K-pop news", es: "Noticias" },
+                  { href: "/korean-slang", en: "Korean slang", es: "Jerga coreana" },
+                  { href: "/collabs", en: "Collabs", es: "Colaboraciones" },
+                  { href: "/quiz", en: "Quizzes", es: "Quizzes" },
+                  { href: "/cities", en: "Concerts", es: "Conciertos" },
+                  ...(artist.label ? [{ href: `/labels/${artist.label.slug}`, en: artist.label.name, es: artist.label.name }] : []),
+                ].map((l) => (
+                  <Link key={l.href} href={l.href} style={{ textDecoration: "none" }}>
+                    <span style={{ display: "inline-block", background: "#000", color: "#ff6fa8", fontSize: "0.78rem", fontWeight: 600, padding: "6px 12px", borderRadius: 999, border: "1px solid var(--genius-border)" }}>
+                      <T en={l.en} es={l.es} />
+                    </span>
+                  </Link>
+                ))}
+              </div>
             </div>
           </aside>
         </div>
