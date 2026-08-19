@@ -24,6 +24,27 @@ const ARTICLE_MARKETS: Record<string, ArticleMarket> = {
     yes: 50,
     no: 50,
   },
+  "g-i-dle-soyeon-solo-comeback-september": {
+    url: "https://www.daebakmarkets.com/markets/0xef702a6d8feb5a83b1db2974815c3112bc0bc3e817c4aeeabac9f40df8185ddb",
+    question: "Will Soyeon's solo album break 1 million monthly visitors on Spotify before the end of 2026?",
+    questionEs: "¿El álbum solista de Soyeon superará el millón de visitas mensuales en Spotify antes de que termine 2026?",
+    yes: 50,
+    no: 50,
+  },
+  "chaewon-photocards-620-ebay-resale": {
+    url: "https://www.daebakmarkets.com/markets/0xb1bc04f4d679c1ef6973dbaa453476dbca845eec2bed534af5953acf0faf1154",
+    question: "Will Chaewon photocard sales exceed $50 million in 2026?",
+    questionEs: "¿Las ventas de photocards de Chaewon superarán los 50 millones de dólares en 2026?",
+    yes: 50,
+    no: 50,
+  },
+  "nct-127-to-perform-on-americas-got-talent": {
+    url: "https://www.daebakmarkets.com/markets/0xfc52ef05355f805349dcf5ef2eb3933a092d5b91998e07e313d1b90bfd55fdda",
+    question: "Will NCT 127's America's Got Talent performance collect over 30 million YouTube views by December 31, 2026?",
+    questionEs: "¿La presentación de NCT 127 en America's Got Talent superará los 30 millones de reproducciones en YouTube antes del 31 de diciembre de 2026?",
+    yes: 50,
+    no: 50,
+  },
 };
 
 type Article = {
