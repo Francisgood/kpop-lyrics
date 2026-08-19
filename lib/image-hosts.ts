@@ -21,6 +21,7 @@ export const OPTIMIZED_IMAGE_HOSTS = [
   "d.kpopstarz.com",
   "www.kpopmap.com",
   "**.kbizoom.com", // images serve from cdn.kbizoom.com (hotlink-403s in-browser → must go through the optimizer)
+  "**.yna.co.kr", // Yonhap news images (img8/img9.yna.co.kr)
   "**.mzstatic.com", // Apple Music / iTunes album art
   "**.pinkvilla.com",
   "static.billboard.com",

@@ -27,6 +27,10 @@ const CAT: Record<string, { color: string; en: string; es: string }> = {
 };
 const catOf = (c: string | null) => CAT[c ?? "news"] ?? CAT.news;
 
+// Categories whose sub-header is teased behind the subscribe email gate (see
+// RumorGate). Rumors and gossip are the "juicy" surfaces we grow the list on.
+const GATED_CATEGORIES = new Set(["rumor", "gossip"]);
+
 // ── Homepage copy (English / Spanish) ───────────────────────────────────────
 type PromoCopy = { eyebrow: string; title: string; body: string; cta: string };
 type Copy = {
@@ -37,7 +41,7 @@ type Copy = {
   ex: { eyebrow: string; title: string; items: { href: string; tag: string; label: string; color: string }[] };
   ar: PromoCopy; ev: PromoCopy; qz: PromoCopy;
   emptyTitle: string; emptyBody: string; emptyLink: string; loading: string; caughtUp: string;
-  // Rumor gate: subheadline is blurred behind an email capture.
+  // Subscribe gate: subheadline is blurred behind an email capture (rumor + gossip).
   rumorTease: string; rumorPh: string; rumorBtn: string; rumorSaving: string; rumorDone: string; rumorErr: string;
 };
 
@@ -176,9 +180,10 @@ function ArcadeUnit({ c }: { c: Copy }) {
 
 const PROMOS = [ArcadeUnit, ExploreUnit, EventsUnit, QuizUnit];
 
-// ── Rumor gate ──────────────────────────────────────────────────────────────
-// For "rumor" posts we tease the sub-header: the real text is rendered blurred
-// and unreadable, with an email-capture overlaid on top. Lives inside the card's
+// ── Subscribe gate ──────────────────────────────────────────────────────────
+// For gated categories (rumor + gossip) we tease the sub-header: the real text is
+// rendered blurred and unreadable, with an email-capture overlaid on top. Lives
+// inside the card's
 // <a>, so every handler stops propagation to avoid opening the source link.
 function RumorGate({ text, c }: { text: string; c: Copy }) {
   const [email, setEmail] = useState("");
@@ -261,7 +266,7 @@ function ArticleCard({ p, featured, c }: { p: NewsRow; featured?: boolean; c: Co
         </div>
         <h2 style={{ fontFamily: "var(--serif)", fontSize: featured ? "1.7rem" : "1.25rem", fontWeight: 700, color: "var(--ink)", lineHeight: 1.2, margin: "0 0 8px" }}>{headline}</h2>
         {subheadline && (
-          p.category === "rumor"
+          GATED_CATEGORIES.has(p.category ?? "")
             ? <RumorGate text={subheadline} c={c} />
             : <p style={{ fontSize: "0.92rem", color: "var(--ink-dim)", lineHeight: 1.55, margin: "0 0 12px" }}>{subheadline}</p>
         )}
