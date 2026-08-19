@@ -24,6 +24,20 @@ const ARTICLE_MARKETS: Record<string, ArticleMarket> = {
     yes: 50,
     no: 50,
   },
+  "g-i-dle-soyeon-solo-comeback-september": {
+    url: "https://www.daebakmarkets.com/markets/0xef702a6d8feb5a83b1db2974815c3112bc0bc3e817c4aeeabac9f40df8185ddb",
+    question: "Will Soyeon's solo album break 1 million monthly visitors on Spotify before the end of 2026?",
+    questionEs: "¿El álbum solista de Soyeon superará el millón de visitas mensuales en Spotify antes de que termine 2026?",
+    yes: 50,
+    no: 50,
+  },
+  "chaewon-photocards-620-ebay-resale": {
+    url: "https://www.daebakmarkets.com/markets/0xb1bc04f4d679c1ef6973dbaa453476dbca845eec2bed534af5953acf0faf1154",
+    question: "Will Chaewon photocard sales exceed $50 million in 2026?",
+    questionEs: "¿Las ventas de photocards de Chaewon superarán los 50 millones de dólares en 2026?",
+    yes: 50,
+    no: 50,
+  },
 };
 
 type Article = {
