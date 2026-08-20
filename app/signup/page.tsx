@@ -48,7 +48,8 @@ export default function SignupPage() {
       const data = await res.json();
       if (!res.ok) { setError(err(data.error ?? "Signup failed")); return; }
       trackAccountCreated();
-      router.push("/");
+      const next = new URLSearchParams(window.location.search).get("next");
+      router.push(next && next.startsWith("/") ? next : "/");
       router.refresh();
     } catch {
       setError(err("Something went wrong. Please try again."));

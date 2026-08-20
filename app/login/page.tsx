@@ -44,7 +44,8 @@ export default function LoginPage() {
       const data = await res.json();
       if (!res.ok) { setError(err(data.error ?? "Login failed")); return; }
       trackLoginSuccess();
-      router.push("/");
+      const next = new URLSearchParams(window.location.search).get("next");
+      router.push(next && next.startsWith("/") ? next : "/");
       router.refresh();
     } catch {
       setError(err("Something went wrong. Please try again."));

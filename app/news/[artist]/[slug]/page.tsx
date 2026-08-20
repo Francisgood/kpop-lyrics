@@ -5,47 +5,18 @@ import { prisma } from "@/lib/prisma";
 import { T, LangToggle } from "@/components/LangProvider";
 import NewsletterGate from "@/components/NewsletterGate";
 import SmartImage from "@/components/SmartImage";
-import MarketCard from "@/components/MarketCard";
+import PollCard from "@/components/PollCard";
+import { cookies } from "next/headers";
+import { getSession } from "@/lib/auth";
+import { getPollSeed, type PollState } from "@/lib/polls";
+import { getPollState } from "@/lib/polls-db";
 
 export const dynamic = "force-dynamic";
 
 const SITE = "https://www.aegyoarena.com";
 
-// Articles that carry a Daebak prediction-market card (shown right below the story).
-// Link-out only — Daebak's site handles the actual points wager. Odds are a snapshot
-// (Daebak has no per-market odds API — prices are on-chain); update `yes`/`no` when the
-// market moves, or wire a fetch in MarketCard once Daebak ships a read endpoint.
-type ArticleMarket = { url: string; question: string; questionEs: string; yes: number; no: number };
-const ARTICLE_MARKETS: Record<string, ArticleMarket> = {
-  "jennie-is-vaselines-global-ambassador": {
-    url: "https://www.daebakmarkets.com/markets/0x54820de5d91d2dfe94ec63110c5ca24528202198ca65fbea8e12478df4091c3c",
-    question: "Will another K-pop idol sign with Vaseline as a brand ambassador by October 31, 2026?",
-    questionEs: "¿Otra idol del K-pop firmará con Vaseline como embajadora de marca antes del 31 de octubre de 2026?",
-    yes: 50,
-    no: 50,
-  },
-  "g-i-dle-soyeon-solo-comeback-september": {
-    url: "https://www.daebakmarkets.com/markets/0xef702a6d8feb5a83b1db2974815c3112bc0bc3e817c4aeeabac9f40df8185ddb",
-    question: "Will Soyeon's solo album break 1 million monthly visitors on Spotify before the end of 2026?",
-    questionEs: "¿El álbum solista de Soyeon superará el millón de visitas mensuales en Spotify antes de que termine 2026?",
-    yes: 50,
-    no: 50,
-  },
-  "chaewon-photocards-620-ebay-resale": {
-    url: "https://www.daebakmarkets.com/markets/0xb1bc04f4d679c1ef6973dbaa453476dbca845eec2bed534af5953acf0faf1154",
-    question: "Will Chaewon photocard sales exceed $50 million in 2026?",
-    questionEs: "¿Las ventas de photocards de Chaewon superarán los 50 millones de dólares en 2026?",
-    yes: 50,
-    no: 50,
-  },
-  "nct-127-to-perform-on-americas-got-talent": {
-    url: "https://www.daebakmarkets.com/markets/0xfc52ef05355f805349dcf5ef2eb3933a092d5b91998e07e313d1b90bfd55fdda",
-    question: "Will NCT 127's America's Got Talent performance collect over 30 million YouTube views by December 31, 2026?",
-    questionEs: "¿La presentación de NCT 127 en America's Got Talent superará los 30 millones de reproducciones en YouTube antes del 31 de diciembre de 2026?",
-    yes: 50,
-    no: 50,
-  },
-};
+// Poll definitions (question, options, Daebak upsell) live in `lib/polls.ts`
+// (POLL_SEEDS); the interactive one-tap PollCard is rendered below the lead story.
 
 type Article = {
   id: string; slug: string; headline: string; subheadline: string | null; body: string | null;
@@ -247,6 +218,19 @@ export default async function NewsArticlePage({ params }: { params: Promise<{ ar
   const nextArticle = related[4] ?? null;   // full, inline
   const gatedArticle = related[5] ?? null;  // blurred behind the newsletter gate
 
+  // One-tap poll for this story — SSR-hydrated so the option cards are tappable on
+  // first paint (no client fetch), with the caller's own vote resolved from cookie/session.
+  const pollSeed = getPollSeed(a.slug);
+  let pollState: PollState | null = null;
+  if (pollSeed) {
+    const session = await getSession();
+    const cookieStore = await cookies();
+    const deviceToken = cookieStore.get("aa_vid")?.value ?? null;
+    const userId = session?.user.id ?? null;
+    const voterName = session ? (session.user.displayName ?? session.user.email.split("@")[0]) : null;
+    try { pollState = await getPollState(pollSeed, { userId, voterName, deviceToken }); } catch { pollState = null; }
+  }
+
   return (
     <main style={{ paddingBottom: 72 }}>
       <article style={{ maxWidth: 720, margin: "0 auto", padding: "36px 24px 0" }}>
@@ -262,11 +246,8 @@ export default async function NewsArticlePage({ params }: { params: Promise<{ ar
         {/* Article 1 — the story the reader came for */}
         <FullArticle a={a} lead />
 
-        {/* Prediction market for this story (Daebak-style odds card; see ARTICLE_MARKETS) */}
-        {(() => {
-          const m = ARTICLE_MARKETS[a.slug];
-          return m ? <MarketCard marketUrl={m.url} question={m.question} questionEs={m.questionEs} yes={m.yes} no={m.no} /> : null;
-        })()}
+        {/* One-tap poll for this story — vote → live results → profile claim (Daebak upsell inside) */}
+        {pollState && <PollCard initial={pollState} articlePath={`/news/${a.artistSlug ?? artist}/${a.slug}`} />}
 
         {/* Content you may like — more of the same artist (fallback: same category) */}
         {recs.length > 0 && (
