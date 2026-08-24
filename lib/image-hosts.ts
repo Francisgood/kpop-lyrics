@@ -13,7 +13,11 @@ export const OPTIMIZED_IMAGE_HOSTS = [
   "newsimg.koreatimes.co.kr",
   "assets.teenvogue.com",
   "wimg.heraldcorp.com",
-  "upload.wikimedia.org",
+  // NOTE: upload.wikimedia.org is deliberately NOT optimized. Wikimedia rate-limits
+  // (429) our single server IP when the optimizer bulk-fetches the many artist photos,
+  // which broke those images on artist-heavy pages. Left off this list, SmartImage
+  // hotlinks them as a plain <img> from each visitor's own browser (Wikimedia permits
+  // that), so they render reliably — unoptimized, but never 429-broken.
   "blogger.googleusercontent.com",
   "www.hellokpop.com",
   "www.asianjunkie.com",
