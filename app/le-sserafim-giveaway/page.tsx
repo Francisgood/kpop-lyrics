@@ -6,11 +6,6 @@ import { trackLead } from "@/lib/conversions";
 import { useLang, LangToggle, type Lang } from "@/components/LangProvider";
 import SmartImage from "@/components/SmartImage";
 
-const MONTHS: Record<Lang, string[]> = {
-  en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-  es: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-};
-
 const FEATURED_COUNTRIES = ["United States", "Canada", "Mexico", "Brazil", "Argentina", "Chile", "Colombia", "Peru", "Philippines", "Indonesia"];
 const COUNTRIES = [
   "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria",
@@ -49,10 +44,10 @@ type Copy = {
   disclaimerPre: string; disclaimerLink: string; disclaimerPost: string;
   dates: { k: string; v: string }[];
   formTitle: string; formSubtitle: string;
-  phFirst: string; phLast: string; phEmail: string; phPhone: string; birthday: string;
-  phMonth: string; phDay: string; phYear: string; phCountry: string; phPostal: string;
+  phFirst: string; phLast: string; phEmail: string; phPhone: string;
+  phCountry: string; phPostal: string;
   submit: string; submitting: string;
-  ageError: string; errFields: string; errGeneric: string;
+  errFields: string; errGeneric: string;
   finePre: string; fineLink: string; finePost: string;
   seeAll: string;
   entered: string; alreadyEntered: string;
@@ -83,10 +78,9 @@ const COPY: Record<Lang, Copy> = {
     ],
     formTitle: "Enter the giveaway",
     formSubtitle: "One entry per person. We'll email you if you win — and add you to the Aegyo Arena newsletter for the next drop.",
-    phFirst: "First name", phLast: "Last name", phEmail: "Email address", phPhone: "Phone number", birthday: "Date of birth",
-    phMonth: "Month", phDay: "Day", phYear: "Year", phCountry: "Country", phPostal: "Postal code",
+    phFirst: "First name", phLast: "Last name", phEmail: "Email address", phPhone: "Phone number",
+    phCountry: "Country", phPostal: "Postal code",
     submit: "Enter to win", submitting: "Entering…",
-    ageError: "Sorry — this giveaway is only open to entrants who are 18 or older.",
     errFields: "Please complete all fields to enter.",
     errGeneric: "Something went wrong. Please try again.",
     finePre: "By entering you confirm you are 18+ and agree to the ",
@@ -119,10 +113,9 @@ const COPY: Record<Lang, Copy> = {
     ],
     formTitle: "Participa en el sorteo",
     formSubtitle: "Una participación por persona. Te enviaremos un correo si ganas — y te añadiremos al boletín de Aegyo Arena para el próximo sorteo.",
-    phFirst: "Nombre", phLast: "Apellido", phEmail: "Correo electrónico", phPhone: "Número de teléfono", birthday: "Fecha de nacimiento",
-    phMonth: "Mes", phDay: "Día", phYear: "Año", phCountry: "País", phPostal: "Código postal",
+    phFirst: "Nombre", phLast: "Apellido", phEmail: "Correo electrónico", phPhone: "Número de teléfono",
+    phCountry: "País", phPostal: "Código postal",
     submit: "Participar", submitting: "Enviando…",
-    ageError: "Lo sentimos — este sorteo solo está abierto a mayores de 18 años.",
     errFields: "Por favor completa todos los campos para participar.",
     errGeneric: "Algo salió mal. Inténtalo de nuevo.",
     finePre: "Al participar confirmas que eres mayor de 18 años y aceptas las ",
@@ -146,9 +139,6 @@ export default function LeSserafimGiveaway() {
   const [phone, setPhone] = useState("");
   const [zip, setZip] = useState("");
   const [country, setCountry] = useState("");
-  const [month, setMonth] = useState("");
-  const [day, setDay] = useState("");
-  const [year, setYear] = useState("");
   const [ref, setRef] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -160,25 +150,10 @@ export default function LeSserafimGiveaway() {
     if (r) setRef(r);
   }, []);
 
-  const days = Array.from({ length: 31 }, (_, i) => i + 1);
-  const years = Array.from({ length: 90 }, (_, i) => new Date().getFullYear() - 18 - i);
-
-  function computeAge(): number | null {
-    if (!month || !day || !year) return null;
-    const b = new Date(Number(year), Number(month) - 1, Number(day));
-    const now = new Date();
-    let age = now.getFullYear() - b.getFullYear();
-    const md = now.getMonth() - b.getMonth();
-    if (md < 0 || (md === 0 && now.getDate() < b.getDate())) age--;
-    return age;
-  }
-  const under18 = (() => { const a = computeAge(); return a !== null && a < 18; })();
-
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (under18) { setError(c.ageError); return; }
-    if (!firstName || !lastName || !email || !phone || !month || !day || !year || !country || !zip) {
+    if (!firstName || !lastName || !email || !phone || !country || !zip) {
       setError(c.errFields); return;
     }
     setSubmitting(true);
@@ -186,7 +161,7 @@ export default function LeSserafimGiveaway() {
       const res = await fetch("/api/le-sserafim", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName, lastName, email, phone, zip, country, birthMonth: month, birthDay: day, birthYear: year, ref }),
+        body: JSON.stringify({ firstName, lastName, email, phone, zip, country, ref }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? c.errGeneric); return; }
@@ -315,23 +290,6 @@ export default function LeSserafimGiveaway() {
             <input style={field} placeholder={c.phLast} value={lastName} onChange={(e) => setLastName(e.target.value)} aria-label={c.phLast} />
             <input style={field} type="email" placeholder={c.phEmail} value={email} onChange={(e) => setEmail(e.target.value)} aria-label={c.phEmail} />
             <input style={field} type="tel" autoComplete="tel" placeholder={c.phPhone} value={phone} onChange={(e) => setPhone(e.target.value)} aria-label={c.phPhone} />
-            <div>
-              <label style={{ display: "block", fontWeight: 700, color: "var(--ink)", fontSize: "0.95rem", marginBottom: 8 }}>{c.birthday}</label>
-              <div style={{ display: "flex", gap: 8 }}>
-                <select style={sel} value={month} onChange={(e) => setMonth(e.target.value)} aria-label={c.phMonth}>
-                  <option value="">{c.phMonth}</option>
-                  {MONTHS[lang].map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
-                </select>
-                <select style={sel} value={day} onChange={(e) => setDay(e.target.value)} aria-label={c.phDay}>
-                  <option value="">{c.phDay}</option>
-                  {days.map((d) => <option key={d} value={d}>{d}</option>)}
-                </select>
-                <select style={sel} value={year} onChange={(e) => setYear(e.target.value)} aria-label={c.phYear}>
-                  <option value="">{c.phYear}</option>
-                  {years.map((y) => <option key={y} value={y}>{y}</option>)}
-                </select>
-              </div>
-            </div>
             <div style={{ display: "flex", gap: 8 }}>
               <select style={{ ...sel, flex: "1 1 45%" }} value={country} onChange={(e) => setCountry(e.target.value)} aria-label={c.phCountry}>
                 <option value="">{c.phCountry}</option>
@@ -342,12 +300,12 @@ export default function LeSserafimGiveaway() {
               <input style={{ ...field, flex: "1 1 55%", minWidth: 0 }} autoComplete="postal-code" placeholder={c.phPostal} value={zip} onChange={(e) => setZip(e.target.value)} aria-label={c.phPostal} />
             </div>
           </div>
-          {(under18 || error) && (
+          {error && (
             <div role="alert" style={{ marginTop: 16, color: "#ff5a5a", fontSize: "0.9rem", fontWeight: 600, lineHeight: 1.5 }}>
-              {under18 ? c.ageError : error}
+              {error}
             </div>
           )}
-          <button type="submit" disabled={under18 || submitting} style={{ width: "100%", marginTop: 20, padding: "15px", borderRadius: 10, border: "none", background: (under18 || submitting) ? "var(--border-strong)" : "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.04em", textTransform: "uppercase", cursor: (under18 || submitting) ? "not-allowed" : "pointer" }}>
+          <button type="submit" disabled={submitting} style={{ width: "100%", marginTop: 20, padding: "15px", borderRadius: 10, border: "none", background: submitting ? "var(--border-strong)" : "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.04em", textTransform: "uppercase", cursor: submitting ? "not-allowed" : "pointer" }}>
             {submitting ? c.submitting : c.submit}
           </button>
           <p style={{ marginTop: 16, fontSize: "0.78rem", color: "var(--ink-faint)", textAlign: "center", lineHeight: 1.6 }}>

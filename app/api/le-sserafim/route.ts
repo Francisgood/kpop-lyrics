@@ -26,25 +26,19 @@ async function ensureTable() {
       "phone"           TEXT NOT NULL,
       "zip"             TEXT NOT NULL,
       "country"         TEXT,
-      "birthDate"       TIMESTAMP NOT NULL,
+      "birthDate"       TIMESTAMP,
       "newsletterOptIn" BOOLEAN NOT NULL DEFAULT true,
       "referralCode"    TEXT NOT NULL,
       "referredByCode"  TEXT,
       "referralCount"   INTEGER NOT NULL DEFAULT 0,
       "createdAt"       TIMESTAMP NOT NULL DEFAULT now()
     )`);
+  // Date of birth is no longer collected — relax the pre-existing NOT NULL.
+  await prisma.$executeRawUnsafe(`ALTER TABLE "GiveawayEntryLsf" ALTER COLUMN "birthDate" DROP NOT NULL`);
   await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "GiveawayEntryLsf_email_key" ON "GiveawayEntryLsf" ("email")`);
   await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "GiveawayEntryLsf_referralCode_key" ON "GiveawayEntryLsf" ("referralCode")`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "GiveawayEntryLsf_referredByCode_idx" ON "GiveawayEntryLsf" ("referredByCode")`);
   tableReady = true;
-}
-
-function ageOf(d: Date): number {
-  const now = new Date();
-  let age = now.getUTCFullYear() - d.getUTCFullYear();
-  const m = now.getUTCMonth() - d.getUTCMonth();
-  if (m < 0 || (m === 0 && now.getUTCDate() < d.getUTCDate())) age--;
-  return age;
 }
 
 export async function POST(req: NextRequest) {
@@ -61,16 +55,10 @@ export async function POST(req: NextRequest) {
     const zip = String(b.zip ?? "").trim();
     const country = String(b.country ?? "").trim();
     const ref = b.ref ? String(b.ref).trim() : null;
-    const y = Number(b.birthYear), mo = Number(b.birthMonth), d = Number(b.birthDay);
 
-    if (!firstName || !lastName || !email.includes("@") || !phone || !zip || !country || !y || !mo || !d) {
+    if (!firstName || !lastName || !email.includes("@") || !phone || !zip || !country) {
       return NextResponse.json({ error: "Please complete all fields to enter." }, { status: 400 });
     }
-    const birthDate = new Date(Date.UTC(y, mo - 1, d));
-    if (ageOf(birthDate) < 18) {
-      return NextResponse.json({ error: "This giveaway is only open to entrants who are 18 or older." }, { status: 400 });
-    }
-
     const existing = await prisma.$queryRaw<{ referralCode: string; referralCount: number }[]>`
       SELECT "referralCode", "referralCount" FROM "GiveawayEntryLsf" WHERE "email" = ${email} LIMIT 1`;
     if (existing[0]) {
@@ -101,9 +89,9 @@ export async function POST(req: NextRequest) {
 
     await prisma.$executeRaw`
       INSERT INTO "GiveawayEntryLsf"
-        ("id","firstName","lastName","email","phone","zip","country","birthDate","newsletterOptIn","referralCode","referredByCode","referralCount")
+        ("id","firstName","lastName","email","phone","zip","country","newsletterOptIn","referralCode","referredByCode","referralCount")
       VALUES
-        (${randomUUID()}, ${firstName}, ${lastName}, ${email}, ${phone}, ${zip}, ${country}, ${birthDate}, true, ${code}, ${referredByCode}, 0)`;
+        (${randomUUID()}, ${firstName}, ${lastName}, ${email}, ${phone}, ${zip}, ${country}, true, ${code}, ${referredByCode}, 0)`;
 
     await subscribeToBeehiiv({ email, source: "le-sserafim-giveaway" });
 
