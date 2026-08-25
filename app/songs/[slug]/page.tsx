@@ -6,6 +6,8 @@ import type { Metadata } from "next";
 import ViewTracker from "@/components/ViewTracker";
 import ShareButtons from "@/components/ShareButtons";
 import CultureCorner from "@/components/CultureCorner";
+import EntityVideos from "@/components/EntityVideos";
+import { getVideos } from "@/lib/videos-db";
 import FavoriteButton from "@/components/FavoriteButton";
 import CommentsSection from "@/components/CommentsSection";
 import { getSession } from "@/lib/auth";
@@ -85,6 +87,7 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
   const [song, session] = await Promise.all([getSong(slug), getSession()]);
   if (!song) notFound();
   const isLoggedIn = !!session;
+  const songVideos = await getVideos("song", slug);
 
   // ── Gather all artist IDs for news lookup ─────────────────────────────────
   const songArtistIds = [
@@ -477,6 +480,9 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
             </div>
           </section>
         )}
+        {/* This song's own videos — showcases, dance practices, fancams */}
+        {songVideos.length > 0 && <EntityVideos videos={songVideos} />}
+
         {/* Culture Vulture — multi-category video explorer (dance/fashion/beauty/mukbang), below recent news */}
         <CultureCorner />
 

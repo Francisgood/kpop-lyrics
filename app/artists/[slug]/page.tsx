@@ -7,6 +7,8 @@ import CommentsSection from "@/components/CommentsSection";
 import { getSession } from "@/lib/auth";
 import { T, LangToggle } from "@/components/LangProvider";
 import SmartImage from "@/components/SmartImage";
+import EntityVideos from "@/components/EntityVideos";
+import { getVideos } from "@/lib/videos-db";
 
 export const revalidate = 3600;
 
@@ -154,6 +156,8 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
     return [...bySlug.values()];
   })();
 
+  const artistVideos = await getVideos("artist", slug);
+
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
@@ -258,6 +262,9 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
                 </div>
               </section>
             )}
+
+            {/* Videos — curated official dance practices, showcases, reels */}
+            {artistVideos.length > 0 && <EntityVideos videos={artistVideos} />}
 
             {/* Full Discography with every song */}
             <section style={{ marginBottom: 48 }}>
