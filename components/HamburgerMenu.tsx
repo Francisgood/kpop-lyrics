@@ -31,6 +31,8 @@ const NAV: NavItem[] = [
   // Arcade is a separate subdomain app, so this href is absolute (rendered as a
   // plain <a>, not next/link — see the NAV render below).
   { en: "Games", es: "Juegos", href: "https://arcade.aegyoarena.com" },
+  // "Quizzes" stays untranslated, matching the footer's Quiz link.
+  { en: "Quizzes", es: "Quizzes", href: "/quiz" },
   {
     en: "Giveaways", es: "Sorteos", href: "/giveaways",
     subs: [
