@@ -28,13 +28,9 @@ const NAV: NavItem[] = [
   { en: "Slang",   es: "Jerga",   href: "/korean-slang" },
   { en: "Mukbang", es: "Mukbang", href: "/culture/mukbang" },
   { en: "Dance",   es: "Baile",   href: "/culture/dance" },
-  {
-    en: "Games", es: "Juegos", href: "/quiz",
-    subs: [
-      { en: "Leaderboard", es: "Ranking",   href: "/leaderboard" },
-      { en: "Rewards",     es: "Recompensas", href: "/daebak-rewards" },
-    ],
-  },
+  // Arcade is a separate subdomain app, so this href is absolute (rendered as a
+  // plain <a>, not next/link — see the NAV render below).
+  { en: "Games", es: "Juegos", href: "https://arcade.aegyoarena.com" },
   {
     en: "Giveaways", es: "Sorteos", href: "/giveaways",
     subs: [
@@ -129,9 +125,12 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
 
             {/* Big category list */}
             <nav style={{ display: "flex", flexDirection: "column", gap: 26, textAlign: "center" }}>
-              {NAV.map((item) => (
+              {NAV.map((item) => {
+                const external = item.href.startsWith("http");
+                const Tag = external ? "a" : Link;
+                return (
                 <div key={item.href}>
-                  <Link
+                  <Tag
                     href={item.href}
                     onClick={close}
                     style={{
@@ -141,7 +140,7 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
                     }}
                   >
                     <T en={item.en} es={item.es} />
-                  </Link>
+                  </Tag>
                   {item.subs && (
                     <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "6px 16px", marginTop: 10 }}>
                       {item.subs.map((s) => (
@@ -157,7 +156,8 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
                     </div>
                   )}
                 </div>
-              ))}
+                );
+              })}
             </nav>
 
             {/* Divider label (echoes TMZ's "SHOWS") */}
