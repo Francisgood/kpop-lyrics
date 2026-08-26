@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { QUIZZES } from "@/lib/quiz-data";
 
 export const alt = "Aegyo Arena — K-pop Quizzes";
 export const size = { width: 1200, height: 630 };
@@ -18,12 +19,12 @@ export default function Image() {
             How well do you really know K-pop?
           </div>
           <div style={{ display: "flex", marginTop: 26, fontSize: 34, color: "rgba(250,250,248,0.62)" }}>
-            Six quizzes · From aegyo to lyrics · Beat your score
+            {QUIZZES.length} quizzes · From aegyo to lyrics · Beat your score
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", gap: 12 }}>
-            {["#C77DFF", "#FFD700", "#4AC8F0", "#FF6B9D", "#FF6B35", "#4ECDC4"].map((c) => (
+            {QUIZZES.map((q) => q.accent).map((c) => (
               <div key={c} style={{ display: "flex", width: 46, height: 12, borderRadius: 999, background: c }} />
             ))}
           </div>

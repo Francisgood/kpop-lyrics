@@ -29,8 +29,8 @@ export default function QuizHubPage() {
         </h1>
         <p style={{ fontSize: "1.05rem", color: "var(--ink-dim)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto" }}>
           <T
-            en="Six quizzes spanning K-pop culture — from aegyo to lyrics. Pick your category, beat your score, and share the link — every quiz has its own page built to send to your group chat."
-            es="Seis trivias que recorren la cultura K-pop — del aegyo a las letras. Elige tu categoría, supera tu puntaje y comparte el link — cada trivia tiene su propia página lista para mandar al grupo del chat."
+            en={`${QUIZZES.length} quizzes spanning K-pop culture — from aegyo to lyrics. Pick your category, beat your score, and share the link — every quiz has its own page built to send to your group chat.`}
+            es={`${QUIZZES.length} trivias que recorren la cultura K-pop — del aegyo a las letras. Elige tu categoría, supera tu puntaje y comparte el link — cada trivia tiene su propia página lista para mandar al grupo del chat.`}
           />
         </p>
       </section>
