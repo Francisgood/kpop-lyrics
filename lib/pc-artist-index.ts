@@ -53,6 +53,7 @@ export type MarketRef = {
   price: number | null; // USD
   url: string | null;
   marketplace: string | null;
+  image: string | null; // the actual card photo (listing image) — makes the index about the cards
 };
 
 export type ArtistIndexRow = {

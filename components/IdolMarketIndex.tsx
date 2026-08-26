@@ -20,7 +20,8 @@ import {
   KPOP_CARD_MARKET_USD,
   type ArtistIndexRow,
 } from "@/lib/pc-artist-index";
-import { monthlySeries, INTENSITY_COLOR, type MonthPoint } from "@/lib/pc-backdating";
+import { monthlySeries } from "@/lib/pc-backdating";
+import LineTrend from "@/components/LineTrend";
 
 const ACCENT = "#ff6fa8";
 
@@ -128,11 +129,14 @@ function IdolCard({ row, m, groupColor }: { row: ArtistIndexRow; m: ReturnType<t
         </div>
       </div>
 
-      {/* metric grid — top card / top bundle (OBSERVED) then supply / est vol */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)" }}>
-        <PriceTile label="Top card · eBay" value={usd(row.topCard.price)} sub={row.topCard.name} url={row.topCard.url} accent />
-        <PriceTile label="Top bundle · eBay" value={usd(row.topBundle.price)} sub={row.topBundle.name} url={row.topBundle.url} />
-        {/* Supply — observed */}
+      {/* Featured photocards — the actual top card + top bundle images (OBSERVED) */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, padding: 14 }}>
+        <CardThumb label="Top card" image={row.topCard.image} price={row.topCard.price} name={row.topCard.name} url={row.topCard.url} accent />
+        <CardThumb label="Top bundle" image={row.topBundle.image} price={row.topBundle.price} name={row.topBundle.name} url={row.topBundle.url} />
+      </div>
+
+      {/* Supply (observed) + est. volume (modeled, secondary) */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--border)", borderTop: "1px solid var(--border)" }}>
         <div style={{ background: "var(--bg-card, #14101c)", padding: "12px 14px" }}>
           <div style={{ fontSize: "0.6rem", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--ink-faint)" }}>Cards for sale</div>
           <div style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--ink)", fontVariantNumeric: "tabular-nums", marginTop: 2 }}>{supplyTotal(s).toLocaleString("en-US")}</div>
@@ -140,19 +144,23 @@ function IdolCard({ row, m, groupColor }: { row: ArtistIndexRow; m: ReturnType<t
             {breakdown.length ? breakdown.map(([k, v]) => `${k} ${v.toLocaleString("en-US")}`).join(" · ") : "—"}
           </div>
         </div>
-        {/* Est. annual volume — MODELED (dashed/est treatment) */}
-        <div style={{ background: "var(--bg-card, #14101c)", padding: "12px 14px", position: "relative" }}>
+        <div style={{ background: "var(--bg-card, #14101c)", padding: "12px 14px" }}>
           <div style={{ fontSize: "0.6rem", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--ink-faint)", display: "flex", alignItems: "center", gap: 5 }}>
             Est. volume / yr
             <span style={{ border: "1px dashed var(--ink-faint)", color: "var(--ink-faint)", fontSize: "0.5rem", fontWeight: 800, padding: "0 4px", borderRadius: 4, letterSpacing: "0.04em" }}>MODEL</span>
           </div>
           <div style={{ fontSize: "1.35rem", fontWeight: 800, color: groupColor, fontVariantNumeric: "tabular-nums", marginTop: 2 }}>{usdCompact(m.estAnnualVolumeUsd)}</div>
-          <div style={{ fontSize: "0.62rem", color: "var(--ink-faint)", marginTop: 3 }}>{sharePct(m.marketSharePct)} of global market</div>
+          <div style={{ fontSize: "0.62rem", color: "var(--ink-faint)", marginTop: 3 }}>{sharePct(m.marketSharePct)} of market</div>
         </div>
       </div>
 
-      {/* 12-month backdated trend (modeled) */}
-      <MiniTrend series={monthlySeries(row.groupSlug, m.estAnnualVolumeUsd)} accent={groupColor} />
+      {/* Popularity trend — directional share-of-voice proxy (% of 12-mo peak) */}
+      <div style={{ padding: "12px 14px 6px" }}>
+        <div style={{ fontSize: "0.6rem", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--ink-faint)", marginBottom: 6 }}>
+          Popularity trend <span style={{ opacity: 0.7 }}>· share of voice · 12mo</span>
+        </div>
+        <LineTrend series={monthlySeries(row.groupSlug, m.estAnnualVolumeUsd)} accent={groupColor} height={108} />
+      </div>
 
       {row.signal && (
         <div style={{ padding: "10px 14px", fontSize: "0.72rem", color: "var(--ink-dim)", lineHeight: 1.5, borderTop: "1px solid var(--border)", fontStyle: "italic" }}>{row.signal}</div>
@@ -161,17 +169,27 @@ function IdolCard({ row, m, groupColor }: { row: ArtistIndexRow; m: ReturnType<t
   );
 }
 
-function PriceTile({ label, value, sub, url, accent }: { label: string; value: string; sub: string | null; url: string | null; accent?: boolean }) {
-  return (
-    <div style={{ background: "var(--bg-card, #14101c)", padding: "12px 14px" }}>
-      <div style={{ fontSize: "0.6rem", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--ink-faint)" }}>{label}</div>
-      <div style={{ fontSize: "1.35rem", fontWeight: 800, color: accent ? ACCENT : "var(--ink)", fontVariantNumeric: "tabular-nums", marginTop: 2 }}>{value}</div>
-      <div style={{ fontSize: "0.62rem", color: "var(--ink-faint)", marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={sub || undefined}>
-        {url ? (
-          <a href={url} target="_blank" rel="noopener noreferrer nofollow" data-no-outbound="1" style={{ color: "var(--ink-faint)", textDecoration: "none" }}>{sub || "listing"} <span style={{ color: ACCENT }}>↗</span></a>
-        ) : (sub || "—")}
+function CardThumb({ label, image, price, name, url, accent }: { label: string; image: string | null; price: number | null; name: string | null; url: string | null; accent?: boolean }) {
+  const inner = (
+    <>
+      <div style={{ position: "relative", width: "100%", aspectRatio: "3 / 4", background: "rgba(255,255,255,0.05)", borderRadius: 9, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {image ? (
+          <SmartImage src={image} alt={name || label} width={170} height={226} sizes="170px" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : (
+          <span style={{ fontSize: "2rem", opacity: 0.35 }}>🃏</span>
+        )}
+        <span style={{ position: "absolute", top: 6, left: 6, background: "rgba(0,0,0,0.72)", color: accent ? ACCENT : "#fff", fontSize: "0.56rem", fontWeight: 800, letterSpacing: "0.05em", textTransform: "uppercase", padding: "2px 7px", borderRadius: 6 }}>{label}</span>
+        <span style={{ position: "absolute", bottom: 6, right: 6, background: "rgba(0,0,0,0.8)", color: "#fff", fontSize: "0.86rem", fontWeight: 800, padding: "2px 8px", borderRadius: 7, fontVariantNumeric: "tabular-nums" }}>{usd(price)}</span>
       </div>
-    </div>
+      <div style={{ fontSize: "0.6rem", color: "var(--ink-faint)", marginTop: 5, display: "flex", alignItems: "center", gap: 3 }} title={name || undefined}>
+        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{name || "—"}</span>{url ? <span style={{ color: ACCENT, flexShrink: 0 }}>↗</span> : null}
+      </div>
+    </>
+  );
+  return url ? (
+    <a href={url} target="_blank" rel="noopener noreferrer nofollow" data-no-outbound="1" style={{ textDecoration: "none", display: "block", minWidth: 0 }}>{inner}</a>
+  ) : (
+    <div style={{ minWidth: 0 }}>{inner}</div>
   );
 }
 
@@ -184,22 +202,6 @@ function MethodologyBox() {
       {MILESTONES.map((mi, i) => (
         <span key={mi.label} style={{ color: mi.color, fontWeight: 700 }}>{mi.icon} {mi.label} (≥{usdCompact(mi.min)}){i < MILESTONES.length - 1 ? " · " : ""}</span>
       ))}. Supply counts are marketplace search results and can include look-alike items; we surface prices, we don't authenticate cards or imply any artist/label endorsement.
-    </div>
-  );
-}
-
-
-// Compact 12-month backdated trend for an idol card (modeled — see /pc-index/forecast).
-function MiniTrend({ series, accent }: { series: MonthPoint[]; accent: string }) {
-  const max = Math.max(...series.map((p) => p.volumeUsd), 1);
-  return (
-    <div style={{ padding: "10px 14px 2px" }}>
-      <div style={{ fontSize: "0.55rem", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--ink-faint)", marginBottom: 5 }}>12-mo trend <span style={{ opacity: 0.65 }}>· modeled</span></div>
-      <div style={{ display: "flex", alignItems: "flex-end", gap: 2, height: 26 }}>
-        {series.map((p, i) => (
-          <div key={p.ym} title={p.event || undefined} style={{ flex: 1, height: `${Math.max(6, Math.round((p.volumeUsd / max) * 100))}%`, borderRadius: "2px 2px 0 0", background: p.intensity === "high" ? accent : INTENSITY_COLOR[p.intensity], opacity: i === series.length - 1 ? 1 : 0.72 }} />
-        ))}
-      </div>
     </div>
   );
 }
