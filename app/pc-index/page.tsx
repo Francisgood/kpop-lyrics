@@ -3,12 +3,15 @@ import type { Metadata } from "next";
 import SmartImage from "@/components/SmartImage";
 import { getAllCardsWithListings, type PcCardFull } from "@/lib/pc-index-db";
 import { CARD_TIERS, computeMetrics, priceSeries, usd, type PcListing } from "@/lib/pc-index";
+import IdolMarketIndex from "@/components/IdolMarketIndex";
+import { getArtistIndex } from "@/lib/pc-artist-index-db";
+import type { ArtistIndexRow } from "@/lib/pc-artist-index";
 
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "PC Index — K-pop Photocard Market Intelligence",
-  description: "A price ticker for K-pop photocards. Floor, median-sold (fair value), ceiling, and volume tracked across marketplaces. MVP: Jennie × Topps, Chaewon on eBay, and photocard bundles.",
+  title: "PC Index — K-pop Photocard Market Intelligence & Idol Index",
+  description: "A per-idol K-pop photocard market index — top card, top bundle, supply across eBay/Mercari/Pocamarket/Topps, and estimated annual sales volume attributed against the $700M global market. Plus a live card ledger.",
 };
 
 // PC Index MVP (see the PC Index PRD). Tracks a few example cards and computes the
@@ -17,6 +20,8 @@ export const metadata: Metadata = {
 export default async function PcIndexPage() {
   let cards: PcCardFull[] = [];
   try { cards = await getAllCardsWithListings(); } catch { cards = []; }
+  let artistIndex: ArtistIndexRow[] = [];
+  try { artistIndex = await getArtistIndex(); } catch { artistIndex = []; }
 
   return (
     <main style={{ maxWidth: 1040, margin: "0 auto", padding: "40px 20px 90px" }}>
@@ -31,8 +36,15 @@ export default async function PcIndexPage() {
       </p>
       <p style={{ fontSize: "0.82rem", color: "var(--ink-faint)", margin: "0 0 34px" }}>
         <span style={{ background: "#ff6fa822", color: "#ff6fa8", fontWeight: 800, fontSize: "0.62rem", letterSpacing: "0.08em", padding: "3px 9px", borderRadius: 999, textTransform: "uppercase", marginRight: 8 }}>MVP</span>
-        Tracking {cards.length || 3} example cards. We report observed sales — we don't authenticate cards or imply any artist/label endorsement.
+        Two views: a per-idol <b style={{ color: "var(--ink-dim)" }}>Idol Market Index</b> — top card, top bundle, live supply across marketplaces, and estimated annual volume for every tracked member — plus a live card ledger. We report observed listings; we don't authenticate cards or imply any artist/label endorsement.
       </p>
+
+      {/* Per-idol market index — the $700M market-attribution dashboard */}
+      <IdolMarketIndex rows={artistIndex} />
+
+      {/* Live card ledger — individual tracked cards */}
+      <div style={{ fontFamily: "var(--serif)", fontSize: "1.5rem", fontWeight: 800, color: "var(--ink)", margin: "6px 0 4px" }}>Card ledger <span style={{ color: "#ff6fa8" }}>·</span> live price ticker</div>
+      <p style={{ fontSize: "0.82rem", color: "var(--ink-faint)", margin: "0 0 20px" }}>Individual cards tracked across marketplaces — floor, median-sold, ceiling, and volume.</p>
 
       {cards.length === 0 ? (
         <div style={{ padding: 40, textAlign: "center", color: "var(--ink-faint)", border: "1px dashed var(--border)", borderRadius: 16 }}>
