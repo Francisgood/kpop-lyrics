@@ -20,6 +20,7 @@ import {
   KPOP_CARD_MARKET_USD,
   type ArtistIndexRow,
 } from "@/lib/pc-artist-index";
+import { monthlySeries, INTENSITY_COLOR, type MonthPoint } from "@/lib/pc-backdating";
 
 const ACCENT = "#ff6fa8";
 
@@ -150,6 +151,9 @@ function IdolCard({ row, m, groupColor }: { row: ArtistIndexRow; m: ReturnType<t
         </div>
       </div>
 
+      {/* 12-month backdated trend (modeled) */}
+      <MiniTrend series={monthlySeries(row.groupSlug, m.estAnnualVolumeUsd)} accent={groupColor} />
+
       {row.signal && (
         <div style={{ padding: "10px 14px", fontSize: "0.72rem", color: "var(--ink-dim)", lineHeight: 1.5, borderTop: "1px solid var(--border)", fontStyle: "italic" }}>{row.signal}</div>
       )}
@@ -180,6 +184,22 @@ function MethodologyBox() {
       {MILESTONES.map((mi, i) => (
         <span key={mi.label} style={{ color: mi.color, fontWeight: 700 }}>{mi.icon} {mi.label} (≥{usdCompact(mi.min)}){i < MILESTONES.length - 1 ? " · " : ""}</span>
       ))}. Supply counts are marketplace search results and can include look-alike items; we surface prices, we don't authenticate cards or imply any artist/label endorsement.
+    </div>
+  );
+}
+
+
+// Compact 12-month backdated trend for an idol card (modeled — see /pc-index/forecast).
+function MiniTrend({ series, accent }: { series: MonthPoint[]; accent: string }) {
+  const max = Math.max(...series.map((p) => p.volumeUsd), 1);
+  return (
+    <div style={{ padding: "10px 14px 2px" }}>
+      <div style={{ fontSize: "0.55rem", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--ink-faint)", marginBottom: 5 }}>12-mo trend <span style={{ opacity: 0.65 }}>· modeled</span></div>
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 2, height: 26 }}>
+        {series.map((p, i) => (
+          <div key={p.ym} title={p.event || undefined} style={{ flex: 1, height: `${Math.max(6, Math.round((p.volumeUsd / max) * 100))}%`, borderRadius: "2px 2px 0 0", background: p.intensity === "high" ? accent : INTENSITY_COLOR[p.intensity], opacity: i === series.length - 1 ? 1 : 0.72 }} />
+        ))}
+      </div>
     </div>
   );
 }

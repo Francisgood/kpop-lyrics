@@ -39,6 +39,12 @@ export default async function PcIndexPage() {
         Two views: a per-idol <b style={{ color: "var(--ink-dim)" }}>Idol Market Index</b> — top card, top bundle, live supply across marketplaces, and estimated annual volume for every tracked member — plus a live card ledger. We report observed listings; we don't authenticate cards or imply any artist/label endorsement.
       </p>
 
+      {artistIndex.length > 0 && (
+        <Link href="/pc-index/forecast" style={{ display: "inline-flex", alignItems: "center", gap: 8, margin: "0 0 26px", padding: "11px 16px", borderRadius: 12, border: "1px solid #ff6fa855", background: "linear-gradient(135deg, rgba(255,111,168,0.12), rgba(155,140,255,0.07))", color: "var(--ink)", textDecoration: "none", fontWeight: 700, fontSize: "0.9rem" }}>
+          📈 New — 12-month Earnings Signal: photocards vs. HYBE / SM / JYP / YG revenue <span style={{ color: "#ff6fa8" }}>→</span>
+        </Link>
+      )}
+
       {/* Per-idol market index — the $700M market-attribution dashboard */}
       <IdolMarketIndex rows={artistIndex} />
 
