@@ -7,16 +7,17 @@ import { ymLabel, type MonthPoint } from "@/lib/pc-backdating";
 const GRID = [0, 12.5, 25, 37.5, 50, 62.5, 75, 87.5, 100];
 
 export default function LineTrend({
-  series, accent, height = 130, showYAxis = true, showXAxis = true,
+  series, accent, height = 130, showYAxis = true, showXAxis = true, maxValue,
 }: {
   series: MonthPoint[];
   accent: string;
   height?: number;
   showYAxis?: boolean;
   showXAxis?: boolean;
+  maxValue?: number;
 }) {
   if (series.length < 2) return null;
-  const max = Math.max(...series.map((p) => p.volumeUsd), 1);
+  const max = maxValue ?? Math.max(...series.map((p) => p.volumeUsd), 1);
   const pts = series.map((p, i) => ({
     x: (i / (series.length - 1)) * 100,
     y: (p.volumeUsd / max) * 100, // % of this series' own peak

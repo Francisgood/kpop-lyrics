@@ -37,6 +37,7 @@ export async function ensureArtistIndexTable() {
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "PcArtistIndex_group_idx" ON "PcArtistIndex" ("groupSlug")`);
   await prisma.$executeRawUnsafe(`ALTER TABLE "PcArtistIndex" ADD COLUMN IF NOT EXISTS "topCardImage" TEXT`);
   await prisma.$executeRawUnsafe(`ALTER TABLE "PcArtistIndex" ADD COLUMN IF NOT EXISTS "topBundleImage" TEXT`);
+  await prisma.$executeRawUnsafe(`ALTER TABLE "PcArtistIndex" ADD COLUMN IF NOT EXISTS "shareOfVoice" INTEGER`);
   ready = true;
 }
 
@@ -66,13 +67,13 @@ export async function ingestArtistIndex(rows: ArtistIndexIn[]): Promise<number> 
         "topCardName","topCardPrice","topCardUrl","topCardMarket","topCardImage",
         "topBundleName","topBundlePrice","topBundleUrl","topBundleMarket","topBundleImage",
         "supplyEbay","supplyMeraki","supplyPocamarket","supplyTopps","supplyOther","supplyOtherNote",
-        "signal","confidence","sortOrder","updatedAt")
+        "signal","confidence","shareOfVoice","sortOrder","updatedAt")
       VALUES (
         ${r.slug}, ${r.name}, ${r.group ?? null}, ${r.groupSlug ?? null}, ${r.imageUrl ?? null},
         ${(tc as ArtistIndexRow["topCard"]).name ?? null}, ${numOrNull((tc as ArtistIndexRow["topCard"]).price)}, ${(tc as ArtistIndexRow["topCard"]).url ?? null}, ${(tc as ArtistIndexRow["topCard"]).marketplace ?? null}, ${(tc as ArtistIndexRow["topCard"]).image ?? null},
         ${(tb as ArtistIndexRow["topBundle"]).name ?? null}, ${numOrNull((tb as ArtistIndexRow["topBundle"]).price)}, ${(tb as ArtistIndexRow["topBundle"]).url ?? null}, ${(tb as ArtistIndexRow["topBundle"]).marketplace ?? null}, ${(tb as ArtistIndexRow["topBundle"]).image ?? null},
         ${intOrNull(s.ebay)}, ${intOrNull(s.meraki)}, ${intOrNull(s.pocamarket)}, ${intOrNull(s.topps)}, ${intOrNull(s.other)}, ${s.otherNote ?? null},
-        ${r.signal ?? null}, ${r.confidence ?? null}, ${i}, now())
+        ${r.signal ?? null}, ${r.confidence ?? null}, ${intOrNull(r.shareOfVoice)}, ${i}, now())
       ON CONFLICT ("slug") DO UPDATE SET
         "name" = EXCLUDED."name", "grp" = EXCLUDED."grp", "groupSlug" = EXCLUDED."groupSlug",
         "imageUrl" = COALESCE(EXCLUDED."imageUrl", "PcArtistIndex"."imageUrl"),
@@ -83,7 +84,7 @@ export async function ingestArtistIndex(rows: ArtistIndexIn[]): Promise<number> 
         "supplyEbay" = EXCLUDED."supplyEbay", "supplyMeraki" = EXCLUDED."supplyMeraki",
         "supplyPocamarket" = EXCLUDED."supplyPocamarket", "supplyTopps" = EXCLUDED."supplyTopps",
         "supplyOther" = EXCLUDED."supplyOther", "supplyOtherNote" = EXCLUDED."supplyOtherNote",
-        "signal" = EXCLUDED."signal", "confidence" = EXCLUDED."confidence",
+        "signal" = EXCLUDED."signal", "confidence" = EXCLUDED."confidence", "shareOfVoice" = EXCLUDED."shareOfVoice",
         "sortOrder" = EXCLUDED."sortOrder", "updatedAt" = now()`;
     n++;
   }
@@ -95,7 +96,7 @@ type Row = {
   topCardName: string | null; topCardPrice: number | null; topCardUrl: string | null; topCardMarket: string | null; topCardImage: string | null;
   topBundleName: string | null; topBundlePrice: number | null; topBundleUrl: string | null; topBundleMarket: string | null; topBundleImage: string | null;
   supplyEbay: number | null; supplyMeraki: number | null; supplyPocamarket: number | null; supplyTopps: number | null; supplyOther: number | null; supplyOtherNote: string | null;
-  signal: string | null; confidence: string | null;
+  signal: string | null; confidence: string | null; shareOfVoice: number | null;
 };
 
 export async function getArtistIndex(): Promise<ArtistIndexRow[]> {
@@ -111,7 +112,7 @@ export async function getArtistIndex(): Promise<ArtistIndexRow[]> {
         ebay: r.supplyEbay, meraki: r.supplyMeraki, pocamarket: r.supplyPocamarket,
         topps: r.supplyTopps, other: r.supplyOther, otherNote: r.supplyOtherNote,
       },
-      signal: r.signal, confidence: r.confidence,
+      signal: r.signal, confidence: r.confidence, shareOfVoice: r.shareOfVoice,
     }));
   } catch { return []; }
 }

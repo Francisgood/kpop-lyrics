@@ -118,6 +118,23 @@ export function monthlySeries(groupSlug: string, annualVolumeUsd: number): Month
   }));
 }
 
+// Per-member popularity line scaled by SHARE OF VOICE. Returns the group's comeback
+// shape (peak month normalized to 1.0) multiplied by sovNorm (0..1 — the member's
+// share of voice relative to the group's most-talked-about member), on a 0–100 scale.
+// Plot with LineTrend maxValue={100} so members of a group are directly comparable:
+// the leader peaks near 100%, the least-talked-about sit visibly lower.
+export function sovSeries(groupSlug: string, sovNorm: number): MonthPoint[] {
+  const cal = calendarFor(groupSlug);
+  const maxW = Math.max(...cal.map((c) => INTENSITY_WEIGHT[c.intensity] ?? 1), 1);
+  const lvl = Math.max(0, Math.min(1, sovNorm));
+  return cal.map((c) => ({
+    ym: c.ym,
+    volumeUsd: Math.round(((INTENSITY_WEIGHT[c.intensity] ?? 1) / maxW) * lvl * 100),
+    intensity: c.intensity,
+    event: c.event,
+  }));
+}
+
 // Sum many idols' monthly series into one label/group series (aligned by month).
 export function sumSeries(seriesList: MonthPoint[][]): MonthPoint[] {
   return BACKDATE_MONTHS.map((ym, i) => {

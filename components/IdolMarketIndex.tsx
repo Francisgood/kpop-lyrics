@@ -20,7 +20,7 @@ import {
   KPOP_CARD_MARKET_USD,
   type ArtistIndexRow,
 } from "@/lib/pc-artist-index";
-import { monthlySeries } from "@/lib/pc-backdating";
+import { sovSeries } from "@/lib/pc-backdating";
 import LineTrend from "@/components/LineTrend";
 
 const ACCENT = "#ff6fa8";
@@ -71,7 +71,7 @@ export default function IdolMarketIndex({ rows }: { rows: ArtistIndexRow[] }) {
       {INDEX_GROUPS.map((g) => {
         const members = withMetrics
           .filter((x) => x.row.groupSlug === g.slug)
-          .sort((a, b) => b.m.estAnnualVolumeUsd - a.m.estAnnualVolumeUsd);
+          .sort((a, b) => (b.row.shareOfVoice ?? 0) - (a.row.shareOfVoice ?? 0) || b.m.estAnnualVolumeUsd - a.m.estAnnualVolumeUsd);
         if (!members.length) return null;
         const groupVolume = members.reduce((a, x) => a + x.m.estAnnualVolumeUsd, 0);
         return (
@@ -88,8 +88,8 @@ export default function IdolMarketIndex({ rows }: { rows: ArtistIndexRow[] }) {
               </div>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 16 }}>
-              {members.map(({ row, m }) => (
-                <IdolCard key={row.slug} row={row} m={m} groupColor={g.color} />
+              {members.map(({ row, m }, i) => (
+                <IdolCard key={row.slug} row={row} m={m} groupColor={g.color} sovRank={i + 1} groupSize={members.length} />
               ))}
             </div>
           </div>
@@ -101,8 +101,11 @@ export default function IdolMarketIndex({ rows }: { rows: ArtistIndexRow[] }) {
   );
 }
 
-function IdolCard({ row, m, groupColor }: { row: ArtistIndexRow; m: ReturnType<typeof computeArtistMetrics>; groupColor: string }) {
+function IdolCard({ row, m, groupColor, sovRank, groupSize }: { row: ArtistIndexRow; m: ReturnType<typeof computeArtistMetrics>; groupColor: string; sovRank: number; groupSize: number }) {
   const s = row.supply;
+  const sov = row.shareOfVoice ?? 0;
+  const sovNorm = sov / 100; // global: V(=100) tops the scale, so line height == score
+  const isLeader = sovRank === 1 && groupSize > 1;
   const breakdown = [
     ["eBay", s.ebay],
     ["Mercari", s.meraki],
@@ -154,12 +157,24 @@ function IdolCard({ row, m, groupColor }: { row: ArtistIndexRow; m: ReturnType<t
         </div>
       </div>
 
-      {/* Popularity trend — directional share-of-voice proxy (% of 12-mo peak) */}
+      {/* Share of voice — per-member online buzz scales the popularity line, so the
+          most-talked-about members over-index and quieter members visibly lag */}
       <div style={{ padding: "12px 14px 6px" }}>
-        <div style={{ fontSize: "0.6rem", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--ink-faint)", marginBottom: 6 }}>
-          Popularity trend <span style={{ opacity: 0.7 }}>· share of voice · 12mo</span>
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8, marginBottom: 6 }}>
+          <span style={{ fontSize: "0.6rem", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--ink-faint)" }}>
+            Popularity <span style={{ opacity: 0.7 }}>· share of voice</span>
+          </span>
+          <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.62rem", color: "var(--ink-faint)" }}>
+            <b style={{ color: isLeader ? groupColor : "var(--ink)", fontSize: "0.92rem", fontVariantNumeric: "tabular-nums" }}>{sov}</b>/100
+            <span style={{ background: isLeader ? `${groupColor}22` : "#ffffff10", color: isLeader ? groupColor : "var(--ink-faint)", fontWeight: 800, fontSize: "0.55rem", letterSpacing: "0.03em", padding: "2px 7px", borderRadius: 999, textTransform: "uppercase" }}>
+              {isLeader ? "▲ most talked about" : `#${sovRank} of ${groupSize}`}
+            </span>
+          </span>
         </div>
-        <LineTrend series={monthlySeries(row.groupSlug, m.estAnnualVolumeUsd)} accent={groupColor} height={108} />
+        <div style={{ height: 5, borderRadius: 999, background: "rgba(255,255,255,0.08)", overflow: "hidden", marginBottom: 8 }}>
+          <div style={{ width: `${Math.max(3, sovNorm * 100)}%`, height: "100%", background: groupColor, borderRadius: 999 }} />
+        </div>
+        <LineTrend series={sovSeries(row.groupSlug, sovNorm)} accent={groupColor} height={108} maxValue={100} />
       </div>
 
       {row.signal && (
@@ -198,7 +213,7 @@ function MethodologyBox() {
     <div style={{ marginTop: 8, padding: "18px 20px", borderRadius: 14, border: "1px solid var(--border)", background: "var(--bg-card, #14101c)", fontSize: "0.8rem", color: "var(--ink-dim)", lineHeight: 1.7 }}>
       <div style={{ fontWeight: 800, color: "var(--ink)", marginBottom: 6 }}>How these numbers are built</div>
       <b style={{ color: "var(--ink)" }}>Observed</b> (top card, top bundle, cards-for-sale) come from live marketplace listings — the highest plausible genuine ask, not joke placeholder prices. <b style={{ color: "var(--ink)" }}>Estimated annual volume</b> is <i>modeled</i>, not confirmed sales:
-      {" "}<code style={{ background: "rgba(255,255,255,0.06)", padding: "1px 6px", borderRadius: 5, fontSize: "0.76rem" }}>volume = live supply × avg card price × {MARKET_MODEL.turnsPerYear} turns/yr</code>, where the average card price is desirability-weighted off the top card and bounded to ${MARKET_MODEL.avgCardMin}–${MARKET_MODEL.avgCardMax}. The <b>{MARKET_MODEL.turnsPerYear}× annual turnover</b> is the softest assumption — treat volume + market-share figures as order-of-magnitude, not precise. Milestone tiers:{" "}
+      {" "}<code style={{ background: "rgba(255,255,255,0.06)", padding: "1px 6px", borderRadius: 5, fontSize: "0.76rem" }}>volume = live supply × avg card price × {MARKET_MODEL.turnsPerYear} turns/yr</code>, where the average card price is desirability-weighted off the top card and bounded to ${MARKET_MODEL.avgCardMin}–${MARKET_MODEL.avgCardMax}. The <b>{MARKET_MODEL.turnsPerYear}× annual turnover</b> is the softest assumption — treat volume + market-share figures as order-of-magnitude, not precise. <b style={{ color: "var(--ink)" }}>Share of voice</b> (0–100) is each member’s online buzz — solo following, brand-reputation rank, search interest — scaling the popularity line so the most-talked-about members over-index and quieter members visibly lag (it’s why the biggest names command the priciest, most-traded cards). Milestone tiers:{" "}
       {MILESTONES.map((mi, i) => (
         <span key={mi.label} style={{ color: mi.color, fontWeight: 700 }}>{mi.icon} {mi.label} (≥{usdCompact(mi.min)}){i < MILESTONES.length - 1 ? " · " : ""}</span>
       ))}. Supply counts are marketplace search results and can include look-alike items; we surface prices, we don't authenticate cards or imply any artist/label endorsement.

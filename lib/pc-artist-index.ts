@@ -74,6 +74,7 @@ export type ArtistIndexRow = {
   };
   signal: string | null; // one-line popularity note
   confidence: string | null; // observed | approx | mixed
+  shareOfVoice: number | null; // 0-100 online "talked about" index (per-member, drives the popularity line)
 };
 
 export type ArtistIndexMetrics = {
