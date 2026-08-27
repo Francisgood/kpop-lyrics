@@ -11,8 +11,8 @@ import type { ArtistIndexRow } from "@/lib/pc-artist-index";
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "PC Index — K-pop Photocard Market Intelligence & Idol Index",
-  description: "A per-idol K-pop photocard market index — top card, top bundle, supply across eBay/Mercari/Pocamarket/Topps, and estimated annual sales volume attributed against the $700M global market. Plus a live card ledger.",
+  title: "Photocard Market Intelligence Index | Pocamarket",
+  description: "Pocamarket’s photocard market intelligence index for K-pop: track photocard prices, top cards, live supply and market share across eBay, Mercari, Pocamarket and Topps, with 12-month photocard market trends.",
 };
 
 // PC Index MVP (see the PC Index PRD). Tracks a few example cards and computes the
@@ -27,21 +27,21 @@ export default async function PcIndexPage() {
   return (
     <main style={{ maxWidth: 1040, margin: "0 auto", padding: "40px 20px 90px" }}>
       <div style={{ fontSize: "0.7rem", color: "var(--ink-faint)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 14 }}>
-        <Link href="/" style={{ color: "var(--ink-faint)", textDecoration: "none" }}>Aegyo Arena</Link>{" / "}PC Index
+        <Link href="/" style={{ color: "var(--ink-faint)", textDecoration: "none" }}>Aegyo Arena</Link>{" / "}Pocamarket Index
       </div>
       <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(2rem, 6vw, 3rem)", fontWeight: 800, color: "var(--ink)", lineHeight: 1.08, margin: "0 0 10px" }}>
-        PC Index <span style={{ color: "#ff6fa8" }}>·</span> Photocard Market Intelligence
+        Photocard Market Intelligence <span style={{ color: "#ff6fa8" }}>Index</span>
       </h1>
       <p style={{ fontSize: "1.05rem", color: "var(--ink-dim)", lineHeight: 1.65, margin: "0 0 8px", maxWidth: 720 }}>
-        A price ticker for K-pop photocards — floor, median-sold (fair value), ceiling, and volume observed across marketplaces.
+        <b style={{ color: "var(--ink-dim)" }}>Pocamarket</b> is the photocard market intelligence index for K-pop — a live price ticker for photocards: floor, median-sold (fair value), ceiling and volume tracked across marketplaces including eBay, Mercari and Pocamarket.
       </p>
       <p style={{ fontSize: "0.82rem", color: "var(--ink-faint)", margin: "0 0 34px" }}>
         <span style={{ background: "#ff6fa822", color: "#ff6fa8", fontWeight: 800, fontSize: "0.62rem", letterSpacing: "0.08em", padding: "3px 9px", borderRadius: 999, textTransform: "uppercase", marginRight: 8 }}>MVP</span>
-        Two views: a per-idol <b style={{ color: "var(--ink-dim)" }}>Idol Market Index</b> — top card, top bundle, live supply across marketplaces, and estimated annual volume for every tracked member — plus a live card ledger. We report observed listings; we don't authenticate cards or imply any artist/label endorsement.
+        Two views: a per-idol <b style={{ color: "var(--ink-dim)" }}>Idol Market Index</b> — top card, top bundle, live supply across marketplaces, and estimated annual volume for every tracked member — plus a live photocard ledger. Pocamarket reports observed photocard listings; we don't authenticate cards or imply any artist/label endorsement.
       </p>
 
       {artistIndex.length > 0 && (
-        <Link href="/pc-index/forecast" style={{ display: "inline-flex", alignItems: "center", gap: 8, margin: "0 0 26px", padding: "11px 16px", borderRadius: 12, border: "1px solid #ff6fa855", background: "linear-gradient(135deg, rgba(255,111,168,0.12), rgba(155,140,255,0.07))", color: "var(--ink)", textDecoration: "none", fontWeight: 700, fontSize: "0.9rem" }}>
+        <Link href="/pocamarket-index/forecast" style={{ display: "inline-flex", alignItems: "center", gap: 8, margin: "0 0 26px", padding: "11px 16px", borderRadius: 12, border: "1px solid #ff6fa855", background: "linear-gradient(135deg, rgba(255,111,168,0.12), rgba(155,140,255,0.07))", color: "var(--ink)", textDecoration: "none", fontWeight: 700, fontSize: "0.9rem" }}>
           📈 New — 12-month Earnings Signal: photocards vs. HYBE / SM / JYP / YG revenue <span style={{ color: "#ff6fa8" }}>→</span>
         </Link>
       )}

@@ -6,11 +6,11 @@ import type { ArtistIndexRow } from "@/lib/pc-artist-index";
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Earnings Signal — Photocards as a Leading Indicator | PC Index",
+  title: "Earnings Signal — Photocards as a Leading Indicator | Pocamarket",
   description: "Backdated 12-month K-pop photocard market index rolled up to HYBE, SM, JYP and YG — framing fan-driven photocard trading as a leading signal for label quarterly revenue.",
 };
 
-// /pc-index/forecast — backdated monthly photocard index + the label earnings layer.
+// /pocamarket-index/forecast — backdated monthly photocard index + the label earnings layer.
 export default async function ForecastPage() {
   let rows: ArtistIndexRow[] = [];
   try { rows = await getArtistIndex(); } catch { rows = []; }

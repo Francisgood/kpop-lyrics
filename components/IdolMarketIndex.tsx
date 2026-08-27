@@ -33,8 +33,46 @@ export default function IdolMarketIndex({ rows }: { rows: ArtistIndexRow[] }) {
   const trackedSharePct = (trackedVolume / KPOP_CARD_MARKET_USD) * 100;
   const trackedSupply = withMetrics.reduce((a, x) => a + x.m.supplyTotal, 0);
 
+  // SEO: sequential pocamarket-N alt text for every photocard image, in display order.
+  const orderedSlugs = INDEX_GROUPS.flatMap((g) =>
+    withMetrics
+      .filter((x) => x.row.groupSlug === g.slug)
+      .sort((a, b) => (b.row.shareOfVoice ?? 0) - (a.row.shareOfVoice ?? 0) || b.m.estAnnualVolumeUsd - a.m.estAnnualVolumeUsd)
+      .map((x) => x.row.slug)
+  );
+  const photoBaseBySlug = new Map(orderedSlugs.map((slug, i) => [slug, i * 2]));
+
   return (
     <section style={{ marginBottom: 40 }}>
+      {/* ── Per-group idol cards ─────────────────────────────────────────── */}
+      {INDEX_GROUPS.map((g) => {
+        const members = withMetrics
+          .filter((x) => x.row.groupSlug === g.slug)
+          .sort((a, b) => (b.row.shareOfVoice ?? 0) - (a.row.shareOfVoice ?? 0) || b.m.estAnnualVolumeUsd - a.m.estAnnualVolumeUsd);
+        if (!members.length) return null;
+        const groupVolume = members.reduce((a, x) => a + x.m.estAnnualVolumeUsd, 0);
+        return (
+          <div key={g.slug} style={{ marginBottom: 34 }}>
+            <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 14, paddingBottom: 8, borderBottom: `2px solid ${g.color}44` }}>
+              <Link href={`/artists/${g.slug}`} style={{ textDecoration: "none", display: "flex", alignItems: "baseline", gap: 10 }}>
+                <span style={{ width: 10, height: 10, borderRadius: 3, background: g.color, display: "inline-block" }} />
+                <span style={{ fontFamily: "var(--serif)", fontSize: "1.5rem", fontWeight: 800, color: "var(--ink)" }}>{g.name}</span>
+                <span style={{ fontSize: "0.72rem", color: g.color, fontWeight: 700 }}>{members.length} members ↗</span>
+              </Link>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: "1.05rem", fontWeight: 800, color: "var(--ink)", fontVariantNumeric: "tabular-nums" }}>{usdCompact(groupVolume)}</div>
+                <div style={{ fontSize: "0.64rem", color: "var(--ink-faint)", textTransform: "uppercase", letterSpacing: "0.06em" }}>est. group vol / yr</div>
+              </div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 16 }}>
+              {members.map(({ row, m }, i) => (
+                <IdolCard key={row.slug} row={row} m={m} groupColor={g.color} sovRank={i + 1} groupSize={members.length} photoBase={photoBaseBySlug.get(row.slug) ?? 0} />
+              ))}
+            </div>
+          </div>
+        );
+      })}
+
       {/* ── Market attribution header — the $700M anchor ─────────────────── */}
       <div style={{ border: `1px solid ${ACCENT}55`, borderRadius: 18, background: "linear-gradient(135deg, rgba(255,111,168,0.10), rgba(155,140,255,0.06))", padding: "22px 22px 20px", marginBottom: 28 }}>
         <div style={{ fontSize: "0.66rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-faint)", marginBottom: 8 }}>
@@ -63,45 +101,16 @@ export default function IdolMarketIndex({ rows }: { rows: ArtistIndexRow[] }) {
           <div style={{ width: `${Math.max(1.5, Math.min(100, trackedSharePct))}%`, height: "100%", background: `linear-gradient(90deg, ${ACCENT}, #9b8cff)`, borderRadius: 999 }} />
         </div>
         <div style={{ fontSize: "0.72rem", color: "var(--ink-faint)", marginTop: 8, lineHeight: 1.5 }}>
-          The tracked idols represent an estimated <b style={{ color: "var(--ink-dim)" }}>{sharePct(trackedSharePct)}</b> of the $700M global market. The broader trading-card market (all cards) ran ~$9B in 2024; $700M is an estimate for the K-pop photocard slice.
+          The tracked idols represent an estimated <b style={{ color: "var(--ink-dim)" }}>{sharePct(trackedSharePct)}</b> of the $700M global market. The broader trading-card market (all cards) ran ~$9B in 2024; $700M is an estimate for the K-pop photocard slice that Pocamarket indexes.
         </div>
       </div>
-
-      {/* ── Per-group idol cards ─────────────────────────────────────────── */}
-      {INDEX_GROUPS.map((g) => {
-        const members = withMetrics
-          .filter((x) => x.row.groupSlug === g.slug)
-          .sort((a, b) => (b.row.shareOfVoice ?? 0) - (a.row.shareOfVoice ?? 0) || b.m.estAnnualVolumeUsd - a.m.estAnnualVolumeUsd);
-        if (!members.length) return null;
-        const groupVolume = members.reduce((a, x) => a + x.m.estAnnualVolumeUsd, 0);
-        return (
-          <div key={g.slug} style={{ marginBottom: 34 }}>
-            <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 14, paddingBottom: 8, borderBottom: `2px solid ${g.color}44` }}>
-              <Link href={`/artists/${g.slug}`} style={{ textDecoration: "none", display: "flex", alignItems: "baseline", gap: 10 }}>
-                <span style={{ width: 10, height: 10, borderRadius: 3, background: g.color, display: "inline-block" }} />
-                <span style={{ fontFamily: "var(--serif)", fontSize: "1.5rem", fontWeight: 800, color: "var(--ink)" }}>{g.name}</span>
-                <span style={{ fontSize: "0.72rem", color: g.color, fontWeight: 700 }}>{members.length} members ↗</span>
-              </Link>
-              <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: "1.05rem", fontWeight: 800, color: "var(--ink)", fontVariantNumeric: "tabular-nums" }}>{usdCompact(groupVolume)}</div>
-                <div style={{ fontSize: "0.64rem", color: "var(--ink-faint)", textTransform: "uppercase", letterSpacing: "0.06em" }}>est. group vol / yr</div>
-              </div>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 16 }}>
-              {members.map(({ row, m }, i) => (
-                <IdolCard key={row.slug} row={row} m={m} groupColor={g.color} sovRank={i + 1} groupSize={members.length} />
-              ))}
-            </div>
-          </div>
-        );
-      })}
 
       <MethodologyBox />
     </section>
   );
 }
 
-function IdolCard({ row, m, groupColor, sovRank, groupSize }: { row: ArtistIndexRow; m: ReturnType<typeof computeArtistMetrics>; groupColor: string; sovRank: number; groupSize: number }) {
+function IdolCard({ row, m, groupColor, sovRank, groupSize, photoBase }: { row: ArtistIndexRow; m: ReturnType<typeof computeArtistMetrics>; groupColor: string; sovRank: number; groupSize: number; photoBase: number }) {
   const s = row.supply;
   const sov = row.shareOfVoice ?? 0;
   const sovNorm = sov / 100; // global: V(=100) tops the scale, so line height == score
@@ -119,7 +128,7 @@ function IdolCard({ row, m, groupColor, sovRank, groupSize }: { row: ArtistIndex
       {/* header */}
       <div style={{ display: "flex", gap: 12, padding: 14, alignItems: "center", borderBottom: "1px solid var(--border)" }}>
         {row.imageUrl ? (
-          <SmartImage src={row.imageUrl} alt={row.name} width={52} height={52} sizes="52px" style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", flexShrink: 0, background: "rgba(255,255,255,0.05)" }} />
+          <SmartImage src={row.imageUrl} alt={`${row.name} pocamarket photocard`} width={52} height={52} sizes="52px" style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", flexShrink: 0, background: "rgba(255,255,255,0.05)" }} />
         ) : (
           <div style={{ width: 52, height: 52, borderRadius: "50%", flexShrink: 0, background: `${groupColor}22`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem" }}>🃏</div>
         )}
@@ -134,8 +143,8 @@ function IdolCard({ row, m, groupColor, sovRank, groupSize }: { row: ArtistIndex
 
       {/* Featured photocards — the actual top card + top bundle images (OBSERVED) */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, padding: 14 }}>
-        <CardThumb label="Top card" image={row.topCard.image} price={row.topCard.price} name={row.topCard.name} url={row.topCard.url} accent />
-        <CardThumb label="Top bundle" image={row.topBundle.image} price={row.topBundle.price} name={row.topBundle.name} url={row.topBundle.url} />
+        <CardThumb label="Top card" image={row.topCard.image} price={row.topCard.price} name={row.topCard.name} url={row.topCard.url} photoNum={photoBase + 1} accent />
+        <CardThumb label="Top bundle" image={row.topBundle.image} price={row.topBundle.price} name={row.topBundle.name} url={row.topBundle.url} photoNum={photoBase + 2} />
       </div>
 
       {/* Supply (observed) + est. volume (modeled, secondary) */}
@@ -184,12 +193,12 @@ function IdolCard({ row, m, groupColor, sovRank, groupSize }: { row: ArtistIndex
   );
 }
 
-function CardThumb({ label, image, price, name, url, accent }: { label: string; image: string | null; price: number | null; name: string | null; url: string | null; accent?: boolean }) {
+function CardThumb({ label, image, price, name, url, accent, photoNum }: { label: string; image: string | null; price: number | null; name: string | null; url: string | null; accent?: boolean; photoNum: number }) {
   const inner = (
     <>
       <div style={{ position: "relative", width: "100%", aspectRatio: "3 / 4", background: "rgba(255,255,255,0.05)", borderRadius: 9, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
         {image ? (
-          <SmartImage src={image} alt={name || label} width={170} height={226} sizes="170px" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <SmartImage src={image} alt={`pocamarket-${photoNum}`} width={170} height={226} sizes="170px" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         ) : (
           <span style={{ fontSize: "2rem", opacity: 0.35 }}>🃏</span>
         )}

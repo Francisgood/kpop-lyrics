@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
     return [
       { source: "/define", destination: "/korean-slang", permanent: true },
       { source: "/define/:slug", destination: "/korean-slang/:slug", permanent: true },
+      { source: "/pc-index", destination: "/pocamarket-index", permanent: true },
+      { source: "/pc-index/forecast", destination: "/pocamarket-index/forecast", permanent: true },
     ];
   },
   typescript: { ignoreBuildErrors: true },

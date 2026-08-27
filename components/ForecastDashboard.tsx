@@ -27,7 +27,7 @@ export default function ForecastDashboard({ rows }: { rows: ArtistIndexRow[] }) 
     <main style={{ maxWidth: 1040, margin: "0 auto", padding: "40px 20px 90px" }}>
       <div style={{ fontSize: "0.7rem", color: "var(--ink-faint)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 14 }}>
         <Link href="/" style={{ color: "var(--ink-faint)", textDecoration: "none" }}>Aegyo Arena</Link>{" / "}
-        <Link href="/pc-index" style={{ color: "var(--ink-faint)", textDecoration: "none" }}>PC Index</Link>{" / "}Forecast
+        <Link href="/pocamarket-index" style={{ color: "var(--ink-faint)", textDecoration: "none" }}>Pocamarket Index</Link>{" / "}Forecast
       </div>
       <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(1.9rem, 5.5vw, 2.8rem)", fontWeight: 800, color: "var(--ink)", lineHeight: 1.08, margin: "0 0 10px" }}>
         Earnings Signal <span style={{ color: ACCENT }}>·</span> Photocards as a Leading Indicator
