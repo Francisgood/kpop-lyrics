@@ -67,110 +67,168 @@ function fmtDate(r: Row, locale: string): string {
   return r.dateText ?? "";
 }
 
+const ACTIVITY = [
+  { e: "💜", en: "Fan meetups", es: "Meetups de fans" },
+  { e: "🕺", en: "Dance meets", es: "Sesiones de baile" },
+  { e: "🛍", en: "Merch signings", es: "Firmas de merch" },
+  { e: "💄", en: "K-fashion & beauty", es: "K-fashion y beauty" },
+  { e: "🎤", en: "Karaoke nights", es: "Noches de karaoke" },
+];
+
+// Editorial, image-forward events page (styled after Artsy's "Shows near you"):
+// big postcard cover cards in a clean grid, serif titles, venue + date + city, and a
+// browse-by-city bar — leaning into the "travel for the show, stay for the community"
+// idea (fans crossing cities to make new friends).
 export default async function EventsPage() {
   const events = await getEvents();
 
+  // Distinct cities (with counts) for the browse bar — the "location" affordance.
+  const cityMap = new Map<string, { city: string; slug: string; n: number }>();
+  for (const e of events) {
+    if (!e.citySlug) continue;
+    const cur = cityMap.get(e.citySlug) ?? { city: e.city ?? e.citySlug, slug: e.citySlug, n: 0 };
+    cur.n++; cityMap.set(e.citySlug, cur);
+  }
+  const cities = [...cityMap.values()].sort((a, b) => b.n - a.n);
+
   return (
-    <main>
-      {/* Hero */}
-      <section style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%)", color: "#fff", padding: "60px 24px 44px" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <LangToggle align="flex-start" marginBottom={16} />
-          <div style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--sakura)", marginBottom: 14 }}>
-            <T en="Community · Live feed" es="Comunidad · Feed en vivo" />
-          </div>
-          <h1 style={{ fontSize: "clamp(2rem, 5vw, 3rem)", fontWeight: 800, lineHeight: 1.06, margin: "0 0 14px" }}>
-            <T en="Fan events near you" es="Eventos para fans cerca de ti" />
-          </h1>
-          <p style={{ color: "rgba(255,255,255,0.72)", maxWidth: 620, fontSize: "1.02rem", lineHeight: 1.7 }}>
-            <T
-              en="K-pop is about bringing the community together — a shared love of music and positivity. Find local fan meetups, dance meets, merch signings, K-fashion & K-beauty pop-ups, and karaoke nights, refreshed daily. Also see recurring "
-              es="El K-pop se trata de unir a la comunidad — un amor compartido por la música y la buena vibra. Encuentra meetups de fans, sesiones de baile, firmas de merch, pop-ups de K-fashion y K-beauty, y noches de karaoke, actualizados a diario. También mira los "
-            />
-            <Link href="/cities/meetups" style={{ color: "var(--sakura)", fontWeight: 700 }}>
-              <T en="fan meetups by city" es="encuentros recurrentes de fans por ciudad" />
-            </Link>
-            <T en=" and full " es=" y las " />
-            <Link href="/cities" style={{ color: "var(--sakura)", fontWeight: 700 }}>
-              <T en="city guides" es="guías completas de ciudades" />
-            </Link>
-            .
-          </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 20 }}>
-            {[
-              { e: "💜", en: "Fan meetups", es: "Meetups de fans" },
-              { e: "🕺", en: "Dance meets", es: "Sesiones de baile" },
-              { e: "🛍", en: "Merch signings", es: "Firmas de merch" },
-              { e: "💄", en: "K-fashion & beauty", es: "K-fashion y beauty" },
-              { e: "🎤", en: "Karaoke nights", es: "Noches de karaoke" },
-            ].map((t) => (
-              <span key={t.en} style={{ background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.16)", borderRadius: 999, padding: "6px 13px", fontSize: "0.8rem", fontWeight: 700 }}>
-                {t.e} <T en={t.en} es={t.es} />
-              </span>
-            ))}
-          </div>
+    <main style={{ background: "var(--bg)", minHeight: "100vh" }}>
+      <style>{`
+        .evt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 34px 26px; }
+        .evt-card { display: block; text-decoration: none; }
+        .evt-cover { position: relative; aspect-ratio: 4 / 3; border-radius: 5px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.18); }
+        .evt-fill { transition: transform .55s cubic-bezier(.2,.6,.2,1); }
+        .evt-card:hover .evt-fill { transform: scale(1.05); }
+        .evt-title { transition: color .18s ease; }
+        .evt-card:hover .evt-title { color: var(--sakura); }
+        .evt-city-chip { transition: border-color .18s, color .18s; }
+        .evt-city-chip:hover { border-color: var(--sakura); color: var(--sakura); }
+      `}</style>
+
+      {/* ── Editorial header ─────────────────────────────────────────────── */}
+      <section style={{ maxWidth: 1220, margin: "0 auto", padding: "46px 24px 10px" }}>
+        <LangToggle align="flex-start" marginBottom={18} />
+        <div style={{ fontFamily: "var(--mono)", fontSize: "0.68rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--ink-faint)", marginBottom: 18 }}>
+          <T en={`Community · ${events.length} events · ${cities.length} cities`} es={`Comunidad · ${events.length} eventos · ${cities.length} ciudades`} />
+        </div>
+        <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(2.4rem, 6.5vw, 4.2rem)", fontWeight: 800, lineHeight: 1.0, letterSpacing: "-0.02em", color: "var(--ink)", margin: "0 0 20px", maxWidth: 900 }}>
+          <T en="Fan events near you" es="Eventos para fans cerca de ti" />
+        </h1>
+        <p style={{ fontSize: "1.12rem", lineHeight: 1.62, color: "var(--ink-dim)", maxWidth: 640, margin: "0 0 24px" }}>
+          <T
+            en="BTS fans travel for the show and stay for the community. Find the meetups, dance nights, cupsleeve cafés and karaoke in every city on the tour — and make new friends in a new city."
+            es="Los fans de BTS viajan por el show y se quedan por la comunidad. Encuentra los meetups, noches de baile, cafés cupsleeve y karaoke en cada ciudad de la gira — y haz nuevos amigos en una nueva ciudad."
+          />
+        </p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {ACTIVITY.map((t) => (
+            <span key={t.en} style={{ display: "inline-flex", alignItems: "center", gap: 6, border: "1px solid var(--border)", borderRadius: 999, padding: "6px 13px", fontSize: "0.8rem", fontWeight: 600, color: "var(--ink-dim)" }}>
+              {t.e} <T en={t.en} es={t.es} />
+            </span>
+          ))}
         </div>
       </section>
 
-      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "40px 24px 72px" }}>
+      {/* ── Browse by city (the location bar) ────────────────────────────── */}
+      {cities.length > 0 && (
+        <section style={{ maxWidth: 1220, margin: "0 auto", padding: "26px 24px 4px" }}>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, borderTop: "1px solid var(--border)", paddingTop: 20, marginBottom: 14 }}>
+            <div style={{ fontSize: "0.68rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-faint)" }}>
+              <T en="Browse by city" es="Explora por ciudad" />
+            </div>
+            <Link href="/cities" style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--sakura)", textDecoration: "none" }}>
+              <T en="All city guides →" es="Todas las guías de ciudades →" />
+            </Link>
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {cities.slice(0, 24).map((c) => (
+              <Link key={c.slug} href={`/cities/${c.slug}`} className="evt-city-chip" style={{ display: "inline-flex", alignItems: "center", gap: 7, border: "1px solid var(--border)", borderRadius: 999, padding: "7px 14px", fontSize: "0.84rem", fontWeight: 600, color: "var(--ink)", textDecoration: "none" }}>
+                {c.city} <span style={{ color: "var(--ink-faint)", fontSize: "0.72rem", fontVariantNumeric: "tabular-nums" }}>{c.n}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── Events grid ──────────────────────────────────────────────────── */}
+      <section style={{ maxWidth: 1220, margin: "0 auto", padding: "30px 24px 90px" }}>
         {events.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "48px 20px", color: "var(--ink-dim)", lineHeight: 1.8 }}>
-            <div style={{ fontSize: "2.5rem", marginBottom: 12 }}>🗓</div>
-            <div style={{ fontWeight: 800, color: "var(--ink)", fontSize: "1.1rem", marginBottom: 6 }}>
+          <div style={{ textAlign: "center", padding: "64px 20px", color: "var(--ink-dim)", lineHeight: 1.8, border: "1px solid var(--border)", borderRadius: 12 }}>
+            <div style={{ fontSize: "2.6rem", marginBottom: 12 }}>🗓</div>
+            <div style={{ fontFamily: "var(--serif)", fontWeight: 800, color: "var(--ink)", fontSize: "1.3rem", marginBottom: 8 }}>
               <T en="No events posted yet" es="Aún no hay eventos publicados" />
             </div>
-            <div style={{ fontSize: "0.92rem", maxWidth: 460, margin: "0 auto" }}>
-              <T
-                en="Our scanner sweeps event platforms daily for local fan meetups and activations. Check back soon — or explore "
-                es="Nuestro escáner revisa las plataformas de eventos a diario en busca de encuentros y activaciones locales. Vuelve pronto — o explora los "
-              />
+            <div style={{ fontSize: "0.94rem", maxWidth: 480, margin: "0 auto" }}>
+              <T en="Our scanner sweeps event platforms daily for local fan gatherings. Check back soon — or explore " es="Nuestro escáner revisa las plataformas de eventos a diario en busca de encuentros locales. Vuelve pronto — o explora los " />
               <Link href="/cities/meetups" style={{ color: "var(--sakura)", fontWeight: 700, textDecoration: "none" }}>
                 <T en="recurring meetups by city" es="encuentros recurrentes por ciudad" />
-              </Link>
-              .
+              </Link>.
             </div>
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 14 }}>
-            {events.map((e) => {
-              const cat = CAT[e.category] ?? CAT.other;
-              const whenEn = fmtDate(e, "en-US");
-              const whenEs = fmtDate(e, "es-419");
-              const place = [e.venue, e.city].filter(Boolean).join(" · ");
-              return (
-                <div key={e.id} className="genius-card" style={{ padding: 18, display: "flex", flexDirection: "column", borderLeft: `3px solid ${cat.color}` }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                    <span style={{ background: `${cat.color}22`, color: "var(--ink)", fontSize: "0.62rem", fontWeight: 800, letterSpacing: "0.06em", padding: "3px 9px", borderRadius: 999, textTransform: "uppercase" }}>
-                      {cat.emoji} <T en={cat.label} es={cat.labelEs} />
-                    </span>
-                    {e.country && <span style={{ marginLeft: "auto", fontSize: "0.72rem", color: "var(--ink-faint)" }}>{e.country}</span>}
-                  </div>
-                  <div style={{ fontWeight: 800, fontSize: "1rem", color: "var(--ink)", lineHeight: 1.35, marginBottom: 6 }}><T en={e.title} es={e.titleEs} /></div>
-                  {(place || whenEn) && (
-                    <div style={{ fontSize: "0.8rem", color: "var(--ink-dim)", marginBottom: 8 }}>
-                      {place && <span>📍 {place}</span>}{place && whenEn ? " · " : ""}{whenEn && <span>🗓 <T en={whenEn} es={whenEs} /></span>}
-                    </div>
-                  )}
-                  {e.description && <div style={{ fontSize: "0.85rem", color: "var(--ink-dim)", lineHeight: 1.55, marginBottom: 12, flex: 1 }}><T en={e.description} es={e.descriptionEs} /></div>}
-                  <a href={e.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ marginTop: "auto", fontSize: "0.78rem", color: cat.color, fontWeight: 800, textDecoration: "none" }}>
-                    <T
-                      en={e.source ? `Details on ${e.source}` : "Details"}
-                      es={e.source ? `Detalles en ${e.source}` : "Detalles"}
-                    /> →
-                  </a>
-                </div>
-              );
-            })}
+          <div className="evt-grid">
+            {events.map((e) => (
+              <EventCard key={e.id} e={e} />
+            ))}
           </div>
         )}
 
-        <div style={{ borderTop: "1px solid var(--border)", marginTop: 32, paddingTop: 20, textAlign: "center", color: "var(--ink-faint)", fontSize: "0.78rem", lineHeight: 1.7 }}>
+        <div style={{ borderTop: "1px solid var(--border)", marginTop: 44, paddingTop: 20, textAlign: "center", color: "var(--ink-faint)", fontSize: "0.78rem", lineHeight: 1.7, maxWidth: 640, margin: "44px auto 0" }}>
           <T
-            en="Events are aggregated automatically from public event listings — always confirm details on the source page."
-            es="Los eventos se recopilan automáticamente de listados públicos — confirma siempre los detalles en la página de origen."
+            en="Every event links to a real listing — we aggregate from public pages and never invent an event. Always confirm details on the source page before you travel."
+            es="Cada evento enlaza a un listado real — recopilamos de páginas públicas y nunca inventamos un evento. Confirma siempre los detalles en la página de origen antes de viajar."
           />
         </div>
-      </div>
+      </section>
     </main>
+  );
+}
+
+// Artsy-style show card: a postcard cover (city name over a category-tinted gradient),
+// then venue (gallery-name style) · serif title · location + date · source link.
+function EventCard({ e }: { e: Row }) {
+  const cat = CAT[e.category] ?? CAT.other;
+  const whenEn = fmtDate(e, "en-US");
+  const whenEs = fmtDate(e, "es-419");
+  const cityLabel = e.city ?? "";
+
+  return (
+    <a className="evt-card" href={e.sourceUrl} target="_blank" rel="noopener noreferrer">
+      <div className="evt-cover">
+        {/* postcard fill: category-tinted gradient + big city name */}
+        <div className="evt-fill" style={{ position: "absolute", inset: 0, background: `radial-gradient(125% 120% at 18% 12%, ${cat.color} 0%, ${cat.color}c0 42%, #16121f 116%)`, display: "flex", alignItems: "flex-end", padding: 16 }}>
+          <span aria-hidden style={{ position: "absolute", top: -14, right: 4, fontSize: "6rem", opacity: 0.16, filter: "grayscale(0.1)" }}>{cat.emoji}</span>
+          <span style={{ fontFamily: "var(--serif)", fontWeight: 800, fontSize: "clamp(1.5rem, 3.4vw, 2.15rem)", color: "#fff", lineHeight: 1.02, letterSpacing: "-0.015em", textShadow: "0 2px 22px rgba(0,0,0,0.45)" }}>{cityLabel}</span>
+        </div>
+        <span style={{ position: "absolute", top: 12, left: 12, background: "rgba(0,0,0,0.46)", backdropFilter: "blur(5px)", color: "#fff", fontSize: "0.6rem", fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", padding: "4px 9px", borderRadius: 999 }}>
+          {cat.emoji} <T en={cat.label} es={cat.labelEs} />
+        </span>
+        {whenEn && (
+          <span style={{ position: "absolute", top: 12, right: 12, background: "rgba(255,255,255,0.94)", color: "#111", fontSize: "0.62rem", fontWeight: 800, padding: "4px 9px", borderRadius: 999, maxWidth: "62%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <T en={whenEn} es={whenEs} />
+          </span>
+        )}
+      </div>
+
+      <div style={{ padding: "14px 2px 0" }}>
+        {e.venue && (
+          <div style={{ fontSize: "0.66rem", letterSpacing: "0.09em", textTransform: "uppercase", color: "var(--ink-faint)", marginBottom: 7, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{e.venue}</div>
+        )}
+        <div className="evt-title" style={{ fontFamily: "var(--serif)", fontSize: "1.2rem", fontWeight: 800, color: "var(--ink)", lineHeight: 1.22, marginBottom: 8, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+          <T en={e.title} es={e.titleEs} />
+        </div>
+        <div style={{ fontSize: "0.82rem", color: "var(--ink-dim)", marginBottom: e.description ? 8 : 10 }}>
+          {[cityLabel, e.country].filter(Boolean).join(", ")}
+        </div>
+        {e.description && (
+          <div style={{ fontSize: "0.82rem", color: "var(--ink-faint)", lineHeight: 1.5, marginBottom: 10, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+            <T en={e.description} es={e.descriptionEs} />
+          </div>
+        )}
+        <span style={{ fontSize: "0.72rem", color: cat.color, fontWeight: 800 }}>
+          <T en={e.source ? `Details on ${e.source}` : "View details"} es={e.source ? `Detalles en ${e.source}` : "Ver detalles"} /> →
+        </span>
+      </div>
+    </a>
   );
 }
