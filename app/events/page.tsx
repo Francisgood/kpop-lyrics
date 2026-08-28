@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { T, LangToggle } from "@/components/LangProvider";
+import { cityImage } from "@/lib/city-images";
 
 export const dynamic = "force-dynamic";
 
@@ -191,15 +192,27 @@ function EventCard({ e }: { e: Row }) {
   const whenEn = fmtDate(e, "en-US");
   const whenEs = fmtDate(e, "es-419");
   const cityLabel = e.city ?? "";
+  const cityImg = cityImage(e.citySlug);
 
   return (
     <a className="evt-card" href={e.sourceUrl} target="_blank" rel="noopener noreferrer">
       <div className="evt-cover">
-        {/* postcard fill: category-tinted gradient + big city name */}
-        <div className="evt-fill" style={{ position: "absolute", inset: 0, background: `radial-gradient(125% 120% at 18% 12%, ${cat.color} 0%, ${cat.color}c0 42%, #16121f 116%)`, display: "flex", alignItems: "flex-end", padding: 16 }}>
-          <span aria-hidden style={{ position: "absolute", top: -14, right: 4, fontSize: "6rem", opacity: 0.16, filter: "grayscale(0.1)" }}>{cat.emoji}</span>
-          <span style={{ fontFamily: "var(--serif)", fontWeight: 800, fontSize: "clamp(1.5rem, 3.4vw, 2.15rem)", color: "#fff", lineHeight: 1.02, letterSpacing: "-0.015em", textShadow: "0 2px 22px rgba(0,0,0,0.45)" }}>{cityLabel}</span>
-        </div>
+        {cityImg ? (
+          <>
+            {/* real city photo cover (free stock) + legibility overlay + category tint */}
+            <img className="evt-fill" src={cityImg} alt={cityLabel || "city"} loading="lazy" decoding="async" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+            <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, rgba(0,0,0,0.14) 0%, rgba(0,0,0,0) 38%, rgba(10,8,16,0.86) 100%), linear-gradient(115deg, ${cat.color}40 0%, transparent 55%)` }} />
+            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "flex-end", padding: 16 }}>
+              <span style={{ fontFamily: "var(--serif)", fontWeight: 800, fontSize: "clamp(1.5rem, 3.4vw, 2.15rem)", color: "#fff", lineHeight: 1.02, letterSpacing: "-0.015em", textShadow: "0 2px 22px rgba(0,0,0,0.55)" }}>{cityLabel}</span>
+            </div>
+          </>
+        ) : (
+          /* postcard fallback: category-tinted gradient + big city name */
+          <div className="evt-fill" style={{ position: "absolute", inset: 0, background: `radial-gradient(125% 120% at 18% 12%, ${cat.color} 0%, ${cat.color}c0 42%, #16121f 116%)`, display: "flex", alignItems: "flex-end", padding: 16 }}>
+            <span aria-hidden style={{ position: "absolute", top: -14, right: 4, fontSize: "6rem", opacity: 0.16, filter: "grayscale(0.1)" }}>{cat.emoji}</span>
+            <span style={{ fontFamily: "var(--serif)", fontWeight: 800, fontSize: "clamp(1.5rem, 3.4vw, 2.15rem)", color: "#fff", lineHeight: 1.02, letterSpacing: "-0.015em", textShadow: "0 2px 22px rgba(0,0,0,0.45)" }}>{cityLabel}</span>
+          </div>
+        )}
         <span style={{ position: "absolute", top: 12, left: 12, background: "rgba(0,0,0,0.46)", backdropFilter: "blur(5px)", color: "#fff", fontSize: "0.6rem", fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", padding: "4px 9px", borderRadius: 999 }}>
           {cat.emoji} <T en={cat.label} es={cat.labelEs} />
         </span>
