@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { T, LangToggle } from "@/components/LangProvider";
 import { cityImage } from "@/lib/city-images";
+import ArcadeCTA from "@/components/ArcadeCTA";
 
 export const dynamic = "force-dynamic";
 
@@ -128,6 +129,10 @@ export default async function EventsPage() {
             </span>
           ))}
         </div>
+      </section>
+
+      <section style={{ maxWidth: 1220, margin: "0 auto", padding: "10px 24px 0" }}>
+        <ArcadeCTA margin="8px 0 0" />
       </section>
 
       {/* ── Browse by city (the location bar) ────────────────────────────── */}

@@ -92,8 +92,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               {/* "Culture Vulture" is a brand name — stays EN. */}
               <div className="footer-col-title">Culture Vulture</div>
               {/* Arcade is a separate subdomain app, so a plain <a>, not next/link. */}
-              <a href="https://arcade.aegyoarena.com" style={{ display: "block", fontSize: "1rem", fontWeight: 300, color: "var(--ink-dim)", textDecoration: "none", marginBottom: 10 }}>
-                Arcade
+              <a href="https://arcade.aegyoarena.com" style={{ display: "block", fontSize: "1rem", fontWeight: 700, color: "var(--sakura)", textDecoration: "none", marginBottom: 10 }}>
+                🕹 Arcade
               </a>
               {[["Dance", "/culture/dance", "Baile"], ["Fashion", "/culture/fashion", "Moda"], ["Beauty", "/culture/beauty", "Belleza"], ["Mukbang", "/culture/mukbang", "Mukbang"]].map(([label, href, labelEs]) => (
                 <Link key={href} href={href} style={{ display: "block", fontSize: "1rem", fontWeight: 300, color: "var(--ink-dim)", textDecoration: "none", marginBottom: 10 }}>

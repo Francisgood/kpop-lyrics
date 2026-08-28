@@ -5,6 +5,7 @@ import { getAllCardsWithListings, type PcCardFull } from "@/lib/pc-index-db";
 import { CARD_TIERS, computeMetrics, priceSeries, usd, type PcListing } from "@/lib/pc-index";
 import IdolMarketIndex from "@/components/IdolMarketIndex";
 import MarketContextCharts from "@/components/MarketContextCharts";
+import ArcadeCTA from "@/components/ArcadeCTA";
 import { getArtistIndex } from "@/lib/pc-artist-index-db";
 import type { ArtistIndexRow } from "@/lib/pc-artist-index";
 
@@ -51,6 +52,8 @@ export default async function PcIndexPage() {
 
       {/* Market-health charts — K-pop vs the ~$9B card market + 12-month trends */}
       <MarketContextCharts />
+
+      <ArcadeCTA />
 
       {/* Live card ledger — individual tracked cards */}
       <div style={{ fontFamily: "var(--serif)", fontSize: "1.5rem", fontWeight: 800, color: "var(--ink)", margin: "6px 0 4px" }}>Card ledger <span style={{ color: "#ff6fa8" }}>·</span> live price ticker</div>

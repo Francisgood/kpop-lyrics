@@ -7,6 +7,7 @@ import ViewTracker from "@/components/ViewTracker";
 import ShareButtons from "@/components/ShareButtons";
 import CultureCorner from "@/components/CultureCorner";
 import EntityVideos from "@/components/EntityVideos";
+import ArcadeCTA from "@/components/ArcadeCTA";
 import { getVideos } from "@/lib/videos-db";
 import FavoriteButton from "@/components/FavoriteButton";
 import CommentsSection from "@/components/CommentsSection";
@@ -482,6 +483,8 @@ export default async function SongPage({ params }: { params: Promise<{ slug: str
         )}
         {/* This song's own videos — showcases, dance practices, fancams */}
         {songVideos.length > 0 && <EntityVideos videos={songVideos} />}
+
+        <ArcadeCTA />
 
         {/* Culture Vulture — multi-category video explorer (dance/fashion/beauty/mukbang), below recent news */}
         <CultureCorner />
