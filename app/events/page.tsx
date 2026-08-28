@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 const TITLE = "K-pop Fan Events & Meetups Near You — Aegyo Arena";
 const DESC =
-  "A daily-updated feed of local K-pop fan meetups, K-beauty brand activations, dance meets, anime & comic cons, and K-pop store events around the world.";
+  "Find your people. A daily-updated feed of local K-pop fan meetups, dance meets, merch signings, K-fashion & K-beauty pop-ups, and karaoke nights around the world — bringing the community together under a shared love of K-pop and positivity.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -84,8 +84,8 @@ export default async function EventsPage() {
           </h1>
           <p style={{ color: "rgba(255,255,255,0.72)", maxWidth: 620, fontSize: "1.02rem", lineHeight: 1.7 }}>
             <T
-              en="Local K-pop meetups, K-beauty pop-ups, dance meets, anime & comic cons, and K-pop store events — refreshed daily. Also see recurring "
-              es="Encuentros locales de K-pop, pop-ups de K-beauty, sesiones de baile, convenciones de anime y cómics, y eventos en tiendas de K-pop — se actualiza a diario. También mira los "
+              en="K-pop is about bringing the community together — a shared love of music and positivity. Find local fan meetups, dance meets, merch signings, K-fashion & K-beauty pop-ups, and karaoke nights, refreshed daily. Also see recurring "
+              es="El K-pop se trata de unir a la comunidad — un amor compartido por la música y la buena vibra. Encuentra meetups de fans, sesiones de baile, firmas de merch, pop-ups de K-fashion y K-beauty, y noches de karaoke, actualizados a diario. También mira los "
             />
             <Link href="/cities/meetups" style={{ color: "var(--sakura)", fontWeight: 700 }}>
               <T en="fan meetups by city" es="encuentros recurrentes de fans por ciudad" />
@@ -96,6 +96,19 @@ export default async function EventsPage() {
             </Link>
             .
           </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 20 }}>
+            {[
+              { e: "💜", en: "Fan meetups", es: "Meetups de fans" },
+              { e: "🕺", en: "Dance meets", es: "Sesiones de baile" },
+              { e: "🛍", en: "Merch signings", es: "Firmas de merch" },
+              { e: "💄", en: "K-fashion & beauty", es: "K-fashion y beauty" },
+              { e: "🎤", en: "Karaoke nights", es: "Noches de karaoke" },
+            ].map((t) => (
+              <span key={t.en} style={{ background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.16)", borderRadius: 999, padding: "6px 13px", fontSize: "0.8rem", fontWeight: 700 }}>
+                {t.e} <T en={t.en} es={t.es} />
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
