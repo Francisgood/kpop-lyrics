@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { T, LangToggle } from "@/components/LangProvider";
+import { cityImage } from "@/lib/city-images";
 
 export const metadata: Metadata = {
   title: "K-pop City Guides — Aegyo Arena",
@@ -76,18 +77,36 @@ export default function CitiesPage() {
       </section>
 
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 24px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
-          {CITIES.map((city) => (
-            <Link key={city.slug} href={`/cities/${city.slug}`} style={{ textDecoration: "none" }}>
-              <div className="genius-card" style={{ padding: "22px 20px", borderLeft: `4px solid ${city.color}` }}>
-                <div style={{ fontSize: "1.8rem", marginBottom: 8 }}>{city.flag}</div>
-                <div style={{ fontWeight: 800, fontSize: "1rem", color: "var(--ink)" }}>{city.name}</div>
-                <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.72)", marginTop: 4 }}>
-                  {city.country} · <T en="View events" es="Ver eventos" />
+        <style>{`
+          .city-card { display: block; text-decoration: none; }
+          .city-cover { position: relative; aspect-ratio: 3 / 2; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.18); }
+          .city-fill { transition: transform .5s cubic-bezier(.2,.6,.2,1); }
+          .city-card:hover .city-fill { transform: scale(1.06); }
+        `}</style>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(228px, 1fr))", gap: 20 }}>
+          {CITIES.map((city) => {
+            const img = cityImage(city.slug);
+            return (
+              <Link key={city.slug} href={`/cities/${city.slug}`} className="city-card">
+                <div className="city-cover">
+                  {img ? (
+                    <img className="city-fill" src={img} alt={`${city.name}, ${city.country}`} loading="lazy" decoding="async" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    <div className="city-fill" style={{ position: "absolute", inset: 0, background: `linear-gradient(140deg, ${city.color} 0%, #16121f 125%)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2.6rem" }}>{city.flag}</div>
+                  )}
+                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0) 42%, rgba(10,8,16,0.85) 100%)" }} />
+                  <span style={{ position: "absolute", top: 11, left: 11, width: 9, height: 9, borderRadius: 2, background: city.color, boxShadow: "0 0 0 3px rgba(0,0,0,0.22)" }} />
+                  <div style={{ position: "absolute", left: 14, right: 14, bottom: 11 }}>
+                    <span style={{ fontFamily: "var(--serif)", fontWeight: 800, fontSize: "1.42rem", color: "#fff", lineHeight: 1.04, letterSpacing: "-0.01em", textShadow: "0 2px 16px rgba(0,0,0,0.5)" }}>{city.name}</span>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "9px 4px 0", fontSize: "0.74rem" }}>
+                  <span style={{ color: "var(--ink-faint)", letterSpacing: "0.04em" }}>{city.country}</span>
+                  <span style={{ color: "var(--sakura)", fontWeight: 700 }}><T en="View events →" es="Ver eventos →" /></span>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </main>

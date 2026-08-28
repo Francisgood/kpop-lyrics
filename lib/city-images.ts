@@ -23,6 +23,21 @@ export const CITY_IMAGE: Record<string, string> = {
   "monterrey": "https://images.pexels.com/photos/18983477/pexels-photo-18983477.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
   "buenos-aires": "https://images.pexels.com/photos/32983525/pexels-photo-32983525.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
   "bogota": "https://images.pexels.com/photos/19675604/pexels-photo-19675604.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "tampa": "https://images.pexels.com/photos/38724264/pexels-photo-38724264/free-photo-of-aerial-view-of-downtown-tampa-skyline-with-waterfront.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "boston": "https://images.pexels.com/photos/30740357/pexels-photo-30740357/free-photo-of-boston-skyline-at-dusk-with-high-rise-buildings.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "milan": "https://images.pexels.com/photos/15939547/pexels-photo-15939547/free-photo-of-cathedral-of-milan.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "melbourne": "https://images.pexels.com/photos/36891297/pexels-photo-36891297/free-photo-of-cityscape-of-melbourne-with-yarra-river.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "santiago": "https://images.pexels.com/photos/36143071/pexels-photo-36143071/free-photo-of-cityscape-with-snowy-andes-mountains-background.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "puebla": "https://images.pexels.com/photos/6942690/pexels-photo-6942690.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "tijuana": "https://images.pexels.com/photos/36341853/pexels-photo-36341853.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "chihuahua": "https://images.unsplash.com/photo-1707843672739-699f46517285?w=1400&q=80",
+  "sao-paulo": "https://images.pexels.com/photos/29716901/pexels-photo-29716901.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "medellin": "https://images.pexels.com/photos/32427248/pexels-photo-32427248.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "tokyo": "https://images.pexels.com/photos/31344755/pexels-photo-31344755.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "manila": "https://images.pexels.com/photos/17518170/pexels-photo-17518170.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "kuala-lumpur": "https://images.pexels.com/photos/38272709/pexels-photo-38272709.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "shanghai": "https://images.pexels.com/photos/38218977/pexels-photo-38218977.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "dubai": "https://images.pexels.com/photos/18341554/pexels-photo-18341554.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
 };
 
 export function cityImage(slug: string | null | undefined): string | undefined {
