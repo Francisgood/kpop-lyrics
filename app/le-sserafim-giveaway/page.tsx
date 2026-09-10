@@ -44,7 +44,7 @@ type Copy = {
   disclaimerPre: string; disclaimerLink: string; disclaimerPost: string;
   dates: { k: string; v: string }[];
   formTitle: string; formSubtitle: string;
-  phFirst: string; phLast: string; phEmail: string; phPhone: string;
+  phFirst: string; phLast: string; phEmail: string;
   phCountry: string; phPostal: string;
   submit: string; submitting: string;
   errFields: string; errGeneric: string;
@@ -78,7 +78,7 @@ const COPY: Record<Lang, Copy> = {
     ],
     formTitle: "Enter the giveaway",
     formSubtitle: "One entry per person. We'll email you if you win — and add you to the Aegyo Arena newsletter for the next drop.",
-    phFirst: "First name", phLast: "Last name", phEmail: "Email address", phPhone: "Phone number",
+    phFirst: "First name", phLast: "Last name", phEmail: "Email address",
     phCountry: "Country", phPostal: "Postal code",
     submit: "Enter to win", submitting: "Entering…",
     errFields: "Please complete all fields to enter.",
@@ -113,7 +113,7 @@ const COPY: Record<Lang, Copy> = {
     ],
     formTitle: "Participa en el sorteo",
     formSubtitle: "Una participación por persona. Te enviaremos un correo si ganas — y te añadiremos al boletín de Aegyo Arena para el próximo sorteo.",
-    phFirst: "Nombre", phLast: "Apellido", phEmail: "Correo electrónico", phPhone: "Número de teléfono",
+    phFirst: "Nombre", phLast: "Apellido", phEmail: "Correo electrónico",
     phCountry: "País", phPostal: "Código postal",
     submit: "Participar", submitting: "Enviando…",
     errFields: "Por favor completa todos los campos para participar.",
@@ -136,7 +136,6 @@ export default function LeSserafimGiveaway() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [zip, setZip] = useState("");
   const [country, setCountry] = useState("");
   const [ref, setRef] = useState<string | null>(null);
@@ -153,7 +152,7 @@ export default function LeSserafimGiveaway() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (!firstName || !lastName || !email || !phone || !country || !zip) {
+    if (!firstName || !lastName || !email || !country || !zip) {
       setError(c.errFields); return;
     }
     setSubmitting(true);
@@ -161,7 +160,7 @@ export default function LeSserafimGiveaway() {
       const res = await fetch("/api/le-sserafim", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName, lastName, email, phone, zip, country, ref }),
+        body: JSON.stringify({ firstName, lastName, email, zip, country, ref }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? c.errGeneric); return; }
@@ -289,7 +288,6 @@ export default function LeSserafimGiveaway() {
             <input style={field} placeholder={c.phFirst} value={firstName} onChange={(e) => setFirstName(e.target.value)} aria-label={c.phFirst} />
             <input style={field} placeholder={c.phLast} value={lastName} onChange={(e) => setLastName(e.target.value)} aria-label={c.phLast} />
             <input style={field} type="email" placeholder={c.phEmail} value={email} onChange={(e) => setEmail(e.target.value)} aria-label={c.phEmail} />
-            <input style={field} type="tel" autoComplete="tel" placeholder={c.phPhone} value={phone} onChange={(e) => setPhone(e.target.value)} aria-label={c.phPhone} />
             <div style={{ display: "flex", gap: 8 }}>
               <select style={{ ...sel, flex: "1 1 45%" }} value={country} onChange={(e) => setCountry(e.target.value)} aria-label={c.phCountry}>
                 <option value="">{c.phCountry}</option>

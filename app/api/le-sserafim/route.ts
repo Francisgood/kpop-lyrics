@@ -23,7 +23,7 @@ async function ensureTable() {
       "firstName"       TEXT NOT NULL,
       "lastName"        TEXT NOT NULL,
       "email"           TEXT NOT NULL,
-      "phone"           TEXT NOT NULL,
+      "phone"           TEXT,
       "zip"             TEXT NOT NULL,
       "country"         TEXT,
       "birthDate"       TIMESTAMP,
@@ -33,8 +33,9 @@ async function ensureTable() {
       "referralCount"   INTEGER NOT NULL DEFAULT 0,
       "createdAt"       TIMESTAMP NOT NULL DEFAULT now()
     )`);
-  // Date of birth is no longer collected — relax the pre-existing NOT NULL.
+  // Date of birth and phone are no longer collected — relax the pre-existing NOT NULLs.
   await prisma.$executeRawUnsafe(`ALTER TABLE "GiveawayEntryLsf" ALTER COLUMN "birthDate" DROP NOT NULL`);
+  await prisma.$executeRawUnsafe(`ALTER TABLE "GiveawayEntryLsf" ALTER COLUMN "phone" DROP NOT NULL`);
   await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "GiveawayEntryLsf_email_key" ON "GiveawayEntryLsf" ("email")`);
   await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "GiveawayEntryLsf_referralCode_key" ON "GiveawayEntryLsf" ("referralCode")`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "GiveawayEntryLsf_referredByCode_idx" ON "GiveawayEntryLsf" ("referredByCode")`);
@@ -51,12 +52,11 @@ export async function POST(req: NextRequest) {
     const firstName = String(b.firstName ?? "").trim();
     const lastName = String(b.lastName ?? "").trim();
     const email = String(b.email ?? "").trim().toLowerCase();
-    const phone = String(b.phone ?? "").trim();
     const zip = String(b.zip ?? "").trim();
     const country = String(b.country ?? "").trim();
     const ref = b.ref ? String(b.ref).trim() : null;
 
-    if (!firstName || !lastName || !email.includes("@") || !phone || !zip || !country) {
+    if (!firstName || !lastName || !email.includes("@") || !zip || !country) {
       return NextResponse.json({ error: "Please complete all fields to enter." }, { status: 400 });
     }
     const existing = await prisma.$queryRaw<{ referralCode: string; referralCount: number }[]>`
@@ -89,9 +89,9 @@ export async function POST(req: NextRequest) {
 
     await prisma.$executeRaw`
       INSERT INTO "GiveawayEntryLsf"
-        ("id","firstName","lastName","email","phone","zip","country","newsletterOptIn","referralCode","referredByCode","referralCount")
+        ("id","firstName","lastName","email","zip","country","newsletterOptIn","referralCode","referredByCode","referralCount")
       VALUES
-        (${randomUUID()}, ${firstName}, ${lastName}, ${email}, ${phone}, ${zip}, ${country}, true, ${code}, ${referredByCode}, 0)`;
+        (${randomUUID()}, ${firstName}, ${lastName}, ${email}, ${zip}, ${country}, true, ${code}, ${referredByCode}, 0)`;
 
     await subscribeToBeehiiv({ email, source: "le-sserafim-giveaway" });
 
