@@ -6,6 +6,7 @@ import FooterNewsletter from "@/components/FooterNewsletter";
 import SocialLinks from "@/components/SocialLinks";
 import OutboundTracker from "@/components/OutboundTracker";
 import HamburgerMenu from "@/components/HamburgerMenu";
+import LiveChatBubble from "@/components/LiveChatBubble";
 import NavSearch from "@/components/NavSearch";
 import { LangProvider, T } from "@/components/LangProvider";
 import { getSession } from "@/lib/auth";
@@ -59,6 +60,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </div>
         </nav>
         {children}
+        {/* Site-wide live chat: read anonymously, verify an email to reply. */}
+        <LiveChatBubble />
         <footer style={{ background: "var(--bg-card)", color: "var(--ink-dim)", marginTop: 80, borderTop: "1px solid var(--border)" }}>
           {/* Newsletter strip */}
           <div style={{ borderBottom: "1px solid var(--border)", padding: "56px 24px 48px" }}>

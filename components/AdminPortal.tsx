@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 type Ann = { id: string; authorName: string; authorSlug: string; songTitle: string; word: string; note: string; status: string; reviewedBy: string | null; reviewedAt: string | null };
 type UserRow = { id: string; email: string; displayName: string | null; role: string };
 type Stats = { approved: number; rejected: number; pending: number; total: number };
+/** A live-chat message that readers reported, or that is already hidden. */
+type ChatRow = { id: string; authorName: string; userId: string; body: string; hidden: boolean; hiddenBy: string | null; reports: number; reasons: string; createdAt: string };
 
 const ROLES = ["contributor", "moderator", "admin", "superadmin"];
 
@@ -24,7 +26,8 @@ export default function AdminPortal({
 }: {
   stats: Stats; pending: Ann[]; recent: Ann[]; users: UserRow[]; canManageRoles: boolean;
 }) {
-  const [tab, setTab] = useState<"queue" | "roles">("queue");
+  const [tab, setTab] = useState<"queue" | "chat" | "roles">("queue");
+  const [chat, setChat] = useState<ChatRow[] | null>(null);
   const [stats, setStats] = useState(stats0);
   const [pending, setPending] = useState(pending0);
   const [recent2, setRecent] = useState(recent);
@@ -48,6 +51,31 @@ export default function AdminPortal({
     else setMsg(d.error === "superadmin_required" ? "Only the Superadmin can change an Admin." : d.error === "owner_locked" ? "The owner account is locked." : d.error ?? "Action failed");
   }
 
+  // The live-chat queue is only fetched when a moderator opens that tab.
+  async function loadChat() {
+    const res = await fetch("/api/chat/report", { cache: "no-store" });
+    const d = await res.json().catch(() => ({}));
+    if (res.ok) setChat((d as { queue?: ChatRow[] }).queue ?? []);
+    else setMsg((d as { error?: string }).error ?? "Couldn't load the chat queue");
+  }
+
+  useEffect(() => {
+    if (tab === "chat" && chat === null) void loadChat();
+  }, [tab, chat]);
+
+  async function actOnChat(row: ChatRow, restore: boolean) {
+    const url = `/api/chat/messages?id=${encodeURIComponent(row.id)}${restore ? "&restore=1" : ""}`;
+    const res = await fetch(url, { method: "DELETE" });
+    if (res.ok) {
+      // A restore clears the reports with it, so the row leaves the queue.
+      setChat((list) =>
+        (list ?? [])
+          .map((r) => (r.id === row.id ? { ...r, hidden: !restore, reports: restore ? 0 : r.reports } : r))
+          .filter((r) => r.hidden || r.reports > 0),
+      );
+    } else setMsg("Action failed");
+  }
+
   const rate = stats.approved + stats.rejected > 0 ? Math.round((stats.approved / (stats.approved + stats.rejected)) * 100) : 0;
   const tabStyle = (active: boolean) => ({ padding: "9px 18px", borderRadius: 100, cursor: "pointer", border: active ? "1px solid var(--sakura)" : "1px solid var(--border)", background: active ? "var(--sakura)" : "var(--bg-card)", color: active ? "var(--on-accent)" : "var(--ink-dim)", fontWeight: 700, fontSize: "0.85rem" });
 
@@ -65,6 +93,9 @@ export default function AdminPortal({
 
       <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
         <button type="button" onClick={() => setTab("queue")} style={tabStyle(tab === "queue")}>Moderation Queue</button>
+        <button type="button" onClick={() => setTab("chat")} style={tabStyle(tab === "chat")}>
+          Live Chat{chat && chat.length > 0 ? ` (${chat.length})` : ""}
+        </button>
         {canManageRoles && <button type="button" onClick={() => setTab("roles")} style={tabStyle(tab === "roles")}>Roles &amp; Permissions</button>}
       </div>
 
@@ -96,6 +127,36 @@ export default function AdminPortal({
                 <span style={{ color: "var(--ink-faint)", fontSize: "0.78rem" }}> · {a.authorName} · {a.songTitle}</span>
               </span>
               <Badge status={a.status} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab === "chat" && (
+        <div>
+          <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.3rem", color: "var(--ink)", margin: "0 0 6px" }}>Reported &amp; hidden messages</h2>
+          <p style={{ color: "var(--ink-faint)", fontSize: "0.82rem", lineHeight: 1.6, margin: "0 0 16px", maxWidth: 620 }}>
+            Three reports from different people hide a message automatically. Confirm the hide by leaving it, or restore it if the room got it wrong — a restore also clears its reports.
+          </p>
+          {chat === null && <div style={{ color: "var(--ink-faint)", fontSize: "0.9rem" }}>Loading…</div>}
+          {chat?.length === 0 && <div style={{ color: "var(--ink-faint)", fontSize: "0.9rem" }}>Nothing reported. The room is behaving.</div>}
+          {chat?.map((r) => (
+            <div key={r.id} style={{ background: "var(--bg-card)", border: `1px solid ${r.hidden ? "rgba(255,107,107,0.4)" : "var(--border)"}`, borderRadius: 12, padding: "14px 16px", marginBottom: 10 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 8 }}>
+                <span style={{ fontWeight: 700, color: "var(--ink)", fontSize: "0.88rem" }}>{r.authorName}</span>
+                <span style={{ fontSize: "0.72rem", color: "var(--ink-faint)", fontFamily: "var(--mono)" }}>
+                  {r.reports} report{r.reports === 1 ? "" : "s"}{r.reasons ? ` · ${r.reasons}` : ""}
+                  {r.hidden ? ` · hidden by ${r.hiddenBy ?? "moderator"}` : ""}
+                </span>
+              </div>
+              <div style={{ color: "var(--ink-dim)", fontSize: "0.9rem", lineHeight: 1.6, marginBottom: 12, overflowWrap: "anywhere" }}>{r.body}</div>
+              <div style={{ display: "flex", gap: 8 }}>
+                {r.hidden ? (
+                  <button type="button" onClick={() => actOnChat(r, true)} style={{ padding: "8px 18px", borderRadius: 8, border: "1px solid #3ecf8e", background: "transparent", color: "#3ecf8e", fontWeight: 800, fontSize: "0.82rem", cursor: "pointer" }}>Restore</button>
+                ) : (
+                  <button type="button" onClick={() => actOnChat(r, false)} style={{ padding: "8px 18px", borderRadius: 8, border: "none", background: "#ff6b6b", color: "#2a0a0a", fontWeight: 800, fontSize: "0.82rem", cursor: "pointer" }}>Hide</button>
+                )}
+              </div>
             </div>
           ))}
         </div>

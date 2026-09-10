@@ -25,6 +25,11 @@ export async function POST(req: NextRequest) {
       email: email.toLowerCase(),
       displayName: displayName?.trim() || email.split("@")[0],
       passwordHash: hashPassword(password),
+      // This form sends no confirmation code, so the flag records "came through
+      // signup" rather than a real round trip. Set true so a new member can use
+      // the live chat right away; the chat's own join flow
+      // (/api/auth/email-code) is what actually proves an address.
+      emailVerified: true,
     },
   });
 
