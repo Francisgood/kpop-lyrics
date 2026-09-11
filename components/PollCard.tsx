@@ -2,7 +2,11 @@
 
 // One-tap poll → instant animated results → profile claim (the "One-Tap K-Pop
 // Polls" PRD, 3-step flow). SSR-hydrated: `initial` comes from the server so the
-// two option cards are tappable on first paint with no client fetch.
+// option cards are tappable on first paint with no client fetch.
+//
+// Polls carry 2–4 options. Two render as a side-by-side pair (the original
+// Yes/No look); three or four stack as full-width rows, because four labels of
+// real length are unreadable in columns on a phone.
 //
 // Undo without a delete endpoint: a tap shows results optimistically but the
 // server commit is DEFERRED 5s; "Undo" cancels the pending commit (nothing was
@@ -13,12 +17,11 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useLang } from "@/components/LangProvider";
 import { trackEvent } from "@/lib/gtag";
-import { LOW_VOLUME_FLOOR, type PollState, type PollCounts, type TimeBucket } from "@/lib/polls";
+import { LOW_VOLUME_FLOOR, ZERO_COUNTS, type OptionKey, type PollState, type PollCounts, type TimeBucket } from "@/lib/polls";
 
 const DEVICE_KEY = "aa_vid";
 const CLAIM_DISMISS_KEY = "aa_claim_dismissed";
-const GREEN = "#22e06b";
-const PINK = "#ff5b8a";
+const COLORS: Record<OptionKey, string> = { a: "#22e06b", b: "#ff5b8a", c: "#4ac8f0", d: "#b8a0ff" };
 
 export default function PollCard({ initial, articlePath }: { initial: PollState; articlePath: string }) {
   const { lang } = useLang();
@@ -26,10 +29,13 @@ export default function PollCard({ initial, articlePath }: { initial: PollState;
   const t = (en: string, e: string) => (es ? e : en);
 
   const q = (es ? initial.questionEs : initial.question) || initial.question;
-  const labelA = (es ? initial.optionAEs : initial.optionA) || initial.optionA;
-  const labelB = (es ? initial.optionBEs : initial.optionB) || initial.optionB;
+  const opts = initial.options;
+  const labelOf = (k: OptionKey) => {
+    const o = opts.find((x) => x.key === k);
+    return (es ? o?.labelEs : o?.label) || o?.label || k.toUpperCase();
+  };
 
-  const [pick, setPick] = useState<"a" | "b" | null>(initial.myVote);
+  const [pick, setPick] = useState<OptionKey | null>(initial.myVote);
   const [committed, setCommitted] = useState<boolean>(initial.myVote !== null);
   const [serverCounts, setServerCounts] = useState<PollCounts>(initial.counts);
   const [phase, setPhase] = useState<"vote" | "results">(initial.myVote !== null || initial.closed ? "results" : "vote");
@@ -44,7 +50,7 @@ export default function PollCard({ initial, articlePath }: { initial: PollState;
   const undoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const deviceId = useRef<string | null>(null);
 
-  const commit = useCallback((opt: "a" | "b") => {
+  const commit = useCallback((opt: OptionKey) => {
     fetch(`/api/polls/${initial.slug}/vote`, {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ option: opt, deviceId: deviceId.current ?? undefined }),
@@ -73,13 +79,14 @@ export default function PollCard({ initial, articlePath }: { initial: PollState;
       .then((d) => {
         if (!d?.ok) return;
         if (d.deviceToken) { try { localStorage.setItem(DEVICE_KEY, d.deviceToken); } catch {} deviceId.current = d.deviceToken; }
-        if (d.poll?.myVote === "a" || d.poll?.myVote === "b") { setPick(d.poll.myVote); setCommitted(true); setPhase("results"); }
+        const mine = d.poll?.myVote as OptionKey | null | undefined;
+        if (mine && opts.some((o) => o.key === mine)) { setPick(mine); setCommitted(true); setPhase("results"); }
         if (d.poll?.counts) setServerCounts(d.poll.counts);
       })
       .catch(() => {});
-  }, [initial.slug, initial.myVote]);
+  }, [initial.slug, initial.myVote]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const vote = (opt: "a" | "b") => {
+  const vote = (opt: OptionKey) => {
     if (pick || initial.closed) return;
     setPick(opt); setPhase("results"); setError(null);
     setUndoLeft(5);
@@ -118,17 +125,31 @@ export default function PollCard({ initial, articlePath }: { initial: PollState;
   useEffect(() => { try { setClaimDismissed(localStorage.getItem(CLAIM_DISMISS_KEY) === "1"); } catch {} }, []);
 
   // Optimistic display: server counts + a pending +1 on the not-yet-committed pick.
+  const base = serverCounts ?? ZERO_COUNTS;
   const display: PollCounts = pick && !committed
-    ? { a: serverCounts.a + (pick === "a" ? 1 : 0), b: serverCounts.b + (pick === "b" ? 1 : 0), total: serverCounts.total + 1 }
-    : serverCounts;
+    ? { ...base, [pick]: base[pick] + 1, total: base.total + 1 }
+    : base;
   const total = display.total;
-  const aPct = total ? Math.round((display.a / total) * 100) : 50;
-  const bPct = 100 - aPct;
+  // Percentages are floored then the remainder is handed to the largest option, so
+  // the rows always add up to exactly 100 instead of 99 or 101.
+  const pcts = (() => {
+    const out = {} as Record<OptionKey, number>;
+    if (!total) { for (const o of opts) out[o.key] = Math.round(100 / opts.length); return out; }
+    let used = 0; let biggest = opts[0].key;
+    for (const o of opts) {
+      out[o.key] = Math.floor((display[o.key] / total) * 100);
+      used += out[o.key];
+      if (display[o.key] > display[biggest]) biggest = o.key;
+    }
+    out[biggest] += 100 - used;
+    return out;
+  })();
   const showPct = total >= LOW_VOLUME_FLOOR;
+  const stacked = opts.length > 2;
 
   const share = async () => {
     const url = `https://www.aegyoarena.com${articlePath}`;
-    const text = showPct ? `${q}\n${aPct}% ${labelA} · ${bPct}% ${labelB}` : q;
+    const text = showPct ? `${q}\n${opts.map((o) => `${pcts[o.key]}% ${labelOf(o.key)}`).join(" · ")}` : q;
     trackEvent("poll_share", { poll_id: initial.slug });
     try {
       if (typeof navigator !== "undefined" && navigator.share) await navigator.share({ title: q, text, url });
@@ -137,6 +158,8 @@ export default function PollCard({ initial, articlePath }: { initial: PollState;
   };
 
   const nf = (n: number) => n.toLocaleString(es ? "es-MX" : "en-US");
+  const votesLabel = (n: number) => `${nf(n)} ${n === 1 ? t("vote", "voto") : t("votes", "votos")}`;
+  const allTied = total > 0 && opts.every((o) => display[o.key] === display[opts[0].key]);
 
   return (
     <div style={{ marginTop: 34 }}>
@@ -155,30 +178,43 @@ export default function PollCard({ initial, articlePath }: { initial: PollState;
         {phase === "vote" && !initial.closed ? (
           /* ── Step 1: one-tap vote ── */
           <>
-            <div style={{ display: "flex", gap: 10 }}>
-              {([["a", labelA, GREEN], ["b", labelB, PINK]] as const).map(([opt, label, color]) => (
-                <button key={opt} onClick={() => vote(opt)} className="aa-opt"
-                  style={{ flex: 1, minHeight: 92, borderRadius: 14, border: `1px solid ${color}55`, background: `${color}14`, color, fontWeight: 800, fontSize: "1.15rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 12, WebkitTapHighlightColor: "transparent" }}>
-                  {label}
-                </button>
-              ))}
+            <div style={{ display: stacked ? "grid" : "flex", gap: stacked ? 8 : 10 }}>
+              {opts.map((o) => {
+                const color = COLORS[o.key];
+                return (
+                  <button key={o.key} onClick={() => vote(o.key)} className="aa-opt"
+                    style={{
+                      flex: stacked ? undefined : 1,
+                      width: "100%",
+                      minHeight: stacked ? 54 : 92,
+                      borderRadius: stacked ? 12 : 14,
+                      border: `1px solid ${color}55`, background: `${color}14`, color,
+                      fontWeight: 800, fontSize: stacked ? "0.95rem" : "1.15rem",
+                      lineHeight: 1.3, cursor: "pointer", display: "flex", alignItems: "center",
+                      justifyContent: stacked ? "flex-start" : "center", textAlign: stacked ? "left" : "center",
+                      padding: stacked ? "12px 14px" : 12, WebkitTapHighlightColor: "transparent",
+                    }}>
+                    {label(stacked, o.key)}{labelOf(o.key)}
+                  </button>
+                );
+              })}
             </div>
             <div style={{ textAlign: "center", marginTop: 10, fontSize: "0.78rem", color: "var(--ink-faint,#8a8194)" }}>
-              {total > 0 ? `${nf(total)} ${t("votes", "votos")} · ${t("tap to vote — no account needed", "toca para votar — sin cuenta")}` : t("Be the first to vote — one tap, no account", "Sé la primera en votar — un toque, sin cuenta")}
+              {total > 0 ? `${votesLabel(total)} · ${t("tap to vote — no account needed", "toca para votar — sin cuenta")}` : t("Be the first to vote — one tap, no account", "Sé la primera en votar — un toque, sin cuenta")}
             </div>
           </>
         ) : (
           /* ── Step 2: results ── */
           <>
-            {[["a", labelA, GREEN, display.a, aPct], ["b", labelB, PINK, display.b, bPct]].map((row) => {
-              const [opt, label, color, count, pct] = row as [("a" | "b"), string, string, number, number];
-              const mine = pick === opt;
+            {opts.map((o) => {
+              const color = COLORS[o.key];
+              const mine = pick === o.key;
               return (
-                <div key={opt} style={{ position: "relative", marginBottom: 10, borderRadius: 12, overflow: "hidden", border: mine ? `1px solid ${color}` : "1px solid #241d30", background: "#1a1526", minHeight: 46 }}>
-                  <div className="aa-bar-fill" style={{ position: "absolute", inset: 0, width: showPct ? `${pct}%` : "0%", background: `${color}${mine ? "33" : "1f"}` }} />
-                  <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", fontWeight: 700 }}>
-                    <span style={{ color, display: "flex", alignItems: "center", gap: 7 }}>{mine && <span aria-label="your pick">✓</span>}{label}</span>
-                    <span style={{ color: "var(--ink,#fff)", fontVariantNumeric: "tabular-nums" }}>{showPct ? `${pct}%` : nf(count)}</span>
+                <div key={o.key} style={{ position: "relative", marginBottom: 10, borderRadius: 12, overflow: "hidden", border: mine ? `1px solid ${color}` : "1px solid #241d30", background: "#1a1526", minHeight: 46 }}>
+                  <div className="aa-bar-fill" style={{ position: "absolute", inset: 0, width: showPct ? `${pcts[o.key]}%` : "0%", background: `${color}${mine ? "33" : "1f"}` }} />
+                  <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "12px 14px", fontWeight: 700 }}>
+                    <span style={{ color, display: "flex", alignItems: "center", gap: 7, lineHeight: 1.3 }}>{mine && <span aria-label="your pick">✓</span>}{labelOf(o.key)}</span>
+                    <span style={{ color: "var(--ink,#fff)", fontVariantNumeric: "tabular-nums", flexShrink: 0 }}>{showPct ? `${pcts[o.key]}%` : nf(display[o.key])}</span>
                   </div>
                 </div>
               );
@@ -186,15 +222,15 @@ export default function PollCard({ initial, articlePath }: { initial: PollState;
 
             <div style={{ fontSize: "0.76rem", color: "var(--ink-faint,#8a8194)", margin: "4px 0 2px" }}>
               {showPct
-                ? `${nf(total)} ${t("votes", "votos")}${total > 0 && display.a === display.b ? ` · ${t("dead even", "empate")}` : ""}`
-                : `${t("Early voting…", "Votación temprana…")} · ${nf(total)} ${t("votes so far", "votos hasta ahora")}`}
+                ? `${votesLabel(total)}${allTied ? ` · ${t("dead even", "empate")}` : ""}`
+                : `${t("Early voting…", "Votación temprana…")} · ${votesLabel(total)} ${t("so far", "hasta ahora")}`}
             </div>
 
             {/* results-over-time sparkline */}
             {buckets && buckets.length >= 2 && (
               <div style={{ marginTop: 12 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                  <span style={{ fontSize: "0.62rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-faint,#8a8194)" }}>{t("Split over time", "División en el tiempo")} · {labelA}</span>
+                  <span style={{ fontSize: "0.62rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-faint,#8a8194)" }}>{t("Share over time", "Proporción en el tiempo")} · {labelOf(opts[0].key)}</span>
                   <span style={{ display: "flex", gap: 4 }}>
                     {(["24h", "all"] as const).map((w) => (
                       <button key={w} onClick={() => setChartWindow(w)} style={{ fontSize: "0.6rem", padding: "2px 7px", borderRadius: 99, cursor: "pointer", border: "1px solid #2a2333", background: chartWindow === w ? "#2a2333" : "transparent", color: chartWindow === w ? "var(--ink,#fff)" : "var(--ink-faint,#8a8194)" }}>{w === "24h" ? "24h" : t("All", "Todo")}</button>
@@ -244,10 +280,12 @@ export default function PollCard({ initial, articlePath }: { initial: PollState;
       </div>
 
       {/* Undo toast — insurance for fat-fingers; the vote commits when it expires */}
-      {undoLeft > 0 && (
+      {undoLeft > 0 && pick && (
         <div role="status" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginTop: 8, padding: "9px 14px", borderRadius: 99, background: "#000", border: "1px solid #2a2333" }}>
-          <span style={{ fontSize: "0.8rem", color: "var(--ink,#fff)" }}>{t("Voted", "Votaste")} <b style={{ color: pick === "a" ? GREEN : PINK }}>{pick === "a" ? labelA : labelB}</b></span>
-          <button onClick={undo} style={{ background: "none", border: "none", color: "#ff6fa8", fontWeight: 800, fontSize: "0.8rem", cursor: "pointer" }}>{t("Undo", "Deshacer")} ({undoLeft})</button>
+          <span style={{ fontSize: "0.8rem", color: "var(--ink,#fff)", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {t("Voted", "Votaste")} <b style={{ color: COLORS[pick] }}>{labelOf(pick)}</b>
+          </span>
+          <button onClick={undo} style={{ background: "none", border: "none", color: "#ff6fa8", fontWeight: 800, fontSize: "0.8rem", cursor: "pointer", flexShrink: 0 }}>{t("Undo", "Deshacer")} ({undoLeft})</button>
         </div>
       )}
 
@@ -256,17 +294,27 @@ export default function PollCard({ initial, articlePath }: { initial: PollState;
   );
 }
 
-// Purpose-built ~1KB sparkline of the cumulative option-A share over time.
+/** A/B/C/D prefix, shown only on the stacked (3–4 option) layout. */
+function label(stacked: boolean, key: OptionKey) {
+  if (!stacked) return null;
+  return <span style={{ opacity: 0.55, marginRight: 9, fontVariantNumeric: "tabular-nums" }}>{key.toUpperCase()}</span>;
+}
+
+// Purpose-built ~1KB sparkline of the cumulative first-option share over time.
 function Sparkline({ buckets }: { buckets: TimeBucket[] }) {
   if (buckets.length < 2) return null;
-  let ca = 0, cb = 0;
-  const pts = buckets.map((bk) => { ca += bk.a; cb += bk.b; const tot = ca + cb; return tot ? ca / tot : 0.5; });
+  let ca = 0, rest = 0;
+  const pts = buckets.map((bk) => {
+    ca += bk.a; rest += bk.b + bk.c + bk.d;
+    const tot = ca + rest;
+    return tot ? ca / tot : 0.5;
+  });
   const W = 260, H = 44;
   const coords = pts.map((p, i) => `${((i / (pts.length - 1)) * W).toFixed(1)},${(H - p * H).toFixed(1)}`).join(" ");
   return (
     <svg viewBox={`0 0 ${W} ${H}`} width="100%" height={44} preserveAspectRatio="none" aria-hidden="true" style={{ display: "block" }}>
       <line x1="0" y1={H / 2} x2={W} y2={H / 2} stroke="#2a2333" strokeWidth="1" strokeDasharray="3 3" />
-      <polyline points={coords} fill="none" stroke={GREEN} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+      <polyline points={coords} fill="none" stroke={COLORS.a} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   );
 }

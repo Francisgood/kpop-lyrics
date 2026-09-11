@@ -6,7 +6,7 @@
 // the "use client" PollCard) — it uses prisma + node crypto.
 import { randomUUID, createHash } from "crypto";
 import { prisma } from "@/lib/prisma";
-import type { PollSeed, PollState, PollCounts, TimeBucket } from "@/lib/polls";
+import { OPTION_KEYS, ZERO_COUNTS, type OptionKey, type PollSeed, type PollState, type PollCounts, type TimeBucket } from "@/lib/polls";
 
 let tablesReady = false;
 
@@ -41,15 +41,24 @@ export async function ensurePollTables() {
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "PollVote_poll_voter_idx"   ON "PollVote" ("pollSlug","voterRef")`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "PollVote_poll_created_idx" ON "PollVote" ("pollSlug","createdAt")`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "PollVote_ip_created_idx"   ON "PollVote" ("ipHash","createdAt")`);
+  // Polls grew from A/B to up to four options; the extra labels are added
+  // additively so existing two-option polls keep working with them left NULL.
+  for (const col of ["optionC", "optionCEs", "optionD", "optionDEs"]) {
+    await prisma.$executeRawUnsafe(`ALTER TABLE "Poll" ADD COLUMN IF NOT EXISTS "${col}" TEXT`);
+  }
   tablesReady = true;
 }
 
 // Upsert the poll row from its config seed (labels/daebak may be edited in config).
 export async function seedPoll(s: PollSeed) {
+  const label = (k: OptionKey) => s.options.find((o) => o.key === k)?.label ?? null;
+  const labelEs = (k: OptionKey) => s.options.find((o) => o.key === k)?.labelEs ?? null;
   await prisma.$executeRaw`
-    INSERT INTO "Poll" ("slug","question","questionEs","optionA","optionB","optionAEs","optionBEs","daebakUrl","closeAt")
-    VALUES (${s.slug}, ${s.question}, ${s.questionEs}, ${s.optionA}, ${s.optionB}, ${s.optionAEs}, ${s.optionBEs}, ${s.daebakUrl ?? null},
-            ${s.closeAt ? new Date(s.closeAt) : null})
+    INSERT INTO "Poll" ("slug","question","questionEs","optionA","optionB","optionAEs","optionBEs","optionC","optionCEs","optionD","optionDEs","daebakUrl","closeAt")
+    VALUES (${s.slug}, ${s.question}, ${s.questionEs},
+            ${label("a") ?? "Yes"}, ${label("b") ?? "No"}, ${labelEs("a")}, ${labelEs("b")},
+            ${label("c")}, ${labelEs("c")}, ${label("d")}, ${labelEs("d")},
+            ${s.daebakUrl ?? null}, ${s.closeAt ? new Date(s.closeAt) : null})
     ON CONFLICT ("slug") DO UPDATE SET
       "question"   = EXCLUDED."question",
       "questionEs" = EXCLUDED."questionEs",
@@ -57,6 +66,10 @@ export async function seedPoll(s: PollSeed) {
       "optionB"    = EXCLUDED."optionB",
       "optionAEs"  = EXCLUDED."optionAEs",
       "optionBEs"  = EXCLUDED."optionBEs",
+      "optionC"    = EXCLUDED."optionC",
+      "optionCEs"  = EXCLUDED."optionCEs",
+      "optionD"    = EXCLUDED."optionD",
+      "optionDEs"  = EXCLUDED."optionDEs",
       "daebakUrl"  = EXCLUDED."daebakUrl",
       "closeAt"    = EXCLUDED."closeAt"`;
 }
@@ -68,18 +81,22 @@ export async function getCounts(slug: string): Promise<PollCounts> {
     SELECT "option", COUNT(*)::int AS c FROM "PollVote"
     WHERE "pollSlug" = ${slug} AND ("flags" IS NULL OR "flags" NOT LIKE '%dup%')
     GROUP BY "option"`;
-  let a = 0, b = 0;
-  for (const r of rows) { if (r.option === "a") a = Number(r.c); else if (r.option === "b") b = Number(r.c); }
-  return { a, b, total: a + b };
+  const counts: PollCounts = { ...ZERO_COUNTS };
+  for (const r of rows) {
+    const k = r.option as OptionKey;
+    if (OPTION_KEYS.includes(k)) counts[k] = Number(r.c);
+  }
+  counts.total = OPTION_KEYS.reduce((n, k) => n + counts[k], 0);
+  return counts;
 }
 
-export async function getMyVote(slug: string, voterRef: string): Promise<"a" | "b" | null> {
+export async function getMyVote(slug: string, voterRef: string): Promise<OptionKey | null> {
   const rows = await prisma.$queryRaw<{ option: string }[]>`
     SELECT "option" FROM "PollVote"
     WHERE "pollSlug" = ${slug} AND "voterRef" = ${voterRef} AND ("flags" IS NULL OR "flags" NOT LIKE '%dup%')
     ORDER BY "createdAt" ASC LIMIT 1`;
-  const o = rows[0]?.option;
-  return o === "a" || o === "b" ? o : null;
+  const o = rows[0]?.option as OptionKey | undefined;
+  return o && OPTION_KEYS.includes(o) ? o : null;
 }
 
 type Poll = { slug: string; policy: string; closeAt: Date | null };
@@ -100,13 +117,13 @@ export async function getPollState(
   const voterRef = opts.userId ?? opts.deviceToken ?? null;
   const [counts, myVote] = await Promise.all([
     getCounts(seed.slug),
-    voterRef ? getMyVote(seed.slug, voterRef) : Promise.resolve<"a" | "b" | null>(null),
+    voterRef ? getMyVote(seed.slug, voterRef) : Promise.resolve<OptionKey | null>(null),
   ]);
   const closeAt = poll?.closeAt ?? null;
   return {
     slug: seed.slug,
     question: seed.question, questionEs: seed.questionEs,
-    optionA: seed.optionA, optionB: seed.optionB, optionAEs: seed.optionAEs, optionBEs: seed.optionBEs,
+    options: seed.options,
     daebakUrl: seed.daebakUrl,
     counts, myVote,
     closed: !!closeAt && closeAt.getTime() < Date.now(),
@@ -118,9 +135,9 @@ export async function getPollState(
 // Idempotent per (poll, voterRef): a repeat vote returns the original pick rather
 // than double-counting — webview retries and double-taps are safe.
 export async function castVote(
-  slug: string, option: "a" | "b",
+  slug: string, option: OptionKey,
   ctx: { voterRef: string; voterType: "device" | "profile"; ipHash?: string | null; source?: string | null; flags?: string | null },
-): Promise<"a" | "b"> {
+): Promise<OptionKey> {
   await ensurePollTables();
   const existing = await getMyVote(slug, ctx.voterRef);
   if (existing) return existing;
@@ -139,8 +156,9 @@ export async function getTimeseries(slug: string): Promise<TimeBucket[]> {
   const buckets = new Map<string, TimeBucket>();
   for (const r of rows) {
     const key = new Date(r.t).toISOString();
-    const bucket = buckets.get(key) ?? { t: key, a: 0, b: 0 };
-    if (r.option === "a") bucket.a = Number(r.c); else if (r.option === "b") bucket.b = Number(r.c);
+    const bucket = buckets.get(key) ?? { t: key, a: 0, b: 0, c: 0, d: 0 };
+    const k = r.option as OptionKey;
+    if (OPTION_KEYS.includes(k)) bucket[k] = Number(r.c);
     buckets.set(key, bucket);
   }
   return [...buckets.values()];

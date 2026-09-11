@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { getPollSeed } from "@/lib/polls";
+import { getPollSeed, optionOf, type OptionKey } from "@/lib/polls";
 import { castVote, getCounts, checkIpRate, hashIp, newDeviceToken } from "@/lib/polls-db";
 
 export const dynamic = "force-dynamic";
@@ -13,13 +13,20 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
   const seed = getPollSeed(slug);
   if (!seed) return NextResponse.json({ error: "Unknown poll" }, { status: 404 });
 
+  // The ledger key is the POLL id, never the article slug the caller happened to
+  // use — several articles carry the same poll and must feed one tally.
+  const pollId = seed.slug;
+
   const body = await req.json().catch(() => ({}));
-  const option = body?.option === "a" ? "a" : body?.option === "b" ? "b" : null;
-  if (!option) return NextResponse.json({ error: "option must be 'a' or 'b'" }, { status: 400 });
+  const raw = typeof body?.option === "string" ? body.option : "";
+  const option = optionOf(seed, raw) ? (raw as OptionKey) : null;
+  if (!option) {
+    return NextResponse.json({ error: `option must be one of: ${seed.options.map((o) => o.key).join(", ")}` }, { status: 400 });
+  }
 
   // Closed polls are read-only.
   if (seed.closeAt && new Date(seed.closeAt).getTime() < Date.now()) {
-    return NextResponse.json({ ok: false, closed: true, counts: await getCounts(slug) });
+    return NextResponse.json({ ok: false, closed: true, counts: await getCounts(pollId) });
   }
 
   const session = await getSession();
@@ -41,12 +48,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
   if (!(await checkIpRate(ipHash))) flags.push("rl");
 
   try {
-    const myVote = await castVote(slug, option, {
+    const myVote = await castVote(pollId, option, {
       voterRef, voterType, ipHash,
       source: req.headers.get("referer"),
       flags: flags.length ? flags.join(" ") : null,
     });
-    const counts = await getCounts(slug);
+    const counts = await getCounts(pollId);
     const res = NextResponse.json({ ok: true, myVote, counts, deviceToken });
     if (setToken) res.cookies.set("aa_vid", setToken, { httpOnly: true, sameSite: "lax", maxAge: 60 * 60 * 24 * 365, path: "/" });
     return res;
