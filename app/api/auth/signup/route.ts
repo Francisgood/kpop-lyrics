@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { sharedAuthEnabled } from "@/lib/shared-auth/config";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, generateToken } from "@/lib/auth";
 import { subscribeToBeehiiv } from "@/lib/beehiiv";
 
 export async function POST(req: NextRequest) {
+  if (sharedAuthEnabled()) return NextResponse.json({ error: "Shared sign-in required", redirect: "/api/auth/shared/login" }, { status: 409 });
   const { email, password, displayName, subscribe } = await req.json().catch(() => ({})) as {
     email?: string; password?: string; displayName?: string; subscribe?: boolean;
   };

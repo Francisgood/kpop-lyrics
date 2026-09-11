@@ -29,7 +29,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
     return NextResponse.json({ ok: false, closed: true, counts: await getCounts(pollId) });
   }
 
-  const session = await getSession();
+  const session = await getSession({ sensitive: true });
   const userId = session?.user.id ?? null;
   let deviceToken = req.cookies.get("aa_vid")?.value ?? (typeof body?.deviceId === "string" ? body.deviceId : null);
   let setToken: string | null = null;

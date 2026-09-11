@@ -46,6 +46,10 @@ export default function SignupPage() {
         body: JSON.stringify({ email, password, displayName, subscribe }),
       });
       const data = await res.json();
+      if (res.status === 409 && typeof data.redirect === "string") {
+        window.location.assign(data.redirect);
+        return;
+      }
       if (!res.ok) { setError(err(data.error ?? "Signup failed")); return; }
       trackAccountCreated();
       const next = new URLSearchParams(window.location.search).get("next");

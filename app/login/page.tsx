@@ -42,6 +42,10 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
+      if (res.status === 409 && typeof data.redirect === "string") {
+        window.location.assign(data.redirect);
+        return;
+      }
       if (!res.ok) { setError(err(data.error ?? "Login failed")); return; }
       trackLoginSuccess();
       const next = new URLSearchParams(window.location.search).get("next");
@@ -91,7 +95,7 @@ export default function LoginPage() {
             </div>
 
             <div style={{ textAlign: "right", marginTop: -4 }}>
-              <Link href="/forgot-password" style={{ fontSize: "0.8rem", color: "var(--sakura)", fontWeight: 600, textDecoration: "none" }}>
+              <Link href="/api/auth/recovery" style={{ fontSize: "0.8rem", color: "var(--sakura)", fontWeight: 600, textDecoration: "none" }}>
                 <T en="Forgot my password?" es="¿Olvidaste tu contraseña?" />
               </Link>
             </div>

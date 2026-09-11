@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { sharedAuthEnabled } from "@/lib/shared-auth/config";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, hashResetCode } from "@/lib/auth";
 
@@ -7,6 +8,7 @@ export const dynamic = "force-dynamic";
 const INVALID = "That code is invalid or has expired. Please request a new one.";
 
 export async function POST(req: NextRequest) {
+  if (sharedAuthEnabled()) return NextResponse.json({ error: "Shared sign-in required", redirect: "/api/auth/shared/login" }, { status: 409 });
   try {
     const b = await req.json().catch(() => ({}));
     const email = String(b?.email ?? "").trim().toLowerCase();

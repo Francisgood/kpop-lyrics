@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 // Approve/reject an annotation. Server-enforced: requires Moderator+ (spec §5.1).
 export async function POST(req: NextRequest) {
   try {
-    const session = await getSession();
+    const session = await getSession({ sensitive: true });
     if (!session) return NextResponse.json({ error: "auth_required" }, { status: 401 });
     const role = await getRole(session.user);
     const body = await req.json().catch(() => ({}));

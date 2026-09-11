@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 // the Superadmin may act on an existing Admin or grant the Superadmin role.
 export async function POST(req: NextRequest) {
   try {
-    const session = await getSession();
+    const session = await getSession({ sensitive: true });
     if (!session) return NextResponse.json({ error: "auth_required" }, { status: 401 });
     const actorRole = await getRole(session.user);
     if (rankOf(actorRole) < RANK.admin) return NextResponse.json({ error: "forbidden" }, { status: 403 });

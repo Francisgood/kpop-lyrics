@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { sharedAuthEnabled } from "@/lib/shared-auth/config";
 import { prisma } from "@/lib/prisma";
 import { hashResetCode } from "@/lib/auth";
 import { sendMail } from "@/lib/email";
@@ -23,6 +24,7 @@ async function ensureTable() {
 }
 
 export async function POST(req: NextRequest) {
+  if (sharedAuthEnabled()) return NextResponse.json({ error: "Shared sign-in required", redirect: "/api/auth/shared/login" }, { status: 409 });
   try {
     await ensureTable();
     const email = String((await req.json().catch(() => ({})))?.email ?? "").trim().toLowerCase();
