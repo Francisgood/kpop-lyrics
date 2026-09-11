@@ -1,6 +1,6 @@
 # Shared Accounts adapter
 
-The adapter is disabled unless `AEGYO_SHARED_AUTH_ENABLED=true` and every setting below is valid. With the flag off, existing login, signup, password reset, cookie, session lookup, roles, and user-owned data behave as before.
+Authentication mode depends on both `AEGYO_SHARED_AUTH_ENABLED` and the durable database latch. Before activation, flag-off preserves the existing login, signup, password reset, cookie, session, role, and user-data behavior. Flag-on remains unavailable until the latch exists and configuration is valid. After activation, only valid flag-on shared auth works; flag-off or invalid configuration fails closed and never reactivates legacy passwords or sessions.
 
 ## Provider contract
 
@@ -16,26 +16,28 @@ Set `AEGYO_AUTH_BASE_URL`, `AEGYO_APP_ORIGIN`, `AEGYO_AUTH_CLIENT_ID`, `AEGYO_AU
 
 ## Migration and mapping gate
 
-Apply `prisma/migrations/20260911200000_add_shared_auth/migration.sql` through the normal reviewed deployment before enabling the flag. It only adds `SharedAuthIdentity` and nullable provider metadata to `Session`; existing local user IDs, roles, relations, and legacy sessions remain intact.
+Apply `prisma/migrations/20260911200000_add_shared_auth/migration.sql` through the reviewed deployment process before enabling the flag. It adds `SharedAuthIdentity`, nullable provider metadata to `Session`, and an initially empty `AuthCutoverLatch`. Existing local user IDs, roles, relations, hashes, and session rows remain intact.
 
 Import mappings explicitly with stable local IDs. Each row contains a local `userId`, the exact issuer (`${AEGYO_AUTH_BASE_URL}/api/auth`), and Accounts `subject`. Both `userId` and `(issuer, subject)` are unique. Reconcile and review conflicts before insertion. The callback never queries or maps by email and never creates a user. Any future reviewed provisioning job must store the exported `EXTERNAL_PASSWORD_SENTINEL` in `passwordHash`; normal password hashing cannot produce it. An unmapped subject, including one whose email matches an existing user, receives `account_not_mapped` and no session.
 
-## Cutover and forward recovery
+## Cutover and recovery
 
-Before enabling, prove mappings against a synthetic database, register the exact callback, and verify provider state reader credentials. With the flag on, legacy login/signup/forgot/reset endpoints stop before credential reads or writes. Login submissions and the stable `/api/auth/recovery` entry continue into `/api/auth/shared/login`, so Accounts sign-in owns the visible recovery path. Signup remains closed until reviewed unmapped-user provisioning exists. Legacy `Session` rows are retained for rollback and preserve all user data, but rows without shared provider metadata are not authorized after flag-on. Cutover therefore forces existing users through Accounts sign-in; rehearse that real-user UX before rollout and never silently promote legacy sessions. Shared sessions retain the `session` cookie and `getSession()` shape expected by current consumers. Ordinary reads cache provider state for at most 30 seconds; authenticated writes always check Accounts and fail closed during outage.
+Before activation, prove the mappings, register the exact callback, verify provider-state reader credentials, freeze legacy credential writes operationally, and rehearse the forced sign-in UX. Activation keeps old rows for audit and data integrity, but legacy sessions lack provider metadata and are never authorized afterward. They are not a rollback mechanism.
 
-After any real user transitions, disabling the flag is unsafe: it would reactivate legacy password hashes and sessions that Accounts resets cannot revoke. Production acceptance therefore requires a durable legacy-auth cutoff plus a rehearsed forward-recovery procedure. Until that exists, treat flag-on as irreversible for transitioned users and do not enable production shared auth. The additive schema may remain during an incident; never restore access through old hashes or legacy session rows.
+With shared mode active, legacy login, signup, forgot, and reset endpoints stop before credential reads or writes. Login submissions and `/api/auth/recovery` continue into Accounts sign-in, where Accounts owns password recovery. Signup remains closed until reviewed unmapped-user provisioning exists. Shared sessions retain the `session` cookie and `getSession()` shape expected by current consumers. Ordinary reads cache provider state for at most 30 seconds; authenticated writes always check Accounts and fail closed during outage.
 
-The rollout still needs a final UX pass to label Accounts sign-in and recovery directly rather than relying on the compatibility redirects. This does not block protocol or mapping proof.
+The remaining rollout gates are provider client registration and secrets, a reconciled mapping import and digest, migration-history review, real browser and recovery rehearsal, and a final UX pass that labels Accounts sign-in and recovery directly.
 
-### Irreversible activation latch
+## Irreversible activation latch
 
-After the mapping import is reconciled and legacy credential writes are frozen, an operator activates cutover once with an audited mapping digest:
+After every gate above passes, an operator runs this idempotent procedure with the lowercase SHA-256 digest of the reviewed mapping manifest:
 
 ```sql
 INSERT INTO "AuthCutoverLatch" ("id", "mappingDigest")
-VALUES ('accounts-shared-auth-v1', '<sha256-of-reviewed-mapping-manifest>')
+VALUES ('accounts-shared-auth-v1', '<64-lowercase-hex-digest>')
 ON CONFLICT ("id") DO NOTHING;
 ```
 
-The application only reads this row and has no route that creates, updates, or deletes it. Before the row exists, flag-off uses legacy auth and flag-on stays unavailable. After it exists, valid flag-on configuration uses shared auth; flag-off, malformed configuration, and database lookup failure all fail closed with a recoverable unavailable response. Never delete this row.
+“Operator-only” describes the deployment procedure; this migration does not create or assign database roles. The application only reads the latch and exposes no create, update, delete, truncate, or reset route. Database constraints allow only the fixed ID and a 64-character lowercase hexadecimal digest. Triggers reject ordinary update, delete, and truncate statements. A privileged schema owner can deliberately remove or disable those DDL guards, so production database privileges and change review remain part of the control.
+
+Before the row exists, flag-off uses legacy auth and flag-on stays unavailable. After it exists, valid flag-on configuration uses shared auth; flag-off, malformed configuration, and database lookup failure return a recoverable unavailable response. Never delete or alter the row, and never restore access through old hashes or legacy session rows.
