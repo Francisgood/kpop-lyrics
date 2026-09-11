@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { T, LangToggle } from "@/components/LangProvider";
 import ArcadeCTA from "@/components/ArcadeCTA";
+import EventRegisterForm from "@/components/EventRegisterForm";
 import { HOSTED_EVENTS, hostedEventBySlug, hostedEventUrl, type HostedEvent } from "@/lib/hosted-events";
 
 export const revalidate = 3600;
@@ -112,6 +113,11 @@ export default async function HostedEventPage({ params }: { params: Promise<{ sl
             <h1 style={{ fontFamily: "var(--sans)", fontSize: "clamp(1.8rem, 4.6vw, 3.1rem)", fontWeight: 900, letterSpacing: "-0.028em", lineHeight: 1.05, color: "#fff", margin: 0, maxWidth: 880, textShadow: "0 2px 26px rgba(0,0,0,.5)" }}>
               <T en={e.title} es={e.titleEs} />
             </h1>
+            {e.registration && (
+              <a href="#register" className="ev-btn ev-btn-primary" style={{ display: "inline-block", marginTop: 16, padding: "12px 26px" }}>
+                <T en="Register to attend" es="Regístrate para asistir" />
+              </a>
+            )}
           </div>
         </div>
         <div style={{ position: "absolute", bottom: 6, right: 12, fontSize: ".58rem", color: "rgba(255,255,255,.45)" }}>{e.coverCredit}</div>
@@ -168,11 +174,17 @@ export default async function HostedEventPage({ params }: { params: Promise<{ sl
             <div style={{ position: "sticky", top: 20, border: "1px solid var(--border)", borderRadius: 8, padding: 20, background: "var(--bg-card)" }}>
               <Detail label={<T en="When" es="Cuándo" />} value={<><T en={longDate(e.startsAt, "en")} es={longDate(e.startsAt, "es")} /><br /><T en={e.timeText} es={e.timeTextEs} /></>} />
               <Detail label={<T en="Where" es="Dónde" />} value={<>{e.venue}<br /><span style={{ color: "var(--ink-faint)" }}>{e.address}</span></>} />
-              <Detail label={<T en="Price" es="Precio" />} value={e.free ? <T en="Free — no ticket needed" es="Gratis — sin entrada" /> : <T en="See listing" es="Ver listado" />} />
+              <Detail label={<T en="Price" es="Precio" />} value={e.free ? (e.registration ? <T en="Free — registration required" es="Gratis — registro obligatorio" /> : <T en="Free — no ticket needed" es="Gratis — sin entrada" />) : <T en="See listing" es="Ver listado" />} />
               <Detail label={<T en="City" es="Ciudad" />} value={<Link href={`/cities/${e.citySlug}`} style={{ color: "var(--sakura)", fontWeight: 700, textDecoration: "none" }}>{e.city} <T en="city guide →" es="guía de la ciudad →" /></Link>} />
 
-              <div style={{ display: "grid", gap: 9, marginTop: 18 }}>
-                <a className="ev-btn ev-btn-primary" href={calendarUrl(e)} target="_blank" rel="noopener noreferrer">
+              {e.registration && (
+                <div id="register" style={{ marginTop: 16, marginBottom: 4, scrollMarginTop: 20 }}>
+                  <EventRegisterForm slug={e.slug} />
+                </div>
+              )}
+
+              <div style={{ display: "grid", gap: 9, marginTop: 16 }}>
+                <a className="ev-btn ev-btn-ghost" href={calendarUrl(e)} target="_blank" rel="noopener noreferrer">
                   <T en="Add to calendar" es="Añadir al calendario" />
                 </a>
                 <a className="ev-btn ev-btn-ghost" href={mapsUrl} target="_blank" rel="noopener noreferrer">
