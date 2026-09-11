@@ -6,18 +6,29 @@
 set -eu
 
 container="aegyo-shared-auth-proof-$$"
+container_created=0
 cleanup() {
-  docker stop "$container" >/dev/null 2>&1 || true
+  if [ "$container_created" -eq 1 ]; then
+    docker stop "$container" >/dev/null 2>&1 || true
+  fi
 }
 trap cleanup EXIT INT TERM
 
 docker run --rm -d \
   --name "$container" \
+  --network none \
   -e POSTGRES_PASSWORD=proof \
   -e POSTGRES_DB=proof \
   postgres:16-alpine >/dev/null
+container_created=1
 
+attempt=0
 until docker exec "$container" pg_isready -U postgres -d proof >/dev/null 2>&1; do
+  attempt=$((attempt + 1))
+  if [ "$attempt" -ge 30 ]; then
+    echo "disposable PostgreSQL did not become ready within 30 seconds" >&2
+    exit 1
+  fi
   sleep 1
 done
 
