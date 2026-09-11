@@ -15,3 +15,10 @@ ADD COLUMN "authenticatedAt" TIMESTAMP(3),
 ADD COLUMN "providerCheckedAt" TIMESTAMP(3),
 ADD COLUMN "securityVersion" INTEGER,
 ADD COLUMN "passwordResetAt" TIMESTAMP(3);
+
+CREATE TABLE "AuthCutoverLatch" (
+  "id" TEXT NOT NULL,
+  "activatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "mappingDigest" TEXT NOT NULL,
+  CONSTRAINT "AuthCutoverLatch_pkey" PRIMARY KEY ("id")
+);

@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { cookies } from "next/headers";
 import crypto from "crypto";
-import { getSharedAuthConfig, sharedAuthEnabled } from "@/lib/shared-auth/config";
+import { resolveAuthMode } from "@/lib/shared-auth/mode";
 import { authorizeSharedSession } from "@/lib/shared-auth/session";
 
 export function hashPassword(password: string): string {
@@ -20,10 +20,10 @@ export async function getSession(options: { sensitive?: boolean } = {}) {
   const cookieStore = await cookies();
   const token = cookieStore.get("session")?.value;
   if (!token) return null;
-  if (sharedAuthEnabled()) {
-    const sharedConfig = getSharedAuthConfig();
-    if (!sharedConfig) return null;
-    const result = await authorizeSharedSession(token, sharedConfig, { sensitive: options.sensitive === true });
+  const mode = await resolveAuthMode();
+  if (mode.kind === "closed") return null;
+  if (mode.kind === "shared") {
+    const result = await authorizeSharedSession(token, mode.config, { sensitive: options.sensitive === true });
     return result.kind === "allowed" ? result.session : null;
   }
   const session = await prisma.session.findUnique({

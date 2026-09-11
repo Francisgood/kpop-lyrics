@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({ findUser: vi.fn(), createUser: vi.fn(), createSession: vi.fn() }));
+vi.mock("../lib/shared-auth/mode", () => ({ resolveAuthMode: vi.fn(async () => ({ kind: "shared", config: {} })) }));
 vi.mock("../lib/prisma", () => ({ prisma: { user:{ findUnique:mocks.findUser, create:mocks.createUser }, session:{ create:mocks.createSession } } }));
 import { POST as login } from "../app/api/auth/login/route";
 import { POST as signup } from "../app/api/auth/signup/route";

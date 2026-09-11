@@ -4,6 +4,8 @@ const sql = readFileSync(new URL("../prisma/migrations/20260911200000_add_shared
 describe("additive shared-auth migration", () => {
  it("keeps User IDs and owned data untouched while adding an explicit one-to-one mapping", () => {
   expect(sql).toContain('CREATE TABLE "SharedAuthIdentity"');
+  expect(sql).toContain('CREATE TABLE "AuthCutoverLatch"');
+  expect(sql).not.toContain('INSERT INTO "AuthCutoverLatch"');
   expect(sql).toContain('UNIQUE INDEX "SharedAuthIdentity_userId_key"');
   expect(sql).toContain('UNIQUE INDEX "SharedAuthIdentity_issuer_subject_key"');
   expect(sql).not.toMatch(/ALTER TABLE "User"/);

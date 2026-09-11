@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSharedAuthConfig } from "@/lib/shared-auth/config";
+import { resolveAuthMode } from "@/lib/shared-auth/mode";
 import { authorizationRedirect, clearTransaction, setSessionCookie, TX_COOKIE } from "@/lib/shared-auth/http";
 import { finishAuthorization } from "@/lib/shared-auth/provider";
 import { fetchProviderSecurityState } from "@/lib/shared-auth/security-state";
@@ -10,7 +10,7 @@ import { canonicalRequestUrl } from "@/lib/shared-auth/request-url";
 function fail(code: string, status = 400) { const response = NextResponse.json({ code }, { status }); clearTransaction(response); return response; }
 function resetMatches(claim: unknown, current: ResetState) { if (!claim || typeof claim !== "object" || Array.isArray(claim)) return false; const value = claim as Record<string, unknown>; return value.version === 1 && value.kind === "database" && value.lastPasswordReset === current.lastPasswordReset; }
 export async function GET(request: NextRequest) {
-  const config = getSharedAuthConfig(); if (!config) return NextResponse.json({ code: "not_found" }, { status: 404 });
+  const mode = await resolveAuthMode(); if (mode.kind !== "shared") return NextResponse.json({ code: mode.kind === "legacy" ? "not_found" : "service_unavailable" }, { status: mode.kind === "legacy" ? 404 : 503 }); const config = mode.config;
   const callbackUrl = canonicalRequestUrl(request, config.appOrigin); if (!callbackUrl || callbackUrl.origin !== config.appOrigin || callbackUrl.pathname !== "/api/auth/shared/callback") return fail("invalid_callback_url");
   const tx = openTransaction(request.cookies.get(TX_COOKIE)?.value, config.transactionSecret); if (!tx) return fail("invalid_authorization_transaction");
   try {

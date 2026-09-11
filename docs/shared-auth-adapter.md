@@ -27,3 +27,15 @@ Before enabling, prove mappings against a synthetic database, register the exact
 After any real user transitions, disabling the flag is unsafe: it would reactivate legacy password hashes and sessions that Accounts resets cannot revoke. Production acceptance therefore requires a durable legacy-auth cutoff plus a rehearsed forward-recovery procedure. Until that exists, treat flag-on as irreversible for transitioned users and do not enable production shared auth. The additive schema may remain during an incident; never restore access through old hashes or legacy session rows.
 
 The rollout still needs a final UX pass to label Accounts sign-in and recovery directly rather than relying on the compatibility redirects. This does not block protocol or mapping proof.
+
+### Irreversible activation latch
+
+After the mapping import is reconciled and legacy credential writes are frozen, an operator activates cutover once with an audited mapping digest:
+
+```sql
+INSERT INTO "AuthCutoverLatch" ("id", "mappingDigest")
+VALUES ('accounts-shared-auth-v1', '<sha256-of-reviewed-mapping-manifest>')
+ON CONFLICT ("id") DO NOTHING;
+```
+
+The application only reads this row and has no route that creates, updates, or deletes it. Before the row exists, flag-off uses legacy auth and flag-on stays unavailable. After it exists, valid flag-on configuration uses shared auth; flag-off, malformed configuration, and database lookup failure all fail closed with a recoverable unavailable response. Never delete this row.

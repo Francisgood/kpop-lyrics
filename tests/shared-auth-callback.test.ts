@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest, NextResponse } from "next/server";
 import { sealTransaction } from "../lib/shared-auth/transaction";
 const mocks = vi.hoisted(() => ({ finish: vi.fn(), state: vi.fn(), create: vi.fn(), redirect: vi.fn() }));
+vi.mock("../lib/shared-auth/mode", () => ({ resolveAuthMode: vi.fn(async () => ({ kind: "shared", config: { providerBaseUrl: "https://accounts.example.test", issuer: "https://accounts.example.test/api/auth", clientId: "aegyo", clientSecret: "secret", appOrigin: "https://aegyo.example.test", transactionSecret: "x".repeat(32), stateReaderKey: "reader" } })) }));
 vi.mock("../lib/shared-auth/provider", () => ({ finishAuthorization: mocks.finish }));
 vi.mock("../lib/shared-auth/security-state", () => ({ fetchProviderSecurityState: mocks.state }));
 vi.mock("../lib/shared-auth/session", () => ({ createMappedSession: mocks.create }));

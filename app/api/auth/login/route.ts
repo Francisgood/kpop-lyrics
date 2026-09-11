@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sharedAuthEnabled } from "@/lib/shared-auth/config";
+import { resolveAuthMode } from "@/lib/shared-auth/mode";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, generateToken } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
-  if (sharedAuthEnabled()) return NextResponse.json({ error: "Shared sign-in required", redirect: "/api/auth/shared/login" }, { status: 409 });
+  const authMode = await resolveAuthMode();
+  if (authMode.kind === "closed") return NextResponse.json({ error: "Sign-in is temporarily unavailable" }, { status: 503 });
+  if (authMode.kind === "shared") return NextResponse.json({ error: "Shared sign-in required", redirect: "/api/auth/shared/login" }, { status: 409 });
   const { email, password } = await req.json().catch(() => ({})) as {
     email?: string; password?: string;
   };

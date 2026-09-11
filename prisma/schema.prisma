@@ -215,3 +215,10 @@ model SharedAuthIdentity {
 
   @@unique([issuer, subject])
 }
+
+
+model AuthCutoverLatch {
+  id          String   @id
+  activatedAt DateTime @default(now())
+  mappingDigest String
+}
