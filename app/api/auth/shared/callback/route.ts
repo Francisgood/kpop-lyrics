@@ -159,10 +159,10 @@ export async function GET(request: NextRequest) {
       );
     if (error instanceof Error && error.message === "local_email_collision")
       return provisioningFailure(
-        "existing_account_requires_import_mapping",
+        "existing_account_needs_support",
         409,
         "Your existing Aegyo account needs linking",
-        "This email already belongs to an Aegyo account. Ask support to import its Accounts mapping; no account data was changed.",
+        "This email already belongs to an Aegyo account. Contact Aegyo support to restore access to your existing account. No account data was changed.",
       );
     return fail("authorization_failed");
   }

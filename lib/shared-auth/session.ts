@@ -82,11 +82,12 @@ export async function createSharedSession(input: SessionInput) {
 
       const email = normalizedVerifiedEmail(input);
       if (!email) throw new Error("verified_email_required");
-      const collision = await tx.user.findFirst({
-        where: { email: { equals: email, mode: "insensitive" } },
-        select: { id: true },
-      });
-      if (collision) throw new Error("local_email_collision");
+      const collisions = await tx.$queryRaw<Array<{ id: string }>>`
+        SELECT "id" FROM "User"
+        WHERE lower(btrim("email")) = ${email}
+        LIMIT 1
+      `;
+      if (collisions.length > 0) throw new Error("local_email_collision");
       const user = await tx.user.create({
         data: {
           email,

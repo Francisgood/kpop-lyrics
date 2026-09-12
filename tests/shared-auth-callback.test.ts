@@ -206,7 +206,11 @@ describe("shared callback", () => {
     const collision = await GET(request());
     expect(collision.status).toBe(409);
     expect(collision.headers.get("content-type")).toContain("text/html");
-    expect(await collision.text()).toContain("import its Accounts mapping");
+    const collisionPage = await collision.text();
+    expect(collisionPage).toContain(
+      "Contact Aegyo support to restore access",
+    );
+    expect(collisionPage).not.toContain("mapping");
     mocks.create.mockRejectedValueOnce(new Error("verified_email_required"));
     const unverified = await GET(request());
     expect(unverified.status).toBe(403);

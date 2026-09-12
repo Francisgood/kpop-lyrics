@@ -81,13 +81,16 @@ describe.runIf(enabled)("shared provisioning on disposable PostgreSQL", () => {
 
   it("leaves a mixed-case legacy email and its lack of mapping unchanged", async () => {
     const id = `legacy-${randomUUID()}`;
-    const email = `Legacy-${randomUUID()}@Example.Invalid`;
+    const canonicalEmail = `Legacy-${randomUUID()}@Example.Invalid`;
+    const email = `  ${canonicalEmail}  `;
     await prisma.$executeRaw`
       INSERT INTO "User" ("id", "email", "passwordHash", "role")
       VALUES (${id}, ${email}, ${"a".repeat(64)}, 'moderator')
     `;
     await expect(
-      createSharedSession(input(`legacy-sub-${randomUUID()}`, email.toLowerCase())),
+      createSharedSession(
+        input(`legacy-sub-${randomUUID()}`, canonicalEmail.toLowerCase()),
+      ),
     ).rejects.toThrow("local_email_collision");
     const rows = await prisma.$queryRaw<
       Array<{ email: string; passwordHash: string; role: string }>

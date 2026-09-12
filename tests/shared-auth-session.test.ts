@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
   identity: vi.fn(),
-  email: vi.fn(),
+  queryRaw: vi.fn(),
   create: vi.fn(),
   createUser: vi.fn(),
   transaction: vi.fn(),
@@ -49,7 +49,8 @@ beforeEach(() => {
   mocks.transaction.mockImplementation((fn) =>
     fn({
       sharedAuthIdentity: { findUnique: mocks.identity },
-      user: { findFirst: mocks.email, create: mocks.createUser },
+      user: { create: mocks.createUser },
+      $queryRaw: mocks.queryRaw,
       session: { create: mocks.create },
     }),
   );
@@ -75,7 +76,7 @@ describe("mapped local identity and sessions", () => {
       securityVersion: 1,
       resetState: reset,
     });
-    expect(mocks.email).not.toHaveBeenCalled();
+    expect(mocks.queryRaw).not.toHaveBeenCalled();
     expect(mocks.create).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({ userId: "stable-user-7" }),
@@ -85,7 +86,7 @@ describe("mapped local identity and sessions", () => {
   });
   it("refuses an existing normalized local email without claiming it", async () => {
     mocks.identity.mockResolvedValue(null);
-    mocks.email.mockResolvedValue({ id: "must-not-claim" });
+    mocks.queryRaw.mockResolvedValue([{ id: "must-not-claim" }]);
     await expect(
       createSharedSession({
         issuer: config.issuer,
@@ -100,17 +101,12 @@ describe("mapped local identity and sessions", () => {
         resetState: reset,
       }),
     ).rejects.toThrow("local_email_collision");
-    expect(mocks.email).toHaveBeenCalledWith({
-      where: {
-        email: { equals: "same@example.test", mode: "insensitive" },
-      },
-      select: { id: true },
-    });
+    expect(mocks.queryRaw).toHaveBeenCalledOnce();
     expect(mocks.create).not.toHaveBeenCalled();
   });
   it("creates and maps one new user from a verified provider email without newsletter side effects", async () => {
     mocks.identity.mockResolvedValue(null);
-    mocks.email.mockResolvedValue(null);
+    mocks.queryRaw.mockResolvedValue([]);
     mocks.createUser.mockResolvedValue({ id: "new-local" });
     mocks.create.mockImplementation(({ data }) =>
       Promise.resolve({ id: "session", ...data }),
@@ -161,14 +157,14 @@ describe("mapped local identity and sessions", () => {
         }),
       ).rejects.toThrow("verified_email_required");
     }
-    expect(mocks.email).not.toHaveBeenCalled();
+    expect(mocks.queryRaw).not.toHaveBeenCalled();
     expect(mocks.createUser).not.toHaveBeenCalled();
   });
   it("resolves a same-subject provisioning race through the winning explicit mapping", async () => {
     mocks.identity
       .mockResolvedValueOnce(null)
       .mockResolvedValueOnce({ userId: "race-winner" });
-    mocks.email.mockResolvedValue(null);
+    mocks.queryRaw.mockResolvedValue([]);
     mocks.createUser.mockRejectedValue({ code: "P2002" });
     mocks.create.mockImplementation(({ data }) =>
       Promise.resolve({ id: "session", ...data }),
@@ -191,7 +187,7 @@ describe("mapped local identity and sessions", () => {
   });
   it("does not convert a different-subject email race into a mapping", async () => {
     mocks.identity.mockResolvedValue(null);
-    mocks.email.mockResolvedValue(null);
+    mocks.queryRaw.mockResolvedValue([]);
     mocks.createUser.mockRejectedValue({ code: "P2002" });
     await expect(
       createSharedSession({
