@@ -67,3 +67,31 @@ fi
 DATABASE_URL="postgresql://postgres:proof@127.0.0.1:$port/proof" \
   AEGYO_PROVISIONING_POSTGRES_PROOF=1 \
   npx vitest run tests/shared-auth-provisioning-postgres.test.ts
+
+docker exec "$container" createdb -U postgres aegyo_synthetic_staging
+AEGYO_STAGING_CONFIRM=initialize-empty-synthetic-staging-database \
+  AEGYO_STAGING_DATABASE_URL="postgresql://postgres:proof@127.0.0.1:$port/aegyo_synthetic_staging" \
+  AEGYO_STAGING_DATABASE_NAME=aegyo_synthetic_staging \
+  AEGYO_AUTH_BASE_URL=https://accounts-staging.example.test \
+  AEGYO_STAGING_FIXTURE=staging/fixtures.example.json \
+  node scripts/staging/initialize-synthetic.mjs >/dev/null
+if AEGYO_STAGING_CONFIRM=initialize-empty-synthetic-staging-database \
+  AEGYO_STAGING_DATABASE_URL="postgresql://postgres:proof@127.0.0.1:$port/aegyo_synthetic_staging" \
+  AEGYO_STAGING_DATABASE_NAME=aegyo_synthetic_staging \
+  AEGYO_AUTH_BASE_URL=https://accounts-staging.example.test \
+  AEGYO_STAGING_FIXTURE=staging/fixtures.example.json \
+  node scripts/staging/initialize-synthetic.mjs >/dev/null 2>&1; then
+  echo "synthetic staging initializer unexpectedly accepted a non-empty database" >&2
+  exit 1
+fi
+
+initialized=$(docker exec "$container" psql -X -P pager=off -At -U postgres -d aegyo_synthetic_staging -c \
+  "SELECT
+    (SELECT count(*) FROM \"User\" WHERE id='staging-existing-local-user' AND role='moderator'),
+    (SELECT count(*) FROM \"SharedAuthIdentity\" WHERE subject='8bd36a4e-8a7b-4d61-b28c-22e285f8730f'),
+    (SELECT count(*) FROM \"SharedAuthIdentity\" WHERE subject='5b3d3e59-fe9c-487a-ac44-eedb0b2c3743'),
+    (SELECT count(*) FROM \"AuthCutoverLatch\");")
+if [ "$initialized" != "1|1|0|1" ]; then
+  echo "synthetic staging initialization failed: $initialized" >&2
+  exit 1
+fi

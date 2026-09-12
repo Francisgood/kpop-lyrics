@@ -1,0 +1,15 @@
+**
+!app/**
+!components/**
+!lib/**
+!scripts/fetch-images.ts
+!public/**
+!prisma/schema.prisma
+!package.json
+!staging/package-lock.json
+!instrumentation.ts
+!middleware.ts
+!next-env.d.ts
+!next.config.ts
+!postcss.config.mjs
+!tsconfig.json

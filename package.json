@@ -19,6 +19,7 @@
     "auth:production-schema-proof": "./tests/shared-auth-production-schema-proof.sh",
     "auth:provisioning-postgres-proof": "./tests/shared-auth-provisioning-postgres-proof.sh",
     "auth:install-mappings": "node scripts/shared-auth/install-mappings.mjs",
+    "staging:init-synthetic": "node scripts/staging/initialize-synthetic.mjs",
     "test": "vitest run"
   },
   "dependencies": {
