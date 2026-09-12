@@ -7,7 +7,7 @@ ENV NEXT_TELEMETRY_DISABLED=1 \
     DATABASE_URL=postgresql://build:build@127.0.0.1:5432/build \
     AEGYO_SHARED_AUTH_ENABLED=false
 COPY package.json staging/package-lock.json ./
-RUN --mount=type=cache,target=/root/.npm \
+RUN --mount=type=cache,id=aegyo-staging-npm-v1,target=/root/.npm \
     npm ci --ignore-scripts --no-audit --no-fund
 COPY prisma/schema.prisma prisma/schema.prisma
 RUN ./node_modules/.bin/prisma generate
