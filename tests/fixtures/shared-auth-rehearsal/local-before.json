@@ -2,24 +2,28 @@
   "version": 1,
   "users": [
     {
-      "id": "local-user-1",
-      "role": "moderator",
+      "id": "synthetic-local-owner",
+      "role": "admin",
       "linkedRecords": {
-        "Favorite": ["fav-1"],
-        "Comment": ["comment-1"],
-        "SuggestedEdit": ["edit-1"],
-        "PollVote": ["poll-vote-1"],
-        "Follow": ["follow-1"]
+        "Favorite": ["synthetic-favorite"],
+        "Comment": [],
+        "SuggestedEdit": [],
+        "PointEvent": ["synthetic-points"],
+        "PollVote": [],
+        "SlangVote": [],
+        "Follow": ["synthetic-follow"]
       }
     },
     {
-      "id": "local-user-2",
-      "role": "contributor",
+      "id": "synthetic-local-member",
+      "role": "user",
       "linkedRecords": {
-        "Favorite": ["fav-2"],
+        "Favorite": [],
         "Comment": [],
         "SuggestedEdit": [],
+        "PointEvent": [],
         "PollVote": [],
+        "SlangVote": [],
         "Follow": []
       }
     }

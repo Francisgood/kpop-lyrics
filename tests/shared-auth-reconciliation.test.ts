@@ -24,12 +24,12 @@ describe("shared-auth reconciliation manifest", () => {
     expect(second).toEqual(first);
     expect(first.mappingDigest).toMatch(/^[0-9a-f]{64}$/);
     expect(first.mappingDigest).toBe(
-      "6c22019fc896ee476f5ae087e8f57295ef26819a2e4d84c7a1bc62c1a3cd3873",
+      "4cc7d1c32d9317b5ac4045515c4b4d15557db7bf1e771467c42c10febdb7c7c9",
     );
     expect(canonicalJson(first)).not.toMatch(/email/i);
     expect(
       first.rows.map((row: { localUserId: string }) => row.localUserId),
-    ).toEqual(["local-user-1", "local-user-2"]);
+    ).toEqual(["synthetic-local-member", "synthetic-local-owner"]);
   });
   it.each([
     [
@@ -48,7 +48,7 @@ describe("shared-auth reconciliation manifest", () => {
         version: 1,
         pairs: [
           mapping().pairs[0],
-          { ...mapping().pairs[0], subject: "opaque-accounts-subject-a" },
+          { ...mapping().pairs[0], subject: "opaque-subject-member" },
         ],
       }),
     ],
@@ -58,7 +58,10 @@ describe("shared-auth reconciliation manifest", () => {
         version: 1,
         pairs: [
           mapping().pairs[0],
-          { localUserId: "local-user-2", subject: mapping().pairs[0].subject },
+          {
+            localUserId: "synthetic-local-member",
+            subject: mapping().pairs[0].subject,
+          },
         ],
       }),
     ],
@@ -68,7 +71,7 @@ describe("shared-auth reconciliation manifest", () => {
         version: 1,
         pairs: [
           mapping().pairs[0],
-          { localUserId: "local-user-2", subject: "not-exported" },
+          { localUserId: "synthetic-local-member", subject: "not-exported" },
         ],
       }),
     ],

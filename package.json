@@ -16,6 +16,7 @@
     "giveaway:chainlink:draw": "node scripts/giveaway/chainlink/run-draw.mjs",
     "test:giveaway": "node --test scripts/giveaway/*.test.mjs scripts/giveaway/chainlink/*.test.mjs",
     "auth:reconcile": "node scripts/shared-auth/reconcile.mjs",
+    "auth:production-schema-proof": "./tests/shared-auth-production-schema-proof.sh",
     "test": "vitest run"
   },
   "dependencies": {

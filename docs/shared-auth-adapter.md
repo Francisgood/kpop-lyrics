@@ -39,6 +39,18 @@ Email fields are rejected at every input depth. Accounts currently has no dedica
 
 The local snapshot must cover Prisma-owned `Favorite`, `Comment`, and `SuggestedEdit` IDs plus runtime-owned records keyed by the user, including `SlangVote`, profile `PollVote`, and `Follow`, when those tables exist. The before/after digest fails if a user ID, raw role, or linked record owner changes. `reviewed-manifest.json` is created with mode `0600` and exclusive-create semantics. Its `mappingDigest` is SHA-256 over canonical JSON of the manifest core, excluding the digest field itself; use that exact lowercase 64-hex value for latch activation.
 
+### Production-schema rehearsal
+
+A schema-only production dump can be rehearsed without copying any production rows:
+
+```sh
+npm run auth:production-schema-proof -- /absolute/path/to/schema-only.sql
+```
+
+The runner requires an explicit absolute file, rejects dumps containing `COPY`, `INSERT`, database creation, or database switching, and never reads `DATABASE_URL`. It streams the schema through stdin into a uniquely named PostgreSQL 18 container with `--network none`, no host mounts, bounded startup, and cleanup on exit. The committed synthetic fixture then exercises actual non-null/default columns and verifies stable user IDs, 64-hex password hashes, raw role, `is_owner`, profile/reward fields, legacy sessions, favorites, points, follows, explicit issuer/subject mappings, migration checksum journaling, latch digest constraints, and rejected latch update/delete/truncate operations.
+
+This is a production-schema rehearsal with synthetic data, not a production-data restore. Keep the schema dump and generated manifests private and ignored. The historical checked-in SQLite-style migration chain remains untouched; the restored catalog and migration history still require operator review before applying the additive migration to any remote database.
+
 ## Cutover and recovery
 
 Before activation, prove the mappings, register the exact callback, verify provider-state reader credentials, freeze legacy credential writes operationally, and rehearse the forced sign-in UX. Activation keeps old rows for audit and data integrity, but legacy sessions lack provider metadata and are never authorized afterward. They are not a rollback mechanism.
