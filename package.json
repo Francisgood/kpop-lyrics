@@ -17,6 +17,7 @@
     "test:giveaway": "node --test scripts/giveaway/*.test.mjs scripts/giveaway/chainlink/*.test.mjs",
     "auth:reconcile": "node scripts/shared-auth/reconcile.mjs",
     "auth:production-schema-proof": "./tests/shared-auth-production-schema-proof.sh",
+    "auth:backup-restore-proof": "./tests/shared-auth-backup-restore-proof.sh",
     "auth:provisioning-postgres-proof": "./tests/shared-auth-provisioning-postgres-proof.sh",
     "auth:install-mappings": "node scripts/shared-auth/install-mappings.mjs",
     "staging:init-synthetic": "node scripts/staging/initialize-synthetic.mjs",

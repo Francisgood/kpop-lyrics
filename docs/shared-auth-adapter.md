@@ -91,6 +91,19 @@ The runner requires an explicit absolute file, rejects dumps containing `COPY`, 
 
 This is a production-schema rehearsal with synthetic data, not a production-data restore. Keep the schema dump and generated manifests private and ignored. The historical checked-in SQLite-style migration chain remains untouched; the restored catalog and migration history still require operator review before applying the additive migration to any remote database.
 
+### Synthetic backup/restore and activation rehearsal
+
+Run the executable end-to-end local rehearsal with its explicit synthetic-data confirmation:
+
+```sh
+AEGYO_SYNTHETIC_RESTORE_CONFIRM=disposable-synthetic-backup-restore \
+  npm run auth:backup-restore-proof
+```
+
+The runner refuses inherited database URLs, creates a uniquely named PostgreSQL 18 container whose random port is bound only to loopback, and removes its private `.proof` workspace and container on every exit. It creates synthetic legacy users, profiles, password hashes, sessions, a reset, and every linked-record category used by reconciliation. It takes an actual custom-format `pg_dump`, restores it into a new database, compares database-derived ownership snapshots, applies the exact additive migration, and invokes the real reconciliation and mapping operator CLIs through apply, status and separate activation. A final database-derived snapshot proves IDs, roles and linked ownership remain unchanged; direct SQL assertions cover the legacy credential/session/reset values and every dependent record. A second restored database contains a conflicting mapping and proves the real apply command fails without inserting another mapping or latch.
+
+This proves the Aegyo backup/restore and mapping side with synthetic data only. It does not copy Accounts users, establish the external writer freeze, exercise email or authorize any remote database. During a real rehearsal the freeze must span the final source snapshot, Accounts import, mapping apply/status, activation and final ownership snapshot because activation itself verifies user IDs, roles and exact mappings but does not recompute linked-record digests.
+
 ## Cutover and recovery
 
 Before activation, prove the mappings, register the exact callback, verify provider-state reader credentials, freeze legacy credential writes operationally, and rehearse the forced sign-in UX. Activation keeps old rows for audit and data integrity, but legacy sessions lack provider metadata and are never authorized afterward. They are not a rollback mechanism.
