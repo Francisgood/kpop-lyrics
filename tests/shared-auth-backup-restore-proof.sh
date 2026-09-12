@@ -63,6 +63,18 @@ CREATE TABLE "PointEvent" (id TEXT PRIMARY KEY, "userId" TEXT NOT NULL REFERENCE
 CREATE TABLE "PollVote" (id TEXT PRIMARY KEY, "userId" TEXT NOT NULL REFERENCES "User"(id), choice TEXT NOT NULL);
 CREATE TABLE "SlangVote" (id TEXT PRIMARY KEY, "userId" TEXT NOT NULL REFERENCES "User"(id), value INTEGER NOT NULL);
 CREATE TABLE "Follow" (id TEXT PRIMARY KEY, "followerId" TEXT NOT NULL REFERENCES "User"(id), "targetSlug" TEXT NOT NULL);
+CREATE TABLE "EventRegistration" (
+  id TEXT PRIMARY KEY, "eventSlug" TEXT NOT NULL, name TEXT NOT NULL,
+  email TEXT NOT NULL, "optIn" BOOLEAN NOT NULL DEFAULT false,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE "CommunityAnnotation" (
+  id TEXT PRIMARY KEY, "authorSlug" TEXT NOT NULL, "authorName" TEXT NOT NULL,
+  "songTitle" TEXT NOT NULL, "songSlug" TEXT, "lineIndex" INTEGER,
+  word TEXT NOT NULL, romanization TEXT NOT NULL, note TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending', "reviewedBy" TEXT,
+  "reviewedAt" TIMESTAMP, "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
 INSERT INTO "User" (id,email,"displayName","avatarUrl",bio,"passwordHash","emailVerified",role) VALUES
  ('synthetic-local-member','member@example.invalid','Synthetic Member','/member.png','member profile',repeat('a',64),true,'user'),
@@ -79,7 +91,36 @@ INSERT INTO "PointEvent" VALUES ('synthetic-points','synthetic-local-owner',17);
 INSERT INTO "PollVote" VALUES ('synthetic-poll-vote','synthetic-local-owner','yes');
 INSERT INTO "SlangVote" VALUES ('synthetic-slang-vote','synthetic-local-owner',1);
 INSERT INTO "Follow" VALUES ('synthetic-follow','synthetic-local-owner','synthetic-target');
+INSERT INTO "EventRegistration" (id,"eventSlug",name,email,"optIn")
+VALUES ('synthetic-event-registration','synthetic-event','Synthetic Attendee','attendee@example.invalid',true);
+INSERT INTO "CommunityAnnotation" (id,"authorSlug","authorName","songTitle","songSlug","lineIndex",word,romanization,note,status,"reviewedBy","reviewedAt")
+VALUES ('u-synthetic-annotation','synthetic-owner','Synthetic Owner','Synthetic Song','synthetic-song',3,'proof','peulipeu','preserve annotation','approved','Synthetic Moderator',CURRENT_TIMESTAMP);
 SQL
+
+entire_row_snapshot() {
+  database=$1
+  output=$2
+  docker exec -i "$container" psql -X -P pager=off -At -v ON_ERROR_STOP=1 \
+    -U postgres -d "$database" <<'SQL' >"$output"
+SELECT jsonb_build_object(
+  'User', (SELECT jsonb_agg(to_jsonb(r) ORDER BY r.id) FROM (SELECT id,email,"displayName","avatarUrl",bio,"passwordHash","emailVerified","createdAt",role FROM "User") r),
+  'Session', (SELECT jsonb_agg(to_jsonb(r) ORDER BY r.id) FROM (SELECT id,"userId",token,"expiresAt","createdAt" FROM "Session") r),
+  'PasswordReset', (SELECT jsonb_agg(to_jsonb(r) ORDER BY r.id) FROM (SELECT id,email,token,"expiresAt",used,"createdAt" FROM "PasswordReset") r),
+  'Favorite', (SELECT jsonb_agg(to_jsonb(r) ORDER BY r.id) FROM (SELECT id,"userId","entityType","entityId" FROM "Favorite") r),
+  'Comment', (SELECT jsonb_agg(to_jsonb(r) ORDER BY r.id) FROM (SELECT id,"userId",body FROM "Comment") r),
+  'SuggestedEdit', (SELECT jsonb_agg(to_jsonb(r) ORDER BY r.id) FROM (SELECT id,"userId",payload FROM "SuggestedEdit") r),
+  'PointEvent', (SELECT jsonb_agg(to_jsonb(r) ORDER BY r.id) FROM (SELECT id,"userId",points FROM "PointEvent") r),
+  'PollVote', (SELECT jsonb_agg(to_jsonb(r) ORDER BY r.id) FROM (SELECT id,"userId",choice FROM "PollVote") r),
+  'SlangVote', (SELECT jsonb_agg(to_jsonb(r) ORDER BY r.id) FROM (SELECT id,"userId",value FROM "SlangVote") r),
+  'Follow', (SELECT jsonb_agg(to_jsonb(r) ORDER BY r.id) FROM (SELECT id,"followerId","targetSlug" FROM "Follow") r),
+  'EventRegistration', (SELECT jsonb_agg(to_jsonb(r) ORDER BY r.id) FROM (SELECT id,"eventSlug",name,email,"optIn","createdAt" FROM "EventRegistration") r),
+  'CommunityAnnotation', (SELECT jsonb_agg(to_jsonb(r) ORDER BY r.id) FROM (SELECT id,"authorSlug","authorName","songTitle","songSlug","lineIndex",word,romanization,note,status,"reviewedBy","reviewedAt","createdAt" FROM "CommunityAnnotation") r)
+);
+SQL
+  chmod 600 "$output"
+}
+
+entire_row_snapshot aegyo_synthetic_source "$proof_dir/rows-before-backup.json"
 
 # The backup never leaves the disposable container and contains synthetic rows only.
 docker exec "$container" pg_dump -U postgres -d aegyo_synthetic_source \
@@ -155,6 +196,8 @@ mapping_cli activate activate-reviewed-shared-auth-cutover >/dev/null
 status=$(mapping_cli status)
 case "$status" in *'"active":true'*) ;; *) echo "mapping status is not active" >&2; exit 1;; esac
 
+entire_row_snapshot aegyo_synthetic_restored "$proof_dir/rows-after-activation.json"
+cmp "$proof_dir/rows-before-backup.json" "$proof_dir/rows-after-activation.json"
 snapshot aegyo_synthetic_restored "$proof_dir/local-after.json"
 node scripts/shared-auth/reconcile.mjs \
   "$proof_dir/local-before.json" "$proof_dir/accounts.json" \
@@ -176,9 +219,11 @@ preserved=$(docker exec "$container" psql -X -P pager=off -At -U postgres \
   (SELECT count(*) FROM \"SuggestedEdit\"), (SELECT count(*) FROM \"PointEvent\"),
   (SELECT count(*) FROM \"PollVote\"), (SELECT count(*) FROM \"SlangVote\"),
   (SELECT count(*) FROM \"Follow\"),
+  (SELECT count(*) FROM \"EventRegistration\"),
+  (SELECT count(*) FROM \"CommunityAnnotation\"),
   (SELECT count(*) FROM \"SharedAuthIdentity\" WHERE issuer='https://accounts.example.test/api/auth'),
   (SELECT count(*) FROM \"AuthCutoverLatch\" WHERE \"mappingDigest\"='$digest');")
-if [ "$preserved" != "2|2|1|1|1|1|1|1|1|1|2|1" ]; then
+if [ "$preserved" != "2|2|1|1|1|1|1|1|1|1|1|1|2|1" ]; then
   echo "backup/restore preservation failed: $preserved" >&2
   exit 1
 fi
