@@ -14,6 +14,14 @@ Register this confidential OIDC client with Accounts:
 
 Set `AEGYO_AUTH_BASE_URL`, `AEGYO_APP_ORIGIN`, `AEGYO_AUTH_CLIENT_ID`, `AEGYO_AUTH_CLIENT_SECRET`, `AEGYO_AUTH_TRANSACTION_SECRET` (at least 32 characters), and the separate `AEGYO_AUTH_STATE_READER_KEY`. Accounts must expose authenticated `POST /api/internal/session-state` with the contract used by Arcade.
 
+## Provider request and retry boundary
+
+Discovery, token, JWKS and authenticated session-state requests use same-origin HTTPS only, reject redirects, time out after five seconds and cap streamed responses at one MiB. Discovery also rejects authorization/token/JWKS endpoints outside the configured Accounts origin. Failed discovery is evicted; a changed client secret uses a new configuration cache entry.
+
+The callback converts only the maintained OIDC client's `auth_time` timestamp failure into the one permitted interactive `max_age=0` retry. Expired tokens and other verification failures do not take that path; a failed retry cannot loop or mint a local session. Session reuse preserves the five-second forward clock-skew allowance while keeping reset and operator cutoffs strict. Security-state responses must match the requested subject and provider session ID.
+
+September 12 validation: all 39 tests across 10 files and the explicit TypeScript check passed under Node 24.21.0. Network tests use controlled responses with the real OIDC discovery client; callback tests isolate application persistence. They do not replace the real three-origin browser acceptance gate. The installed Next 15 package has no bundled `dist/docs`; route conventions were checked against the [official route-handler reference](https://nextjs.org/docs/app/api-reference/file-conventions/route).
+
 ## Migration and mapping gate
 
 Apply `prisma/migrations/20260911200000_add_shared_auth/migration.sql` through a separate reviewed migration step before enabling the flag. The current Railway build and start overrides do not run `prisma migrate deploy`, so application deployment must not be treated as migration evidence. Verify the migration record and empty latch directly after the explicit step. The migration adds `SharedAuthIdentity`, nullable provider metadata to `Session`, and an initially empty `AuthCutoverLatch`. Existing local user IDs, roles, relations, hashes, and session rows remain intact.

@@ -1,13 +1,16 @@
 import * as oidc from "openid-client";
+import { createHash } from "node:crypto";
+import { createProviderFetch } from "./network";
 import type { SharedAuthConfig } from "./config";
 import { PROVIDER_CLOCK_SKEW_MS } from "./freshness";
 import type { OidcTransaction } from "./transaction";
 
 const configs = new Map<string, Promise<oidc.Configuration>>();
 async function provider(config: SharedAuthConfig): Promise<oidc.Configuration> {
-  const key = `${config.issuer}\0${config.clientId}`;
+  const key = `${config.issuer}\0${config.clientId}\0${createHash("sha256").update(config.clientSecret).digest("hex")}`;
   let pending = configs.get(key);
   if (!pending) {
+    const boundedFetch = createProviderFetch(config.providerBaseUrl);
     pending = oidc
       .discovery(
         new URL(config.issuer),
@@ -17,8 +20,36 @@ async function provider(config: SharedAuthConfig): Promise<oidc.Configuration> {
           [oidc.clockTolerance]: PROVIDER_CLOCK_SKEW_MS / 1000,
         },
         oidc.ClientSecretBasic(config.clientSecret),
+        {
+          [oidc.customFetch]: (url, options) =>
+            boundedFetch(url, {
+              ...options,
+              body:
+                options.body instanceof Uint8Array
+                  ? new Uint8Array(options.body)
+                  : options.body,
+            }),
+        },
       )
       .then((value) => {
+        const metadata = value.serverMetadata();
+        for (const endpoint of [
+          metadata.authorization_endpoint,
+          metadata.token_endpoint,
+          metadata.jwks_uri,
+        ]) {
+          if (typeof endpoint !== "string")
+            throw new Error("invalid_provider_endpoint");
+          const url = new URL(endpoint);
+          if (
+            url.protocol !== "https:" ||
+            url.origin !== config.providerBaseUrl ||
+            url.username ||
+            url.password ||
+            url.hash
+          )
+            throw new Error("invalid_provider_endpoint");
+        }
         oidc.enableNonRepudiationChecks(value);
         return value;
       })
@@ -29,6 +60,24 @@ async function provider(config: SharedAuthConfig): Promise<oidc.Configuration> {
     configs.set(key, pending);
   }
   return pending;
+}
+/** Only the SDK's authentication-age failure permits the bounded login retry. */
+export function isAuthenticationAgeError(error: unknown): boolean {
+  if (
+    !(error instanceof oidc.ClientError) ||
+    error.code !== "OAUTH_JWT_TIMESTAMP_CHECK_FAILED"
+  )
+    return false;
+  let cause: unknown = error.cause;
+  for (
+    let depth = 0;
+    depth < 3 && cause && typeof cause === "object";
+    depth++
+  ) {
+    if ((cause as { claim?: unknown }).claim === "auth_time") return true;
+    cause = (cause as { cause?: unknown }).cause;
+  }
+  return false;
 }
 export type VerifiedIdentity = {
   issuer: string;

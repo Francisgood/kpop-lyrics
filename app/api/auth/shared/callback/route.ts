@@ -6,7 +6,10 @@ import {
   setSessionCookie,
   TX_COOKIE,
 } from "@/lib/shared-auth/http";
-import { finishAuthorization } from "@/lib/shared-auth/provider";
+import {
+  finishAuthorization,
+  isAuthenticationAgeError,
+} from "@/lib/shared-auth/provider";
 import { fetchProviderSecurityState } from "@/lib/shared-auth/security-state";
 import {
   evaluateFreshness,
@@ -95,7 +98,7 @@ export async function GET(request: NextRequest) {
         decision.kind === "reauthenticate" ? decision.notBeforeMs : Date.now();
       const waitMs = Math.max(0, notBeforeMs - Date.now());
       if (waitMs) await new Promise((resolve) => setTimeout(resolve, waitMs));
-      return authorizationRedirect(config, {
+      return await authorizationRedirect(config, {
         maxAgeSeconds: 0,
         reauthenticationAttempt: 1,
         nowMs: Math.max(Date.now(), notBeforeMs),
@@ -115,6 +118,18 @@ export async function GET(request: NextRequest) {
     setSessionCookie(response, created.token);
     return response;
   } catch (error) {
+    if (isAuthenticationAgeError(error)) {
+      if (tx.reauthenticationAttempt === 1)
+        return fail("reauthentication_failed");
+      try {
+        return await authorizationRedirect(config, {
+          maxAgeSeconds: 0,
+          reauthenticationAttempt: 1,
+        });
+      } catch {
+        return fail("identity_provider_unavailable", 503);
+      }
+    }
     return fail(
       error instanceof Error && error.message === "unmapped_identity"
         ? "account_not_mapped"

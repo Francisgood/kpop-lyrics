@@ -1,4 +1,5 @@
 import type { SharedAuthConfig } from "./config";
+import { createProviderFetch } from "./network";
 import {
   evaluateFreshness,
   parseResetInstant,
@@ -51,7 +52,7 @@ export async function fetchProviderSecurityState(
   providerSessionId: string,
 ): Promise<StateResult> {
   try {
-    const response = await fetch(
+    const response = await createProviderFetch(config.providerBaseUrl)(
       `${config.providerBaseUrl}/api/internal/session-state`,
       {
         method: "POST",
@@ -70,7 +71,11 @@ export async function fetchProviderSecurityState(
     const state = parseProviderSecurityState(
       await response.json().catch(() => null),
     );
-    return state ? { kind: "ok", state } : { kind: "invalid" };
+    return state &&
+      state.subject === subject &&
+      state.providerSessionId === providerSessionId
+      ? { kind: "ok", state }
+      : { kind: "invalid" };
   } catch {
     return { kind: "unavailable" };
   }
@@ -112,7 +117,7 @@ export function stateAllowsSession(
           ? null
           : parseResetInstant(state.operatorCutoff),
       transaction: {
-        requestedAtMs: session.authenticatedAt.getTime(),
+        requestedAtMs: Math.min(session.authenticatedAt.getTime(), nowMs),
         maxAgeSeconds: 0,
         reauthenticationAttempt: 1,
       },

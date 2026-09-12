@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest, NextResponse } from "next/server";
+import { ClientError } from "openid-client";
 import { sealTransaction } from "../lib/shared-auth/transaction";
 const mocks = vi.hoisted(() => ({
   finish: vi.fn(),
@@ -21,7 +22,8 @@ vi.mock("../lib/shared-auth/mode", () => ({
     },
   })),
 }));
-vi.mock("../lib/shared-auth/provider", () => ({
+vi.mock("../lib/shared-auth/provider", async (original) => ({
+  ...(await original<typeof import("../lib/shared-auth/provider")>()),
   finishAuthorization: mocks.finish,
 }));
 vi.mock("../lib/shared-auth/security-state", () => ({
@@ -52,9 +54,19 @@ const reset = {
 };
 function request(
   path = "/api/auth/shared/callback?code=c&state=state-state-state",
+  retry: 0 | 1 = 0,
 ) {
   return new NextRequest(`${origin}${path}`, {
-    headers: { cookie: `__Host-aegyo_oidc_tx=${sealTransaction(tx, secret)}` },
+    headers: {
+      cookie: `__Host-aegyo_oidc_tx=${sealTransaction(
+        {
+          ...tx,
+          reauthenticationAttempt: retry,
+          maxAgeSeconds: retry ? 0 : tx.maxAgeSeconds,
+        },
+        secret,
+      )}`,
+    },
   });
 }
 beforeEach(() => {
@@ -83,6 +95,35 @@ beforeEach(() => {
   );
 });
 describe("shared callback", () => {
+  it("uses one interactive retry for the SDK auth_time rejection, then stops", async () => {
+    const error = new ClientError("timestamp failed", {
+      cause: { claim: "auth_time" },
+    });
+    error.code = "OAUTH_JWT_TIMESTAMP_CHECK_FAILED";
+    mocks.finish.mockRejectedValue(error);
+    expect((await GET(request())).status).toBe(307);
+    expect(mocks.redirect).toHaveBeenCalledWith(expect.anything(), {
+      maxAgeSeconds: 0,
+      reauthenticationAttempt: 1,
+    });
+    const exhausted = await GET(request(undefined, 1));
+    expect(await exhausted.json()).toEqual({ code: "reauthentication_failed" });
+    expect(mocks.redirect).toHaveBeenCalledTimes(1);
+    expect(mocks.create).not.toHaveBeenCalled();
+  });
+  it("does not retry unrelated token failures or mint a session if retry discovery fails", async () => {
+    const error = new ClientError("timestamp failed", {
+      cause: { claim: "exp" },
+    });
+    error.code = "OAUTH_JWT_TIMESTAMP_CHECK_FAILED";
+    mocks.finish.mockRejectedValue(error);
+    expect((await GET(request())).status).toBe(400);
+    expect(mocks.redirect).not.toHaveBeenCalled();
+    error.cause = { claim: "auth_time" };
+    mocks.redirect.mockRejectedValue(new Error("synthetic discovery failure"));
+    expect((await GET(request())).status).toBe(503);
+    expect(mocks.create).not.toHaveBeenCalled();
+  });
   it("rejects adjacent callback paths before token exchange", async () => {
     const response = await GET(
       request("/api/auth/shared/callback/extra?code=c"),
