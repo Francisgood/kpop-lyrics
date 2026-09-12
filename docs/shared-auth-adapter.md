@@ -68,7 +68,7 @@ AEGYO_MAPPING_CONFIRM=install-reviewed-mappings-without-latch npm run auth:insta
 npm run auth:install-mappings -- status
 ```
 
-`apply` recomputes the canonical digest, requires the exact `${AEGYO_AUTH_BASE_URL}/api/auth` issuer, and compares the complete current `User.id` and raw `role` population with the manifest. It locks users and mappings, refuses existing remaps, subject collisions, missing or extra users, and inserts only exact missing `(issuer, subject) -> User.id` rows in one transaction. An identical retry writes nothing new. If the client loses the commit acknowledgement, keep the freeze in place and use `status`; do not infer rollback.
+`apply` recomputes the canonical digest, requires the exact `${AEGYO_AUTH_BASE_URL}/api/auth` issuer, and compares the complete current `User.id` and raw `role` population with the manifest by keyed identity rather than database collation order. It locks users and mappings, refuses existing remaps, subject collisions, missing or extra users, and inserts only exact missing `(issuer, subject) -> User.id` rows in one transaction. An identical retry writes nothing new. After activation it is verification-only and refuses missing mappings instead of repairing them. If the client loses the commit acknowledgement, keep the freeze in place and use `status`; do not infer rollback. `status` uses a repeatable-read transaction for a consistent database snapshot, but it does not establish the external writer freeze.
 
 After the separate ownership reconciliation passes, activate the latch explicitly:
 

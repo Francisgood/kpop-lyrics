@@ -262,6 +262,26 @@ describe.runIf(enabled)("shared provisioning on disposable PostgreSQL", () => {
       expect(JSON.parse(activationRetry.stdout)).toMatchObject({
         alreadyActive: true,
       });
+
+      const removed = rows[0];
+      await prisma.sharedAuthIdentity.delete({
+        where: {
+          issuer_subject: { issuer: removed.issuer, subject: removed.subject },
+        },
+      });
+      await expect(applyMappings(prisma, manifest)).rejects.toThrow(
+        "mapping_coverage_incomplete",
+      );
+      expect(
+        await prisma.sharedAuthIdentity.findUnique({
+          where: {
+            issuer_subject: {
+              issuer: removed.issuer,
+              subject: removed.subject,
+            },
+          },
+        }),
+      ).toBeNull();
     } finally {
       await rm(proofDirectory, { recursive: true, force: true });
     }

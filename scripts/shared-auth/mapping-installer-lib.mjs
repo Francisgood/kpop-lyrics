@@ -68,12 +68,14 @@ export function validateReviewedManifest(input, approvedDigest, issuer) {
 }
 
 async function verifyPopulation(tx, manifest) {
-  const users = await tx.$queryRaw`SELECT id, role FROM "User" ORDER BY id`;
+  const users = await tx.$queryRaw`SELECT id, role FROM "User"`;
   if (users.length !== manifest.rows.length) refuse("partial_user_population");
-  for (let index = 0; index < users.length; index++) {
-    const expected = manifest.rows[index];
-    const actual = users[index];
-    if (actual.id !== expected.localUserId || actual.role !== expected.role)
+  const rolesById = new Map(users.map((user) => [user.id, user.role]));
+  for (const expected of manifest.rows) {
+    if (
+      !rolesById.has(expected.localUserId) ||
+      rolesById.get(expected.localUserId) !== expected.role
+    )
       refuse("user_id_or_role_changed");
   }
   return users;
@@ -101,21 +103,24 @@ async function verifyMappings(tx, manifest, allowMissing) {
 }
 
 export async function inspectMappings(prisma, manifest) {
-  return prisma.$transaction(async (tx) => {
-    await verifyPopulation(tx, manifest);
-    await verifyMappings(tx, manifest, false);
-    const latch = await tx.authCutoverLatch.findUnique({
-      where: { id: "accounts-shared-auth-v1" },
-      select: { mappingDigest: true },
-    });
-    if (latch && latch.mappingDigest !== manifest.mappingDigest)
-      refuse("latch_digest_mismatch");
-    return {
-      count: manifest.rows.length,
-      mappingDigest: manifest.mappingDigest,
-      active: !!latch,
-    };
-  });
+  return prisma.$transaction(
+    async (tx) => {
+      await verifyPopulation(tx, manifest);
+      await verifyMappings(tx, manifest, false);
+      const latch = await tx.authCutoverLatch.findUnique({
+        where: { id: "accounts-shared-auth-v1" },
+        select: { mappingDigest: true },
+      });
+      if (latch && latch.mappingDigest !== manifest.mappingDigest)
+        refuse("latch_digest_mismatch");
+      return {
+        count: manifest.rows.length,
+        mappingDigest: manifest.mappingDigest,
+        active: !!latch,
+      };
+    },
+    { isolationLevel: "RepeatableRead" },
+  );
 }
 
 export async function applyMappings(prisma, manifest) {
@@ -129,6 +134,13 @@ export async function applyMappings(prisma, manifest) {
     });
     if (latch && latch.mappingDigest !== manifest.mappingDigest)
       refuse("latch_digest_mismatch");
+    if (latch) {
+      await verifyMappings(tx, manifest, false);
+      return {
+        count: manifest.rows.length,
+        mappingDigest: manifest.mappingDigest,
+      };
+    }
     const existing = await verifyMappings(tx, manifest, true);
     const existingUsers = new Set(existing.map((row) => row.userId));
     for (const row of manifest.rows) {
