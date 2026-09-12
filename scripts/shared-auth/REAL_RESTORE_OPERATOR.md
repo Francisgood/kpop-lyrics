@@ -29,6 +29,12 @@ through Railway references, never image build arguments:
   certificate authorities obtained through the corresponding private database
   service. The operator writes them as private `0600` temporary files and forces
   `verify-full`; database URLs containing TLS overrides are refused.
+- Optional `SOURCE_DATABASE_TLS_HOST=localhost` and
+  `TARGET_DATABASE_TLS_HOST=localhost` support Railway PostgreSQL certificates
+  issued only for `localhost`. The original URL must still name a
+  `*.railway.internal` host. The operator resolves that host internally and gives
+  libpq the resulting `hostaddr` while it verifies the certificate against
+  `localhost`. Other TLS names and non-private original hosts are refused.
 - `AEGYO_REAL_RESTORE_CONFIRM=private-read-only-source-to-empty-clone`.
 
 The source and target must both run PostgreSQL 18, matching the pinned client image.
