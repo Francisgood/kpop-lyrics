@@ -6,6 +6,7 @@ prisma/dev.db-journal
 .env.local
 .env*.local
 *.log
+.proof/
 
 # Giveaway draw PII and candidate outreach files must never be committed.
 *.private.csv

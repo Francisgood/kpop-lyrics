@@ -215,6 +215,11 @@ describe("shared callback", () => {
     const unverified = await GET(request());
     expect(unverified.status).toBe(403);
     expect(unverified.headers.get("content-type")).toContain("text/html");
-    expect(await unverified.text()).toContain("Verify your email");
+    const unverifiedPage = await unverified.text();
+    expect(unverifiedPage).toContain("Verify your email");
+    expect(unverifiedPage).toContain(
+      'href="https://accounts.example.test/verify-email"',
+    );
+    expect(unverifiedPage).not.toContain("same@example.test");
   });
 });

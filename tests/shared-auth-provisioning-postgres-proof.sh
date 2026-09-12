@@ -45,6 +45,14 @@ CREATE TABLE "Session" (
   "expiresAt" TIMESTAMP(3) NOT NULL,
   "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE "Favorite" (
+  "id" TEXT PRIMARY KEY,
+  "userId" TEXT NOT NULL REFERENCES "User"("id"),
+  "entityType" TEXT NOT NULL,
+  "entityId" TEXT NOT NULL,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE ("userId", "entityType", "entityId")
+);
 SQL
 
 docker exec -i "$container" psql -X -P pager=off -v ON_ERROR_STOP=1 -U postgres -d proof \

@@ -18,6 +18,7 @@
     "auth:reconcile": "node scripts/shared-auth/reconcile.mjs",
     "auth:production-schema-proof": "./tests/shared-auth-production-schema-proof.sh",
     "auth:provisioning-postgres-proof": "./tests/shared-auth-provisioning-postgres-proof.sh",
+    "auth:install-mappings": "node scripts/shared-auth/install-mappings.mjs",
     "test": "vitest run"
   },
   "dependencies": {

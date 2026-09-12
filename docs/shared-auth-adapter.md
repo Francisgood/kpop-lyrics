@@ -57,6 +57,28 @@ Email fields are rejected at every input depth. Accounts currently has no dedica
 
 The local snapshot must cover Prisma-owned `Favorite`, `Comment`, and `SuggestedEdit` IDs plus runtime-owned records keyed by the user, including `SlangVote`, profile `PollVote`, and `Follow`, when those tables exist. The before/after digest fails if a user ID, raw role, or linked record owner changes. `reviewed-manifest.json` is created with mode `0600` and exclusive-create semantics. Its `mappingDigest` is SHA-256 over canonical JSON of the manifest core, excluding the digest field itself; use that exact lowercase 64-hex value for latch activation.
 
+### Mapping installation and activation
+
+Create the ignored private directory with `mkdir -m 700 .proof`, then keep the reviewed manifest inside it with mode `0600`. The operator CLI rejects the ordinary `DATABASE_URL`; supply a dedicated `AEGYO_MAPPING_DATABASE_URL`, its exact `AEGYO_MAPPING_DATABASE_NAME`, the bare `AEGYO_AUTH_BASE_URL`, `AEGYO_MAPPING_MANIFEST`, and `AEGYO_MAPPING_APPROVED_DIGEST`.
+
+First install mappings without activating shared auth:
+
+```sh
+AEGYO_MAPPING_CONFIRM=install-reviewed-mappings-without-latch npm run auth:install-mappings -- apply
+npm run auth:install-mappings -- status
+```
+
+`apply` recomputes the canonical digest, requires the exact `${AEGYO_AUTH_BASE_URL}/api/auth` issuer, and compares the complete current `User.id` and raw `role` population with the manifest. It locks users and mappings, refuses existing remaps, subject collisions, missing or extra users, and inserts only exact missing `(issuer, subject) -> User.id` rows in one transaction. An identical retry writes nothing new. If the client loses the commit acknowledgement, keep the freeze in place and use `status`; do not infer rollback.
+
+After the separate ownership reconciliation passes, activate the latch explicitly:
+
+```sh
+AEGYO_MAPPING_CONFIRM=activate-reviewed-shared-auth-cutover npm run auth:install-mappings -- activate
+npm run auth:install-mappings -- status
+```
+
+`activate` rechecks complete mapping coverage before inserting the latch. An existing latch succeeds only when its digest exactly matches; it never uses a blind conflict-ignore. The operator must keep every legacy writer frozen throughout mapping, reconciliation, and activation. The database ID/role check does not replace the before/after linked-record reconciliation for favorites, profiles, comments, votes, follows, or other history.
+
 ### Production-schema rehearsal
 
 A schema-only production dump can be rehearsed without copying any production rows:
