@@ -30,6 +30,14 @@ Import existing-user mappings explicitly with stable local IDs before cutover. E
 
 After cutover, an unmapped, cryptographically verified provider identity may create a new local user only when its signed `email_verified` claim is `true` and its signed email is usable. The user and `(issuer, subject)` mapping are created atomically. Provisioning stores `EXTERNAL_PASSWORD_SENTINEL` in `passwordHash`; normal password hashing cannot produce it. It does not call Beehiiv or subscribe/reactivate the address. If the normalized email already exists locally, the callback returns `existing_account_requires_import_mapping` with recovery guidance and changes nothing. Email is only a collision guard and profile value; it never establishes ownership or links an existing user. Concurrent callbacks converge on the mapping that won the unique `(issuer, subject)` constraint, while a different-subject email race fails closed.
 
+Rehearse those races through the real Prisma adapter against a disposable PostgreSQL 18 container:
+
+```sh
+npm run auth:provisioning-postgres-proof
+```
+
+The runner ignores any existing `DATABASE_URL`, publishes a random PostgreSQL port on loopback only, applies the additive migration to a synthetic baseline, and removes the container on exit. It proves same-identity convergence, different-subject email exclusion, two valid sessions for two successful callbacks, and preservation of a mixed-case legacy email/hash/role without creating a mapping.
+
 ### Local reconciliation rehearsal
 
 Run the source-only validator with five local JSON paths:

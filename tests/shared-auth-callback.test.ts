@@ -7,20 +7,10 @@ const mocks = vi.hoisted(() => ({
   state: vi.fn(),
   create: vi.fn(),
   redirect: vi.fn(),
+  mode: vi.fn(),
 }));
 vi.mock("../lib/shared-auth/mode", () => ({
-  resolveAuthMode: vi.fn(async () => ({
-    kind: "shared",
-    config: {
-      providerBaseUrl: "https://accounts.example.test",
-      issuer: "https://accounts.example.test/api/auth",
-      clientId: "aegyo",
-      clientSecret: "secret",
-      appOrigin: "https://aegyo.example.test",
-      transactionSecret: "x".repeat(32),
-      stateReaderKey: "reader",
-    },
-  })),
+  resolveAuthMode: mocks.mode,
 }));
 vi.mock("../lib/shared-auth/provider", async (original) => ({
   ...(await original<typeof import("../lib/shared-auth/provider")>()),
@@ -78,6 +68,18 @@ beforeEach(() => {
   process.env.AEGYO_AUTH_CLIENT_SECRET = "secret";
   process.env.AEGYO_AUTH_TRANSACTION_SECRET = secret;
   process.env.AEGYO_AUTH_STATE_READER_KEY = "reader";
+  mocks.mode.mockResolvedValue({
+    kind: "shared",
+    config: {
+      providerBaseUrl: "https://accounts.example.test",
+      issuer: "https://accounts.example.test/api/auth",
+      clientId: "aegyo",
+      clientSecret: "secret",
+      appOrigin: "https://aegyo.example.test",
+      transactionSecret: "x".repeat(32),
+      stateReaderKey: "reader",
+    },
+  });
   mocks.finish.mockResolvedValue({
     issuer: "https://accounts.example.test/api/auth",
     subject: "sub",
@@ -96,6 +98,13 @@ beforeEach(() => {
   );
 });
 describe("shared callback", () => {
+  it("cannot provision while the durable cutover mode is closed", async () => {
+    mocks.mode.mockResolvedValue({ kind: "closed", reason: "missing_latch" });
+    const response = await GET(request());
+    expect(response.status).toBe(503);
+    expect(mocks.finish).not.toHaveBeenCalled();
+    expect(mocks.create).not.toHaveBeenCalled();
+  });
   it("uses one interactive retry for the SDK auth_time rejection, then stops", async () => {
     const error = new ClientError("timestamp failed", {
       cause: { claim: "auth_time" },
@@ -196,16 +205,12 @@ describe("shared callback", () => {
     mocks.create.mockRejectedValueOnce(new Error("local_email_collision"));
     const collision = await GET(request());
     expect(collision.status).toBe(409);
-    expect(await collision.json()).toMatchObject({
-      code: "existing_account_requires_import_mapping",
-      message: expect.stringContaining("import its Accounts mapping"),
-    });
+    expect(collision.headers.get("content-type")).toContain("text/html");
+    expect(await collision.text()).toContain("import its Accounts mapping");
     mocks.create.mockRejectedValueOnce(new Error("verified_email_required"));
     const unverified = await GET(request());
     expect(unverified.status).toBe(403);
-    expect(await unverified.json()).toMatchObject({
-      code: "verified_email_required",
-      message: expect.stringContaining("Verify your email"),
-    });
+    expect(unverified.headers.get("content-type")).toContain("text/html");
+    expect(await unverified.text()).toContain("Verify your email");
   });
 });

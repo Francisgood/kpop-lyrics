@@ -1,0 +1,61 @@
+#!/bin/sh
+# Disposable local proof only. This script ignores any existing DATABASE_URL,
+# creates its own PostgreSQL 18 container, and binds its random port to loopback.
+set -eu
+
+container="aegyo-provisioning-proof-$$"
+created=0
+cleanup() {
+  if [ "$created" -eq 1 ]; then
+    docker stop "$container" >/dev/null 2>&1 || true
+  fi
+}
+trap cleanup EXIT INT TERM
+
+docker run --rm -d --name "$container" -p 127.0.0.1::5432 \
+  -e POSTGRES_PASSWORD=proof -e POSTGRES_DB=proof postgres:18-alpine >/dev/null
+created=1
+
+attempt=0
+until docker exec "$container" pg_isready -U postgres -d proof >/dev/null 2>&1; do
+  attempt=$((attempt + 1))
+  if [ "$attempt" -ge 30 ]; then
+    echo "disposable PostgreSQL did not become ready within 30 seconds" >&2
+    exit 1
+  fi
+  sleep 1
+done
+
+docker exec -i "$container" psql -X -P pager=off -v ON_ERROR_STOP=1 -U postgres -d proof >/dev/null <<'SQL'
+CREATE TABLE "User" (
+  "id" TEXT PRIMARY KEY,
+  "email" TEXT NOT NULL UNIQUE,
+  "displayName" TEXT,
+  "avatarUrl" TEXT,
+  "bio" TEXT,
+  "passwordHash" TEXT NOT NULL,
+  "emailVerified" BOOLEAN NOT NULL DEFAULT false,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "role" TEXT NOT NULL DEFAULT 'user'
+);
+CREATE TABLE "Session" (
+  "id" TEXT PRIMARY KEY,
+  "userId" TEXT NOT NULL REFERENCES "User"("id"),
+  "token" TEXT NOT NULL UNIQUE,
+  "expiresAt" TIMESTAMP(3) NOT NULL,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+SQL
+
+docker exec -i "$container" psql -X -P pager=off -v ON_ERROR_STOP=1 -U postgres -d proof \
+  < prisma/migrations/20260911200000_add_shared_auth/migration.sql >/dev/null
+
+port=$(docker port "$container" 5432/tcp | sed -n 's/.*://p' | head -1)
+if [ -z "$port" ]; then
+  echo "could not determine disposable PostgreSQL port" >&2
+  exit 1
+fi
+
+DATABASE_URL="postgresql://postgres:proof@127.0.0.1:$port/proof" \
+  AEGYO_PROVISIONING_POSTGRES_PROOF=1 \
+  npx vitest run tests/shared-auth-provisioning-postgres.test.ts
