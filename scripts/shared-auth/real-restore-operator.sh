@@ -1,6 +1,7 @@
 #!/bin/sh
 set -eu
 set -o pipefail
+umask 077
 
 required() {
   eval "value=\${$1-}"
@@ -9,7 +10,7 @@ required() {
 
 for name in SOURCE_DATABASE_URL TARGET_DATABASE_URL SOURCE_DATABASE_NAME \
   TARGET_DATABASE_NAME SOURCE_READ_ONLY_ROLE TARGET_OWNER_ROLE \
-  AEGYO_REAL_RESTORE_CONFIRM; do
+  SOURCE_DATABASE_CA_CERT TARGET_DATABASE_CA_CERT AEGYO_REAL_RESTORE_CONFIRM; do
   required "$name"
 done
 
@@ -23,9 +24,38 @@ done
 }
 
 workdir="$(mktemp -d /tmp/aegyo-real-restore.XXXXXX)"
-trap 'touch "$workdir/release" 2>/dev/null || true; rm -rf "$workdir"' EXIT HUP INT TERM
+error_log="$workdir/tool-errors"
+source_ca="$workdir/source-ca.pem"
+target_ca="$workdir/target-ca.pem"
+printf '%s\n' "$SOURCE_DATABASE_CA_CERT" >"$source_ca"
+printf '%s\n' "$TARGET_DATABASE_CA_CERT" >"$target_ca"
+chmod 0600 "$source_ca" "$target_ca"
+case "$SOURCE_DATABASE_URL$TARGET_DATABASE_URL" in
+  *sslmode=*|*sslrootcert=*) echo "operator_error=tls_must_be_operator_controlled" >&2; exit 2;;
+esac
+snapshot_keeper=""
+cleanup() {
+  touch "$workdir/release" 2>/dev/null || true
+  if [ -n "$snapshot_keeper" ]; then
+    kill "$snapshot_keeper" 2>/dev/null || true
+    wait "$snapshot_keeper" 2>/dev/null || true
+  fi
+  rm -rf "$workdir"
+}
+trap cleanup EXIT HUP INT TERM
 
-scalar() { psql -X -qAt -v ON_ERROR_STOP=1 "$1" -c "$2"; }
+fail_phase() {
+  echo "operator_error=$1" >&2
+  exit "${2:-4}"
+}
+
+scalar() {
+  if [ "$1" = "$SOURCE_DATABASE_URL" ]; then cert="$source_ca"; else cert="$target_ca"; fi
+  PGOPTIONS='-c lock_timeout=5s -c statement_timeout=300s' \
+    PGSSLMODE=verify-full PGSSLROOTCERT="$cert" \
+    psql -X -qAt -v ON_ERROR_STOP=1 "$1" -c "$2" 2>>"$error_log" ||
+    fail_phase catalog_query_failed 3
+}
 
 source_db="$(scalar "$SOURCE_DATABASE_URL" 'select current_database()')"
 target_db="$(scalar "$TARGET_DATABASE_URL" 'select current_database()')"
@@ -52,8 +82,10 @@ tool_major="$(pg_dump --version | sed -E 's/.* ([0-9]+).*/\1/')"
 }
 
 fingerprint_sql="$workdir/fingerprint.sql"
-PGOPTIONS='-c default_transaction_read_only=on' psql -X -qAt -v ON_ERROR_STOP=1 \
-  "$SOURCE_DATABASE_URL" >"$fingerprint_sql" <<'SQL'
+PGOPTIONS='-c default_transaction_read_only=on -c lock_timeout=5s -c statement_timeout=300s' \
+  PGSSLMODE=verify-full PGSSLROOTCERT="$source_ca" \
+  psql -X -qAt -v ON_ERROR_STOP=1 "$SOURCE_DATABASE_URL" \
+  >"$fingerprint_sql" 2>>"$error_log" <<'SQL' || fail_phase fingerprint_plan_failed
 SELECT format(
   'SELECT %L || E''\t'' || count(*) || E''\t'' || encode(sha256(convert_to(coalesce(string_agg(to_jsonb(t)::text, E''\n'' ORDER BY to_jsonb(t)::text), ''''), ''UTF8'')), ''hex'') FROM %I.%I t;',
   n.nspname || '.' || c.relname, n.nspname, c.relname
@@ -77,14 +109,16 @@ SELECT pg_export_snapshot();
 \\! while [ ! -e "$workdir/release" ]; do sleep 0.1; done
 ROLLBACK;
 SQL
-PGOPTIONS='-c default_transaction_read_only=on' psql -X -qAt -v ON_ERROR_STOP=1 \
-  "$SOURCE_DATABASE_URL" -f "$workdir/export-snapshot.sql" &
+PGOPTIONS='-c default_transaction_read_only=on -c lock_timeout=5s -c statement_timeout=300s' \
+  PGSSLMODE=verify-full PGSSLROOTCERT="$source_ca" \
+  psql -X -qAt -v ON_ERROR_STOP=1 "$SOURCE_DATABASE_URL" \
+  -f "$workdir/export-snapshot.sql" >>"$error_log" 2>&1 &
 snapshot_keeper=$!
 tries=0
 while [ ! -s "$workdir/snapshot" ]; do
-  kill -0 "$snapshot_keeper" 2>/dev/null || { echo "operator_error=snapshot_export_failed" >&2; exit 4; }
+  kill -0 "$snapshot_keeper" 2>/dev/null || fail_phase snapshot_export_failed
   tries=$((tries + 1))
-  [ "$tries" -lt 300 ] || { echo "operator_error=snapshot_export_timeout" >&2; exit 4; }
+  [ "$tries" -lt 300 ] || fail_phase snapshot_export_timeout
   sleep 0.1
 done
 snapshot="$(tr -d '[:space:]' <"$workdir/snapshot")"
@@ -96,18 +130,31 @@ case "$snapshot" in *[!A-Za-z0-9-]*|'') echo "operator_error=invalid_snapshot_id
   cat "$fingerprint_sql"
   printf '%s\n' 'ROLLBACK;'
 } >"$workdir/source-fingerprint.sql"
-PGOPTIONS='-c default_transaction_read_only=on' psql -X -qAt -v ON_ERROR_STOP=1 \
-  "$SOURCE_DATABASE_URL" -f "$workdir/source-fingerprint.sql" >"$workdir/source.fingerprint"
+PGOPTIONS='-c default_transaction_read_only=on -c lock_timeout=5s -c statement_timeout=300s' \
+  PGSSLMODE=verify-full PGSSLROOTCERT="$source_ca" \
+  psql -X -qAt -v ON_ERROR_STOP=1 "$SOURCE_DATABASE_URL" \
+  -f "$workdir/source-fingerprint.sql" >"$workdir/source.fingerprint" 2>>"$error_log" ||
+  fail_phase source_fingerprint_failed
 
-PGOPTIONS='-c default_transaction_read_only=on' pg_dump --format=custom \
-  --snapshot="$snapshot" --no-owner --no-acl --dbname="$SOURCE_DATABASE_URL" |
+if ! PGOPTIONS='-c default_transaction_read_only=on -c lock_timeout=5s -c statement_timeout=300s' \
+  PGSSLMODE=verify-full PGSSLROOTCERT="$source_ca" \
+  pg_dump --format=custom --snapshot="$snapshot" --no-owner --no-acl \
+    --dbname="$SOURCE_DATABASE_URL" 2>>"$error_log" |
+  PGOPTIONS='-c lock_timeout=5s -c statement_timeout=300s' \
+  PGSSLMODE=verify-full PGSSLROOTCERT="$target_ca" \
   pg_restore --exit-on-error --single-transaction --no-owner --no-acl \
-    --dbname="$TARGET_DATABASE_URL"
+    --dbname="$TARGET_DATABASE_URL" 2>>"$error_log"; then
+  fail_phase dump_restore_failed
+fi
 touch "$workdir/release"
-wait "$snapshot_keeper"
+wait "$snapshot_keeper" || fail_phase snapshot_keeper_failed
+snapshot_keeper=""
 
-psql -X -qAt -v ON_ERROR_STOP=1 "$TARGET_DATABASE_URL" \
-  -f "$fingerprint_sql" >"$workdir/target.fingerprint"
+PGOPTIONS='-c lock_timeout=5s -c statement_timeout=300s' \
+  PGSSLMODE=verify-full PGSSLROOTCERT="$target_ca" \
+  psql -X -qAt -v ON_ERROR_STOP=1 "$TARGET_DATABASE_URL" \
+  -f "$fingerprint_sql" >"$workdir/target.fingerprint" 2>>"$error_log" ||
+  fail_phase target_fingerprint_failed
 
 if ! cmp -s "$workdir/source.fingerprint" "$workdir/target.fingerprint"; then
   echo "operator_error=restored_content_mismatch" >&2
