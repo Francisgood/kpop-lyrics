@@ -16,9 +16,28 @@ Set `AEGYO_AUTH_BASE_URL`, `AEGYO_APP_ORIGIN`, `AEGYO_AUTH_CLIENT_ID`, `AEGYO_AU
 
 ## Migration and mapping gate
 
-Apply `prisma/migrations/20260911200000_add_shared_auth/migration.sql` through the reviewed deployment process before enabling the flag. It adds `SharedAuthIdentity`, nullable provider metadata to `Session`, and an initially empty `AuthCutoverLatch`. Existing local user IDs, roles, relations, hashes, and session rows remain intact.
+Apply `prisma/migrations/20260911200000_add_shared_auth/migration.sql` through a separate reviewed migration step before enabling the flag. The current Railway build and start overrides do not run `prisma migrate deploy`, so application deployment must not be treated as migration evidence. Verify the migration record and empty latch directly after the explicit step. The migration adds `SharedAuthIdentity`, nullable provider metadata to `Session`, and an initially empty `AuthCutoverLatch`. Existing local user IDs, roles, relations, hashes, and session rows remain intact.
 
 Import mappings explicitly with stable local IDs. Each row contains a local `userId`, the exact issuer (`${AEGYO_AUTH_BASE_URL}/api/auth`), and Accounts `subject`. Both `userId` and `(issuer, subject)` are unique. Reconcile and review conflicts before insertion. The callback never queries or maps by email and never creates a user. Any future reviewed provisioning job must store the exported `EXTERNAL_PASSWORD_SENTINEL` in `passwordHash`; normal password hashing cannot produce it. An unmapped subject, including one whose email matches an existing user, receives `account_not_mapped` and no session.
+
+### Local reconciliation rehearsal
+
+Run the source-only validator with five local JSON paths:
+
+```sh
+npm run auth:reconcile -- local-before.json accounts-subjects.json mapping.json local-after.json reviewed-manifest.json
+```
+
+The tool has no database or network client. It requires:
+
+- a version-1 local snapshot containing every stable `User.id`, its raw `User.role`, and sorted linked record IDs grouped by table;
+- a version-1 Accounts snapshot containing the exact issuer and opaque `public.user.id` values emitted as OIDC `sub`;
+- explicit version-1 pairs `{localUserId, subject}` prepared through a reviewed import journal; and
+- a second local snapshot taken after the rehearsal.
+
+Email fields are rejected at every input depth. Accounts currently has no dedicated legacy source-ID field, so the tool never assumes equal IDs and cannot derive a pair. A real import needs either an external reviewed journal recording created Accounts IDs or a reviewed additive Accounts source-identity table.
+
+The local snapshot must cover Prisma-owned `Favorite`, `Comment`, and `SuggestedEdit` IDs plus runtime-owned records keyed by the user, including `SlangVote`, profile `PollVote`, and `Follow`, when those tables exist. The before/after digest fails if a user ID, raw role, or linked record owner changes. `reviewed-manifest.json` is created with mode `0600` and exclusive-create semantics. Its `mappingDigest` is SHA-256 over canonical JSON of the manifest core, excluding the digest field itself; use that exact lowercase 64-hex value for latch activation.
 
 ## Cutover and recovery
 

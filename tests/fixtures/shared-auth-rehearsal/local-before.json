@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "users": [
+    {
+      "id": "local-user-1",
+      "role": "moderator",
+      "linkedRecords": {
+        "Favorite": ["fav-1"],
+        "Comment": ["comment-1"],
+        "SuggestedEdit": ["edit-1"],
+        "PollVote": ["poll-vote-1"],
+        "Follow": ["follow-1"]
+      }
+    },
+    {
+      "id": "local-user-2",
+      "role": "contributor",
+      "linkedRecords": {
+        "Favorite": ["fav-2"],
+        "Comment": [],
+        "SuggestedEdit": [],
+        "PollVote": [],
+        "Follow": []
+      }
+    }
+  ]
+}

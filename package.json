@@ -15,6 +15,7 @@
     "giveaway:chainlink:test:fork": "forge test --match-path 'chainlink/test/*Fork*' -vvv",
     "giveaway:chainlink:draw": "node scripts/giveaway/chainlink/run-draw.mjs",
     "test:giveaway": "node --test scripts/giveaway/*.test.mjs scripts/giveaway/chainlink/*.test.mjs",
+    "auth:reconcile": "node scripts/shared-auth/reconcile.mjs",
     "test": "vitest run"
   },
   "dependencies": {
