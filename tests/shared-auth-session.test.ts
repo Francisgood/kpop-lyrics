@@ -3,6 +3,7 @@ const mocks = vi.hoisted(() => ({
   identity: vi.fn(),
   email: vi.fn(),
   create: vi.fn(),
+  createUser: vi.fn(),
   transaction: vi.fn(),
   findSession: vi.fn(),
   update: vi.fn(),
@@ -17,6 +18,7 @@ vi.mock("../lib/prisma", () => ({
       update: mocks.update,
       deleteMany: mocks.deleteMany,
     },
+    sharedAuthIdentity: { findUnique: mocks.identity },
   },
 }));
 vi.mock("../lib/shared-auth/security-state", async (original) => ({
@@ -25,7 +27,8 @@ vi.mock("../lib/shared-auth/security-state", async (original) => ({
 }));
 import {
   authorizeSharedSession,
-  createMappedSession,
+  createSharedSession,
+  EXTERNAL_PASSWORD_SENTINEL,
 } from "../lib/shared-auth/session";
 const config = {
   providerBaseUrl: "https://accounts.example.test",
@@ -46,7 +49,7 @@ beforeEach(() => {
   mocks.transaction.mockImplementation((fn) =>
     fn({
       sharedAuthIdentity: { findUnique: mocks.identity },
-      user: { findUnique: mocks.email },
+      user: { findFirst: mocks.email, create: mocks.createUser },
       session: { create: mocks.create },
     }),
   );
@@ -60,9 +63,13 @@ describe("mapped local identity and sessions", () => {
     mocks.create.mockImplementation(({ data }) =>
       Promise.resolve({ id: "session", ...data }),
     );
-    const result = await createMappedSession({
+    const result = await createSharedSession({
       issuer: config.issuer,
       subject: "provider-sub",
+      email: "changed@example.test",
+      emailVerified: true,
+      name: "Changed name",
+      picture: "https://example.test/changed.png",
       providerSessionId: "sid",
       authenticatedAtMs: Date.now(),
       securityVersion: 1,
@@ -76,20 +83,130 @@ describe("mapped local identity and sessions", () => {
     );
     expect(result.session.userId).toBe("stable-user-7");
   });
-  it("refuses an unmapped external identity even when its email matches a local user", async () => {
+  it("refuses an existing normalized local email without claiming it", async () => {
     mocks.identity.mockResolvedValue(null);
     mocks.email.mockResolvedValue({ id: "must-not-claim" });
     await expect(
-      createMappedSession({
+      createSharedSession({
         issuer: config.issuer,
         subject: "new-sub",
+        email: "SAME@example.test",
+        emailVerified: true,
+        name: null,
+        picture: null,
         providerSessionId: "sid",
         authenticatedAtMs: Date.now(),
         securityVersion: 1,
         resetState: reset,
       }),
-    ).rejects.toThrow("unmapped_identity");
+    ).rejects.toThrow("local_email_collision");
+    expect(mocks.email).toHaveBeenCalledWith({
+      where: {
+        email: { equals: "same@example.test", mode: "insensitive" },
+      },
+      select: { id: true },
+    });
+    expect(mocks.create).not.toHaveBeenCalled();
+  });
+  it("creates and maps one new user from a verified provider email without newsletter side effects", async () => {
+    mocks.identity.mockResolvedValue(null);
+    mocks.email.mockResolvedValue(null);
+    mocks.createUser.mockResolvedValue({ id: "new-local" });
+    mocks.create.mockImplementation(({ data }) =>
+      Promise.resolve({ id: "session", ...data }),
+    );
+    const result = await createSharedSession({
+      issuer: config.issuer,
+      subject: "new-sub",
+      email: " New.User@Example.test ",
+      emailVerified: true,
+      name: " New User ",
+      picture: "https://images.example.test/avatar.png",
+      providerSessionId: "sid",
+      authenticatedAtMs: Date.now(),
+      securityVersion: 1,
+      resetState: reset,
+    });
+    expect(mocks.createUser).toHaveBeenCalledOnce();
+    expect(mocks.createUser).toHaveBeenCalledWith({
+      data: {
+        email: "new.user@example.test",
+        displayName: "New User",
+        avatarUrl: "https://images.example.test/avatar.png",
+        passwordHash: EXTERNAL_PASSWORD_SENTINEL,
+        emailVerified: true,
+        sharedIdentity: {
+          create: { issuer: config.issuer, subject: "new-sub" },
+        },
+      },
+      select: { id: true },
+    });
+    expect(result.session.userId).toBe("new-local");
+  });
+  it("refuses provisioning without a verified usable provider email", async () => {
+    mocks.identity.mockResolvedValue(null);
+    for (const email of [null, "bad-address"]) {
+      await expect(
+        createSharedSession({
+          issuer: config.issuer,
+          subject: "new-sub",
+          email,
+          emailVerified: email !== null,
+          name: null,
+          picture: null,
+          providerSessionId: "sid",
+          authenticatedAtMs: Date.now(),
+          securityVersion: 1,
+          resetState: reset,
+        }),
+      ).rejects.toThrow("verified_email_required");
+    }
     expect(mocks.email).not.toHaveBeenCalled();
+    expect(mocks.createUser).not.toHaveBeenCalled();
+  });
+  it("resolves a same-subject provisioning race through the winning explicit mapping", async () => {
+    mocks.identity
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({ userId: "race-winner" });
+    mocks.email.mockResolvedValue(null);
+    mocks.createUser.mockRejectedValue({ code: "P2002" });
+    mocks.create.mockImplementation(({ data }) =>
+      Promise.resolve({ id: "session", ...data }),
+    );
+    const result = await createSharedSession({
+      issuer: config.issuer,
+      subject: "racing-sub",
+      email: "race@example.test",
+      emailVerified: true,
+      name: null,
+      picture: null,
+      providerSessionId: "sid",
+      authenticatedAtMs: Date.now(),
+      securityVersion: 1,
+      resetState: reset,
+    });
+    expect(mocks.createUser).toHaveBeenCalledOnce();
+    expect(mocks.create).toHaveBeenCalledOnce();
+    expect(result.session.userId).toBe("race-winner");
+  });
+  it("does not convert a different-subject email race into a mapping", async () => {
+    mocks.identity.mockResolvedValue(null);
+    mocks.email.mockResolvedValue(null);
+    mocks.createUser.mockRejectedValue({ code: "P2002" });
+    await expect(
+      createSharedSession({
+        issuer: config.issuer,
+        subject: "losing-sub",
+        email: "race@example.test",
+        emailVerified: true,
+        name: null,
+        picture: null,
+        providerSessionId: "sid",
+        authenticatedAtMs: Date.now(),
+        securityVersion: 1,
+        resetState: reset,
+      }),
+    ).rejects.toThrow("local_email_collision");
     expect(mocks.create).not.toHaveBeenCalled();
   });
   it("revocation winning the access race deletes the local shared session", async () => {

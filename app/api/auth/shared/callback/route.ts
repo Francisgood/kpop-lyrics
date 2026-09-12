@@ -16,11 +16,14 @@ import {
   parseResetInstant,
   type ResetState,
 } from "@/lib/shared-auth/freshness";
-import { createMappedSession } from "@/lib/shared-auth/session";
+import { createSharedSession } from "@/lib/shared-auth/session";
 import { openTransaction } from "@/lib/shared-auth/transaction";
 import { canonicalRequestUrl } from "@/lib/shared-auth/request-url";
-function fail(code: string, status = 400) {
-  const response = NextResponse.json({ code }, { status });
+function fail(code: string, status = 400, message?: string) {
+  const response = NextResponse.json(
+    message ? { code, message } : { code },
+    { status },
+  );
   clearTransaction(response);
   return response;
 }
@@ -105,9 +108,13 @@ export async function GET(request: NextRequest) {
       });
     }
     if (decision.kind !== "allow") return fail(decision.reason);
-    const created = await createMappedSession({
+    const created = await createSharedSession({
       issuer: identity.issuer,
       subject: identity.subject,
+      email: identity.email,
+      emailVerified: identity.emailVerified,
+      name: identity.name,
+      picture: identity.picture,
       providerSessionId: identity.providerSessionId,
       authenticatedAtMs: decision.authenticatedAtMs,
       securityVersion: state.securityVersion,
@@ -130,13 +137,18 @@ export async function GET(request: NextRequest) {
         return fail("identity_provider_unavailable", 503);
       }
     }
-    return fail(
-      error instanceof Error && error.message === "unmapped_identity"
-        ? "account_not_mapped"
-        : "authorization_failed",
-      error instanceof Error && error.message === "unmapped_identity"
-        ? 403
-        : 400,
-    );
+    if (error instanceof Error && error.message === "verified_email_required")
+      return fail(
+        "verified_email_required",
+        403,
+        "Verify your email in Accounts, then try signing in again.",
+      );
+    if (error instanceof Error && error.message === "local_email_collision")
+      return fail(
+        "existing_account_requires_import_mapping",
+        409,
+        "This email already belongs to an Aegyo account. Ask support to import its Accounts mapping; no account data was changed.",
+      );
+    return fail("authorization_failed");
   }
 }

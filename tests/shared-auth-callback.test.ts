@@ -30,7 +30,7 @@ vi.mock("../lib/shared-auth/security-state", () => ({
   fetchProviderSecurityState: mocks.state,
 }));
 vi.mock("../lib/shared-auth/session", () => ({
-  createMappedSession: mocks.create,
+  createSharedSession: mocks.create,
 }));
 vi.mock("../lib/shared-auth/http", async (original) => ({
   ...(await original<typeof import("../lib/shared-auth/http")>()),
@@ -83,6 +83,7 @@ beforeEach(() => {
     subject: "sub",
     providerSessionId: "sid",
     email: "same@example.test",
+    emailVerified: true,
     name: null,
     picture: null,
     authTime: Math.floor(Date.now() / 1000),
@@ -154,5 +155,57 @@ describe("shared callback", () => {
     const response = await GET(request());
     expect(response.status).toBe(503);
     expect(mocks.create).not.toHaveBeenCalled();
+  });
+  it("passes only the verified provider identity into atomic provisioning", async () => {
+    mocks.state.mockResolvedValue({
+      kind: "ok",
+      state: {
+        version: 1,
+        subject: "sub",
+        providerSessionId: "sid",
+        active: true,
+        passwordResetState: reset,
+        operatorCutoff: null,
+        securityVersion: 2,
+      },
+    });
+    mocks.create.mockResolvedValue({ token: "new-token" });
+    expect((await GET(request())).status).toBe(307);
+    expect(mocks.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        issuer: "https://accounts.example.test/api/auth",
+        subject: "sub",
+        email: "same@example.test",
+        emailVerified: true,
+      }),
+    );
+  });
+  it("returns actionable errors when provisioning cannot safely claim an email", async () => {
+    mocks.state.mockResolvedValue({
+      kind: "ok",
+      state: {
+        version: 1,
+        subject: "sub",
+        providerSessionId: "sid",
+        active: true,
+        passwordResetState: reset,
+        operatorCutoff: null,
+        securityVersion: 2,
+      },
+    });
+    mocks.create.mockRejectedValueOnce(new Error("local_email_collision"));
+    const collision = await GET(request());
+    expect(collision.status).toBe(409);
+    expect(await collision.json()).toMatchObject({
+      code: "existing_account_requires_import_mapping",
+      message: expect.stringContaining("import its Accounts mapping"),
+    });
+    mocks.create.mockRejectedValueOnce(new Error("verified_email_required"));
+    const unverified = await GET(request());
+    expect(unverified.status).toBe(403);
+    expect(await unverified.json()).toMatchObject({
+      code: "verified_email_required",
+      message: expect.stringContaining("Verify your email"),
+    });
   });
 });

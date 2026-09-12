@@ -84,6 +84,7 @@ export type VerifiedIdentity = {
   subject: string;
   providerSessionId: string;
   email: string | null;
+  emailVerified: boolean;
   name: string | null;
   picture: string | null;
   authTime: unknown;
@@ -150,7 +151,11 @@ export async function finishAuthorization(
     issuer: claims.iss,
     subject: claims.sub,
     providerSessionId: claims.sid,
-    email: typeof claims.email === "string" ? claims.email.toLowerCase() : null,
+    email:
+      typeof claims.email === "string"
+        ? claims.email.trim().toLowerCase()
+        : null,
+    emailVerified: claims.email_verified === true,
     name: typeof claims.name === "string" ? claims.name : null,
     picture: typeof claims.picture === "string" ? claims.picture : null,
     authTime: claims.auth_time,

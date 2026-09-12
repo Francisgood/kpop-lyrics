@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
 import { generateToken } from "@/lib/auth";
 import {
   PROVIDER_STATE_MAX_AGE_MS,
@@ -14,44 +15,110 @@ import type { ResetState } from "./freshness";
 export const sharedSessionInclude = {
   user: { include: { sharedIdentity: true } },
 } as const;
-// Reserved for a future reviewed provisioning job. No password input can hash to it.
+// No password input can hash to this value because legacy hashes are lowercase hex.
 export const EXTERNAL_PASSWORD_SENTINEL = "!shared-auth-only!";
-export async function createMappedSession(input: {
+type SessionInput = {
   issuer: string;
   subject: string;
+  email: string | null;
+  emailVerified: boolean;
+  name: string | null;
+  picture: string | null;
   providerSessionId: string;
   authenticatedAtMs: number;
   securityVersion: number;
   resetState: ResetState;
-}) {
-  return prisma.$transaction(async (tx) => {
-    const identity = await tx.sharedAuthIdentity.findUnique({
+};
+function normalizedVerifiedEmail(input: SessionInput): string | null {
+  if (!input.emailVerified || input.email === null) return null;
+  const email = input.email.trim().toLowerCase();
+  return email.length <= 320 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    ? email
+    : null;
+}
+function isUniqueConflict(error: unknown) {
+  return (
+    !!error &&
+    typeof error === "object" &&
+    (error as { code?: unknown }).code === "P2002"
+  );
+}
+async function createSessionForIdentity(
+  tx: Prisma.TransactionClient,
+  userId: string,
+  input: SessionInput,
+) {
+  const token = generateToken();
+  const now = new Date();
+  const session = await tx.session.create({
+    data: {
+      userId,
+      token,
+      expiresAt: new Date(now.getTime() + SESSION_TTL_SECONDS * 1000),
+      providerSessionId: input.providerSessionId,
+      authenticatedAt: new Date(input.authenticatedAtMs),
+      providerCheckedAt: now,
+      securityVersion: input.securityVersion,
+      passwordResetAt:
+        input.resetState.lastPasswordReset === null
+          ? null
+          : new Date(input.resetState.lastPasswordReset),
+    },
+    include: { user: true },
+  });
+  return { token, session };
+}
+export async function createSharedSession(input: SessionInput) {
+  const run = () =>
+    prisma.$transaction(async (tx) => {
+      const identity = await tx.sharedAuthIdentity.findUnique({
+        where: {
+          issuer_subject: { issuer: input.issuer, subject: input.subject },
+        },
+        select: { userId: true },
+      });
+      if (identity)
+        return createSessionForIdentity(tx, identity.userId, input);
+
+      const email = normalizedVerifiedEmail(input);
+      if (!email) throw new Error("verified_email_required");
+      const collision = await tx.user.findFirst({
+        where: { email: { equals: email, mode: "insensitive" } },
+        select: { id: true },
+      });
+      if (collision) throw new Error("local_email_collision");
+      const user = await tx.user.create({
+        data: {
+          email,
+          displayName: input.name?.trim() || email.split("@")[0],
+          avatarUrl: input.picture,
+          passwordHash: EXTERNAL_PASSWORD_SENTINEL,
+          emailVerified: true,
+          sharedIdentity: {
+            create: { issuer: input.issuer, subject: input.subject },
+          },
+        },
+        select: { id: true },
+      });
+      return createSessionForIdentity(tx, user.id, input);
+    });
+  try {
+    return await run();
+  } catch (error) {
+    if (!isUniqueConflict(error)) throw error;
+    // A concurrent callback for this exact provider identity may have won.
+    // Re-read only by issuer/sub; an email match never establishes ownership.
+    const winner = await prisma.sharedAuthIdentity.findUnique({
       where: {
         issuer_subject: { issuer: input.issuer, subject: input.subject },
       },
-      include: { user: true },
+      select: { userId: true },
     });
-    if (!identity) throw new Error("unmapped_identity");
-    const token = generateToken();
-    const now = new Date();
-    const session = await tx.session.create({
-      data: {
-        userId: identity.userId,
-        token,
-        expiresAt: new Date(now.getTime() + SESSION_TTL_SECONDS * 1000),
-        providerSessionId: input.providerSessionId,
-        authenticatedAt: new Date(input.authenticatedAtMs),
-        providerCheckedAt: now,
-        securityVersion: input.securityVersion,
-        passwordResetAt:
-          input.resetState.lastPasswordReset === null
-            ? null
-            : new Date(input.resetState.lastPasswordReset),
-      },
-      include: { user: true },
-    });
-    return { token, session };
-  });
+    if (!winner) throw new Error("local_email_collision");
+    return prisma.$transaction((tx) =>
+      createSessionForIdentity(tx, winner.userId, input),
+    );
+  }
 }
 export async function authorizeSharedSession(
   token: string,
