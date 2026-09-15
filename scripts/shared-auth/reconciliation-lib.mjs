@@ -72,9 +72,45 @@ function normalizedLocal(snapshot) {
         fail(`local user ${id} has duplicate ${table} IDs`);
       linkedRecords[table] = [...ids].sort();
     }
-    return { id, role: user.role, linkedRecords };
+    const normalized = { id, role: user.role, linkedRecords };
+    if (user.linkedRecordDigests !== undefined) {
+      if (
+        !user.linkedRecordDigests ||
+        typeof user.linkedRecordDigests !== "object" ||
+        Array.isArray(user.linkedRecordDigests)
+      )
+        fail(`local user ${id} linkedRecordDigests must be an object`);
+      const linkedRecordDigests = {};
+      for (const table of Object.keys(user.linkedRecordDigests).sort()) {
+        const digest = user.linkedRecordDigests[table];
+        if (!hex64.test(digest))
+          fail(`local user ${id} linkedRecordDigests.${table} must be SHA-256`);
+        linkedRecordDigests[table] = digest;
+      }
+      normalized.linkedRecordDigests = linkedRecordDigests;
+    }
+    return normalized;
   });
-  return { version: 1, users: users.sort((a, b) => a.id.localeCompare(b.id)) };
+  const normalized = {
+    version: 1,
+    users: users.sort((a, b) => a.id.localeCompare(b.id)),
+  };
+  if (snapshot.anonymousPollVotes !== undefined) {
+    const poll = snapshot.anonymousPollVotes;
+    if (
+      !poll ||
+      !Array.isArray(poll.ids) ||
+      poll.ids.some((id) => typeof id !== "string" || !id) ||
+      new Set(poll.ids).size !== poll.ids.length ||
+      !hex64.test(poll.recordsDigest)
+    )
+      fail("local anonymousPollVotes must contain unique IDs and SHA-256");
+    normalized.anonymousPollVotes = {
+      ids: [...poll.ids].sort(),
+      recordsDigest: poll.recordsDigest,
+    };
+  }
+  return normalized;
 }
 
 export function buildReconciliation(localSnapshot, accountsSnapshot, mapping) {
