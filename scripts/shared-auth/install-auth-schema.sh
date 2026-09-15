@@ -33,6 +33,7 @@ trap cleanup EXIT INT TERM
 
 cat >"$sql" <<'SQL'
 \set ON_ERROR_STOP on
+\set VERBOSITY verbose
 BEGIN;
 SET LOCAL lock_timeout = '5s';
 SET LOCAL statement_timeout = '300s';
@@ -79,23 +80,23 @@ BEGIN
            string_agg(format('%L, %I',a.attname,a.attname), ', ' ORDER BY a.attnum)
       INTO cols, expression FROM pg_attribute a LEFT JOIN pg_attrdef d ON d.adrelid=a.attrelid AND d.adnum=a.attnum
       WHERE a.attrelid=r.oid AND a.attnum>0 AND NOT a.attisdropped;
-    EXECUTE format('SELECT count(*), encode(sha256(convert_to(coalesce(string_agg(jsonb_build_object(%s)::text, E''\\n'' ORDER BY jsonb_build_object(%s)::text), ''''), ''UTF8'')), ''hex'') FROM %I.%I', expression, expression, r.nspname, r.relname)
+    EXECUTE format('SELECT count(*), encode(sha256(convert_to(coalesce(string_agg(jsonb_build_object(%s)::text, chr(10) ORDER BY jsonb_build_object(%s)::text), ''''), ''UTF8'')), ''hex'') FROM %I.%I', expression, expression, r.nspname, r.relname)
       INTO counted, hashed;
     INSERT INTO _aegyo_schema_before VALUES (r.relname, cols, counted, hashed);
   END LOOP;
 END $$;
 SQL
 cat "$migration" >>"$sql"
-cat >>"$sql" <<SQL
+cat >>"$sql" <<'SQL'
 CREATE TABLE "AegyoAuthOperatorJournal" (
   "id" text PRIMARY KEY CHECK ("id" = 'additive-shared-auth-v1'),
   "migrationChecksum" text NOT NULL CHECK ("migrationChecksum" ~ '^[0-9a-f]{64}$'),
   "installedAt" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 INSERT INTO "AegyoAuthOperatorJournal" ("id", "migrationChecksum")
-VALUES ('additive-shared-auth-v1', '$expected_checksum');
+VALUES ('additive-shared-auth-v1', :'expected_checksum');
 
-DO \$\$
+DO $$
 DECLARE b record; cols jsonb; expression text; counted bigint; hashed text;
 BEGIN
   IF EXISTS ((TABLE public._prisma_migrations EXCEPT ALL TABLE _aegyo_prisma_history_before) UNION ALL (TABLE _aegyo_prisma_history_before EXCEPT ALL TABLE public._prisma_migrations)) THEN
@@ -110,7 +111,7 @@ BEGIN
       INTO cols, expression FROM pg_attribute a LEFT JOIN pg_attrdef d ON d.adrelid=a.attrelid AND d.adnum=a.attnum
       WHERE a.attrelid=format('public.%I',b.table_name)::regclass AND a.attnum>0 AND NOT a.attisdropped
         AND NOT (b.table_name='Session' AND a.attname IN ('providerSessionId','authenticatedAt','providerCheckedAt','securityVersion','passwordResetAt'));
-    EXECUTE format('SELECT count(*), encode(sha256(convert_to(coalesce(string_agg(jsonb_build_object(%s)::text, E''\\n'' ORDER BY jsonb_build_object(%s)::text), ''''), ''UTF8'')), ''hex'') FROM public.%I', expression, expression, b.table_name)
+    EXECUTE format('SELECT count(*), encode(sha256(convert_to(coalesce(string_agg(jsonb_build_object(%s)::text, chr(10) ORDER BY jsonb_build_object(%s)::text), ''''), ''UTF8'')), ''hex'') FROM public.%I', expression, expression, b.table_name)
       INTO counted, hashed;
     IF cols <> b.columns_json THEN RAISE EXCEPTION 'preexisting column catalog changed: %', b.table_name; END IF;
     IF counted <> b.row_count OR hashed <> b.rows_hash THEN RAISE EXCEPTION 'preexisting rows changed: %', b.table_name; END IF;
@@ -120,12 +121,25 @@ BEGIN
       (SELECT table_name FROM _aegyo_schema_before UNION ALL SELECT unnest(ARRAY['_prisma_migrations','SharedAuthIdentity','AuthCutoverLatch','AegyoAuthOperatorJournal']))) THEN
     RAISE EXCEPTION 'unexpected table created';
   END IF;
-END \$\$;
+END $$;
 COMMIT;
 SQL
 
 if ! PGHOST=/var/run/postgresql PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" \
-  PGOPTIONS='-c client_min_messages=warning' psql -X -q -f "$sql" > /dev/null 2>"$error_log"; then
+  PGOPTIONS='-c client_min_messages=warning' psql -X -q -v expected_checksum="$expected_checksum" -f "$sql" > /dev/null 2>"$error_log"; then
+  sqlstate="$(sed -nE 's/.*ERROR: *([0-9A-Z]{5}):.*/\1/p' "$error_log" | head -n 1)"
+  [ -z "$sqlstate" ] || echo "schema_installer_sqlstate=$sqlstate" >&2
+  if grep -q 'unexpected preexisting or partial shared-auth schema' "$error_log"; then
+    echo 'schema_installer_failure=preexisting_or_partial_schema' >&2
+  elif grep -q 'preexisting rows changed:' "$error_log"; then
+    changed_table="$(sed -nE 's/.*preexisting rows changed: ([A-Za-z0-9_]+).*/\1/p' "$error_log" | head -n 1)"
+    echo 'schema_installer_failure=preexisting_rows_changed' >&2
+    [ -z "$changed_table" ] || echo "schema_installer_object=$changed_table" >&2
+  elif grep -q 'preexisting column catalog changed:' "$error_log"; then
+    changed_table="$(sed -nE 's/.*preexisting column catalog changed: ([A-Za-z0-9_]+).*/\1/p' "$error_log" | head -n 1)"
+    echo 'schema_installer_failure=preexisting_catalog_changed' >&2
+    [ -z "$changed_table" ] || echo "schema_installer_object=$changed_table" >&2
+  fi
   echo 'schema_installer_error=transaction_failed' >&2
   exit 1
 fi
