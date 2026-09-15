@@ -43,7 +43,12 @@ describe("logout during the cutover freeze", () => {
     });
   });
 
-  it.each(["missing_latch", "invalid_config", "state_unavailable"])(
+  it.each([
+    "cutover_freeze",
+    "missing_latch",
+    "invalid_config",
+    "state_unavailable",
+  ])(
     "expires the browser cookie without changing the database when closed: %s",
     async (reason) => {
       mocks.resolveAuthMode.mockResolvedValue({ kind: "closed", reason });
