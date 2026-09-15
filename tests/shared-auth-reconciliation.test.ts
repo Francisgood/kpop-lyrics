@@ -100,4 +100,26 @@ describe("shared-auth reconciliation manifest", () => {
       assertLocalStatePreserved(local(), roleChanged, manifest),
     ).toThrow(/roles/);
   });
+  it("includes optional linked-row and anonymous-poll digests without changing legacy fixtures", () => {
+    const extended = local();
+    extended.users[0].linkedRecordDigests = { Follow: "a".repeat(64) };
+    extended.anonymousPollVotes = {
+      ids: ["device-vote-b", "device-vote-a"],
+      recordsDigest: "b".repeat(64),
+    };
+    const manifest = buildReconciliation(extended, accounts(), mapping());
+    expect(manifest.localSnapshotDigest).not.toBe(
+      buildReconciliation(local(), accounts(), mapping()).localSnapshotDigest,
+    );
+    const changed = structuredClone(extended);
+    changed.users[0].linkedRecordDigests.Follow = "c".repeat(64);
+    expect(() =>
+      assertLocalStatePreserved(extended, changed, manifest),
+    ).toThrow(/ownership changed/);
+    const anonymousChanged = structuredClone(extended);
+    anonymousChanged.anonymousPollVotes.recordsDigest = "d".repeat(64);
+    expect(() =>
+      assertLocalStatePreserved(extended, anonymousChanged, manifest),
+    ).toThrow(/ownership changed/);
+  });
 });

@@ -6,12 +6,17 @@ import {
 } from "./config";
 
 export const ACCOUNTS_CUTOVER_LATCH_ID = "accounts-shared-auth-v1";
+export function authCutoverFrozen() {
+  return process.env.AEGYO_AUTH_CUTOVER_FREEZE === "true";
+}
+
 export type AuthMode =
   | { kind: "legacy" }
   | { kind: "shared"; config: SharedAuthConfig }
   | {
       kind: "closed";
       reason:
+        | "cutover_freeze"
         | "latched_flag_off"
         | "missing_latch"
         | "invalid_config"
@@ -19,6 +24,9 @@ export type AuthMode =
     };
 
 export async function resolveAuthMode(): Promise<AuthMode> {
+  if (authCutoverFrozen())
+    return { kind: "closed", reason: "cutover_freeze" };
+
   let latch: { id: string } | null;
   try {
     latch = await prisma.authCutoverLatch.findUnique({

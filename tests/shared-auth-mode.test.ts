@@ -19,9 +19,35 @@ beforeEach(() => {
   vi.clearAllMocks();
   for (const [key, value] of Object.entries(valid)) process.env[key] = value;
   delete process.env.AEGYO_SHARED_AUTH_ENABLED;
+  delete process.env.AEGYO_AUTH_CUTOVER_FREEZE;
   mocks.latch.mockResolvedValue(null);
 });
 describe("monotonic authentication cutover", () => {
+  it.each([
+    ["legacy configuration", undefined, null],
+    ["shared configuration before activation", "true", null],
+    [
+      "shared configuration after activation",
+      "true",
+      { id: ACCOUNTS_CUTOVER_LATCH_ID },
+    ],
+  ])("the explicit freeze overrides %s", async (_name, enabled, latch) => {
+    if (enabled) process.env.AEGYO_SHARED_AUTH_ENABLED = enabled;
+    process.env.AEGYO_AUTH_CUTOVER_FREEZE = "true";
+    mocks.latch.mockResolvedValue(latch);
+
+    await expect(resolveAuthMode()).resolves.toEqual({
+      kind: "closed",
+      reason: "cutover_freeze",
+    });
+    expect(mocks.latch).not.toHaveBeenCalled();
+  });
+
+  it("ignores freeze values other than the exact true literal", async () => {
+    process.env.AEGYO_AUTH_CUTOVER_FREEZE = "false";
+    await expect(resolveAuthMode()).resolves.toEqual({ kind: "legacy" });
+  });
+
   it("preserves legacy auth only before a latch exists", async () => {
     await expect(resolveAuthMode()).resolves.toEqual({ kind: "legacy" });
     expect(mocks.latch).toHaveBeenCalledWith({
