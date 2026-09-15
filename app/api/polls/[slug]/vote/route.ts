@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { getPollSeed, optionOf, type OptionKey } from "@/lib/polls";
 import { castVote, getCounts, checkIpRate, hashIp, newDeviceToken } from "@/lib/polls-db";
+import { authCutoverFrozen } from "@/lib/shared-auth/mode";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +10,13 @@ export const dynamic = "force-dynamic";
 // return the original pick instead of double-counting. No CAPTCHA in the path
 // (keeps the 5-second promise); casual abuse is deterred + flagged, not blocked.
 export async function POST(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  if (authCutoverFrozen()) {
+    return NextResponse.json(
+      { error: "Voting is temporarily unavailable. Please try again shortly." },
+      { status: 503, headers: { "retry-after": "60" } },
+    );
+  }
+
   const { slug } = await params;
   const seed = getPollSeed(slug);
   if (!seed) return NextResponse.json({ error: "Unknown poll" }, { status: 404 });

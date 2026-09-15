@@ -6,6 +6,10 @@ import {
 } from "./config";
 
 export const ACCOUNTS_CUTOVER_LATCH_ID = "accounts-shared-auth-v1";
+export function authCutoverFrozen() {
+  return process.env.AEGYO_AUTH_CUTOVER_FREEZE === "true";
+}
+
 export type AuthMode =
   | { kind: "legacy" }
   | { kind: "shared"; config: SharedAuthConfig }
@@ -20,7 +24,7 @@ export type AuthMode =
     };
 
 export async function resolveAuthMode(): Promise<AuthMode> {
-  if (process.env.AEGYO_AUTH_CUTOVER_FREEZE === "true")
+  if (authCutoverFrozen())
     return { kind: "closed", reason: "cutover_freeze" };
 
   let latch: { id: string } | null;

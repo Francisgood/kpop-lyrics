@@ -32,7 +32,6 @@ the shared-auth deployment is healthy and private ownership acceptance passes,
 then run the public sign-in canary immediately as a post-release gate.
 Profile-linked poll votes are required reconciliation state, and the collector
 always includes the IDs and full-row digest for `anonymousPollVotes`. The auth
-freeze makes signed-in requests anonymous, but it does not stop the public poll
-vote route from writing device votes. Block that route at the edge or pause its
-database writes for the same window, and keep it paused until the post-cutover
-anonymous digest matches.
+freeze also makes the public poll vote route return a retryable unavailable
+response before it reads or writes poll state or issues a device token. Keep the
+flag set until the post-cutover anonymous digest matches.
