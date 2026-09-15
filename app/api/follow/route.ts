@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     await ensureTable();
-    const session = await getSession();
+    const session = await getSession({ sensitive: true });
     if (!session) return NextResponse.json({ error: "auth_required" }, { status: 401 });
     const slug = String((await req.json().catch(() => ({})))?.targetSlug ?? "").trim();
     if (!slug) return NextResponse.json({ error: "missing targetSlug" }, { status: 400 });
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     await ensureTable();
-    const session = await getSession();
+    const session = await getSession({ sensitive: true });
     if (!session) return NextResponse.json({ error: "auth_required" }, { status: 401 });
     const slug = String((await req.json().catch(() => ({})))?.targetSlug ?? "").trim();
     if (!slug) return NextResponse.json({ error: "missing targetSlug" }, { status: 400 });

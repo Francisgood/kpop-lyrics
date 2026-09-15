@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "pairs": [
+    {
+      "localUserId": "synthetic-local-owner",
+      "subject": "opaque-subject-owner"
+    },
+    {
+      "localUserId": "synthetic-local-member",
+      "subject": "opaque-subject-member"
+    }
+  ]
+}

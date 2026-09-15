@@ -42,7 +42,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     await ensureTable();
-    const session = await getSession();
+    const session = await getSession({ sensitive: true });
     if (!session) return NextResponse.json({ error: "auth_required" }, { status: 401 });
     const b = await req.json().catch(() => ({}));
     const definitionId = String(b?.definitionId ?? "");

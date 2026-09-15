@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 // attributed to their profile slug so it shows on /u/[slug] and /annotation/[id].
 export async function POST(req: NextRequest) {
   try {
-    const session = await getSession();
+    const session = await getSession({ sensitive: true });
     if (!session) return NextResponse.json({ error: "auth_required" }, { status: 401 });
     const b = await req.json().catch(() => ({}));
     const note = String(b?.note ?? "").trim();

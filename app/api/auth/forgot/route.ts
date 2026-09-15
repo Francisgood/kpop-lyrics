@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { resolveAuthMode } from "@/lib/shared-auth/mode";
 import { prisma } from "@/lib/prisma";
 import { hashResetCode } from "@/lib/auth";
 import { sendMail } from "@/lib/email";
@@ -23,6 +24,9 @@ async function ensureTable() {
 }
 
 export async function POST(req: NextRequest) {
+  const authMode = await resolveAuthMode();
+  if (authMode.kind === "closed") return NextResponse.json({ error: "Sign-in is temporarily unavailable" }, { status: 503 });
+  if (authMode.kind === "shared") return NextResponse.json({ error: "Shared sign-in required", redirect: "/api/auth/shared/login" }, { status: 409 });
   try {
     await ensureTable();
     const email = String((await req.json().catch(() => ({})))?.email ?? "").trim().toLowerCase();

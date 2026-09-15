@@ -52,8 +52,6 @@ async function ensureTable() {
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "NewsPost_tag_idx" ON "NewsPost" ("tag")`);
   tableReady = true;
 }
-export { ensureTable as ensureNewsTable };
-
 function authed(req: NextRequest): boolean {
   const secret = process.env.IMAGE_REFRESH_SECRET;
   return !!secret && req.headers.get("authorization") === `Bearer ${secret}`;

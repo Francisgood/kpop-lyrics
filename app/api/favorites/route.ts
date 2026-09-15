@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getSession();
+  const session = await getSession({ sensitive: true });
   if (!session) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
   const { entityType, entityId } = await req.json().catch(() => ({})) as {

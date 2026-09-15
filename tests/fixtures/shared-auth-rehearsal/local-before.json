@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "users": [
+    {
+      "id": "synthetic-local-owner",
+      "role": "admin",
+      "linkedRecords": {
+        "Favorite": ["synthetic-favorite"],
+        "Comment": [],
+        "SuggestedEdit": [],
+        "PointEvent": ["synthetic-points"],
+        "PollVote": [],
+        "SlangVote": [],
+        "Follow": ["synthetic-follow"]
+      }
+    },
+    {
+      "id": "synthetic-local-member",
+      "role": "user",
+      "linkedRecords": {
+        "Favorite": [],
+        "Comment": [],
+        "SuggestedEdit": [],
+        "PointEvent": [],
+        "PollVote": [],
+        "SlangVote": [],
+        "Follow": []
+      }
+    }
+  ]
+}

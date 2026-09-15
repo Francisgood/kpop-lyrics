@@ -1,0 +1,4 @@
+**
+!scripts/
+!scripts/shared-auth/
+!scripts/shared-auth/real-restore-operator.sh
