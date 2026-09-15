@@ -24,9 +24,13 @@ final snapshot:
 
 Keep the explicit flag active through the source snapshot, Accounts import,
 mapping installation/status check, linked-record reconciliation, latch
-activation, post-activation ownership snapshot, and canary acceptance. Run any
-canary that must precede reopening through the reviewed private operator because
-the public callback remains closed. Remove the explicit freeze flag only after
-the shared-auth deployment is healthy and ownership acceptance passes. The
-reconciliation fingerprint covers profile-linked poll votes, so anonymous poll
-writes do not need to be paused for this invariant.
+activation, post-activation ownership snapshot, and private acceptance. While
+the flag is set, use only the reviewed private operator for pre-release identity
+and ownership checks; public login and callback routes are intentionally closed
+and cannot serve as canary evidence. Remove the explicit freeze flag only after
+the shared-auth deployment is healthy and private ownership acceptance passes,
+then run the public sign-in canary immediately as a post-release gate. The
+production ownership snapshot covers profile-linked poll votes and excludes
+anonymous device votes, so anonymous polling does not need to be paused for this
+cutover. If a future snapshot opts into `anonymousPollVotes`, pause anonymous
+poll writes until its post-cutover digest also matches.
