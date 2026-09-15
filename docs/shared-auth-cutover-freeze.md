@@ -29,8 +29,10 @@ the flag is set, use only the reviewed private operator for pre-release identity
 and ownership checks; public login and callback routes are intentionally closed
 and cannot serve as canary evidence. Remove the explicit freeze flag only after
 the shared-auth deployment is healthy and private ownership acceptance passes,
-then run the public sign-in canary immediately as a post-release gate. The
-production ownership snapshot covers profile-linked poll votes and excludes
-anonymous device votes, so anonymous polling does not need to be paused for this
-cutover. If a future snapshot opts into `anonymousPollVotes`, pause anonymous
-poll writes until its post-cutover digest also matches.
+then run the public sign-in canary immediately as a post-release gate.
+Profile-linked poll votes are required reconciliation state, and the collector
+always includes the IDs and full-row digest for `anonymousPollVotes`. The auth
+freeze makes signed-in requests anonymous, but it does not stop the public poll
+vote route from writing device votes. Block that route at the edge or pause its
+database writes for the same window, and keep it paused until the post-cutover
+anonymous digest matches.
