@@ -99,6 +99,8 @@ export default async function HostedEventPage({ params }: { params: Promise<{ sl
         .ev-btn-primary:hover { filter:brightness(1.08); }
         .ev-btn-ghost { border:1px solid var(--border-strong); color:var(--ink); }
         .ev-btn-ghost:hover { border-color:var(--sakura); color:var(--sakura); }
+        .ev-video { position:relative; aspect-ratio:16/9; border-radius:8px; overflow:hidden; border:1px solid var(--border); background:#000; }
+        .ev-video iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
         .ev-phases { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; }
         .ev-prizes { display:grid; grid-template-columns:repeat(auto-fit,minmax(118px,1fr)); gap:10px; }
         .ev-judges { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:10px; }
@@ -149,9 +151,30 @@ export default async function HostedEventPage({ params }: { params: Promise<{ sl
               </p>
             ))}
 
-            <h2 style={{ fontFamily: "var(--sans)", fontSize: ".84rem", fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--ink)", margin: "30px 0 12px" }}>
-              <T en="What to expect" es="Qué esperar" />
-            </h2>
+            {/* Example clip — nocookie host so an embed doesn't drop ad cookies on a reader. */}
+            {e.video && (
+              <>
+                <SectionHeading en={e.video.heading} es={e.video.headingEs} />
+                <div className="ev-video">
+                  <iframe
+                    src={`https://www.youtube-nocookie.com/embed/${e.video.id}?rel=0`}
+                    title={e.video.title}
+                    loading="lazy"
+                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                  />
+                </div>
+                <p style={{ fontSize: ".82rem", lineHeight: 1.6, color: "var(--ink-faint)", margin: "10px 0 0" }}>
+                  <T en={e.video.caption} es={e.video.captionEs} />{" "}
+                  <a href={e.video.channelUrl} target="_blank" rel="noopener noreferrer" style={{ color: "var(--sakura)", textDecoration: "none", fontWeight: 700 }}>
+                    {e.video.channel} ↗
+                  </a>
+                </p>
+              </>
+            )}
+
+            <SectionHeading en="What to expect" es="Qué esperar" />
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 10 }}>
               {e.expect.map((x) => (
                 <li key={x.en} style={{ display: "flex", gap: 11, fontSize: ".96rem", lineHeight: 1.6, color: "var(--ink-dim)" }}>

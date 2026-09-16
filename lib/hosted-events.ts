@@ -29,6 +29,8 @@ export type HostedEvent = {
   body: string[];
   bodyEs: string[];
   expect: { en: string; es: string }[];
+  /** An example clip, so someone who has never seen a random play dance can watch one. */
+  video?: { id: string; title: string; channel: string; channelUrl: string; heading: string; headingEs: string; caption: string; captionEs: string };
   /** Running order — each phase renders as a card, duration only (no invented clock times). */
   phases?: { name: string; nameEs: string; length: string; lengthEs: string; blurb: string; blurbEs: string }[];
   /** Long-form rules for a structured event, plus the prize ladder they resolve to. */
@@ -89,6 +91,16 @@ export const HOSTED_EVENTS: HostedEvent[] = [
       { en: "NYU KNESIS on the set list — NYU's very own K-pop cover dance club.", es: "NYU KNESIS a cargo de la lista — el club de baile de covers de K-pop de NYU." },
       { en: "Free and outdoors — but register on this page first, so we know how many to expect.", es: "Gratis y al aire libre — pero regístrate primero en esta página para que sepamos cuántos esperar." },
     ],
+    video: {
+      id: "2mtaoDYcisY",
+      title: "During the GoToe's RPD in New York, NCT 127 actually appeared…!! Am I dreaming???",
+      channel: "토경아 약먹자 (GoToe)",
+      channelUrl: "https://www.youtube.com/@gotoe",
+      heading: "What a random play dance looks like",
+      headingEs: "Cómo se ve un random play dance",
+      caption: "A GoToe random play dance in New York — the one where NCT 127 turned up. This is the format, minus the idols.",
+      captionEs: "Un random play dance de GoToe en Nueva York — ese en el que aparecieron NCT 127. Este es el formato, sin los idols.",
+    },
     phases: [
       {
         name: "The tournament",
