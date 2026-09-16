@@ -99,6 +99,13 @@ export default async function HostedEventPage({ params }: { params: Promise<{ sl
         .ev-btn-primary:hover { filter:brightness(1.08); }
         .ev-btn-ghost { border:1px solid var(--border-strong); color:var(--ink); }
         .ev-btn-ghost:hover { border-color:var(--sakura); color:var(--sakura); }
+        .ev-phases { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; }
+        .ev-prizes { display:grid; grid-template-columns:repeat(auto-fit,minmax(118px,1fr)); gap:10px; }
+        .ev-judges { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:10px; }
+        .ev-judge { display:block; border:1px solid var(--border); border-radius:8px; padding:13px 15px; text-decoration:none; background:var(--bg-card); transition:border-color .15s ease; }
+        .ev-judge:hover { border-color:var(--sakura); }
+        .ev-social { display:inline-flex; align-items:center; gap:6px; border:1px solid var(--border-strong); border-radius:999px; padding:6px 13px; font-size:.78rem; font-weight:700; color:var(--ink); text-decoration:none; }
+        .ev-social:hover { border-color:var(--sakura); color:var(--sakura); }
       `}</style>
 
       {/* ── Hero ──────────────────────────────────────────────────────── */}
@@ -154,6 +161,73 @@ export default async function HostedEventPage({ params }: { params: Promise<{ sl
               ))}
             </ul>
 
+            {/* Running order — durations only; we don't invent clock times per phase. */}
+            {e.phases && e.phases.length > 0 && (
+              <>
+                <SectionHeading en="The night in two halves" es="La noche en dos mitades" />
+                <div className="ev-phases">
+                  {e.phases.map((ph, i) => (
+                    <div key={ph.name} style={{ border: "1px solid var(--border)", borderRadius: 8, padding: "16px 18px", background: "var(--bg-card)" }}>
+                      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8, marginBottom: 6 }}>
+                        <span style={{ fontSize: ".6rem", fontWeight: 900, letterSpacing: ".13em", textTransform: "uppercase", color: "var(--sakura)" }}>
+                          <T en={`Part ${i + 1}`} es={`Parte ${i + 1}`} />
+                        </span>
+                        <span style={{ fontSize: ".72rem", fontWeight: 700, color: "var(--ink-faint)" }}>
+                          <T en={ph.length} es={ph.lengthEs} />
+                        </span>
+                      </div>
+                      <div style={{ fontSize: "1.02rem", fontWeight: 900, color: "var(--ink)", marginBottom: 6 }}>
+                        <T en={ph.name} es={ph.nameEs} />
+                      </div>
+                      <p style={{ fontSize: ".88rem", lineHeight: 1.6, color: "var(--ink-dim)", margin: 0 }}>
+                        <T en={ph.blurb} es={ph.blurbEs} />
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {e.format && (
+              <>
+                <SectionHeading en={e.format.heading} es={e.format.headingEs} />
+                {e.format.body.map((para, i) => (
+                  <p key={i} style={{ fontSize: ".98rem", lineHeight: 1.7, color: "var(--ink-dim)", margin: "0 0 14px" }}>
+                    <T en={para} es={e.format!.bodyEs[i]} />
+                  </p>
+                ))}
+                <div className="ev-prizes" style={{ marginTop: 16 }}>
+                  {e.format.prizes.map((p) => (
+                    <div key={p.label} style={{ border: "1px solid var(--border)", borderRadius: 8, padding: "13px 14px", background: "var(--bg-card)" }}>
+                      <div style={{ fontSize: "1.5rem", fontWeight: 900, color: "var(--sakura)", lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{p.value}</div>
+                      <div style={{ fontSize: ".74rem", color: "var(--ink-dim)", marginTop: 5, lineHeight: 1.35 }}>
+                        <T en={p.label} es={p.labelEs} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {e.lineup && e.lineup.people.length > 0 && (
+              <>
+                <SectionHeading en={e.lineup.heading} es={e.lineup.headingEs} />
+                {e.lineup.preliminary && (
+                  <p style={{ fontSize: ".82rem", color: "var(--ink-faint)", margin: "0 0 12px" }}>
+                    <T en="Preliminary line-up — we'll update this page if it changes." es="Alineación preliminar — actualizaremos esta página si cambia." />
+                  </p>
+                )}
+                <div className="ev-judges">
+                  {e.lineup.people.map((j) => (
+                    <a key={j.handle} className="ev-judge" href={j.url} target="_blank" rel="noopener noreferrer">
+                      <div style={{ fontSize: ".95rem", fontWeight: 800, color: "var(--ink)" }}>{j.name}</div>
+                      <div style={{ fontSize: ".8rem", color: "var(--sakura)", marginTop: 3 }}>{j.handle}</div>
+                    </a>
+                  ))}
+                </div>
+              </>
+            )}
+
             <div style={{ marginTop: 30, border: "1px solid var(--border)", borderRadius: 8, padding: "18px 20px", background: "var(--bg-card)" }}>
               <div style={{ fontSize: ".62rem", fontWeight: 900, letterSpacing: ".13em", textTransform: "uppercase", color: "var(--ink-faint)", marginBottom: 7 }}>
                 <T en="Hosted with" es="Con" />
@@ -164,6 +238,20 @@ export default async function HostedEventPage({ params }: { params: Promise<{ sl
               <p style={{ fontSize: ".92rem", lineHeight: 1.62, color: "var(--ink-dim)", margin: "8px 0 0" }}>
                 <T en={e.host.blurb} es={e.host.blurbEs} />
               </p>
+              {e.host.profile?.map((para, i) => (
+                <p key={i} style={{ fontSize: ".9rem", lineHeight: 1.66, color: "var(--ink-dim)", margin: "10px 0 0" }}>
+                  <T en={para} es={e.host.profileEs?.[i]} />
+                </p>
+              ))}
+              {e.host.links && e.host.links.length > 0 && (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
+                  {e.host.links.map((l) => (
+                    <a key={l.url} className="ev-social" href={l.url} target="_blank" rel="noopener noreferrer">
+                      {l.label} <span style={{ color: "var(--ink-faint)", fontWeight: 600 }}>{l.handle}</span>
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
 
             <ArcadeCTA margin="30px 0 0" />
@@ -199,6 +287,14 @@ export default async function HostedEventPage({ params }: { params: Promise<{ sl
         </div>
       </div>
     </main>
+  );
+}
+
+function SectionHeading({ en, es }: { en: string; es: string }) {
+  return (
+    <h2 style={{ fontFamily: "var(--sans)", fontSize: ".84rem", fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--ink)", margin: "34px 0 12px" }}>
+      <T en={en} es={es} />
+    </h2>
   );
 }
 
