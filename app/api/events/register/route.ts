@@ -1,30 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { subscribeToBeehiiv } from "@/lib/beehiiv";
 import { hostedEventBySlug } from "@/lib/hosted-events";
+import { ensureRegistrationTable, onboardRegistrant } from "@/lib/event-registrations";
 import { randomUUID } from "crypto";
 
 export const dynamic = "force-dynamic";
-
-// Attendee registrations for the events we host ourselves (lib/hosted-events).
-// Self-contained store, created additively on first use — same pattern as
-// GiveawayEntry / ScannedEvent. Never touches other tables.
-let tableReady = false;
-async function ensureTable() {
-  if (tableReady) return;
-  await prisma.$executeRawUnsafe(`
-    CREATE TABLE IF NOT EXISTS "EventRegistration" (
-      "id"         TEXT PRIMARY KEY,
-      "eventSlug"  TEXT NOT NULL,
-      "name"       TEXT NOT NULL,
-      "email"      TEXT NOT NULL,
-      "optIn"      BOOLEAN NOT NULL DEFAULT false,
-      "createdAt"  TIMESTAMP NOT NULL DEFAULT now()
-    )`);
-  await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "EventRegistration_slug_email_key" ON "EventRegistration" ("eventSlug", "email")`);
-  await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "EventRegistration_eventSlug_idx" ON "EventRegistration" ("eventSlug")`);
-  tableReady = true;
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -44,7 +24,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Registration for this event has closed." }, { status: 410 });
     }
 
-    await ensureTable();
+    await ensureRegistrationTable();
 
     // One registration per email per event. A repeat submit is treated as an
     // update so someone can change their mind about the mailing list.
@@ -58,8 +38,9 @@ export async function POST(req: NextRequest) {
         VALUES (${randomUUID()}, ${slug}, ${name}, ${email}, ${optIn})`;
     }
 
-    // Only subscribe when they actually ticked the box. Best-effort; never throws.
-    if (optIn) await subscribeToBeehiiv({ email, source: `event:${slug}` });
+    // Onboarding runs after the row is safe: the newsletter hand-off only happens
+    // for people who ticked the box, the confirmation receipt goes to everyone.
+    await onboardRegistrant(event, { name, email, optIn });
 
     const total = await prisma.$queryRaw<{ c: number }[]>`
       SELECT COUNT(*)::int AS c FROM "EventRegistration" WHERE "eventSlug" = ${slug}`;
@@ -75,7 +56,7 @@ export async function GET(req: NextRequest) {
   try {
     const slug = new URL(req.url).searchParams.get("slug") ?? "";
     if (!hostedEventBySlug(slug)) return NextResponse.json({ error: "Unknown event." }, { status: 404 });
-    await ensureTable();
+    await ensureRegistrationTable();
     const total = await prisma.$queryRaw<{ c: number }[]>`
       SELECT COUNT(*)::int AS c FROM "EventRegistration" WHERE "eventSlug" = ${slug}`;
     return NextResponse.json({ count: Number(total[0]?.c ?? 0) });
