@@ -131,3 +131,23 @@ export async function enrollInBeehiivAutomation(email: string, automationId?: st
     return { ok: false, error: String(e) };
   }
 }
+
+/** Remove a subscription entirely — used to undo a test sign-up, not to unsubscribe people. */
+export async function deleteBeehiivSubscription(email: string): Promise<{ ok: boolean; skipped?: boolean; error?: string }> {
+  const apiKey = process.env.BEEHIIV_API_KEY;
+  const pubId = process.env.BEEHIIV_PUBLICATION_ID;
+  if (!apiKey || !pubId) return { ok: false, skipped: true };
+  const found = await findBeehiivSubscription(email);
+  if (!found.found || !found.id) return { ok: true };
+  try {
+    const res = await fetch(`${BEEHIIV_API}/publications/${pubId}/subscriptions/${found.id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${apiKey}` },
+    });
+    if (res.ok || res.status === 404) return { ok: true };
+    const txt = await res.text().catch(() => "");
+    return { ok: false, error: txt || `status ${res.status}` };
+  } catch (e) {
+    return { ok: false, error: String(e) };
+  }
+}

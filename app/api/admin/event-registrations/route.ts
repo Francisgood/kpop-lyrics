@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { ensureRegistrationTable } from "@/lib/event-registrations";
+import { deleteBeehiivSubscription } from "@/lib/beehiiv";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +31,34 @@ export async function GET(req: NextRequest) {
     });
   } catch (e) {
     console.error("event registrations read error:", e);
+    return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
+  }
+}
+
+/**
+ * Remove a registration — for test rows and obvious junk, not for unsubscribes
+ * (someone who wants off the list replies to the confirmation). Pass
+ * `purgeBeehiiv` to drop the matching subscription as well, which is what undoes
+ * a test sign-up cleanly.
+ */
+export async function DELETE(req: NextRequest) {
+  if (!authed(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    await ensureRegistrationTable();
+    const b = await req.json().catch(() => ({}));
+    const slug = String(b.slug ?? "").trim();
+    const email = String(b.email ?? "").trim().toLowerCase();
+    if (!slug || !email) return NextResponse.json({ error: "Provide slug and email." }, { status: 400 });
+
+    const n = await prisma.$executeRaw`DELETE FROM "EventRegistration" WHERE "eventSlug" = ${slug} AND "email" = ${email}`;
+    let beehiiv: string | undefined;
+    if (b.purgeBeehiiv === true) {
+      const r = await deleteBeehiivSubscription(email);
+      beehiiv = r.skipped ? "not configured" : r.ok ? "removed" : `failed: ${r.error}`;
+    }
+    return NextResponse.json({ ok: true, deleted: Number(n), beehiiv });
+  } catch (e) {
+    console.error("event registration delete error:", e);
     return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
   }
 }
