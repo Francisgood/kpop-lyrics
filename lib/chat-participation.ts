@@ -1,4 +1,4 @@
-export const CHAT_RULES_VERSION = "2026-09-23";
+export const CHAT_RULES_VERSION = "2026-09-28";
 
 export function hasCurrentChatParticipation(value: { rulesVersion: string; age16ConfirmedAt: Date | null } | null | undefined): boolean {
   return value?.rulesVersion === CHAT_RULES_VERSION && value.age16ConfirmedAt instanceof Date;

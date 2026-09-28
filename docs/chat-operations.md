@@ -10,6 +10,8 @@
 
 ## Production cutover
 
+Before enabling public posting, resolve the audience, legal-copy, underage-response, and named moderator decisions in [the legal and safety issue check](chat-legal-launch-review.md). Approval of the preview's appearance alone does not settle those operating decisions.
+
 1. Merge PR #16 and let the live `kpop-lyrics` Railway service deploy with `AEGYO_CHAT_ENABLED` unset. Confirm `/chat` still returns 404 and the rest of Aegyo works.
 2. Change the cleanup Function's `CHAT_CLEANUP_URL` to `https://www.aegyoarena.com/api/chat/cleanup` and run it once; the endpoint should return HTTP 200. Keep the same secret on the Function and live service.
 3. Set `AEGYO_CHAT_ENABLED=true` on the live service and wait for a healthy deploy. Smoke-test public read, sign-in, age/rules acceptance, one safe post, moderator review, and both apex and `www` entry points. The production database is shared with the preview, so remove disposable test posts through moderation.
@@ -29,7 +31,7 @@
 ## Limits and privacy
 
 - Text only, 2–500 characters or one emoji; links, contact details, meeting addresses, fake staff claims, requests for login codes, and repeated spam are rejected before classification. Large view/stream/like counts are accepted as fan conversation. Coordinated pile-ons and mass-report calls are held for review even if the model does not flag them. Display names receive a stable private tag so duplicate names are distinguishable.
-- Posting requires acceptance of Fan Chat Terms version `2026-09-23` and a self-declaration of age 16 or older. The server checks the current version on every post. Existing accounts see the same one-time gate; reading remains public. No birth date is collected for chat.
+- Posting requires acceptance of Fan Chat Terms version `2026-09-28` and a self-declaration of age 16 or older. The server checks the current version on every post. Existing accounts see the same one-time gate; reading remains public. No birth date is collected for chat.
 - Per account: one accepted/pending posting attempt per 8 seconds, 8 per 5 minutes, 60 per day, plus at most 3 moderation-outage retries per 5 minutes. Site-wide caps are 120 attempts per minute and 500 per 5 minutes. An authenticated reporter can file five reports per day and one report per message. Limits use database transactions and advisory locks across app instances.
 - Moderators can hide/approve messages and apply 24-hour chat mutes; each action is recorded as an append-only moderation event. They cannot mute themselves or an equal/higher role. A new report after approval reopens the message in the review queue without hiding it; two new independent reports hide it again.
 - Chat tables hold local user IDs, display content, report reason codes, and review data. They do not copy email addresses or IP addresses. The classifier receives only message text.
