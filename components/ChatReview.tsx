@@ -18,9 +18,11 @@ export default function ChatReview({ initialItems, initialRecent, initialMutes }
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState("");
   async function review(id: string, decision: "visible" | "removed") {
+    const reason = decision === "removed" ? window.prompt("Reason for removing this message (shown to its author)")?.trim() : "";
+    if (decision === "removed" && !reason) return;
     setBusy(id); setError("");
     try {
-      const response = await fetch("/api/admin/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, decision }) });
+      const response = await fetch("/api/admin/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, decision, reason }) });
       if (!response.ok) throw await responseError(response, "Could not save review. Try again.");
       setItems((current) => current.filter((item) => item.id !== id));
       if (decision === "removed") setRecent((current) => current.filter((item) => item.id !== id));
@@ -36,6 +38,19 @@ export default function ChatReview({ initialItems, initialRecent, initialMutes }
       if (!response.ok) throw await responseError(response, "Could not mute this user.");
       setMutes((current) => [...current.filter((item) => item.userId !== userId), { userId, name: items.find((item) => item.authorId === userId)?.author ?? recent.find((item) => item.authorId === userId)?.author ?? "Fan", until: new Date(Date.now() + 86400000).toISOString(), reason }]);
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Could not mute this user."); }
+    finally { setBusy(null); }
+  }
+  async function restrict(userId: string) {
+    const reason = window.prompt("Reason to restrict this account from chat indefinitely");
+    if (!reason?.trim() || !window.confirm("Restrict this account from posting or reporting, and remove its visible chat messages?")) return;
+    setBusy(userId); setError("");
+    try {
+      const response = await fetch("/api/admin/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ userId, decision: "restrict", reason }) });
+      if (!response.ok) throw await responseError(response, "Could not restrict this account.");
+      setItems((current) => current.filter((item) => item.authorId !== userId));
+      setRecent((current) => current.filter((item) => item.authorId !== userId));
+      setMutes((current) => [...current.filter((item) => item.userId !== userId), { userId, name: items.find((item) => item.authorId === userId)?.author ?? recent.find((item) => item.authorId === userId)?.author ?? "Fan", until: "9999-12-31T00:00:00.000Z", reason }]);
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Could not restrict this account."); }
     finally { setBusy(null); }
   }
   async function unmute(userId: string) {
@@ -54,17 +69,17 @@ export default function ChatReview({ initialItems, initialRecent, initialMutes }
       <div className="chat-review-meta"><strong>{item.author}</strong><span>{new Date(item.createdAt).toLocaleString()}</span><span>{item.status}</span></div>
       <p>{item.body}</p>
       <small>{item.reason || "Reported"}{item.reports.length ? ` · ${item.reports.join(", ")}` : ""}</small>
-      <div className="chat-review-actions"><button type="button" disabled={busy !== null} onClick={() => review(item.id, "visible")}>Approve</button><button type="button" disabled={busy !== null} onClick={() => review(item.id, "removed")}>Remove</button><button type="button" disabled={busy !== null} onClick={() => mute(item.authorId)}>Mute 24h</button></div>
+      <div className="chat-review-actions"><button type="button" disabled={busy !== null} onClick={() => review(item.id, "visible")}>Approve</button><button type="button" disabled={busy !== null} onClick={() => review(item.id, "removed")}>Remove</button><button type="button" disabled={busy !== null} onClick={() => mute(item.authorId)}>Mute 24h</button><button type="button" disabled={busy !== null} onClick={() => restrict(item.authorId)}>Restrict account</button></div>
     </article>)}
     <h2>Recent visible messages</h2>
     {recent.length === 0 && <p>No visible chat messages yet.</p>}
     {recent.map((item) => <article key={item.id} className="chat-review-item">
       <div className="chat-review-meta"><strong>{item.author}</strong><span>{new Date(item.createdAt).toLocaleString()}</span></div>
       <p>{item.body}</p>
-      <div className="chat-review-actions"><button type="button" disabled={busy !== null} onClick={() => review(item.id, "removed")}>Remove</button><button type="button" disabled={busy !== null} onClick={() => mute(item.authorId)}>Mute 24h</button></div>
+      <div className="chat-review-actions"><button type="button" disabled={busy !== null} onClick={() => review(item.id, "removed")}>Remove</button><button type="button" disabled={busy !== null} onClick={() => mute(item.authorId)}>Mute 24h</button><button type="button" disabled={busy !== null} onClick={() => restrict(item.authorId)}>Restrict account</button></div>
     </article>)}
     <h2>Active chat mutes</h2>
     {mutes.length === 0 && <p>No active mutes.</p>}
-    {mutes.map((mute) => <article key={mute.userId} className="chat-review-item"><strong>{mute.name}</strong><p>Until {new Date(mute.until).toLocaleString()} · {mute.reason}</p><button type="button" disabled={busy !== null} onClick={() => unmute(mute.userId)}>Unmute</button></article>)}
+    {mutes.map((mute) => <article key={mute.userId} className="chat-review-item"><strong>{mute.name}</strong><p>{new Date(mute.until).getUTCFullYear() === 9999 ? "Indefinite restriction" : `Until ${new Date(mute.until).toLocaleString()}`} · {mute.reason}</p><button type="button" disabled={busy !== null} onClick={() => unmute(mute.userId)}>{new Date(mute.until).getUTCFullYear() === 9999 ? "Unrestrict" : "Unmute"}</button></article>)}
   </div>;
 }

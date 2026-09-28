@@ -86,6 +86,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Safety check is unavailable. Please try again later." }, { status: 503 });
     }
     const message = await prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${session.userId}))::text`;
+      const currentMute = await tx.chatMute.findUnique({ where: { userId: session.userId }, select: { until: true } });
+      if (currentMute && currentMute.until > new Date()) throw new Error("chat_access_revoked");
       const created = await tx.chatMessage.create({
         data: { authorId: session.userId, authorName, body: checked.body, status, moderationNote: status === "held" ? "classifier" : null },
         select: { id: true, body: true, createdAt: true, authorName: true },
@@ -96,6 +99,7 @@ export async function POST(request: NextRequest) {
     });
     return NextResponse.json({ status, message: status === "visible" ? publicMessage(message) : null }, { status: 201 });
   } catch (error) {
+    if (error instanceof Error && error.message === "chat_access_revoked") return NextResponse.json({ error: "Your chat access is paused." }, { status: 403 });
     logChatFailure("post", error);
     return NextResponse.json({ error: "Chat is temporarily unavailable." }, { status: 503 });
   }

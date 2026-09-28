@@ -4,8 +4,8 @@ import { getChatSession } from "@/lib/chat-auth";
 import { canWriteChatInEnvironment, sameOrigin } from "@/lib/chat-policy";
 import { readChatJson } from "@/lib/chat-request";
 import { logChatFailure } from "@/lib/chat-logging";
+import { chatReportReasons, shouldHoldAfterReport } from "@/lib/chat-report-policy";
 
-const reasons = new Set(["abuse", "sexual", "spam", "personal_info", "other"]);
 
 export async function POST(request: NextRequest) {
   if (process.env.AEGYO_CHAT_ENABLED !== "true") return NextResponse.json({ error: "Chat is not enabled." }, { status: 404 });
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
   const input = parsed.value as { messageId?: unknown; reason?: unknown } | null;
   const messageId = typeof input?.messageId === "string" ? input.messageId : "";
   const reason = typeof input?.reason === "string" ? input.reason : "";
-  if (!messageId || messageId.length > 40 || !reasons.has(reason)) return NextResponse.json({ error: "Choose a report reason." }, { status: 400 });
+  if (!messageId || messageId.length > 40 || !chatReportReasons.has(reason)) return NextResponse.json({ error: "Choose a report reason." }, { status: 400 });
   try {
     const result = await prisma.$transaction(async (tx) => {
       await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${messageId}))::text`;
@@ -36,9 +36,9 @@ export async function POST(request: NextRequest) {
       // A prior approval starts a new reporting window. Old reports must not
       // make one new report immediately undo a moderator's decision.
       const count = await tx.chatReport.count({ where: { messageId, ...(message.reviewedAt ? { createdAt: { gt: message.reviewedAt } } : {}) } });
-      if (count >= 2) {
-        await tx.chatMessage.update({ where: { id: messageId }, data: { status: "held", moderationNote: "reports" } });
-        await tx.chatModerationEvent.create({ data: { messageId, userId: message.authorId, action: "reports_hold", detail: String(count) } });
+      if (shouldHoldAfterReport(reason, count)) {
+        await tx.chatMessage.update({ where: { id: messageId }, data: { status: "held", moderationNote: count < 2 ? "urgent_report" : "reports" } });
+        await tx.chatModerationEvent.create({ data: { messageId, userId: message.authorId, action: "reports_hold", detail: `${reason}:${count}` } });
       }
       return "reported";
     });

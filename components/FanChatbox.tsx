@@ -13,6 +13,7 @@ const reportReasons = [
   ["sexual", "Sexual content", "Contenido sexual"],
   ["spam", "Spam", "Spam"],
   ["personal_info", "Personal information", "Información personal"],
+  ["underage", "Underage user", "Usuario menor de edad"],
   ["other", "Other", "Otro"],
 ] as const;
 
@@ -178,7 +179,7 @@ export default function FanChatbox({ canPost, signedIn, previewRestricted = fals
           <div className={styles.composerMeta}><span>{t("Enter to send · Shift+Enter for a new line", "Enter para enviar · Shift+Enter para otra línea")}</span><span id={fullPage ? "chat-limit-full" : "chat-limit-dock"} className={length >= 500 ? styles.limitReached : ""} role={length >= 500 ? "status" : undefined}>{length >= 500 ? t("Limit reached · 500/500", "Límite alcanzado · 500/500") : `${length}/500`}</span></div>
         </form>}
         {!canPost && <p>{previewRestricted ? t("This preview is read-only for your account. Posting opens at launch.", "Esta vista previa es de solo lectura para tu cuenta. Podrás publicar al lanzar el chat.") : <>{signedIn ? t("Use your shared Aegyo account to post here.", "Usa tu cuenta Aegyo compartida para publicar aquí.") : t("Sign in with your Aegyo account to join the chat.", "Inicia sesión con tu cuenta Aegyo para participar.")} <Link href="/login">{t("Sign in", "Iniciar sesión")}</Link></>}</p>}
-        <small>{t("Public chat · no links or personal details", "Chat público · sin enlaces ni datos personales")} · <Link href="/chat/rules">{t("Rules", "Reglas")}</Link></small>
+        <small>{t("Public chat · no links or personal details", "Chat público · sin enlaces ni datos personales")} · <Link href="/chat/rules">{t("Rules", "Reglas")}</Link>{signedIn && <> · <Link href="/chat/status">{t("My chat status", "Mi estado")}</Link></>}</small>
         {!fullPage && <Link className={styles.fullRoomLink} href="/chat">{t("Open the full fan room", "Abrir la sala completa")} <span aria-hidden="true">↗</span></Link>}
       </div>
     </div>
