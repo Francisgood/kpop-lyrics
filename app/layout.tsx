@@ -5,13 +5,13 @@ import Link from "next/link";
 import FooterNewsletter from "@/components/FooterNewsletter";
 import SocialLinks from "@/components/SocialLinks";
 import OutboundTracker from "@/components/OutboundTracker";
+import CookieConsent from "@/components/CookieConsent";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import NavSearch from "@/components/NavSearch";
 import FanChatbox from "@/components/FanChatbox";
 import { LangProvider, T } from "@/components/LangProvider";
 import { getSession } from "@/lib/auth";
 import { canWriteChatInEnvironment, hasAegyoAccountSession } from "@/lib/chat-policy";
-import Script from "next/script";
 import Image from "next/image";
 import { Cormorant_Garamond, DM_Sans, Space_Mono } from "next/font/google";
 
@@ -124,51 +124,26 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <Link href="/privacy-policy" style={{ color: "inherit", textDecoration: "underline" }}>
                 <T en="Privacy Policy" es="Política de Privacidad" />
               </Link>
+              {" · "}
+              <Link href="/cookie-policy" style={{ color: "inherit", textDecoration: "underline" }}>
+                <T en="Cookie Policy" es="Política de Cookies" />
+              </Link>
+              {" · "}
+              {/* Opens the CookieConsent panel via its delegated [data-cookie-prefs] handler. */}
+              <button data-cookie-prefs type="button" style={{ color: "inherit", textDecoration: "underline", background: "none", border: "none", padding: 0, cursor: "pointer", font: "inherit", letterSpacing: "inherit" }}>
+                <T en="Cookie Preferences" es="Preferencias de Cookies" />
+              </button>
             </span>
             <span><T en="Made with ♡ by the fandom" es="Hecho con ♡ por el fandom" /></span>
           </div>
         </footer>
         {process.env.AEGYO_CHAT_ENABLED === "true" && <FanChatbox canPost={hasAegyoAccountSession(session) && canWriteChatInEnvironment(session?.user.email)} signedIn={isLoggedIn} previewRestricted={isLoggedIn && !canWriteChatInEnvironment(session?.user.email)} />}
 
-        {/* Google Analytics (gtag.js) — site traffic + paid-ads/referral source tracking */}
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-700MXJM1FW" strategy="afterInteractive" />
-        <Script id="ga4-gtag" strategy="afterInteractive">
-          {`window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-700MXJM1FW');`}
-        </Script>
-
-        {/* Taboola Pixel — paid-ads conversion tracking (account 2066412) */}
-        <Script id="taboola-tfa" strategy="lazyOnload">
-          {`window._tfa = window._tfa || [];
-window._tfa.push({notify: 'event', name: 'page_view', id: 2066412});
-!function (t, f, a, x) {
-  if (!document.getElementById(x)) {
-    t.async = 1;t.src = a;t.id=x;f.parentNode.insertBefore(t, f);
-  }
-}(document.createElement('script'),
-document.getElementsByTagName('script')[0],
-'//cdn.taboola.com/libtrc/unip/2066412/tfa.js',
-'tb_tfa_script');`}
-        </Script>
-
-        {/* Reddit Pixel — paid-ads conversion tracking (a2_j9m653pqhzu7) */}
-        <Script id="reddit-pixel" strategy="lazyOnload">
-          {`!function(w,d){if(!w.rdt){var p=w.rdt=function(){p.sendEvent?p.sendEvent.apply(p,arguments):p.callQueue.push(arguments)};p.callQueue=[];var t=d.createElement("script");t.src="https://www.redditstatic.com/ads/pixel.js?pixel_id=a2_j9m653pqhzu7",t.async=!0;var s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}}(window,document);rdt('init','a2_j9m653pqhzu7');rdt('track', 'PageVisit');`}
-        </Script>
-
-        {/* TikTok Pixel — paid-ads conversion tracking (D9AFTIJC77U1026600GG) */}
-        <Script id="tiktok-pixel" strategy="lazyOnload">
-          {`!function (w, d, t) {
-  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
-var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
-;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
-
-  ttq.load('D9AFTIJC77U1026600GG');
-  ttq.page();
-}(window, document, 'ttq');`}
-        </Script>
+        {/* Cookie consent widget — floating icon + preferences panel + cookie
+            policy. It also LOADS the consent-gated third-party pixels (Google
+            Analytics, Taboola, Reddit, TikTok) and issues the per-session UUID,
+            so the preference toggles are real, not decorative. */}
+        <CookieConsent />
         </LangProvider>
       </body>
     </html>
