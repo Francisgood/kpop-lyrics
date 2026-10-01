@@ -9,9 +9,7 @@
  * Safe for Railway's single persistent Node.js process.
  */
 
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 // Pending increments to flush
 const pending = new Map<string, number>();
