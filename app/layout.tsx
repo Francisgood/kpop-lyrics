@@ -9,6 +9,7 @@ import CookieConsent from "@/components/CookieConsent";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import NavSearch from "@/components/NavSearch";
 import FanChatbox from "@/components/FanChatbox";
+import ChatRegionGate from "@/components/ChatRegionGate";
 import { LangProvider, T } from "@/components/LangProvider";
 import { getSession } from "@/lib/auth";
 import { canWriteChatInEnvironment, hasAegyoAccountSession } from "@/lib/chat-policy";
@@ -137,7 +138,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <span><T en="Made with ♡ by the fandom" es="Hecho con ♡ por el fandom" /></span>
           </div>
         </footer>
-        {process.env.AEGYO_CHAT_ENABLED === "true" && <FanChatbox canPost={hasAegyoAccountSession(session) && canWriteChatInEnvironment(session?.user.email)} signedIn={isLoggedIn} previewRestricted={isLoggedIn && !canWriteChatInEnvironment(session?.user.email)} />}
+        {process.env.AEGYO_CHAT_ENABLED === "true" && <ChatRegionGate><FanChatbox canPost={hasAegyoAccountSession(session) && canWriteChatInEnvironment(session?.user.email)} signedIn={isLoggedIn} previewRestricted={isLoggedIn && !canWriteChatInEnvironment(session?.user.email)} /></ChatRegionGate>}
 
         {/* Cookie consent widget — floating icon + preferences panel + cookie
             policy. It also LOADS the consent-gated third-party pixels (Google
