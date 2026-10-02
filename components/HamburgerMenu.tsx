@@ -196,12 +196,14 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
               </div>
             ) : (
               <div style={{ display: "flex", gap: 10 }}>
-                <Link href="/login" onClick={close} style={{ flex: 1, textAlign: "center", textDecoration: "none", padding: "13px", borderRadius: 100, border: "1px solid rgba(255,255,255,0.25)", color: "#fff", fontWeight: 800, fontSize: "0.88rem" }}>
+                {/* Auth leaves this site. Keep the menu visible until the browser
+                    navigates so the footer cannot flash during the redirect. */}
+                <a href="/login" style={{ flex: 1, textAlign: "center", textDecoration: "none", padding: "13px", borderRadius: 100, border: "1px solid rgba(255,255,255,0.25)", color: "#fff", fontWeight: 800, fontSize: "0.88rem" }}>
                   <T en="Log In" es="Entrar" />
-                </Link>
-                <Link href="/signup" onClick={close} style={{ flex: 1, textAlign: "center", textDecoration: "none", padding: "13px", borderRadius: 100, background: "linear-gradient(90deg, var(--sakura), var(--lavender))", color: "#fff", fontWeight: 800, fontSize: "0.88rem" }}>
+                </a>
+                <a href="/signup" style={{ flex: 1, textAlign: "center", textDecoration: "none", padding: "13px", borderRadius: 100, background: "linear-gradient(90deg, var(--sakura), var(--lavender))", color: "#fff", fontWeight: 800, fontSize: "0.88rem" }}>
                   <T en="Sign Up" es="Regístrate" />
-                </Link>
+                </a>
               </div>
             )}
 
