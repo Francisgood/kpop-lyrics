@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { T, LangToggle, useT } from "@/components/LangProvider";
 import SmartImage from "@/components/SmartImage";
@@ -79,12 +80,12 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
         <span style={{ display: "block", width: 20, height: 2, background: "#2C3340", borderRadius: 2 }} />
       </button>
 
-      {/* Full-screen overlay menu (TMZ /pages/tips style, aegyo pink/purple) */}
-      {open && (
+      {/* Render above the cookie notice, outside the nav's stacking context. */}
+      {open && createPortal(
         <div
           onClick={close}
           style={{
-            position: "fixed", inset: 0, zIndex: 1000, overflowY: "auto",
+            position: "fixed", inset: 0, zIndex: 2147483002, overflowY: "auto",
             background:
               "radial-gradient(120% 80% at 50% 0%, rgba(184,160,255,0.18), rgba(0,0,0,0) 55%), " +
               "radial-gradient(120% 80% at 50% 100%, rgba(255,111,168,0.16), rgba(0,0,0,0) 55%), #070709",
@@ -212,7 +213,8 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
               <LangToggle />
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
