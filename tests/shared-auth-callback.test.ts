@@ -98,6 +98,15 @@ beforeEach(() => {
   );
 });
 describe("shared callback", () => {
+  it("offers a retry when the host-only login transaction cookie is missing", async () => {
+    const response = await GET(
+      new NextRequest(`${origin}/api/auth/shared/callback?code=unused&state=unused`),
+    );
+    expect(response.status).toBe(400);
+    expect(response.headers.get("content-type")).toContain("text/html");
+    expect(await response.text()).toContain("Try Accounts sign-in again");
+    expect(mocks.finish).not.toHaveBeenCalled();
+  });
   it("cannot provision while the durable cutover mode is closed", async () => {
     mocks.mode.mockResolvedValue({ kind: "closed", reason: "missing_latch" });
     const response = await GET(request());

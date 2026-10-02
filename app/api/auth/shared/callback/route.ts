@@ -69,7 +69,13 @@ export async function GET(request: NextRequest) {
     request.cookies.get(TX_COOKIE)?.value,
     config.transactionSecret,
   );
-  if (!tx) return fail("invalid_authorization_transaction");
+  if (!tx)
+    return provisioningFailure(
+      "invalid_authorization_transaction",
+      400,
+      "Sign-in could not finish",
+      "Your sign-in session expired or started on a different address. Please try signing in again.",
+    );
   try {
     const identity = await finishAuthorization(config, callbackUrl, tx);
     if (
