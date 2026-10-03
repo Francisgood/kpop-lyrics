@@ -45,6 +45,7 @@ const NAV: NavItem[] = [
 
 export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props) {
   const [open, setOpen] = useState(false);
+  const [signOutError, setSignOutError] = useState(false);
   const t = useT();
   const close = () => setOpen(false);
 
@@ -59,8 +60,15 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
   }, [open]);
 
   async function handleSignOut() {
-    await fetch("/api/auth/logout", { method: "POST" });
-    window.location.href = "/";
+    setSignOutError(false);
+    try {
+      const response = await fetch("/api/auth/logout", { method: "POST" });
+      if (!response.ok) throw new Error("logout_failed");
+      const result: { next?: string } = await response.json();
+      window.location.href = result.next || "/";
+    } catch {
+      setSignOutError(true);
+    }
   }
 
   return (
@@ -194,6 +202,7 @@ export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props
                     <T en="Sign out" es="Cerrar sesión" />
                   </button>
                 </div>
+                {signOutError && <p role="alert" style={{ color: "#ff9fbd", fontSize: "0.78rem" }}><T en="Could not finish sign-out. Please try again." es="No pudimos cerrar la sesión. Inténtalo de nuevo." /></p>}
               </div>
             ) : (
               <div style={{ display: "flex", gap: 10 }}>

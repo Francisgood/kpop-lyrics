@@ -15,8 +15,8 @@ vi.mock("../lib/shared-auth/mode", () => ({
 
 import { POST } from "../app/api/auth/logout/route";
 
-function logoutRequest() {
-  return new NextRequest("https://aegyo.example.test/api/auth/logout", {
+function logoutRequest(origin = "https://aegyo.example.test") {
+  return new NextRequest(`${origin}/api/auth/logout`, {
     method: "POST",
     headers: { cookie: "session=existing-session" },
   });
@@ -30,17 +30,34 @@ beforeEach(() => {
 describe("logout during the cutover freeze", () => {
   it.each([
     ["legacy", { kind: "legacy" }],
-    ["shared", { kind: "shared", config: {} }],
+    ["shared", { kind: "shared", config: { providerBaseUrl: "https://accounts.example.test", appOrigin: "https://aegyoarena.com" } }],
   ])("deletes the local session in %s mode", async (_name, mode) => {
     mocks.resolveAuthMode.mockResolvedValue(mode);
 
-    const response = await POST(logoutRequest());
+    const response = await POST(logoutRequest(mode.kind === "shared" ? "https://aegyoarena.com" : undefined));
 
     expect(response.status).toBe(200);
     expect(mocks.deleteSessions).toHaveBeenCalledOnce();
     expect(mocks.deleteSessions).toHaveBeenCalledWith({
       where: { token: "existing-session" },
     });
+    if (mode.kind === "shared")
+      expect(await response.json()).toEqual({
+        ok: true,
+        next: "https://accounts.example.test/sign-out?return=aegyo",
+      });
+  });
+
+  it("keeps a shared-auth preview sign-out local", async () => {
+    mocks.resolveAuthMode.mockResolvedValue({
+      kind: "shared",
+      config: {
+        providerBaseUrl: "https://accounts.example.test",
+        appOrigin: "https://aegyo.example.test",
+      },
+    });
+    const response = await POST(logoutRequest());
+    expect(await response.json()).toEqual({ ok: true });
   });
 
   it.each([
