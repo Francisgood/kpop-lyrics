@@ -24,18 +24,21 @@ type Card = {
 
 const CARDS: Card[] = [
   {
-    status: "open",
+    status: "closed",
     artist: "LE SSERAFIM",
     tour: { en: "PUREFLOW Tour", es: "Gira PUREFLOW" },
     img: "/giveaway/le-sserafim.jpg",
     accent: "var(--sakura)",
     blurb: {
-      en: "Win two lower-bowl seats in Section D + a private merch line, or $200 in official merch for the runner-up.",
-      es: "Gana dos asientos en el nivel bajo, Sección D, + una fila de merch privada, o $200 en merch oficial para el segundo lugar.",
+      en: "Entries are closed. See the provably-fair, Chainlink-verifiable candidate selection.",
+      es: "Las inscripciones están cerradas. Mira la selección de candidatos verificable con Chainlink.",
     },
     when: { en: "Concert: Thu, Oct 8, 2026", es: "Concierto: jue 8 de octubre de 2026" },
     where: { en: "Prudential Center - Newark, NJ", es: "Prudential Center - Newark, NJ" },
-    actions: [{ label: { en: "Enter now", es: "Participa ahora" }, href: "/le-sserafim-giveaway", primary: true }],
+    actions: [
+      { label: { en: "View giveaway", es: "Ver el sorteo" }, href: "/le-sserafim-giveaway" },
+      { label: { en: "See the selection", es: "Ver la selección" }, href: "/le-sserafim-giveaway/draw", primary: true },
+    ],
   },
   {
     status: "closed",
