@@ -1,0 +1,2225 @@
+{
+  "campaignId": "le-sserafim-giveaway-2026",
+  "manifestVersion": "aegyo-weighted-giveaway-manifest-v1",
+  "frozenAt": "2026-10-04T14:23:35.323Z",
+  "eligibleCount": 416,
+  "ticketCount": 552,
+  "eligibilityRule": "The supplied weighted CSV is the frozen source: one base ticket per distinct normalized email, plus its listed referral-bonus tickets. Private eligibility and cutoff checks occur before award.",
+  "entries": [
+    {
+      "ticketId": "LSF-T-abe8d80749356fb3d469feeb2c1904af",
+      "entrantId": "LSF-E-200ed31160fc80079858d964e8980768"
+    },
+    {
+      "ticketId": "LSF-T-0a7e53cf49c86b24ed297492ceadeb4c",
+      "entrantId": "LSF-E-b82a1423fc62db3e0023b28fff4d5bea"
+    },
+    {
+      "ticketId": "LSF-T-c1239400ae13771af9b191f849be451a",
+      "entrantId": "LSF-E-5027497feab530b454ec3ce9e06dc18f"
+    },
+    {
+      "ticketId": "LSF-T-c538081a6d269039dafb7cdea39983ad",
+      "entrantId": "LSF-E-8b53f790cdca892ac259e91c4ba9293c"
+    },
+    {
+      "ticketId": "LSF-T-7fa1de66ce24e8994f988f188e4e741a",
+      "entrantId": "LSF-E-810fee022efaf1648e17e3429400a04b"
+    },
+    {
+      "ticketId": "LSF-T-e2fa63a87e316cc3a4058d378d04af32",
+      "entrantId": "LSF-E-1d8815f0845aba32c9ca3763e61dcd59"
+    },
+    {
+      "ticketId": "LSF-T-4e9bf47631ef87ec002dee04253e0c84",
+      "entrantId": "LSF-E-e290fcc8b998273196b084acafbf1c03"
+    },
+    {
+      "ticketId": "LSF-T-cfc9e26747dc72a35a97d5d732cc2520",
+      "entrantId": "LSF-E-82ea26a3df1fe8c0fb0b516d90acfc75"
+    },
+    {
+      "ticketId": "LSF-T-85f19902996386167f405e3deca8febd",
+      "entrantId": "LSF-E-1d99e9ebe8cebe984dc15cb589e18e72"
+    },
+    {
+      "ticketId": "LSF-T-fbf0999bf72656500c328a91c560c382",
+      "entrantId": "LSF-E-e0cd12623e7ad17d6f1adf80afb0a29f"
+    },
+    {
+      "ticketId": "LSF-T-318b640015532219f8f45b79fab21c31",
+      "entrantId": "LSF-E-e0cd12623e7ad17d6f1adf80afb0a29f"
+    },
+    {
+      "ticketId": "LSF-T-81d8191838122ab143cd3da6a84fb028",
+      "entrantId": "LSF-E-e0cd12623e7ad17d6f1adf80afb0a29f"
+    },
+    {
+      "ticketId": "LSF-T-34cf99045948b1331257d18cdf3db403",
+      "entrantId": "LSF-E-a0394e7153e312940518b0942fefdea7"
+    },
+    {
+      "ticketId": "LSF-T-2e0345f73b0c8e07a9aaf8efb351e02b",
+      "entrantId": "LSF-E-a0394e7153e312940518b0942fefdea7"
+    },
+    {
+      "ticketId": "LSF-T-e6922c1b74fe1d54642c33bb54b50187",
+      "entrantId": "LSF-E-69a57ec95cde520e6a51af6f3467d8be"
+    },
+    {
+      "ticketId": "LSF-T-c12b59dc1e385805930577f29a702bd0",
+      "entrantId": "LSF-E-1213aa4f384a7bea860ca994245c1a2e"
+    },
+    {
+      "ticketId": "LSF-T-d77d4a7125b13f9bb134739ca85a1799",
+      "entrantId": "LSF-E-a192c89e3ad04bc759ec287c1de8439c"
+    },
+    {
+      "ticketId": "LSF-T-3e33334f5657f0f0209a9cd2e6bb25ff",
+      "entrantId": "LSF-E-8cc8d3ceda48cbc24ebbd1a68c10a3c0"
+    },
+    {
+      "ticketId": "LSF-T-7935ada11d0cdc12265ebe0a4267a306",
+      "entrantId": "LSF-E-14fd9473931212fe70e824160a670a43"
+    },
+    {
+      "ticketId": "LSF-T-e9846e1fc25bb1aefec5277450b4f762",
+      "entrantId": "LSF-E-44ef53cb99fcb4fc9a92b5d4d5a9ea92"
+    },
+    {
+      "ticketId": "LSF-T-43fccbab1bbcb586d4c720e230d23a53",
+      "entrantId": "LSF-E-44ef53cb99fcb4fc9a92b5d4d5a9ea92"
+    },
+    {
+      "ticketId": "LSF-T-c5fc3d0fff601bf1e3dbb293bd1e5000",
+      "entrantId": "LSF-E-44ef53cb99fcb4fc9a92b5d4d5a9ea92"
+    },
+    {
+      "ticketId": "LSF-T-9331acdc30331e2a295040e823b8d5b8",
+      "entrantId": "LSF-E-44ef53cb99fcb4fc9a92b5d4d5a9ea92"
+    },
+    {
+      "ticketId": "LSF-T-7747f5133470e41391710628b7efca3c",
+      "entrantId": "LSF-E-44ef53cb99fcb4fc9a92b5d4d5a9ea92"
+    },
+    {
+      "ticketId": "LSF-T-2f775614f006b87ff24f601d6ff6ef0e",
+      "entrantId": "LSF-E-44ef53cb99fcb4fc9a92b5d4d5a9ea92"
+    },
+    {
+      "ticketId": "LSF-T-b839826378d4c18c2329f75be0f5e8e9",
+      "entrantId": "LSF-E-44ef53cb99fcb4fc9a92b5d4d5a9ea92"
+    },
+    {
+      "ticketId": "LSF-T-284b477e4afeca618ef09b0b61d021bb",
+      "entrantId": "LSF-E-44ef53cb99fcb4fc9a92b5d4d5a9ea92"
+    },
+    {
+      "ticketId": "LSF-T-cc7c6eb2a037970c685ccc873b423923",
+      "entrantId": "LSF-E-44ef53cb99fcb4fc9a92b5d4d5a9ea92"
+    },
+    {
+      "ticketId": "LSF-T-91be85b349c11e844fcfd174c58ca841",
+      "entrantId": "LSF-E-44ef53cb99fcb4fc9a92b5d4d5a9ea92"
+    },
+    {
+      "ticketId": "LSF-T-0925252cd61a32e56a69628e1cde7766",
+      "entrantId": "LSF-E-44ef53cb99fcb4fc9a92b5d4d5a9ea92"
+    },
+    {
+      "ticketId": "LSF-T-cbd72c97934981f21238465ef8b2410f",
+      "entrantId": "LSF-E-44ef53cb99fcb4fc9a92b5d4d5a9ea92"
+    },
+    {
+      "ticketId": "LSF-T-fc8531f72697e2235b7489a40d69da6a",
+      "entrantId": "LSF-E-44ef53cb99fcb4fc9a92b5d4d5a9ea92"
+    },
+    {
+      "ticketId": "LSF-T-59380240b910635be8319438e77ccd6c",
+      "entrantId": "LSF-E-c1539a1ff90c9d2ce66aa2f941484684"
+    },
+    {
+      "ticketId": "LSF-T-6a8aa372d002eef3f0329d20626d3e0e",
+      "entrantId": "LSF-E-3643c4c76523e9120b3d0c4d0c0662ac"
+    },
+    {
+      "ticketId": "LSF-T-3684aa67a2e65710e15cebde7fa4ea15",
+      "entrantId": "LSF-E-e7fb4bcd3391418accf31268fb9dedea"
+    },
+    {
+      "ticketId": "LSF-T-7466f8011f564e11388458e737bbbdc6",
+      "entrantId": "LSF-E-ab970e23d31da615f36c7ff880a401df"
+    },
+    {
+      "ticketId": "LSF-T-65e0c269ad3ebc626eb56d9c7dbaed93",
+      "entrantId": "LSF-E-45313f5482e54e45c8f8093bf4962aae"
+    },
+    {
+      "ticketId": "LSF-T-42855c76339cc6b265ada3521aadb9c9",
+      "entrantId": "LSF-E-60ca1811be87b6a46485b8df2916d188"
+    },
+    {
+      "ticketId": "LSF-T-13a467fb6aa1ed84fd53efb576db8b6b",
+      "entrantId": "LSF-E-370b5a736341f12949f4404bcd6eb4a5"
+    },
+    {
+      "ticketId": "LSF-T-c159a1c6f663f7b4eedaaa98bc5e452c",
+      "entrantId": "LSF-E-3caa5a30c7ba63337ee0af5718ba2fab"
+    },
+    {
+      "ticketId": "LSF-T-a93eff5dba2d4658348d8cbd1f6a9e28",
+      "entrantId": "LSF-E-30b2459c396e6634a5faa3ad125fc9d6"
+    },
+    {
+      "ticketId": "LSF-T-6bfadb204c811b013eccdbd7ec4db3a6",
+      "entrantId": "LSF-E-8ff30f8686c748145f53413cb845baa9"
+    },
+    {
+      "ticketId": "LSF-T-469acbe63f7c8561bfde546586943a61",
+      "entrantId": "LSF-E-b01101119a6c9f353ca059dab1760f44"
+    },
+    {
+      "ticketId": "LSF-T-2278101bc20331e1f9c491438b4b3a58",
+      "entrantId": "LSF-E-b03d24148c33d5738e8b1dc356a8fba6"
+    },
+    {
+      "ticketId": "LSF-T-d455a80094ac0d0624163cb2539b42f3",
+      "entrantId": "LSF-E-36e83f5096e2eefce0e4d23a2f7c50b8"
+    },
+    {
+      "ticketId": "LSF-T-7e91175b8268b4688433514ecd44f1e3",
+      "entrantId": "LSF-E-4d7f82f0114638194736af85d6fc81c1"
+    },
+    {
+      "ticketId": "LSF-T-dd0d15ff1421710999abac92be196991",
+      "entrantId": "LSF-E-865b54bf4c2477c0fd07692efae4ef3f"
+    },
+    {
+      "ticketId": "LSF-T-a4e51bfd1b1f8dc83eb21c177afb9177",
+      "entrantId": "LSF-E-a84f147e54fc2c1393ebd3ef5af3f288"
+    },
+    {
+      "ticketId": "LSF-T-fe255cdb13ec9d6b802a98105324694d",
+      "entrantId": "LSF-E-175e8be8f6c9abaf5c609b4d10330841"
+    },
+    {
+      "ticketId": "LSF-T-997693fe13e2ffe3c8ab8cdbb26fc422",
+      "entrantId": "LSF-E-85bd9fd28317d2779803d1a425fa83fb"
+    },
+    {
+      "ticketId": "LSF-T-5c3e4cfa50301cb8e98970c08a927ff9",
+      "entrantId": "LSF-E-85bd9fd28317d2779803d1a425fa83fb"
+    },
+    {
+      "ticketId": "LSF-T-111dfff1751052aa0da0b0f5a87faf6e",
+      "entrantId": "LSF-E-85bd9fd28317d2779803d1a425fa83fb"
+    },
+    {
+      "ticketId": "LSF-T-7df1e9f3b3e01c6277af0af75148d71e",
+      "entrantId": "LSF-E-85bd9fd28317d2779803d1a425fa83fb"
+    },
+    {
+      "ticketId": "LSF-T-ee4003429e21aba1b77a0bbfa17875f4",
+      "entrantId": "LSF-E-85bd9fd28317d2779803d1a425fa83fb"
+    },
+    {
+      "ticketId": "LSF-T-682776050628e0c17bf14c6d18bf8da0",
+      "entrantId": "LSF-E-85bd9fd28317d2779803d1a425fa83fb"
+    },
+    {
+      "ticketId": "LSF-T-aab96850269372761ec2229360f1cbef",
+      "entrantId": "LSF-E-07a343d4ea1d65b0f67e69161b17889f"
+    },
+    {
+      "ticketId": "LSF-T-e4605deb3ea5da6457f9b80a3d35b5cf",
+      "entrantId": "LSF-E-07a343d4ea1d65b0f67e69161b17889f"
+    },
+    {
+      "ticketId": "LSF-T-08f707b252e2bb3524e4cb19a7151fd2",
+      "entrantId": "LSF-E-b5502c43bed8798cbdc8f0a5e79bc47b"
+    },
+    {
+      "ticketId": "LSF-T-7c2130a6c37ee499bd895f97a5958620",
+      "entrantId": "LSF-E-83158c911c074d9ffa1baf6e6dffa484"
+    },
+    {
+      "ticketId": "LSF-T-4d175c514ad0a33174eb28baa1866d77",
+      "entrantId": "LSF-E-72e7d8b542f4d7e0b1f4de0cd37ae877"
+    },
+    {
+      "ticketId": "LSF-T-e005b1f1305e07286a17fdaa4ef8b10a",
+      "entrantId": "LSF-E-72e7d8b542f4d7e0b1f4de0cd37ae877"
+    },
+    {
+      "ticketId": "LSF-T-f1052a1e47acb1fc501588909ae3ff28",
+      "entrantId": "LSF-E-784db8fc91d9a65793855a9f954d90f8"
+    },
+    {
+      "ticketId": "LSF-T-79fd29bfe82b34acb76b2337eb18342b",
+      "entrantId": "LSF-E-3ca0814a007477d406cedbd318644aa3"
+    },
+    {
+      "ticketId": "LSF-T-eca0e83ee8d42fa668f387fc4cd59700",
+      "entrantId": "LSF-E-de22db37d019f98e29885531d2822093"
+    },
+    {
+      "ticketId": "LSF-T-eebe4bf72f333b04366f88807054fb38",
+      "entrantId": "LSF-E-de838a90cfc8dc778bfa73914513fc2c"
+    },
+    {
+      "ticketId": "LSF-T-dc19d5132e5a548bad4c27edfaa465e1",
+      "entrantId": "LSF-E-ff28378a030cb8814af8ba36f80edd39"
+    },
+    {
+      "ticketId": "LSF-T-4be92f0bd0623dcd9d0e8f665f262db9",
+      "entrantId": "LSF-E-ff28378a030cb8814af8ba36f80edd39"
+    },
+    {
+      "ticketId": "LSF-T-3a586bf637dca8dd014b00ad030ea70d",
+      "entrantId": "LSF-E-ff28378a030cb8814af8ba36f80edd39"
+    },
+    {
+      "ticketId": "LSF-T-1bd6aa558446177b7b9b8882b190c6b8",
+      "entrantId": "LSF-E-cce75548e1f77c754e828affec2f5eeb"
+    },
+    {
+      "ticketId": "LSF-T-ebef7e66dc3a49b41034c4e148a15e88",
+      "entrantId": "LSF-E-d8748eeb9d13598400f8b32607df328f"
+    },
+    {
+      "ticketId": "LSF-T-aff7e8ba3c45c5302d9248c96ea33c7d",
+      "entrantId": "LSF-E-dbfd8be51b9a73678be2805cfde06e78"
+    },
+    {
+      "ticketId": "LSF-T-3b3b019af6901e2af64598bb08adfead",
+      "entrantId": "LSF-E-41fb68e4ca735fa7c45592524414705b"
+    },
+    {
+      "ticketId": "LSF-T-d670c06a6de1e82156bd5b51a519792a",
+      "entrantId": "LSF-E-21a90f28ca1a2e52fb60a6a147aa4100"
+    },
+    {
+      "ticketId": "LSF-T-763fbf42d195d05f3e16103927193077",
+      "entrantId": "LSF-E-35bf3224a261a03a9eac8adb94d7cd92"
+    },
+    {
+      "ticketId": "LSF-T-eaf260e4bbb08b1699ad46f6704e139f",
+      "entrantId": "LSF-E-cd2b4f5bbcad283dd627c68ee21fe898"
+    },
+    {
+      "ticketId": "LSF-T-6dea4f7286295f85a9705579aa9c3e48",
+      "entrantId": "LSF-E-cd2b4f5bbcad283dd627c68ee21fe898"
+    },
+    {
+      "ticketId": "LSF-T-29e872baba13c345a9880a5012d79333",
+      "entrantId": "LSF-E-cd2b4f5bbcad283dd627c68ee21fe898"
+    },
+    {
+      "ticketId": "LSF-T-d51ce17f980d1e0f5c7dfbd8ff7db2c7",
+      "entrantId": "LSF-E-cd2b4f5bbcad283dd627c68ee21fe898"
+    },
+    {
+      "ticketId": "LSF-T-5537a2682c2c38efef8ffce828b73e08",
+      "entrantId": "LSF-E-2afa1b62f7150a4d250a8b8a69e57ab1"
+    },
+    {
+      "ticketId": "LSF-T-57dad8084773825945198a1dfd97a974",
+      "entrantId": "LSF-E-2afa1b62f7150a4d250a8b8a69e57ab1"
+    },
+    {
+      "ticketId": "LSF-T-efe9039c13f2cc8ed8d49772466674e6",
+      "entrantId": "LSF-E-2afa1b62f7150a4d250a8b8a69e57ab1"
+    },
+    {
+      "ticketId": "LSF-T-a8372bb120cb701c34c98b68d304299e",
+      "entrantId": "LSF-E-2afa1b62f7150a4d250a8b8a69e57ab1"
+    },
+    {
+      "ticketId": "LSF-T-76e1a69fab81676f9df3f1e7d3d0798b",
+      "entrantId": "LSF-E-bc9edb74b7d2f5332d184cbaa1920d83"
+    },
+    {
+      "ticketId": "LSF-T-efa4cebbf9c7f966cff3fa4a80609633",
+      "entrantId": "LSF-E-f82106ed52662a52a48d0bc70c0ecd3a"
+    },
+    {
+      "ticketId": "LSF-T-33d547463bb24bb0ded8f7dd45c3ed22",
+      "entrantId": "LSF-E-80228d7f8eb01e9c349facbbf480202d"
+    },
+    {
+      "ticketId": "LSF-T-851767d265e4426dd160b02a65f6f76f",
+      "entrantId": "LSF-E-4cd473d6ae553f82e9b17c3562dc233a"
+    },
+    {
+      "ticketId": "LSF-T-9b25cb9b825a62235f62dcb695f2c03d",
+      "entrantId": "LSF-E-4c88e4dd09f082b43aa0f9fbc5a726fd"
+    },
+    {
+      "ticketId": "LSF-T-293177a110122bb4c0c1c4724db8c701",
+      "entrantId": "LSF-E-41188ef3ed9be4191806f211d99491a3"
+    },
+    {
+      "ticketId": "LSF-T-d1708626ff3894c96837e745b33ed63f",
+      "entrantId": "LSF-E-d52fa1ed4fd4ef051ad9390b3505ff12"
+    },
+    {
+      "ticketId": "LSF-T-86af32f2c138bfecabe7773433234357",
+      "entrantId": "LSF-E-d52fa1ed4fd4ef051ad9390b3505ff12"
+    },
+    {
+      "ticketId": "LSF-T-f6e954ff637c2a7a6a22bdd347745c97",
+      "entrantId": "LSF-E-d52fa1ed4fd4ef051ad9390b3505ff12"
+    },
+    {
+      "ticketId": "LSF-T-e2c36618747ff34096d3360219277e9b",
+      "entrantId": "LSF-E-d52fa1ed4fd4ef051ad9390b3505ff12"
+    },
+    {
+      "ticketId": "LSF-T-4435c680032fd2f0c256bade4dc863bc",
+      "entrantId": "LSF-E-d52fa1ed4fd4ef051ad9390b3505ff12"
+    },
+    {
+      "ticketId": "LSF-T-79e8df30242c6f387c6dd867ffea1938",
+      "entrantId": "LSF-E-d52fa1ed4fd4ef051ad9390b3505ff12"
+    },
+    {
+      "ticketId": "LSF-T-f40f3a26897e141a7dfb0a1d66e16505",
+      "entrantId": "LSF-E-d52fa1ed4fd4ef051ad9390b3505ff12"
+    },
+    {
+      "ticketId": "LSF-T-4a025ef516e8a963c0ac0c38fe014979",
+      "entrantId": "LSF-E-d52fa1ed4fd4ef051ad9390b3505ff12"
+    },
+    {
+      "ticketId": "LSF-T-440e5135f5b1909184c4d1d84241b97d",
+      "entrantId": "LSF-E-d52fa1ed4fd4ef051ad9390b3505ff12"
+    },
+    {
+      "ticketId": "LSF-T-cd1273633a02e92d97a4cff1686c15a0",
+      "entrantId": "LSF-E-ce55d51679302df0303812d57bdffa71"
+    },
+    {
+      "ticketId": "LSF-T-2c214f01c2449e91aea42eb02aed271f",
+      "entrantId": "LSF-E-f62f19d88ccbe433621a04119e704b93"
+    },
+    {
+      "ticketId": "LSF-T-1f5f10bce71fc2b7954b705b502d2024",
+      "entrantId": "LSF-E-dbf1b96b309bab43fe5a46779bee3017"
+    },
+    {
+      "ticketId": "LSF-T-dbb0416189494606f01589116a0e4152",
+      "entrantId": "LSF-E-9230afa7dc2f882090023cc5e1cba58e"
+    },
+    {
+      "ticketId": "LSF-T-d5b445462f3f9f653afb601c70ba05e5",
+      "entrantId": "LSF-E-9230afa7dc2f882090023cc5e1cba58e"
+    },
+    {
+      "ticketId": "LSF-T-98b0b115b0d8c225452f09f7ef68c9c8",
+      "entrantId": "LSF-E-21561e73a7a980589a06152fbf4d5104"
+    },
+    {
+      "ticketId": "LSF-T-89a7c1b2bcb762994047105c558402ae",
+      "entrantId": "LSF-E-21561e73a7a980589a06152fbf4d5104"
+    },
+    {
+      "ticketId": "LSF-T-215460e215076381c3d3737514ff70fc",
+      "entrantId": "LSF-E-125a5aebc84d8e703945b4dd56541c45"
+    },
+    {
+      "ticketId": "LSF-T-15d5602c45d66a06faaf2d8e0b1723a2",
+      "entrantId": "LSF-E-a20a1d3d2481fe776a7fcd1f91e1e37a"
+    },
+    {
+      "ticketId": "LSF-T-14fcce691db2b0966a00382045abfa30",
+      "entrantId": "LSF-E-9004ffc1cd021c6abf4541b247f8a850"
+    },
+    {
+      "ticketId": "LSF-T-4272987e27ed4c48a3c5326df4c681c0",
+      "entrantId": "LSF-E-6b8cc5166d69219733506cc0e1c29f61"
+    },
+    {
+      "ticketId": "LSF-T-9527e73c07e9f3c83624593a895f6229",
+      "entrantId": "LSF-E-e327679b55513c3397ee8740cd183154"
+    },
+    {
+      "ticketId": "LSF-T-2f9683daa256533ff0cca4a39f863f25",
+      "entrantId": "LSF-E-4d7a9967c1d2a46a7ba4b3d524b5d81f"
+    },
+    {
+      "ticketId": "LSF-T-e116df2e064ca254f8fc960a43d2877e",
+      "entrantId": "LSF-E-4d7a9967c1d2a46a7ba4b3d524b5d81f"
+    },
+    {
+      "ticketId": "LSF-T-a99715ad73c4ad1bf95af9fb05953e7c",
+      "entrantId": "LSF-E-6e1fb4f9933c83cf2705818110853e46"
+    },
+    {
+      "ticketId": "LSF-T-c873e31d74c37e811a4fa3c104998670",
+      "entrantId": "LSF-E-f979fa4a294793981099774e049ba2dc"
+    },
+    {
+      "ticketId": "LSF-T-8dc32f20ebc902d97586b9d26adb287b",
+      "entrantId": "LSF-E-264628a0a9f4cb19d7fc078cf00a56af"
+    },
+    {
+      "ticketId": "LSF-T-bbb6d26531a51b47f34dff32153fa24a",
+      "entrantId": "LSF-E-f7524f9191ce0b70fa54af6fdcc78cc4"
+    },
+    {
+      "ticketId": "LSF-T-2d97d0905198bc823e6a2e24bc66b34b",
+      "entrantId": "LSF-E-f777056a6dff876b734e1c1943f5025c"
+    },
+    {
+      "ticketId": "LSF-T-14a69b9108305751c25db1e342d81d20",
+      "entrantId": "LSF-E-e1361340ebe04e76fb35433c345fd0ac"
+    },
+    {
+      "ticketId": "LSF-T-5b28091abe20a150fe19e9862a5bbbdc",
+      "entrantId": "LSF-E-f5a1d6089638e9a23ef9bc99a2f0af14"
+    },
+    {
+      "ticketId": "LSF-T-b46d4730eb04b78b7665f105d922f10f",
+      "entrantId": "LSF-E-8057430b9064c15acde4815a47286e38"
+    },
+    {
+      "ticketId": "LSF-T-0b5bc4bc42f72df52cf294483b4ed205",
+      "entrantId": "LSF-E-9f71550ebcaf8fb03ba08749c730c051"
+    },
+    {
+      "ticketId": "LSF-T-ecc883fcdc4430ffd5922f5bd4e3b14c",
+      "entrantId": "LSF-E-27b5c284cac06473e0b3602850a123df"
+    },
+    {
+      "ticketId": "LSF-T-835f158b3e957e63b228a683edeb2230",
+      "entrantId": "LSF-E-cbb3e42b2de78f0b722d16d6ea2affb4"
+    },
+    {
+      "ticketId": "LSF-T-f1480a723d57bc1b874ed3fffe67b1da",
+      "entrantId": "LSF-E-6ef018ea9fd67b0334328d9bb2cee3a0"
+    },
+    {
+      "ticketId": "LSF-T-8943c4b30d47a16554e4f6e420806b09",
+      "entrantId": "LSF-E-95c925585e12cea3a1df6b71c3a733e7"
+    },
+    {
+      "ticketId": "LSF-T-d475c2132aa448739a23cb2b348294d3",
+      "entrantId": "LSF-E-b380b7fe360b91d866c26009f8d21bb0"
+    },
+    {
+      "ticketId": "LSF-T-f94f562f720fbbfb168b3a02212fa6d9",
+      "entrantId": "LSF-E-b644bf2df6f333e4d34de043f4adafca"
+    },
+    {
+      "ticketId": "LSF-T-ccde539b3071f1c8d2dd05b42e07b38b",
+      "entrantId": "LSF-E-4ceb89a6aed8d39faa3b0f4cb04de830"
+    },
+    {
+      "ticketId": "LSF-T-19e01b9c4b04fa666dc2b11f7ebbe5e2",
+      "entrantId": "LSF-E-6ea10414bea63e20950183a2762e98c3"
+    },
+    {
+      "ticketId": "LSF-T-4de242132411477319a6ca4fcc4409a4",
+      "entrantId": "LSF-E-73a77ea00860ed9612cd73ef73a4fe86"
+    },
+    {
+      "ticketId": "LSF-T-650c587615e94ec6efdd5ad2e896f8f7",
+      "entrantId": "LSF-E-6d3194231111aa5d0c3aaca38a36e138"
+    },
+    {
+      "ticketId": "LSF-T-c4268f3cb376cb1f98ce332bb6dabba2",
+      "entrantId": "LSF-E-7053615d0e3c240d039e7c1f37debe55"
+    },
+    {
+      "ticketId": "LSF-T-1c9c4939218c541039f1fef0f9a8327f",
+      "entrantId": "LSF-E-a36cca3787edc43fcacdce621bd4286c"
+    },
+    {
+      "ticketId": "LSF-T-3d5e0035d031223a7491b5254da243b4",
+      "entrantId": "LSF-E-a36cca3787edc43fcacdce621bd4286c"
+    },
+    {
+      "ticketId": "LSF-T-c51dffa22642de28e6090f3b97798d77",
+      "entrantId": "LSF-E-a36cca3787edc43fcacdce621bd4286c"
+    },
+    {
+      "ticketId": "LSF-T-0c44795b93bc074305a9b93ea0e6e1a2",
+      "entrantId": "LSF-E-a36cca3787edc43fcacdce621bd4286c"
+    },
+    {
+      "ticketId": "LSF-T-06513c2a81000e9dd6fb88d61769a049",
+      "entrantId": "LSF-E-a36cca3787edc43fcacdce621bd4286c"
+    },
+    {
+      "ticketId": "LSF-T-cf0d6dc703e9909941884f2a29acb3d3",
+      "entrantId": "LSF-E-a36cca3787edc43fcacdce621bd4286c"
+    },
+    {
+      "ticketId": "LSF-T-79f7840b0e6a197da69bc449ab3abeaa",
+      "entrantId": "LSF-E-a36cca3787edc43fcacdce621bd4286c"
+    },
+    {
+      "ticketId": "LSF-T-61caca366d7cd3205e814ce5d8f70612",
+      "entrantId": "LSF-E-a36cca3787edc43fcacdce621bd4286c"
+    },
+    {
+      "ticketId": "LSF-T-c1e08677a057719125b81099e91012fa",
+      "entrantId": "LSF-E-40c4ffe85be2f24d7206d8b8db5e0e42"
+    },
+    {
+      "ticketId": "LSF-T-5c4f9584a490889beff8c11ffe3d4b92",
+      "entrantId": "LSF-E-d8d165e3e59ffb53afd2a77d57eb0305"
+    },
+    {
+      "ticketId": "LSF-T-4e5bbb460cddbb52815d1540dba4a2fd",
+      "entrantId": "LSF-E-eb0f3f4be474ab18cb5677fa730a6ce4"
+    },
+    {
+      "ticketId": "LSF-T-95d77615420e1fab6cfa10680beeb99b",
+      "entrantId": "LSF-E-c18fa7313099988f85ead31ea9f9e054"
+    },
+    {
+      "ticketId": "LSF-T-1f2e1eb2812a9a6f27009fead4352a89",
+      "entrantId": "LSF-E-7b4ff814cedfc30cb983a9c33fff6f47"
+    },
+    {
+      "ticketId": "LSF-T-9fdfc62414c33913da80bfaac32d06bf",
+      "entrantId": "LSF-E-030f94300d5c7effb785a1487a06c60e"
+    },
+    {
+      "ticketId": "LSF-T-0e8accc98f826ab05398ec13816d0bb4",
+      "entrantId": "LSF-E-04b416c9f39452f459c7b402905f3688"
+    },
+    {
+      "ticketId": "LSF-T-301a3d5af808e159b3c8c001a3b80a80",
+      "entrantId": "LSF-E-7f3c5a1f90427bbf0b51fb68c6b757b9"
+    },
+    {
+      "ticketId": "LSF-T-06ce192d048cc82beee64c78d4d36b97",
+      "entrantId": "LSF-E-7f3c5a1f90427bbf0b51fb68c6b757b9"
+    },
+    {
+      "ticketId": "LSF-T-1e8b128792b49b33f56b4515a766da4c",
+      "entrantId": "LSF-E-7f3c5a1f90427bbf0b51fb68c6b757b9"
+    },
+    {
+      "ticketId": "LSF-T-454222764948218514d6e0d0c2872374",
+      "entrantId": "LSF-E-76ed3e9ac3b14a039b947600b440d15b"
+    },
+    {
+      "ticketId": "LSF-T-29a3c45dbb3b7ba599f535934f4e89f6",
+      "entrantId": "LSF-E-9be779ccf8075605d5edcf3599af8e56"
+    },
+    {
+      "ticketId": "LSF-T-da219bc37e8a458e206174dc4a31565f",
+      "entrantId": "LSF-E-6d7201102292b39bb69dd17d340ed32d"
+    },
+    {
+      "ticketId": "LSF-T-ddda71076feab212fc873725a5300489",
+      "entrantId": "LSF-E-29ead07adf2bd00766d5059504dcb2d9"
+    },
+    {
+      "ticketId": "LSF-T-a6598c576df5d7ca1a2e9a8ec409d319",
+      "entrantId": "LSF-E-320b33d2e1ec051a04673c4e4d04ae45"
+    },
+    {
+      "ticketId": "LSF-T-3b9ec4d3be1d2381c72158a325c87b07",
+      "entrantId": "LSF-E-cb5a9f3b4442ef80e7fe636721bc4f0a"
+    },
+    {
+      "ticketId": "LSF-T-cb4a9af390f40f70d432727f6ebcd2dd",
+      "entrantId": "LSF-E-4843f7851bd333a491610b47a5ad7a75"
+    },
+    {
+      "ticketId": "LSF-T-256de257e550d1898330f2e279840f8c",
+      "entrantId": "LSF-E-4477b781ef82bd87b14f2acf0f96c894"
+    },
+    {
+      "ticketId": "LSF-T-1eed402800a8ba41b45be35581b084f1",
+      "entrantId": "LSF-E-a836e33c5d074182cb27320875aad45f"
+    },
+    {
+      "ticketId": "LSF-T-52c21d673163619458fa1b8f50f9b4aa",
+      "entrantId": "LSF-E-a836e33c5d074182cb27320875aad45f"
+    },
+    {
+      "ticketId": "LSF-T-62cf2d541962bfb3a6861904b66acfe9",
+      "entrantId": "LSF-E-2c52caf9b177e4f5478e9c98ebb197e8"
+    },
+    {
+      "ticketId": "LSF-T-b51c819c958922c7d22426e5bfe5db61",
+      "entrantId": "LSF-E-2c52caf9b177e4f5478e9c98ebb197e8"
+    },
+    {
+      "ticketId": "LSF-T-8db60975b8d0c62ea869b9433a80cc5b",
+      "entrantId": "LSF-E-b86462ff563d56d1671c9c70fbad6c69"
+    },
+    {
+      "ticketId": "LSF-T-8c5a3b145930aa355f2718f59dbeda7f",
+      "entrantId": "LSF-E-1667dc7c0b941a839ff17438d6f48cf6"
+    },
+    {
+      "ticketId": "LSF-T-34ce26dc39362d79bd638da7ab34ee7b",
+      "entrantId": "LSF-E-1667dc7c0b941a839ff17438d6f48cf6"
+    },
+    {
+      "ticketId": "LSF-T-f698610845b563efbc22fea07a25e8b9",
+      "entrantId": "LSF-E-1667dc7c0b941a839ff17438d6f48cf6"
+    },
+    {
+      "ticketId": "LSF-T-85904a8c88777f7e1df17135a43ef9a7",
+      "entrantId": "LSF-E-1667dc7c0b941a839ff17438d6f48cf6"
+    },
+    {
+      "ticketId": "LSF-T-c7d48aa378d1082480521200c6c76323",
+      "entrantId": "LSF-E-e583106727e70f3f2ceb5e96a25c8305"
+    },
+    {
+      "ticketId": "LSF-T-5a1c90cd03991040e83a8918802f02e1",
+      "entrantId": "LSF-E-50d0bee5d70562eed29e02bc647d0bd7"
+    },
+    {
+      "ticketId": "LSF-T-2fda3235f0822208d687097e22e64131",
+      "entrantId": "LSF-E-c81b62029581454d4c352977a2484c14"
+    },
+    {
+      "ticketId": "LSF-T-8c4a182b10bca9b6be667a8080bfaadb",
+      "entrantId": "LSF-E-41376932acb9db33a30f6a108ead9bf3"
+    },
+    {
+      "ticketId": "LSF-T-6822d1b351cc90b6b1324d5bebb30a74",
+      "entrantId": "LSF-E-8f80d333f3b86d088bc4264a8b64acdb"
+    },
+    {
+      "ticketId": "LSF-T-042e6528b9697b85b6fedc75f5e51526",
+      "entrantId": "LSF-E-c71677757b91c56b636346cdccbe7155"
+    },
+    {
+      "ticketId": "LSF-T-4ac419996744cb8d87ce398654801f36",
+      "entrantId": "LSF-E-c71677757b91c56b636346cdccbe7155"
+    },
+    {
+      "ticketId": "LSF-T-b754044edb49fcabe321d890906501c1",
+      "entrantId": "LSF-E-b70649206361b7003a941413caaed947"
+    },
+    {
+      "ticketId": "LSF-T-8f5331971afc3cc9c62643c997ccded0",
+      "entrantId": "LSF-E-e11c82de2dbb72af3d3d53cc93921975"
+    },
+    {
+      "ticketId": "LSF-T-09e7cefc8060973fe85fe05f56738fac",
+      "entrantId": "LSF-E-cb517f9a1ac27da09185cc285891ec05"
+    },
+    {
+      "ticketId": "LSF-T-9f95a57a8760f1c15bf0bdc3ed4ad0e5",
+      "entrantId": "LSF-E-c8d61df97eaa29d653c1ecfbb906bcdf"
+    },
+    {
+      "ticketId": "LSF-T-e59c600ceb0df6d31ec538606ee0969c",
+      "entrantId": "LSF-E-a8f5357c15352f2a9f8819c3514aee33"
+    },
+    {
+      "ticketId": "LSF-T-b8d859ed3b5e86ad66d6493c9681c82e",
+      "entrantId": "LSF-E-603e8dd9cafe795398218cc38cd2459f"
+    },
+    {
+      "ticketId": "LSF-T-0f8b1c49c2ace38cff59c774de61ee7d",
+      "entrantId": "LSF-E-603e8dd9cafe795398218cc38cd2459f"
+    },
+    {
+      "ticketId": "LSF-T-e8b097ec16ff483262f2dee83218d593",
+      "entrantId": "LSF-E-8eb6183604bdd432db7d616453076b7d"
+    },
+    {
+      "ticketId": "LSF-T-504dd0aa358fc1a8c9a80d7a1b0ead06",
+      "entrantId": "LSF-E-53b27fa7d2243732533b258dadb6f9f1"
+    },
+    {
+      "ticketId": "LSF-T-58ee6c4fb56e7fb363c2b40e6cc11e2a",
+      "entrantId": "LSF-E-3144689deaf5a3522fd88c4aa70743d6"
+    },
+    {
+      "ticketId": "LSF-T-aff7aa7adc8f196eef1f183bacda6462",
+      "entrantId": "LSF-E-689c2bab06dd4e970be9652b1cfc4486"
+    },
+    {
+      "ticketId": "LSF-T-d8256756d47267351b34c0f85aac5810",
+      "entrantId": "LSF-E-f5fc788c528fc2242ac42dfcb587a418"
+    },
+    {
+      "ticketId": "LSF-T-bcb25845f6ffe45143e963f86a025c5a",
+      "entrantId": "LSF-E-f5fc788c528fc2242ac42dfcb587a418"
+    },
+    {
+      "ticketId": "LSF-T-9c7a113e5945caf84d244a174aed2dbf",
+      "entrantId": "LSF-E-e9118c3c0e707cc10e96fec17bc216d5"
+    },
+    {
+      "ticketId": "LSF-T-55ae0c2ccf2cb1a8f9b8bd6a90c9a46a",
+      "entrantId": "LSF-E-e9d1fb4ce7b150f4fe0c0e6b7749d765"
+    },
+    {
+      "ticketId": "LSF-T-e715d0b1ae54983e3ad15d10a795f475",
+      "entrantId": "LSF-E-ad03e62902c7fa0a498ac948e350942a"
+    },
+    {
+      "ticketId": "LSF-T-a8cb39e08dca528d63fc78d592ebdf3e",
+      "entrantId": "LSF-E-ad03e62902c7fa0a498ac948e350942a"
+    },
+    {
+      "ticketId": "LSF-T-a2d68f0514c468b2facf881cd64a3dc7",
+      "entrantId": "LSF-E-ad03e62902c7fa0a498ac948e350942a"
+    },
+    {
+      "ticketId": "LSF-T-09b26190f1193a666ec1f4cd87252acd",
+      "entrantId": "LSF-E-393ecf76fcb066f6213f59371a08160c"
+    },
+    {
+      "ticketId": "LSF-T-562c18507b667d5601a022a69f558360",
+      "entrantId": "LSF-E-6f17e4ae8d3b10d1f93828f40e23f82b"
+    },
+    {
+      "ticketId": "LSF-T-663a631a17c725bfe146797fce424e76",
+      "entrantId": "LSF-E-76567265672593b1ecc287afc1949c0f"
+    },
+    {
+      "ticketId": "LSF-T-878f40209c38e62b5fe548271b06bf0d",
+      "entrantId": "LSF-E-80749ccf860a45ed4104d15e523c428c"
+    },
+    {
+      "ticketId": "LSF-T-6cf722f65186e4162b45fe05560cb692",
+      "entrantId": "LSF-E-4dd34e04512081a83424280f180dff60"
+    },
+    {
+      "ticketId": "LSF-T-5e30996805df7bfa704a144b15fe067e",
+      "entrantId": "LSF-E-ccc704b3813fef1f7d7ec4325b8aab51"
+    },
+    {
+      "ticketId": "LSF-T-835d1f9af58ff78fd520a38915bfdbf5",
+      "entrantId": "LSF-E-357f3b8bcb45108eaba467afc959be16"
+    },
+    {
+      "ticketId": "LSF-T-3d1a1b933abc98ff508e274bda018776",
+      "entrantId": "LSF-E-97dc355b8a4336086689fd28158593ce"
+    },
+    {
+      "ticketId": "LSF-T-d962515e15053808c0f84dd861309566",
+      "entrantId": "LSF-E-fd7eac41f4344d451cc92b2f36cbb4ba"
+    },
+    {
+      "ticketId": "LSF-T-86909191e3ebd81a5532b991e58d7b97",
+      "entrantId": "LSF-E-ef9f6ce6c13af85cf4570f13e716f6ab"
+    },
+    {
+      "ticketId": "LSF-T-e919a395b88492ee427543dc0368f645",
+      "entrantId": "LSF-E-07adac08ca7a56125106431504bd4147"
+    },
+    {
+      "ticketId": "LSF-T-22fe45c2858698e33814ad569d73f881",
+      "entrantId": "LSF-E-07adac08ca7a56125106431504bd4147"
+    },
+    {
+      "ticketId": "LSF-T-946280fe1fa2c60931ea92781e2dccb5",
+      "entrantId": "LSF-E-9137ce2d25e72c91b9aac0a5f2398831"
+    },
+    {
+      "ticketId": "LSF-T-bacfad939670e554e692a601a33e9407",
+      "entrantId": "LSF-E-ff68f67d4ee901966874fb37614bdf4f"
+    },
+    {
+      "ticketId": "LSF-T-e6542cbd8fd4ae537a2aa4c9b9d193e6",
+      "entrantId": "LSF-E-ff68f67d4ee901966874fb37614bdf4f"
+    },
+    {
+      "ticketId": "LSF-T-2788fd199f32cf98822c8f7c57e6c1dd",
+      "entrantId": "LSF-E-0e5dd1b0a425a7e02eec0cd1811ad87d"
+    },
+    {
+      "ticketId": "LSF-T-5a9b87bf18b84e1f3258609aa14665ee",
+      "entrantId": "LSF-E-caab9dad1cb1ed6401f775c5a856a4eb"
+    },
+    {
+      "ticketId": "LSF-T-8a58ace01d430b9e975ff859691c8d18",
+      "entrantId": "LSF-E-24b3cfee75c29669269af8d64dc3cc20"
+    },
+    {
+      "ticketId": "LSF-T-884fe945d2b7989186430aea25d075de",
+      "entrantId": "LSF-E-654961ee309ad81ef33e3fc77029600f"
+    },
+    {
+      "ticketId": "LSF-T-33015f4132ed9c05a68038ecaa5d1a03",
+      "entrantId": "LSF-E-d931051d6049edc1dd33f0c062f5d8c4"
+    },
+    {
+      "ticketId": "LSF-T-38d1b171fbdb0bc183b6db88a074ebf8",
+      "entrantId": "LSF-E-05af3045a16e8935ce1d369af1804876"
+    },
+    {
+      "ticketId": "LSF-T-092b5edae2244e002fd90bf536e448a9",
+      "entrantId": "LSF-E-822f3297fd28496031bc68f78cec1577"
+    },
+    {
+      "ticketId": "LSF-T-33bd21575a389adf01475e39ab2b475a",
+      "entrantId": "LSF-E-9150fdaa778fdfa0bd0d1017ced45296"
+    },
+    {
+      "ticketId": "LSF-T-db8cfb9a36a1e3762a1c7bea73aa4e01",
+      "entrantId": "LSF-E-05bdc1089a254e3f64e3a5f292a0f2fd"
+    },
+    {
+      "ticketId": "LSF-T-6e753b68c3b6d23903823b11f002227b",
+      "entrantId": "LSF-E-05bdc1089a254e3f64e3a5f292a0f2fd"
+    },
+    {
+      "ticketId": "LSF-T-e3f8021dccc973a0791b65f6d253249b",
+      "entrantId": "LSF-E-05bdc1089a254e3f64e3a5f292a0f2fd"
+    },
+    {
+      "ticketId": "LSF-T-22cd59ed3965d4aa5b1198101641e16c",
+      "entrantId": "LSF-E-05bdc1089a254e3f64e3a5f292a0f2fd"
+    },
+    {
+      "ticketId": "LSF-T-b3829c23c5df75f9c37c9db71eda0fe4",
+      "entrantId": "LSF-E-05bdc1089a254e3f64e3a5f292a0f2fd"
+    },
+    {
+      "ticketId": "LSF-T-29f4a17ce4b188509bb86d9dde21b0fe",
+      "entrantId": "LSF-E-6c7cfeaf39e52c03c4aa9a7d464e0bca"
+    },
+    {
+      "ticketId": "LSF-T-358ceebce5979ab5bba351f206988b1f",
+      "entrantId": "LSF-E-a6f0e70fa501e04886ae57b907c3796e"
+    },
+    {
+      "ticketId": "LSF-T-a4cae2ab08fe21254ca71853d82a99bd",
+      "entrantId": "LSF-E-e2934123a0083a021a16aaf80bad0cf5"
+    },
+    {
+      "ticketId": "LSF-T-5d61f035aa3ea220c32faa9a52d65d33",
+      "entrantId": "LSF-E-8b48a62c3451a5627a9f34577017032f"
+    },
+    {
+      "ticketId": "LSF-T-ffc8604a0ebb66a8ee0ffccfd387d4b9",
+      "entrantId": "LSF-E-5b596bf7fc7a86ee842a15518fbaec85"
+    },
+    {
+      "ticketId": "LSF-T-dd6c920c86e96a850557a11ac12a838a",
+      "entrantId": "LSF-E-e7b4b957bf30b009e47a9448ccfd6b80"
+    },
+    {
+      "ticketId": "LSF-T-77757a316bcf814867b61bbc5b634ffd",
+      "entrantId": "LSF-E-e7b4b957bf30b009e47a9448ccfd6b80"
+    },
+    {
+      "ticketId": "LSF-T-f736d7f3f009bf235bee1013c87a3c8b",
+      "entrantId": "LSF-E-422a8dfd8a12a85278aa06a4d8a612eb"
+    },
+    {
+      "ticketId": "LSF-T-fa0beb31a94060a09f8889dba75c67e5",
+      "entrantId": "LSF-E-b714dddb1580c27eb5862baa865ef1dd"
+    },
+    {
+      "ticketId": "LSF-T-fab594557f7d727345d644f18ce08e0c",
+      "entrantId": "LSF-E-9edc738fb391783af6fdd36531a08abb"
+    },
+    {
+      "ticketId": "LSF-T-d2950c29c61180975553354ee59b3587",
+      "entrantId": "LSF-E-9edc738fb391783af6fdd36531a08abb"
+    },
+    {
+      "ticketId": "LSF-T-f7863c26bfde2bdfad396a26f6a54d38",
+      "entrantId": "LSF-E-9edc738fb391783af6fdd36531a08abb"
+    },
+    {
+      "ticketId": "LSF-T-722abcc9ef1c73074b8960fd2c362be8",
+      "entrantId": "LSF-E-342e1336b763c7b33b58970602da72de"
+    },
+    {
+      "ticketId": "LSF-T-9123b39a4f773e3f67ed073861aed722",
+      "entrantId": "LSF-E-c63b2e10f80415d8cc7b50c718ef779b"
+    },
+    {
+      "ticketId": "LSF-T-6bda3a807d47fa2de9037ecaede945e9",
+      "entrantId": "LSF-E-5befcc78d30497a65cb297f2ea4fd2a0"
+    },
+    {
+      "ticketId": "LSF-T-c7ad1e4b1e1ac630bbe62a1da48c875f",
+      "entrantId": "LSF-E-8095d57970ff59906b061761a95235c2"
+    },
+    {
+      "ticketId": "LSF-T-ca5c4d22afa0761d87cd6248c843e3bc",
+      "entrantId": "LSF-E-ec98712cf959d191a4188e45dd15b1c5"
+    },
+    {
+      "ticketId": "LSF-T-1130db3377955d2a9092a606e17feec7",
+      "entrantId": "LSF-E-ec98712cf959d191a4188e45dd15b1c5"
+    },
+    {
+      "ticketId": "LSF-T-f0d82ff8ad2fcab6c03dd0fcb03ab396",
+      "entrantId": "LSF-E-786e51942f105595b3ca7b3777796ddd"
+    },
+    {
+      "ticketId": "LSF-T-b4e965145431dab50aca26d9959c3632",
+      "entrantId": "LSF-E-75d7405fc23c98238d3142cc26e589d1"
+    },
+    {
+      "ticketId": "LSF-T-54ceb4c05c60979a72b3b74cc7b1810f",
+      "entrantId": "LSF-E-8878620b890bfd577a2bc913b475eb39"
+    },
+    {
+      "ticketId": "LSF-T-e2ff4b1d75b60fce9a8932a224bd39e8",
+      "entrantId": "LSF-E-aa3cb5917efe1f2fe2205ad2b94c1969"
+    },
+    {
+      "ticketId": "LSF-T-b6df04fcaea0471b6f5356bd3e58d2ac",
+      "entrantId": "LSF-E-a89133591eedbabaf1f2a6915074cb3c"
+    },
+    {
+      "ticketId": "LSF-T-a9ee8e95e02c9e91e36738de91f5dae1",
+      "entrantId": "LSF-E-1e94c5425f66d70d13e6fd1af30ea59b"
+    },
+    {
+      "ticketId": "LSF-T-292d24be7ac37898541a68bc5d152751",
+      "entrantId": "LSF-E-8436a20eeff3b8f6f598556cb495608f"
+    },
+    {
+      "ticketId": "LSF-T-a3f5838b641b76d503d5b46a6c59697c",
+      "entrantId": "LSF-E-608e2a7943ba327f31467e5f0ecd22fe"
+    },
+    {
+      "ticketId": "LSF-T-5abc2589fec87ad82409fc764fbc6e75",
+      "entrantId": "LSF-E-2dfa65a91a49ccc889a4c7eb080c2a3f"
+    },
+    {
+      "ticketId": "LSF-T-b59e8cedd7e7983e15e50db54525d246",
+      "entrantId": "LSF-E-149cc84ffc54f9482150e7e5cf2f67ca"
+    },
+    {
+      "ticketId": "LSF-T-8bae223e7022dc5793b006711a43c886",
+      "entrantId": "LSF-E-1021ecd55c82fc6557827e08b995cc5b"
+    },
+    {
+      "ticketId": "LSF-T-ff0824295943896c0aa40ed0a7501e1b",
+      "entrantId": "LSF-E-3aaea90563efc48b950bad1bc04a1276"
+    },
+    {
+      "ticketId": "LSF-T-223aaaef831c52952c23b809b94a941b",
+      "entrantId": "LSF-E-5298a462273a5316b861e28498667467"
+    },
+    {
+      "ticketId": "LSF-T-0572547f4122aedc921a2c1760dd7c53",
+      "entrantId": "LSF-E-5298a462273a5316b861e28498667467"
+    },
+    {
+      "ticketId": "LSF-T-4dc55878198335c804fe6c5510212902",
+      "entrantId": "LSF-E-a62d3c96d0087ead93c2492aff89e851"
+    },
+    {
+      "ticketId": "LSF-T-beb847f7a830c72df2fdf957cb0c0abb",
+      "entrantId": "LSF-E-ed00c383728bbf67e01edaf059d3b4dc"
+    },
+    {
+      "ticketId": "LSF-T-61c710abf199a4d974b9fd6783822279",
+      "entrantId": "LSF-E-bf6ce8092b07c09411039861616b70fe"
+    },
+    {
+      "ticketId": "LSF-T-3fc946a79a4fec9ea30f43c891244e94",
+      "entrantId": "LSF-E-767284b568348ff96d5abc8595aeabcc"
+    },
+    {
+      "ticketId": "LSF-T-2937c55bc3d9f4609e0a0748bcfd46f1",
+      "entrantId": "LSF-E-d41eb0207100a7471c9bdb8090be3adc"
+    },
+    {
+      "ticketId": "LSF-T-044fa9d86967184193a36205ef1f3902",
+      "entrantId": "LSF-E-a7329bb7737d9f92edb1f4fa0f10157b"
+    },
+    {
+      "ticketId": "LSF-T-9d843539e714eced74d601e5aec74359",
+      "entrantId": "LSF-E-357e485746f0563d827085387d140124"
+    },
+    {
+      "ticketId": "LSF-T-42b7473a88cc8ef4539e52aa6af1c882",
+      "entrantId": "LSF-E-ed9b5123a6e032e1f1e7a058001fce6f"
+    },
+    {
+      "ticketId": "LSF-T-ceee223798c99cd316b7dfa1c8b6d0ba",
+      "entrantId": "LSF-E-ed9b5123a6e032e1f1e7a058001fce6f"
+    },
+    {
+      "ticketId": "LSF-T-a333cc19f7e8299290a1ecba02690737",
+      "entrantId": "LSF-E-ed9b5123a6e032e1f1e7a058001fce6f"
+    },
+    {
+      "ticketId": "LSF-T-69ee4648e9ed3dacc8ced3710e595618",
+      "entrantId": "LSF-E-ed9b5123a6e032e1f1e7a058001fce6f"
+    },
+    {
+      "ticketId": "LSF-T-628d8c6c7642c94e8d94911c0cf3e8b7",
+      "entrantId": "LSF-E-ed9b5123a6e032e1f1e7a058001fce6f"
+    },
+    {
+      "ticketId": "LSF-T-00442d62f8db8031b5054b33132652ca",
+      "entrantId": "LSF-E-ed9b5123a6e032e1f1e7a058001fce6f"
+    },
+    {
+      "ticketId": "LSF-T-ef1812e6913fa0af4ddcb2023204735c",
+      "entrantId": "LSF-E-ed9b5123a6e032e1f1e7a058001fce6f"
+    },
+    {
+      "ticketId": "LSF-T-fdd8114885d7c1ab2d30b589d250a976",
+      "entrantId": "LSF-E-ed9b5123a6e032e1f1e7a058001fce6f"
+    },
+    {
+      "ticketId": "LSF-T-c64fca9a65683fa0af5e086551ba43fe",
+      "entrantId": "LSF-E-ed9b5123a6e032e1f1e7a058001fce6f"
+    },
+    {
+      "ticketId": "LSF-T-34d73e6210f51d8a3a3609c39f473780",
+      "entrantId": "LSF-E-ed9b5123a6e032e1f1e7a058001fce6f"
+    },
+    {
+      "ticketId": "LSF-T-5fb75c2a11f541af01476063b2ec7cd2",
+      "entrantId": "LSF-E-a3f4b5f35471e26c55dd2d5bc6de2204"
+    },
+    {
+      "ticketId": "LSF-T-950bccd47d83f19d0bedf11f4efaf5ea",
+      "entrantId": "LSF-E-07df33091b2fa9e640f3ffbe3f26bbbe"
+    },
+    {
+      "ticketId": "LSF-T-f82a4a5b913e9f3caa70665913538170",
+      "entrantId": "LSF-E-2555c55e64ac6fc338d6cd1946731f92"
+    },
+    {
+      "ticketId": "LSF-T-8adbbfe630cf0f6d4b572f94590b7284",
+      "entrantId": "LSF-E-462259d74f2c138bcb65da4eec8170fb"
+    },
+    {
+      "ticketId": "LSF-T-8749622822ed5465b566b9bd83a10d52",
+      "entrantId": "LSF-E-ed519e8ae08f6ca09d6b74157a5ac7a9"
+    },
+    {
+      "ticketId": "LSF-T-db761098b01dce4113fe8b9417fe9fa5",
+      "entrantId": "LSF-E-1323bbd86f858c18d21a34707161db75"
+    },
+    {
+      "ticketId": "LSF-T-1de0f426ca01bd81db9c6c1a38e85960",
+      "entrantId": "LSF-E-b9dfa373cc39fcfb5b74ad7c6ae1fc5c"
+    },
+    {
+      "ticketId": "LSF-T-98562f15801ffca7ac74c1a5e8957d89",
+      "entrantId": "LSF-E-85c0130daae2e53146176d696040288d"
+    },
+    {
+      "ticketId": "LSF-T-9567870c9fa27f41db308652f9525efb",
+      "entrantId": "LSF-E-dfd90fdfd35f3ec22ec56be148000d8f"
+    },
+    {
+      "ticketId": "LSF-T-65f0edfebacb058f0f387552048b2d53",
+      "entrantId": "LSF-E-dfd90fdfd35f3ec22ec56be148000d8f"
+    },
+    {
+      "ticketId": "LSF-T-a63b3869d6d291c1315d597f90e67b4f",
+      "entrantId": "LSF-E-f565bb1bbb3a72478fc4bcff4fc85e1f"
+    },
+    {
+      "ticketId": "LSF-T-a8b1aff5cbd4545b375e69528f39e2bf",
+      "entrantId": "LSF-E-3cb58fc9bdbc6c9ace92bc02778fe9c0"
+    },
+    {
+      "ticketId": "LSF-T-43058e8cc7bb4294d60af3f95032ff82",
+      "entrantId": "LSF-E-03bfece8bfd8ed71edd26eb48c5df258"
+    },
+    {
+      "ticketId": "LSF-T-c67fb6a3e37590f5f8479e2a333b1160",
+      "entrantId": "LSF-E-fdac6531827ccfa4ba92148ac156677f"
+    },
+    {
+      "ticketId": "LSF-T-6aacb31c17e283719cfd71e44b82f0d1",
+      "entrantId": "LSF-E-1d6091ead664b15a5cb81277d98d0cf4"
+    },
+    {
+      "ticketId": "LSF-T-627a0818ce2ea7148021913dc2b07c94",
+      "entrantId": "LSF-E-d19395b68bf9a4a1f2516e6d3ea81d13"
+    },
+    {
+      "ticketId": "LSF-T-1f5e49023aa73b9d0e8351f571d36d5e",
+      "entrantId": "LSF-E-d19395b68bf9a4a1f2516e6d3ea81d13"
+    },
+    {
+      "ticketId": "LSF-T-f5e64579443f2580652209cd3de6177d",
+      "entrantId": "LSF-E-2bfefab43c4cb48baa008e6c70acd326"
+    },
+    {
+      "ticketId": "LSF-T-5d31f81f6736c0ba9844da5079587d33",
+      "entrantId": "LSF-E-2a03046fa6b182781fae1088590c955f"
+    },
+    {
+      "ticketId": "LSF-T-1330127480f12401d61a7cddd32fe78e",
+      "entrantId": "LSF-E-e760cecd679f70d08c92902ac5911390"
+    },
+    {
+      "ticketId": "LSF-T-b53708c7d64f228cff7cac8f5c7707a3",
+      "entrantId": "LSF-E-a16f443f03f2aafdd23f4435dd7acebf"
+    },
+    {
+      "ticketId": "LSF-T-816c19f84f51314e089a6ddb13524eeb",
+      "entrantId": "LSF-E-9ab85101c7626407de6f286e3c170817"
+    },
+    {
+      "ticketId": "LSF-T-3192805c8a95a5c96917e733edd70a6f",
+      "entrantId": "LSF-E-7bc41f20273dc6b537c4a638dfb683d0"
+    },
+    {
+      "ticketId": "LSF-T-1c5a102b1c02713e4638d4d50f7f14e3",
+      "entrantId": "LSF-E-57358bb967b92f7381740d499406a316"
+    },
+    {
+      "ticketId": "LSF-T-980ff5283ca43d8a1653f9f8a0622cb7",
+      "entrantId": "LSF-E-57358bb967b92f7381740d499406a316"
+    },
+    {
+      "ticketId": "LSF-T-d004d5e1ef5ceeb791f649e404cc796b",
+      "entrantId": "LSF-E-dff9abba4eb94e9cfaac6a7785fdf69f"
+    },
+    {
+      "ticketId": "LSF-T-6d7027061403e1c08c7e948d4823f625",
+      "entrantId": "LSF-E-09df4bc8bf4fa26580891fc98fe186e0"
+    },
+    {
+      "ticketId": "LSF-T-46ae955e8fbaaca5d32fd3bd2565b101",
+      "entrantId": "LSF-E-46890f94b17c920c96af77d95ec91c2d"
+    },
+    {
+      "ticketId": "LSF-T-76008b8b2cee72dae178fe8f4e900512",
+      "entrantId": "LSF-E-1611c2d1b3ffeb0e4fd8aabe4e8d6916"
+    },
+    {
+      "ticketId": "LSF-T-b7895c632c46f0ce2a3480b95501d1a9",
+      "entrantId": "LSF-E-775775185771296c610c898faad260e6"
+    },
+    {
+      "ticketId": "LSF-T-ce3294a920a5928f7cf9d6419eddbbe9",
+      "entrantId": "LSF-E-aca1ad6b030e7a8d270d391e882f54ff"
+    },
+    {
+      "ticketId": "LSF-T-1755dd004df14e3cb88584acbed258c3",
+      "entrantId": "LSF-E-0c7d7edf18e904e981a544064a593d28"
+    },
+    {
+      "ticketId": "LSF-T-a105783091153d324ee7f980c6dfbd0d",
+      "entrantId": "LSF-E-4a5ecfa02e9f7c0c16a49be1d726373e"
+    },
+    {
+      "ticketId": "LSF-T-f95d9717e4b3310a0f3efd35baa81c7f",
+      "entrantId": "LSF-E-82eca60173f965a5941674732fdfb474"
+    },
+    {
+      "ticketId": "LSF-T-e07f5ba99fd9eb4cd7c2d13eb2d5b52d",
+      "entrantId": "LSF-E-467f5830c3ff1dcdb7b4ba96b2490d63"
+    },
+    {
+      "ticketId": "LSF-T-0b6a4c39844a8d3c010fa30ad701a881",
+      "entrantId": "LSF-E-0f36ce137795ac29cca9dab482f36edd"
+    },
+    {
+      "ticketId": "LSF-T-7fba3d9078bc19748115174b10b37bb9",
+      "entrantId": "LSF-E-f0bf5bde04384cdb23010de5af0f0aec"
+    },
+    {
+      "ticketId": "LSF-T-3271293ac28a91376ca0bac5cd73999e",
+      "entrantId": "LSF-E-cde059ff5c36cf8f2d368e5a954d62d1"
+    },
+    {
+      "ticketId": "LSF-T-38573c6147e5144eeef4a7f2ace465f8",
+      "entrantId": "LSF-E-bf46d702fec8fc4be4d02cfafc42ead6"
+    },
+    {
+      "ticketId": "LSF-T-fd189f84436384b710cafe48ff5f54ba",
+      "entrantId": "LSF-E-a98519068b294a16529027d470b70fd4"
+    },
+    {
+      "ticketId": "LSF-T-48a5cb2d72d3861a05111b9dae98333a",
+      "entrantId": "LSF-E-f989ff38ed219ce6f3a412ccb283843c"
+    },
+    {
+      "ticketId": "LSF-T-7addaf028048eb0231809c791970f611",
+      "entrantId": "LSF-E-f989ff38ed219ce6f3a412ccb283843c"
+    },
+    {
+      "ticketId": "LSF-T-02ed8c9d3a89d449ad748ff045d01eb8",
+      "entrantId": "LSF-E-f989ff38ed219ce6f3a412ccb283843c"
+    },
+    {
+      "ticketId": "LSF-T-551dc6099d18fed149c013a30385c692",
+      "entrantId": "LSF-E-f989ff38ed219ce6f3a412ccb283843c"
+    },
+    {
+      "ticketId": "LSF-T-df1fd0730b99a2a6f78ed82c9193c0a9",
+      "entrantId": "LSF-E-f989ff38ed219ce6f3a412ccb283843c"
+    },
+    {
+      "ticketId": "LSF-T-5ffad2ea0fcc5f711a2eeb6a12869e0a",
+      "entrantId": "LSF-E-f989ff38ed219ce6f3a412ccb283843c"
+    },
+    {
+      "ticketId": "LSF-T-c9e0a9e0073eeda8d735db925e6006ac",
+      "entrantId": "LSF-E-f989ff38ed219ce6f3a412ccb283843c"
+    },
+    {
+      "ticketId": "LSF-T-cea5c8e18499599d2e91c4dea2f531a4",
+      "entrantId": "LSF-E-f989ff38ed219ce6f3a412ccb283843c"
+    },
+    {
+      "ticketId": "LSF-T-601fe2b28de42b6ed227cc9dcb39c13d",
+      "entrantId": "LSF-E-f989ff38ed219ce6f3a412ccb283843c"
+    },
+    {
+      "ticketId": "LSF-T-ec493d088e628babe6765c9226cc8ce0",
+      "entrantId": "LSF-E-f989ff38ed219ce6f3a412ccb283843c"
+    },
+    {
+      "ticketId": "LSF-T-a02340427f85c4e14f782949b179afd4",
+      "entrantId": "LSF-E-f989ff38ed219ce6f3a412ccb283843c"
+    },
+    {
+      "ticketId": "LSF-T-5758a416b5cba942bfba2dd46efcd929",
+      "entrantId": "LSF-E-34a72b389bd2e534774ce7de4d3e487f"
+    },
+    {
+      "ticketId": "LSF-T-553ef2389f9773f4def7243c5dd41cfe",
+      "entrantId": "LSF-E-ca2420fb5776da272837cf02a1108821"
+    },
+    {
+      "ticketId": "LSF-T-65d747904646bc75d71548d4312b3221",
+      "entrantId": "LSF-E-3d86f0e03e4ec0c5392a4943bcb2f6be"
+    },
+    {
+      "ticketId": "LSF-T-ed0d0cd46ad4f219ba14ab6e3a61e8ff",
+      "entrantId": "LSF-E-f08538118134c60e535d7fa0018d399b"
+    },
+    {
+      "ticketId": "LSF-T-ec2af15e24f19de2534ddb53d2216db4",
+      "entrantId": "LSF-E-85adcf725ba5bf4ea51a9dca18f1e117"
+    },
+    {
+      "ticketId": "LSF-T-e5f22613c1a17ad69562295363195492",
+      "entrantId": "LSF-E-82963289612ef6106a318b601582b62e"
+    },
+    {
+      "ticketId": "LSF-T-9966f3db0e1d7d1d001b976c5227ed76",
+      "entrantId": "LSF-E-a8bc32e7cd9e0a6ea9708a8581403198"
+    },
+    {
+      "ticketId": "LSF-T-dcaf8ff02e29b5315056af18be12a0e6",
+      "entrantId": "LSF-E-9711be958e1f406e02a255ba7397fae9"
+    },
+    {
+      "ticketId": "LSF-T-7632eddea5331164624ea1fb1bda9fc2",
+      "entrantId": "LSF-E-9711be958e1f406e02a255ba7397fae9"
+    },
+    {
+      "ticketId": "LSF-T-68231c99a975d182c95666291a827c2f",
+      "entrantId": "LSF-E-abb23be37f8f556f725cd528036c3529"
+    },
+    {
+      "ticketId": "LSF-T-baaa6899df64b52e5730ad67c675e814",
+      "entrantId": "LSF-E-0c024841797191a9a2f9b7a2f643c3bd"
+    },
+    {
+      "ticketId": "LSF-T-a1762625dcd91b4ae108b361c0781284",
+      "entrantId": "LSF-E-2736ac0ed88ca8dca7e863b2b21762f1"
+    },
+    {
+      "ticketId": "LSF-T-d24afc7e06a91260543ee6893067f3b7",
+      "entrantId": "LSF-E-3b762c9300257031c4f826f80835cf21"
+    },
+    {
+      "ticketId": "LSF-T-a26c5a23c2a9cb302cfb3954c3c986dc",
+      "entrantId": "LSF-E-c687672d7ffd658489fd2a2e59fe70b8"
+    },
+    {
+      "ticketId": "LSF-T-80514a83a166f080a4db7acee46d21d4",
+      "entrantId": "LSF-E-bf64fabe5a9ee7923bde91d011edc11f"
+    },
+    {
+      "ticketId": "LSF-T-1c73830056e0ce44e6b3596ed4e3fd47",
+      "entrantId": "LSF-E-a4122da215ac8b8c9df89bf9dc340c57"
+    },
+    {
+      "ticketId": "LSF-T-5202fa0bf58dfbd864f3d892f8792486",
+      "entrantId": "LSF-E-615949cbfecc879b16180ad07f9ed1ab"
+    },
+    {
+      "ticketId": "LSF-T-5d12052ee4f57879b74c682b8ce7fda7",
+      "entrantId": "LSF-E-bca45f7a5edc81515f6d4dfb177ec8e5"
+    },
+    {
+      "ticketId": "LSF-T-879dbff35b31cf536d5fbc69fa185145",
+      "entrantId": "LSF-E-b50efd43aef71e8b4195fbac0d3a4aaf"
+    },
+    {
+      "ticketId": "LSF-T-c421b1db2ab46417de08883259758225",
+      "entrantId": "LSF-E-82509b2d00a224278a87300dcf5f8ecb"
+    },
+    {
+      "ticketId": "LSF-T-35ce2cf49a7438087b4b8f128a651683",
+      "entrantId": "LSF-E-696f930f9882077401a66c9969092e54"
+    },
+    {
+      "ticketId": "LSF-T-1206ece08f72204dea550937c193ef63",
+      "entrantId": "LSF-E-a6793eb274a641de901dea44d9513d73"
+    },
+    {
+      "ticketId": "LSF-T-4150a1aeae2b5dff4d9ff72159c7e9e7",
+      "entrantId": "LSF-E-67b2c6fd283eeee7a939e999d16dc000"
+    },
+    {
+      "ticketId": "LSF-T-55d20c8ed81227f19e7a10a8bbfc00d1",
+      "entrantId": "LSF-E-4b10fa4dbc902b109f52ec19b6621180"
+    },
+    {
+      "ticketId": "LSF-T-b98d8019281cdc162929ba0976b5ac5b",
+      "entrantId": "LSF-E-67eea075b2d7d9c632ec31b5eee41363"
+    },
+    {
+      "ticketId": "LSF-T-67e2244318c1f371644498b0a2fbbc9e",
+      "entrantId": "LSF-E-cf9cf07e783342e1510a3c55f1c34648"
+    },
+    {
+      "ticketId": "LSF-T-474499713a1ea251b40d85c4c4ae71eb",
+      "entrantId": "LSF-E-e705794c589596a8d0e0cb7dbf698931"
+    },
+    {
+      "ticketId": "LSF-T-142912780c1a91dd14987ff0cd9eac6e",
+      "entrantId": "LSF-E-6fb7ddafe6e07636fa9a43778f2c85aa"
+    },
+    {
+      "ticketId": "LSF-T-3c4614c93dc2cce1f1a7f589ebbaaded",
+      "entrantId": "LSF-E-3e4bad0808a90150580853adff29a29c"
+    },
+    {
+      "ticketId": "LSF-T-f9bb06635f87bb8e75c5780d53030ee1",
+      "entrantId": "LSF-E-fd519ce8bd50c79a663c3b24e6e1bd81"
+    },
+    {
+      "ticketId": "LSF-T-45105f458e39059eb568935d10744fb4",
+      "entrantId": "LSF-E-26de9014abbd1aa7709fb1f2f2f66c95"
+    },
+    {
+      "ticketId": "LSF-T-068be6bb5cbbc4ca4273e28f2c82ad2e",
+      "entrantId": "LSF-E-d1822a377e7c17a6766e2af05845ccd8"
+    },
+    {
+      "ticketId": "LSF-T-6c099a2372007fa2921d0214bfed36a0",
+      "entrantId": "LSF-E-057db98d199d6dec24ad3b08b79a0d08"
+    },
+    {
+      "ticketId": "LSF-T-10f087f116d68903245efbffbaf0d4f1",
+      "entrantId": "LSF-E-ed0938e8439f5427b94ab68a237b31ef"
+    },
+    {
+      "ticketId": "LSF-T-983fc6327914fa648ba61aae37470a68",
+      "entrantId": "LSF-E-7c395da9d8399ccf17ca555c366d1e51"
+    },
+    {
+      "ticketId": "LSF-T-a7d55e2a00eea6e6f6681d5157748427",
+      "entrantId": "LSF-E-9bc62afcc50e319b5f102cb279f93123"
+    },
+    {
+      "ticketId": "LSF-T-25c553dba0149bc1cf261ad5047c9a12",
+      "entrantId": "LSF-E-9bc62afcc50e319b5f102cb279f93123"
+    },
+    {
+      "ticketId": "LSF-T-396cbd4acaa0f775441fc28471d45e8c",
+      "entrantId": "LSF-E-9bc62afcc50e319b5f102cb279f93123"
+    },
+    {
+      "ticketId": "LSF-T-7be356f1b9ff9824eae0a12f453eea2c",
+      "entrantId": "LSF-E-b8cdaa04b6fd4ed1baa4bfd4b610c241"
+    },
+    {
+      "ticketId": "LSF-T-679a40e58d95b53e64c5f90ba53c0bad",
+      "entrantId": "LSF-E-8c877b9f71d856e3adf15d27ad1004e2"
+    },
+    {
+      "ticketId": "LSF-T-a6d55a5e0ad60dd244305f277c28aea4",
+      "entrantId": "LSF-E-33535c4ad7827d0b37d2987c514ab1b5"
+    },
+    {
+      "ticketId": "LSF-T-a203c2d3dff80887ad5bb46d3c91b80d",
+      "entrantId": "LSF-E-8939014502272bbcd234608636216f39"
+    },
+    {
+      "ticketId": "LSF-T-db4bfa4a515e8eac7c0f966f85a3518f",
+      "entrantId": "LSF-E-a3c68c8affb49bac69df0eaf2170d64b"
+    },
+    {
+      "ticketId": "LSF-T-12de9bae8013b276f2ef68260aaabe2b",
+      "entrantId": "LSF-E-0b2eb42a462f9bb8e049cdfcd0c618c9"
+    },
+    {
+      "ticketId": "LSF-T-759e0a0a40a8aaf1e112264533c2315b",
+      "entrantId": "LSF-E-42266ca7a13b3dbde6028af3565dd4c9"
+    },
+    {
+      "ticketId": "LSF-T-5dae77a592d70f249e97a71dcba7703d",
+      "entrantId": "LSF-E-04b0be6ab1b48a49a56d157d6f1c8092"
+    },
+    {
+      "ticketId": "LSF-T-1f612c8f16dbe6797ba987bdd71e486b",
+      "entrantId": "LSF-E-d7f8192e16e4f9dc0b3303f35cbaefa0"
+    },
+    {
+      "ticketId": "LSF-T-85499121abc6025a331ebdf3d6d71baa",
+      "entrantId": "LSF-E-94ab10b7e70e0e5ccaa2044a1ef37597"
+    },
+    {
+      "ticketId": "LSF-T-4acdfadec62a243e32bd18aa671fa37d",
+      "entrantId": "LSF-E-16aeabcd4b57c9d1d2b97ed668ea1786"
+    },
+    {
+      "ticketId": "LSF-T-73748abbfff9d0960a8af2dd7ce8df9f",
+      "entrantId": "LSF-E-024047691727db3ebbc1c4e2d008f735"
+    },
+    {
+      "ticketId": "LSF-T-400ec1245e9e7b29cbd7ccb7a00bf8b2",
+      "entrantId": "LSF-E-ab974f800067d03f9bec92301c2e098f"
+    },
+    {
+      "ticketId": "LSF-T-0bed404a69415b17184c126364016675",
+      "entrantId": "LSF-E-27f9741975a84ee60b8bf98fed009449"
+    },
+    {
+      "ticketId": "LSF-T-24d7f074b7877ce33cc6ecca0062e6ba",
+      "entrantId": "LSF-E-92a1b3993d8548017ebcc1796bf6a84c"
+    },
+    {
+      "ticketId": "LSF-T-20f14a98ec0534a1f81ddbb65c6d7a9c",
+      "entrantId": "LSF-E-fc11c0ebb1b0c2fb2b685bf6f77a1be1"
+    },
+    {
+      "ticketId": "LSF-T-8b21a0d9243e3bf213f028fc2952eda7",
+      "entrantId": "LSF-E-452e99e5ae161aaaa00f231cde32c8ae"
+    },
+    {
+      "ticketId": "LSF-T-0b67fb1ecae55eab48941d53204ed62d",
+      "entrantId": "LSF-E-4cae1b5dc5f4b4d93526c6d9986ed71b"
+    },
+    {
+      "ticketId": "LSF-T-91d7fc623dd29c4d4ec29bc3fc9343e6",
+      "entrantId": "LSF-E-50d3cca3c0c548a4aa57126432c09304"
+    },
+    {
+      "ticketId": "LSF-T-33cf587e23929beaae95163f789b53b0",
+      "entrantId": "LSF-E-50d3cca3c0c548a4aa57126432c09304"
+    },
+    {
+      "ticketId": "LSF-T-783a5ae3d0d764208f6e8a5122f6a7c5",
+      "entrantId": "LSF-E-881a41279b6e607ea2aea1ca7421d3b7"
+    },
+    {
+      "ticketId": "LSF-T-400c3b7823e62858817c80a5c256959c",
+      "entrantId": "LSF-E-842e982a3c527ef17bafa1c24a5304ad"
+    },
+    {
+      "ticketId": "LSF-T-3520468c610a63dce8b69865065ba9b8",
+      "entrantId": "LSF-E-df6e86f6dcd981e79010e93643aa8055"
+    },
+    {
+      "ticketId": "LSF-T-690e7682f8bec1bd9e7535996dac9e95",
+      "entrantId": "LSF-E-20d28441d0cee0e0327ca6e235e03c0a"
+    },
+    {
+      "ticketId": "LSF-T-203faeb555a8ee69fb7a65bd3505b1dd",
+      "entrantId": "LSF-E-7834b253122936d74227e7aaf3afb4bb"
+    },
+    {
+      "ticketId": "LSF-T-df467b21602e57ed26574cfb39921707",
+      "entrantId": "LSF-E-20b0f99f400b444a46344cd99086ef17"
+    },
+    {
+      "ticketId": "LSF-T-bbfb6148751c8d6fb10d943160b46a99",
+      "entrantId": "LSF-E-2827f366ba1788df7f2d56eadff5881b"
+    },
+    {
+      "ticketId": "LSF-T-62172606f779919d4a89bc6c507e65f4",
+      "entrantId": "LSF-E-a2763f0962344191a6ea0b5f327480fd"
+    },
+    {
+      "ticketId": "LSF-T-e29bd2b4bba521e98eaf716e5206ad25",
+      "entrantId": "LSF-E-5ed4fe7f5b9b62724f49e331b988cd70"
+    },
+    {
+      "ticketId": "LSF-T-ace3a77dfbea7f9a58289e7666554e4a",
+      "entrantId": "LSF-E-a5e2de1cd3fb258ae50d8aa8eac48367"
+    },
+    {
+      "ticketId": "LSF-T-0cfea689de9f23efa23b5fe1435a7c82",
+      "entrantId": "LSF-E-851d78d3793b54f63fd12191ccf76229"
+    },
+    {
+      "ticketId": "LSF-T-830e92955f68d1e8699fcfd3e4103600",
+      "entrantId": "LSF-E-e30d7d89edef596ee278d1314512cfee"
+    },
+    {
+      "ticketId": "LSF-T-34146d57909dc3151849891e281c46d2",
+      "entrantId": "LSF-E-f858dcf0daf97a77d837d56953f6e808"
+    },
+    {
+      "ticketId": "LSF-T-1f8cf3c7fc7748351778360a615f9552",
+      "entrantId": "LSF-E-d9acab87adec0689b6fbef0dc2efc48b"
+    },
+    {
+      "ticketId": "LSF-T-bcf48021c99404ac63210cf463a154fb",
+      "entrantId": "LSF-E-5deaa68896582702f3ec6c7eeebd42ac"
+    },
+    {
+      "ticketId": "LSF-T-55d6d83dccd5c64f2c3428e24ea265ae",
+      "entrantId": "LSF-E-def1eec5cecf555558177ecbecbcc4fe"
+    },
+    {
+      "ticketId": "LSF-T-2d29fdb531bdf89dd1e697ed746f8ff5",
+      "entrantId": "LSF-E-e6303bc94d89a18d01ac8547178168b1"
+    },
+    {
+      "ticketId": "LSF-T-1935cdd1a0a36f9e0931494360e3fafe",
+      "entrantId": "LSF-E-917914ed2cdac971e2c017e54c2e6fdd"
+    },
+    {
+      "ticketId": "LSF-T-1c747db4d7348265a20bd89b6a94c84a",
+      "entrantId": "LSF-E-3246b8372a961c40253e779cd99dd6c6"
+    },
+    {
+      "ticketId": "LSF-T-7b1f49bc84c757b89ea90d18d73085a2",
+      "entrantId": "LSF-E-fcd3fa011f1202bb1ce18f41939dcabf"
+    },
+    {
+      "ticketId": "LSF-T-b553095fe9740a9d72ae383a49ec5894",
+      "entrantId": "LSF-E-3db49445e550f0d2e4cc8944b8c89140"
+    },
+    {
+      "ticketId": "LSF-T-e42f6d084d2dfe2965eb94686eb35275",
+      "entrantId": "LSF-E-851084a4497c83cb7e2fb1434e0b88f6"
+    },
+    {
+      "ticketId": "LSF-T-1d3478fdad95c46441408c3202fbec4e",
+      "entrantId": "LSF-E-d27d74f26a4a0f3a499008e962027dee"
+    },
+    {
+      "ticketId": "LSF-T-c704cdc5a5e2304aedcbc0cbc0936d98",
+      "entrantId": "LSF-E-6784920d89db4e4bd6bdefb57baed6b3"
+    },
+    {
+      "ticketId": "LSF-T-87eacc1a7c6bec5e13a89558c2a5febb",
+      "entrantId": "LSF-E-37e2a48fe9645611823c157fc5b8cddb"
+    },
+    {
+      "ticketId": "LSF-T-e2bbc0b0b1b056daefdf2aa05815a56f",
+      "entrantId": "LSF-E-8d59aeda2a221ce83ffa8ebfd1b621a6"
+    },
+    {
+      "ticketId": "LSF-T-7f312afcb04447ae1537f644c43f3048",
+      "entrantId": "LSF-E-c2b90e9f195abd24ea02ea3dda9dbd8e"
+    },
+    {
+      "ticketId": "LSF-T-f6a7b885b48ab5baf7068cd1774ffdfc",
+      "entrantId": "LSF-E-29abc1741e309725269f4658dca118f1"
+    },
+    {
+      "ticketId": "LSF-T-0ad52e47bc7c44cf3bad4f1e2dbc0cee",
+      "entrantId": "LSF-E-77ea6999844883b932c7e06fb0e65f9a"
+    },
+    {
+      "ticketId": "LSF-T-61734e5a4e2ecb3c8aa439411fa73676",
+      "entrantId": "LSF-E-87e8a84b4e762c72531794d5c6345eea"
+    },
+    {
+      "ticketId": "LSF-T-00f675d597de69d2f9c0dbe3f0372ed2",
+      "entrantId": "LSF-E-87e8a84b4e762c72531794d5c6345eea"
+    },
+    {
+      "ticketId": "LSF-T-1aadaddd3db834c2ab62c03605693f82",
+      "entrantId": "LSF-E-5853388e1bdb89d6cd2ce6328fead7f7"
+    },
+    {
+      "ticketId": "LSF-T-8746ec6b117658a0aaf17af4641418f0",
+      "entrantId": "LSF-E-0a89ff951ddd6e52a843486d20cde427"
+    },
+    {
+      "ticketId": "LSF-T-b0f08b8b4681ab456832763faae1f81b",
+      "entrantId": "LSF-E-562a1c32ae3a8d09d2d25debb58ee437"
+    },
+    {
+      "ticketId": "LSF-T-7c4c64044744e103e40e96c3199531e2",
+      "entrantId": "LSF-E-d715c8d243b3718305e907793a7ec769"
+    },
+    {
+      "ticketId": "LSF-T-c34e5d61cd91ba410242bcab156f7c59",
+      "entrantId": "LSF-E-858c8df890948a1637a17e4fa59ff66a"
+    },
+    {
+      "ticketId": "LSF-T-0914e90f16a298ec2bc4ad01fcf85818",
+      "entrantId": "LSF-E-858c8df890948a1637a17e4fa59ff66a"
+    },
+    {
+      "ticketId": "LSF-T-88b941942182fd89ed116216b98c4da8",
+      "entrantId": "LSF-E-858c8df890948a1637a17e4fa59ff66a"
+    },
+    {
+      "ticketId": "LSF-T-5aabd11b61ce8d97f1545a368f5bd062",
+      "entrantId": "LSF-E-7d22ae11f775ed04cfd93f8dfa423e98"
+    },
+    {
+      "ticketId": "LSF-T-e2409b25ce383df00c3d1cf36875a7ee",
+      "entrantId": "LSF-E-7d22ae11f775ed04cfd93f8dfa423e98"
+    },
+    {
+      "ticketId": "LSF-T-48eec50e8346db8d9531e2c5f1f3e3e2",
+      "entrantId": "LSF-E-7d22ae11f775ed04cfd93f8dfa423e98"
+    },
+    {
+      "ticketId": "LSF-T-ebb94e61a7b195d06a741ea80e83f07d",
+      "entrantId": "LSF-E-7d22ae11f775ed04cfd93f8dfa423e98"
+    },
+    {
+      "ticketId": "LSF-T-1946be13f0571091f15cff6aa99a5aaa",
+      "entrantId": "LSF-E-d2aa6454c3eff27025af1ce738e3c349"
+    },
+    {
+      "ticketId": "LSF-T-7c7ae85759ddfd5673de8445e3308bb8",
+      "entrantId": "LSF-E-d2aa6454c3eff27025af1ce738e3c349"
+    },
+    {
+      "ticketId": "LSF-T-7a5c251d48d7136887e396b724eecf92",
+      "entrantId": "LSF-E-d2aa6454c3eff27025af1ce738e3c349"
+    },
+    {
+      "ticketId": "LSF-T-19b15df9001168184e181dcb8df8fb13",
+      "entrantId": "LSF-E-d2aa6454c3eff27025af1ce738e3c349"
+    },
+    {
+      "ticketId": "LSF-T-72b65d255d869c57c4435d860b20fd2a",
+      "entrantId": "LSF-E-d2aa6454c3eff27025af1ce738e3c349"
+    },
+    {
+      "ticketId": "LSF-T-e9ed6449d29a92d3519c5114499fb982",
+      "entrantId": "LSF-E-d2aa6454c3eff27025af1ce738e3c349"
+    },
+    {
+      "ticketId": "LSF-T-47d2880006cfa5984b2d31d1ac2f0786",
+      "entrantId": "LSF-E-d2aa6454c3eff27025af1ce738e3c349"
+    },
+    {
+      "ticketId": "LSF-T-d1713090816efc30949b48bcb811444c",
+      "entrantId": "LSF-E-d2aa6454c3eff27025af1ce738e3c349"
+    },
+    {
+      "ticketId": "LSF-T-ab1a3be92d77aadfb146ac057aa32220",
+      "entrantId": "LSF-E-4f2f7997ed4f16652bceb8c82d730053"
+    },
+    {
+      "ticketId": "LSF-T-92cdc5902d0dca5d69dcebcf04d42009",
+      "entrantId": "LSF-E-aef8ea8c000ae2785255bf210713aa16"
+    },
+    {
+      "ticketId": "LSF-T-d6972cbcfa93513fe7834763c71f761d",
+      "entrantId": "LSF-E-59369c9075c6f021f1ee34164a1e1452"
+    },
+    {
+      "ticketId": "LSF-T-301b4185539bcc2fe82e15e39f1fc444",
+      "entrantId": "LSF-E-e25e293c875a97761411f3b00eb099ad"
+    },
+    {
+      "ticketId": "LSF-T-5cc542f97eb6f1e974cdc95d926949a9",
+      "entrantId": "LSF-E-07948a2e5fd200639e0152b0e27b07ed"
+    },
+    {
+      "ticketId": "LSF-T-1f47d200954567b16ac302fc900b0505",
+      "entrantId": "LSF-E-a4952596abb0818a0469187c9e8f1838"
+    },
+    {
+      "ticketId": "LSF-T-2e8b841d2dba57c6afdc4cd51dc226ca",
+      "entrantId": "LSF-E-ee5f8e2db54646f001517e9e1031f597"
+    },
+    {
+      "ticketId": "LSF-T-99f510b4c7f99f054ae2f6ae53aa0dbb",
+      "entrantId": "LSF-E-c14016608087f9e026eb847d43a43c85"
+    },
+    {
+      "ticketId": "LSF-T-35eb0486b05823b886bcf214bbadba1d",
+      "entrantId": "LSF-E-52bbbc7f3082d7d63db2417d8100a7d6"
+    },
+    {
+      "ticketId": "LSF-T-ba8b5ff53ea7d20ffbe8ae0ed3d5fc9b",
+      "entrantId": "LSF-E-ab9160b44ab7e3b0eb0024c39740eb82"
+    },
+    {
+      "ticketId": "LSF-T-6586097a598eedc8b12b28d5a6f59004",
+      "entrantId": "LSF-E-4c9cf2de25fa17557e14ac28a4aa3915"
+    },
+    {
+      "ticketId": "LSF-T-70aa267e246719d2cc91cfa2dbae7887",
+      "entrantId": "LSF-E-e7960436a697e9010de84898cb5cf9a3"
+    },
+    {
+      "ticketId": "LSF-T-7a26f331c73689263b1e70147a77a397",
+      "entrantId": "LSF-E-e7960436a697e9010de84898cb5cf9a3"
+    },
+    {
+      "ticketId": "LSF-T-30393ab7535cebdb3d8bca39a6fa0720",
+      "entrantId": "LSF-E-15c4e73cdc1e3a7993e73d1c8d156820"
+    },
+    {
+      "ticketId": "LSF-T-5916709af19c1b00e791dfb4463fa9bd",
+      "entrantId": "LSF-E-15c4e73cdc1e3a7993e73d1c8d156820"
+    },
+    {
+      "ticketId": "LSF-T-9299156bb6fb55030fc4d4d3c0845eb4",
+      "entrantId": "LSF-E-b1b87c0716cc6bebace9dfa981bd3b33"
+    },
+    {
+      "ticketId": "LSF-T-48580f2dc808e26c9ab319e9ab7ee178",
+      "entrantId": "LSF-E-15cbd2e721a82d39c520f88483c5d6d7"
+    },
+    {
+      "ticketId": "LSF-T-2399f1db3d4adeafc77e111dd321dc6e",
+      "entrantId": "LSF-E-4b43c9d043116f4015f935fbcd731507"
+    },
+    {
+      "ticketId": "LSF-T-96208c48c36e29787310e611f0573594",
+      "entrantId": "LSF-E-27f60c13ea46b462f451e9e7d197fb2e"
+    },
+    {
+      "ticketId": "LSF-T-ffe07184c374d771ab29b9ce7a8df5cd",
+      "entrantId": "LSF-E-c00e2f4103a3ab2fd769041b0416403d"
+    },
+    {
+      "ticketId": "LSF-T-02869efcf4547e29fc70246d8e280083",
+      "entrantId": "LSF-E-ce50a36cad0de43a30e7064cf9b37a8b"
+    },
+    {
+      "ticketId": "LSF-T-137a6b49b65b9b9636a710b7bb5be2d2",
+      "entrantId": "LSF-E-ce50a36cad0de43a30e7064cf9b37a8b"
+    },
+    {
+      "ticketId": "LSF-T-c030d09277ef7a76bf44ccc23c974a63",
+      "entrantId": "LSF-E-ce50a36cad0de43a30e7064cf9b37a8b"
+    },
+    {
+      "ticketId": "LSF-T-886fd6020ab4ec7142b46f1ae5af446c",
+      "entrantId": "LSF-E-ce50a36cad0de43a30e7064cf9b37a8b"
+    },
+    {
+      "ticketId": "LSF-T-84f68f97b2867608f7471721ff0066a0",
+      "entrantId": "LSF-E-5f9f6f58fa595e9cee73801e25441cf7"
+    },
+    {
+      "ticketId": "LSF-T-2014b7978c842376da4b1c8d71b9c1da",
+      "entrantId": "LSF-E-8d52c75a3ed3e5063777f383f6108d71"
+    },
+    {
+      "ticketId": "LSF-T-7a20fbd1d847b897ab6e8f4b7c07992b",
+      "entrantId": "LSF-E-8595712164a2eb3dedada19c754bb78e"
+    },
+    {
+      "ticketId": "LSF-T-6b3597c2667bfcb22b9b09b27aea94fb",
+      "entrantId": "LSF-E-1ce4ccb1a39f5c4089b69c662588ab9d"
+    },
+    {
+      "ticketId": "LSF-T-b85fe5da80daebcaac8f1309a22ad79b",
+      "entrantId": "LSF-E-44626c63b82d813e04d1dfee8b07bd62"
+    },
+    {
+      "ticketId": "LSF-T-b349c5c7bbc7866ef3e732e95003bfea",
+      "entrantId": "LSF-E-7cf943fb83a1311685f89e52d317cd55"
+    },
+    {
+      "ticketId": "LSF-T-9aca966b10702a0c6ee42270d888a83b",
+      "entrantId": "LSF-E-a0263674a7fa374ce7aa766e60da6267"
+    },
+    {
+      "ticketId": "LSF-T-e58ebb250119a0f805747ff57142f370",
+      "entrantId": "LSF-E-ab41eb2ce3ad85cd7b6e0744d906f563"
+    },
+    {
+      "ticketId": "LSF-T-cb96570f0ade63ba90a969d7f07ba145",
+      "entrantId": "LSF-E-ab41eb2ce3ad85cd7b6e0744d906f563"
+    },
+    {
+      "ticketId": "LSF-T-54636578a05f79deee7778a0c96833be",
+      "entrantId": "LSF-E-2f03c94cecb826ad88ff188b077247cd"
+    },
+    {
+      "ticketId": "LSF-T-fa6615ea7d0466cabfe048dd554cc7e1",
+      "entrantId": "LSF-E-de6bc967b97c5278acf3eb854fa52881"
+    },
+    {
+      "ticketId": "LSF-T-6476c04d1cd678e8c714ec9dd3cb087d",
+      "entrantId": "LSF-E-f1aacef8530d825408e0d8488bf07488"
+    },
+    {
+      "ticketId": "LSF-T-9d45a002f1602aeee75ea2476cd4465d",
+      "entrantId": "LSF-E-abd939ca834b63ddcac9b5eb3042ed0d"
+    },
+    {
+      "ticketId": "LSF-T-5f19166b6cefb85bb182f4f30e4aba4f",
+      "entrantId": "LSF-E-f7b6e1f6e1dc8a2f0d082dce2a77c952"
+    },
+    {
+      "ticketId": "LSF-T-930a6e3cf6cbb4cea0e841c54245e6e6",
+      "entrantId": "LSF-E-c03937d1fa7cb13e708586b3c340212b"
+    },
+    {
+      "ticketId": "LSF-T-2f4eda825496dfe7281b0106a4c8441b",
+      "entrantId": "LSF-E-742253e26c1f073adca02e9fb4f2ba25"
+    },
+    {
+      "ticketId": "LSF-T-46102e9753e2d40352f0ffc2e98d9333",
+      "entrantId": "LSF-E-49ed492b9739a84931248b31e8df2ff8"
+    },
+    {
+      "ticketId": "LSF-T-de0032c1c44d08e0b10e6db5c3a24d98",
+      "entrantId": "LSF-E-49ed492b9739a84931248b31e8df2ff8"
+    },
+    {
+      "ticketId": "LSF-T-a14f8bb5aaa1cb18a7c07b370638479a",
+      "entrantId": "LSF-E-3723200a7c9c9df268132b60a61247bf"
+    },
+    {
+      "ticketId": "LSF-T-fdc65cc1b2cf7fa7b0f71f57f6129ee5",
+      "entrantId": "LSF-E-9aeb180030736b29151dfccc94ab3a53"
+    },
+    {
+      "ticketId": "LSF-T-054d4986c5ff5dd79259275266583a11",
+      "entrantId": "LSF-E-803ab8c75b025dee9dd88b22d40ebf62"
+    },
+    {
+      "ticketId": "LSF-T-687c9c2d85695d4d59215f7120d54b6c",
+      "entrantId": "LSF-E-803ab8c75b025dee9dd88b22d40ebf62"
+    },
+    {
+      "ticketId": "LSF-T-d84fdee3fadaf89de59f6cb9c7b6a965",
+      "entrantId": "LSF-E-d69c63b572c7669e6766832784f47a4a"
+    },
+    {
+      "ticketId": "LSF-T-f1c9a4c2e4c379b9c8457d597a8b7651",
+      "entrantId": "LSF-E-9ea0e7f7eaccdef714b2bb241f2a6142"
+    },
+    {
+      "ticketId": "LSF-T-50baf191d57a9baab491c597099393a5",
+      "entrantId": "LSF-E-9ea0e7f7eaccdef714b2bb241f2a6142"
+    },
+    {
+      "ticketId": "LSF-T-c73e0507ad6927a1f347541e5abf6d41",
+      "entrantId": "LSF-E-9ea0e7f7eaccdef714b2bb241f2a6142"
+    },
+    {
+      "ticketId": "LSF-T-9402daf964b4a74765caeb6ff06fc1b7",
+      "entrantId": "LSF-E-9ea0e7f7eaccdef714b2bb241f2a6142"
+    },
+    {
+      "ticketId": "LSF-T-95b58daa1929b2c220883773393ba323",
+      "entrantId": "LSF-E-9ea0e7f7eaccdef714b2bb241f2a6142"
+    },
+    {
+      "ticketId": "LSF-T-db0acee919dca79f4c23ece7626f1df8",
+      "entrantId": "LSF-E-9ea0e7f7eaccdef714b2bb241f2a6142"
+    },
+    {
+      "ticketId": "LSF-T-54842675ba2bdb513d022d3381e1d976",
+      "entrantId": "LSF-E-9ea0e7f7eaccdef714b2bb241f2a6142"
+    },
+    {
+      "ticketId": "LSF-T-12f4999194d4dbebb7614427fc5c4006",
+      "entrantId": "LSF-E-9ea0e7f7eaccdef714b2bb241f2a6142"
+    },
+    {
+      "ticketId": "LSF-T-b38dcf62857881e321e06e94c58a3b86",
+      "entrantId": "LSF-E-9ea0e7f7eaccdef714b2bb241f2a6142"
+    },
+    {
+      "ticketId": "LSF-T-7b11a21e2f17fbc2d98675e2849b9e2a",
+      "entrantId": "LSF-E-ec9aa48de6358e25f005ed0ab63114f8"
+    },
+    {
+      "ticketId": "LSF-T-6b87aebc69eb4bcb2961bd368aa7dcc5",
+      "entrantId": "LSF-E-59cfa752a56840e81cd588a426a2f953"
+    },
+    {
+      "ticketId": "LSF-T-dfc3500291203d6dbaab466812e99722",
+      "entrantId": "LSF-E-91217ed76915d9ad3c44e5171219457e"
+    },
+    {
+      "ticketId": "LSF-T-e8981cebc6b61fe129d1e90d66113748",
+      "entrantId": "LSF-E-c5851d13d0303e1d3ab38b0c425367f6"
+    },
+    {
+      "ticketId": "LSF-T-641584b4234e0c6062da9eebab4815af",
+      "entrantId": "LSF-E-83544dbfff5dfc4816556c012b25db89"
+    },
+    {
+      "ticketId": "LSF-T-b82ee4162ac833152d88c88307d2fa28",
+      "entrantId": "LSF-E-b7445c9acc3a23e01f31158b4cc1e3b8"
+    },
+    {
+      "ticketId": "LSF-T-c1d9c31e59762605fbadd93dba5f3013",
+      "entrantId": "LSF-E-9e1a2a20a9c6662cb2419c1589e27d44"
+    },
+    {
+      "ticketId": "LSF-T-7ce4dc73451367cd1b1ebebd1b5a5fe9",
+      "entrantId": "LSF-E-d47fecf4bec5df508c27496a948a610f"
+    },
+    {
+      "ticketId": "LSF-T-69baa7cce1e1e77568a28eba67ea72de",
+      "entrantId": "LSF-E-3bc5878b72085ea5f1204cf1c1882838"
+    },
+    {
+      "ticketId": "LSF-T-7f942bf6b6a58a766b9dbd7b7b9f7847",
+      "entrantId": "LSF-E-e3b0fc2a32c7b8f264a58aabd19d4e1b"
+    },
+    {
+      "ticketId": "LSF-T-b642d576b6f526829b74dd4a7f6ddb21",
+      "entrantId": "LSF-E-a8bc971663de86c9446bd0f160fff346"
+    },
+    {
+      "ticketId": "LSF-T-889c3f715e7801d6a4c27b944aebc5cd",
+      "entrantId": "LSF-E-172ce4600e8ca683d1d1e68cee3e89ab"
+    },
+    {
+      "ticketId": "LSF-T-e9b32a453e651ba4cdc35711b4236e17",
+      "entrantId": "LSF-E-290aed839e8696ca99ed3d1a3ce46d8a"
+    },
+    {
+      "ticketId": "LSF-T-974711a4d60a8ea513500ca3e991f2f7",
+      "entrantId": "LSF-E-a591664f97f90149bc8f930a6bed666f"
+    },
+    {
+      "ticketId": "LSF-T-6beb84cceba519c80cde29afc957d30b",
+      "entrantId": "LSF-E-a591664f97f90149bc8f930a6bed666f"
+    },
+    {
+      "ticketId": "LSF-T-8a582d363c26cbadb6714ae27d231b94",
+      "entrantId": "LSF-E-42c51829f002e0731d2bd8e09a3f17fc"
+    },
+    {
+      "ticketId": "LSF-T-f6520a974afa2e8f98330b0d1441c631",
+      "entrantId": "LSF-E-7588ef4444242cc78887ce04b7f078fd"
+    },
+    {
+      "ticketId": "LSF-T-4179c4c5dc02c2d71394c68431112d60",
+      "entrantId": "LSF-E-2779ede7d48c197532083b0326fb2d64"
+    },
+    {
+      "ticketId": "LSF-T-96c37d5a1725e2c7f9d4dc1e77c69583",
+      "entrantId": "LSF-E-2779ede7d48c197532083b0326fb2d64"
+    },
+    {
+      "ticketId": "LSF-T-af9eb2934090ad5d6e71c343ca23b52f",
+      "entrantId": "LSF-E-8ced98490521ad4b22dd5303d30d2c6d"
+    },
+    {
+      "ticketId": "LSF-T-3757568a4745d8338c6b0959a5891830",
+      "entrantId": "LSF-E-807a2bab1f951a87bb0a2ad5403e3516"
+    },
+    {
+      "ticketId": "LSF-T-48c6c9a9b4b7eb204eb60bf6e5c6e405",
+      "entrantId": "LSF-E-d2ffc3a5032bf49a0b1dd9033da963ab"
+    },
+    {
+      "ticketId": "LSF-T-b284d1f5116796cb0b30bd273596f375",
+      "entrantId": "LSF-E-755a53e548f22e7054d1305caf962a93"
+    },
+    {
+      "ticketId": "LSF-T-d1378d829f5cd82cb668dafda9503317",
+      "entrantId": "LSF-E-755a53e548f22e7054d1305caf962a93"
+    },
+    {
+      "ticketId": "LSF-T-452ccbeab28e36b861c16275514e67e0",
+      "entrantId": "LSF-E-4b8b41418328081f68b28419a494ad15"
+    },
+    {
+      "ticketId": "LSF-T-0ec4d5a72251ab222e7fd3912cf3d37a",
+      "entrantId": "LSF-E-ec5057e6f7231428a83f81cf29d9739d"
+    },
+    {
+      "ticketId": "LSF-T-80ae91866a7532cd28e9d88ef49ff2ab",
+      "entrantId": "LSF-E-b6d4f854162c84e9e401f958cac56c15"
+    },
+    {
+      "ticketId": "LSF-T-10434d536762a915e66f77d8be103e32",
+      "entrantId": "LSF-E-4732f0c2adcf5452e8bb9b637dde8cb2"
+    },
+    {
+      "ticketId": "LSF-T-e9d80e1fec7d5fb17743b1d2239e8760",
+      "entrantId": "LSF-E-bba015936a354f744262258823b84c91"
+    },
+    {
+      "ticketId": "LSF-T-752c80376c19248da983a63c9e166706",
+      "entrantId": "LSF-E-a26525ebd72de08afef57f232b7bb4b8"
+    },
+    {
+      "ticketId": "LSF-T-dd8d31f5f246c4317c3601e004ee8f1c",
+      "entrantId": "LSF-E-564feadea0aac9b8dd36e2b66f936459"
+    },
+    {
+      "ticketId": "LSF-T-36bbf3d5466992f851924b3da3188442",
+      "entrantId": "LSF-E-467a5ef0478eabaed1110ec2420c2edf"
+    },
+    {
+      "ticketId": "LSF-T-9e24439673b6062efe9a0cb9e994a44b",
+      "entrantId": "LSF-E-847e7cb8486f7d1884ec2814cc5678d5"
+    },
+    {
+      "ticketId": "LSF-T-576c30a6971f657bc5163a67a329c936",
+      "entrantId": "LSF-E-677eaf1318845e404254f0616b48e11a"
+    },
+    {
+      "ticketId": "LSF-T-1021814b337747b3c23a93a961ea580d",
+      "entrantId": "LSF-E-f1441664de9571f63a45957053626f12"
+    },
+    {
+      "ticketId": "LSF-T-7961853fceef7d817c3bef32282086e7",
+      "entrantId": "LSF-E-ab241a57d827263322d0cf966a8c80c7"
+    },
+    {
+      "ticketId": "LSF-T-13afa83c31028c7b33035d14e5643cfa",
+      "entrantId": "LSF-E-6f79e4cba7deccb9e659939f0606e6f3"
+    },
+    {
+      "ticketId": "LSF-T-034e3b1fb31351628ef188c48d3a45df",
+      "entrantId": "LSF-E-348f07494c5c2023bd54a1ff45804354"
+    },
+    {
+      "ticketId": "LSF-T-164c45290229ceabf15d599a6ee62591",
+      "entrantId": "LSF-E-f6fa405dca9dca000817b126b991fe0c"
+    },
+    {
+      "ticketId": "LSF-T-2ee273891c396966dfc29db18790535b",
+      "entrantId": "LSF-E-f6fa405dca9dca000817b126b991fe0c"
+    },
+    {
+      "ticketId": "LSF-T-f9b1ca31e2d0e13a68d9501886f75905",
+      "entrantId": "LSF-E-3d131725fb4fd477901a769d7dc50203"
+    },
+    {
+      "ticketId": "LSF-T-97b84c0a5b6b296ba4f58f46d3885ffe",
+      "entrantId": "LSF-E-3d131725fb4fd477901a769d7dc50203"
+    },
+    {
+      "ticketId": "LSF-T-9f0d2135a79b607156d99f2e847d102f",
+      "entrantId": "LSF-E-6328984ca256f3135e094f1514ab04ea"
+    },
+    {
+      "ticketId": "LSF-T-4ed99ae0a14e68927f4fd7356aca7198",
+      "entrantId": "LSF-E-0c84fd6fc121987c5686d0fb1f03e474"
+    },
+    {
+      "ticketId": "LSF-T-edebaa2e9c1803d895981f8820b75a0c",
+      "entrantId": "LSF-E-c2b82c7c8ba8a3660f24c5683c474abb"
+    },
+    {
+      "ticketId": "LSF-T-87265f280f881fa7755fcb3880a1385e",
+      "entrantId": "LSF-E-5c3a8d3e32a7f00c3521a5a33a2cb6d2"
+    },
+    {
+      "ticketId": "LSF-T-b1c3881648f6811a758da9f6dcae163f",
+      "entrantId": "LSF-E-5c3a8d3e32a7f00c3521a5a33a2cb6d2"
+    },
+    {
+      "ticketId": "LSF-T-8138922e065f866bcbf279df17e32037",
+      "entrantId": "LSF-E-5c0800ae555f38a211117e042f6e8e30"
+    },
+    {
+      "ticketId": "LSF-T-5f172ce955577156b74b5fe7a7b5f539",
+      "entrantId": "LSF-E-04dbbb87fe7ef5f92b370b2ec3a30570"
+    },
+    {
+      "ticketId": "LSF-T-93213ba0184e4661116844ddde01cd32",
+      "entrantId": "LSF-E-9ee649b62c1f2345093873ce6346f324"
+    },
+    {
+      "ticketId": "LSF-T-de60f9e949dcfa4accaff8c1aecb790d",
+      "entrantId": "LSF-E-9ee649b62c1f2345093873ce6346f324"
+    },
+    {
+      "ticketId": "LSF-T-f1d6f80c82ed47ccab9433d49fccf1d6",
+      "entrantId": "LSF-E-bebd1c73b2dd5504645954692924f5a3"
+    },
+    {
+      "ticketId": "LSF-T-41ad8e560a214ac715f376f3916e5389",
+      "entrantId": "LSF-E-da85ab9111ea7d20d61d58b00dd76825"
+    },
+    {
+      "ticketId": "LSF-T-0ad1f7ba3edefce495c0c62015d4b9f8",
+      "entrantId": "LSF-E-6255835b4ae2fb33f4624dcbc029abd8"
+    },
+    {
+      "ticketId": "LSF-T-25c85dd05002c34f8b4e7ca1ad35f55f",
+      "entrantId": "LSF-E-5a1260576cbace213aaf7a758818c095"
+    },
+    {
+      "ticketId": "LSF-T-55c54b58a708c1966c93c11231a0b8fb",
+      "entrantId": "LSF-E-08ee9bafc4d829dfe6cd01367b432ba9"
+    },
+    {
+      "ticketId": "LSF-T-699cd636c7804f974aa26e3a3541362d",
+      "entrantId": "LSF-E-08ee9bafc4d829dfe6cd01367b432ba9"
+    },
+    {
+      "ticketId": "LSF-T-92f72ba97c3a47d8c0689552d545961f",
+      "entrantId": "LSF-E-71afa4228ea510c233d2c44a5bb36f5a"
+    },
+    {
+      "ticketId": "LSF-T-3dc90a211e1f6767263de81b107d6090",
+      "entrantId": "LSF-E-71afa4228ea510c233d2c44a5bb36f5a"
+    },
+    {
+      "ticketId": "LSF-T-962f303120e1c86d87354817c2be6c1a",
+      "entrantId": "LSF-E-d9223a0e28af4288659e88841541a4a1"
+    },
+    {
+      "ticketId": "LSF-T-edcc4e463aaa3c7aab91946a1d67e842",
+      "entrantId": "LSF-E-963f77af975a1d6c7524c55206172680"
+    },
+    {
+      "ticketId": "LSF-T-833c0fb57f5149c51b3ec94d946c25e8",
+      "entrantId": "LSF-E-4e7e10bf170e0a8a8655d12924d08398"
+    },
+    {
+      "ticketId": "LSF-T-8f37eb5d680fe82fbd0c0b19600f18e5",
+      "entrantId": "LSF-E-588226a9777d03ac0911938f5cf0cc4a"
+    },
+    {
+      "ticketId": "LSF-T-6ce9b544f10478abe24fd6324321c8d8",
+      "entrantId": "LSF-E-d7fd3d3df0fa10633d6b4a726054205b"
+    },
+    {
+      "ticketId": "LSF-T-25c4fa95db817d3f6283181363381601",
+      "entrantId": "LSF-E-6d2f68e2b0ce6cce0be8a0cc978e2cb2"
+    },
+    {
+      "ticketId": "LSF-T-a68d6942edd2086c5953ab245c3a0763",
+      "entrantId": "LSF-E-91cc34fa02e07b22898555da02c9d716"
+    },
+    {
+      "ticketId": "LSF-T-cfdf90ed8d1a9e74c844787d12d1c214",
+      "entrantId": "LSF-E-3b0ae1a28a0c56841fca041b9c7117ca"
+    },
+    {
+      "ticketId": "LSF-T-d9551f18a521e84fb1836fdb500b3dfe",
+      "entrantId": "LSF-E-3b0ae1a28a0c56841fca041b9c7117ca"
+    },
+    {
+      "ticketId": "LSF-T-164cd02cb4aaa3ba385a4deea24ea4a8",
+      "entrantId": "LSF-E-0c5d2c9ef713467c8e94f270072a62b4"
+    }
+  ],
+  "privateRosterHash": "4bc14a96ebbfd03d0ba1b6b125ac8e9994423c6e730459e2632b1f7c652ebb3f",
+  "source": {
+    "filename": "le-sserafim-weighted-entries.csv",
+    "rowCount": 552,
+    "sha256": "b2768475535bb3aaedbd45ebcb18b56cba656d5656ffcb8b0bbd267601ca23a6"
+  },
+  "manifestHash": "83d8527d506c5fda1e028111a4bc2800dc2d41d9b90f965f08956353d2b3531b"
+}

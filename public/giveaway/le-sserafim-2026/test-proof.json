@@ -1,0 +1,87 @@
+{
+  "algorithm": {
+    "description": "Score each public ticket with SHA-256(domain separator, manifest hash, normalized uint256 VRF word, ticket ID); sort by score then ticket ID; retain the first ticket for each unique entrant.",
+    "domainSeparator": "AEGYO_ARENA_LE_SSERAFIM_GIVEAWAY_2026_V1",
+    "version": "sha256-ticket-rank-deduplicate-v1"
+  },
+  "campaignId": "le-sserafim-giveaway-2026",
+  "completeTicketOrderHash": "991bf0321370885bf69d4bc2a7fac4553e52a8e5c72292e2f9c57de1c0a4849b",
+  "distinctEntrantOrderHash": "27f8b76a8d9ca1aa557167010a71706d253a5ca0a87ab9977ff0b3f635e6bb7a",
+  "eligibleCount": 416,
+  "ticketCount": 552,
+  "manifestHash": "83d8527d506c5fda1e028111a4bc2800dc2d41d9b90f965f08956353d2b3531b",
+  "mode": "test",
+  "grandPrizeCandidates": [
+    {
+      "ticketId": "LSF-T-5d31f81f6736c0ba9844da5079587d33",
+      "entrantId": "LSF-E-2a03046fa6b182781fae1088590c955f",
+      "score": "00ecd19a783856a7f2cb37864b11bccc6f783b5eebfd55c67f5818b1e5100166",
+      "position": 1
+    },
+    {
+      "ticketId": "LSF-T-601fe2b28de42b6ed227cc9dcb39c13d",
+      "entrantId": "LSF-E-f989ff38ed219ce6f3a412ccb283843c",
+      "score": "01322ff8cb87a6d9faab86d1647f569471ca6b61c870fdf505c8c3cd018eab6f",
+      "position": 2
+    },
+    {
+      "ticketId": "LSF-T-9966f3db0e1d7d1d001b976c5227ed76",
+      "entrantId": "LSF-E-a8bc32e7cd9e0a6ea9708a8581403198",
+      "score": "015f83a389ade1d5031fb9be6bb7a7681172e33cd7f9c5d94c3da18611af811e",
+      "position": 3
+    },
+    {
+      "ticketId": "LSF-T-3c4614c93dc2cce1f1a7f589ebbaaded",
+      "entrantId": "LSF-E-3e4bad0808a90150580853adff29a29c",
+      "score": "01da7938dbad7b8deb57f94100bbfb174b7136126faa2f14d22f2611f1b6220b",
+      "position": 4
+    },
+    {
+      "ticketId": "LSF-T-7747f5133470e41391710628b7efca3c",
+      "entrantId": "LSF-E-44ef53cb99fcb4fc9a92b5d4d5a9ea92",
+      "score": "01e24a9d83e8736abe9bc2154b7bdd61a5a699453fd3af6b68d59cd3f324fbd4",
+      "position": 5
+    }
+  ],
+  "producedAt": "2026-10-04T00:00:00.000Z",
+  "proofVersion": "aegyo-weighted-vrf-draw-v1",
+  "randomness": {
+    "randomWord": "0xba4f4d3b1d1881ec2d7826ff79c3da5d34255535b6ffdf7d06dc134aac6f2de1",
+    "source": "deterministic-rehearsal-fixture",
+    "testOnly": true
+  },
+  "runnerUpCandidates": [
+    {
+      "ticketId": "LSF-T-2278101bc20331e1f9c491438b4b3a58",
+      "entrantId": "LSF-E-b03d24148c33d5738e8b1dc356a8fba6",
+      "score": "0229170670c3442e753df2013d06e32a73f7eb5aa8b16eb13242a5520ceeba7a",
+      "position": 1
+    },
+    {
+      "ticketId": "LSF-T-e42f6d084d2dfe2965eb94686eb35275",
+      "entrantId": "LSF-E-851084a4497c83cb7e2fb1434e0b88f6",
+      "score": "0297453a871042d4e12d5a39123682b32e0e640752ca7be117ca426a10590d01",
+      "position": 2
+    },
+    {
+      "ticketId": "LSF-T-dd8d31f5f246c4317c3601e004ee8f1c",
+      "entrantId": "LSF-E-564feadea0aac9b8dd36e2b66f936459",
+      "score": "0322b616d8b6ce55ba1385eb06966bc45d15d3ae65cd4fdc57fa669fa10f52f5",
+      "position": 3
+    },
+    {
+      "ticketId": "LSF-T-d24afc7e06a91260543ee6893067f3b7",
+      "entrantId": "LSF-E-3b762c9300257031c4f826f80835cf21",
+      "score": "0391d79d02fc977175691a46a0d8d34f81239c72bd46869fa6d97caa1c1b1cbe",
+      "position": 4
+    },
+    {
+      "ticketId": "LSF-T-0f8b1c49c2ace38cff59c774de61ee7d",
+      "entrantId": "LSF-E-603e8dd9cafe795398218cc38cd2459f",
+      "score": "03a58e5e3fe3710e56d2340c5ba151a4f5e63b9d77a8493ea41a9e14957e9aea",
+      "position": 5
+    }
+  ],
+  "status": "complete",
+  "proofHash": "1381cadd4c3e5302b3064d0789c93b1807bf66d93ba89d1eb79b3a25fbd136b5"
+}

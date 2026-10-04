@@ -1,0 +1,39 @@
+{
+  "campaignId": "le-sserafim-giveaway-2026",
+  "drawSpecVersion": "aegyo-chainlink-draw-spec-v1",
+  "manifestHash": "83d8527d506c5fda1e028111a4bc2800dc2d41d9b90f965f08956353d2b3531b",
+  "eligibleCount": 416,
+  "ticketCount": 552,
+  "randomness": {
+    "provider": "Chainlink VRF v2.5",
+    "chainName": "Base Mainnet",
+    "chainId": 8453,
+    "paymentMode": "native-direct-funding",
+    "wrapperAddress": "0xb0407dbe851f8318bd31404A49e658143C982F23",
+    "numWords": 1,
+    "requestConfirmations": 20,
+    "callbackGasLimit": 100000,
+    "fulfillmentPublicationConfirmations": 20
+  },
+  "selection": {
+    "algorithmVersion": "sha256-ticket-rank-deduplicate-v1",
+    "domainSeparator": "AEGYO_ARENA_LE_SSERAFIM_GIVEAWAY_2026_V1",
+    "uniqueEntrants": true,
+    "grandPrizePositions": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "runnerUpPositions": [
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "rerollsAllowed": false
+  },
+  "drawSpecHash": "46fbb2171bb8f0519af8b7a3f1d6d5d102a1ea7c7b7326623df55900c370f146"
+}
