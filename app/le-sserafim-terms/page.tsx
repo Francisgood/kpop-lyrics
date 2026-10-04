@@ -44,8 +44,8 @@ export default function LeSserafimTerms() {
       <H2 en="Key dates" es="Fechas clave" />
       <p>
         <T
-          en="Entries close Thursday, October 1, 2026 at 11:59 PM ET. Winners are drawn at random on Friday, October 2, 2026, and winner outreach begins the same day. Concert: Thursday, October 8, 2026 at 7:30 PM."
-          es="Las inscripciones cierran el jueves 1 de octubre de 2026 a las 11:59 PM ET. Los ganadores se eligen al azar el viernes 2 de octubre de 2026, y el contacto con los ganadores comienza ese mismo día. Concierto: jueves 8 de octubre de 2026 a las 7:30 PM."
+          en="Entries close Thursday, October 1, 2026 at 11:59 PM ET. Winners are drawn at random on Sunday, October 4, 2026, and winner outreach begins the same day. Concert: Thursday, October 8, 2026 at 7:30 PM."
+          es="Las inscripciones cierran el jueves 1 de octubre de 2026 a las 11:59 PM ET. Los ganadores se eligen al azar el domingo 4 de octubre de 2026, y el contacto con los ganadores comienza ese mismo día. Concierto: jueves 8 de octubre de 2026 a las 7:30 PM."
         />
       </p>
 
