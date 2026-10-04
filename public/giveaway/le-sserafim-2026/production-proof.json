@@ -1,6 +1,98 @@
 {
+  "algorithm": {
+    "description": "Score each public ticket with SHA-256(domain separator, manifest hash, normalized uint256 VRF word, ticket ID); sort by score then ticket ID; retain the first ticket for each unique entrant.",
+    "domainSeparator": "AEGYO_ARENA_LE_SSERAFIM_GIVEAWAY_2026_V1",
+    "version": "sha256-ticket-rank-deduplicate-v1"
+  },
   "campaignId": "le-sserafim-giveaway-2026",
+  "completeTicketOrderHash": "687a518faa4d0a287787f1d412f59cf854750636b801e25e3c6cfa3bf6ac2822",
+  "distinctEntrantOrderHash": "fc111d09b6baf6b30514dd27cfc2fe9b1b2cb48a2f4bd4ca3a087c10f759440f",
+  "eligibleCount": 416,
+  "ticketCount": 552,
+  "manifestHash": "83d8527d506c5fda1e028111a4bc2800dc2d41d9b90f965f08956353d2b3531b",
   "mode": "production",
+  "grandPrizeCandidates": [
+    {
+      "ticketId": "LSF-T-1f5f10bce71fc2b7954b705b502d2024",
+      "entrantId": "LSF-E-dbf1b96b309bab43fe5a46779bee3017",
+      "score": "00455ed6bac2017e21bbba2dc253fafe9afb239ca6ff0b5cf203abccfc81d733",
+      "position": 1
+    },
+    {
+      "ticketId": "LSF-T-dd8d31f5f246c4317c3601e004ee8f1c",
+      "entrantId": "LSF-E-564feadea0aac9b8dd36e2b66f936459",
+      "score": "007955701be2b58f03c0879acfe36f4abb5371ef61d15996c31b94b8a277f9f7",
+      "position": 2
+    },
+    {
+      "ticketId": "LSF-T-f6e954ff637c2a7a6a22bdd347745c97",
+      "entrantId": "LSF-E-d52fa1ed4fd4ef051ad9390b3505ff12",
+      "score": "01b330d7d17acfc2cd7dae13c1e5dac6ee903095509dce6f4972b17d6ba4cae2",
+      "position": 3
+    },
+    {
+      "ticketId": "LSF-T-1f5e49023aa73b9d0e8351f571d36d5e",
+      "entrantId": "LSF-E-d19395b68bf9a4a1f2516e6d3ea81d13",
+      "score": "01b4703de0fce78283e20e16b3bda881a9d8923e3e945c76b4b2b341e3b5f8d1",
+      "position": 4
+    },
+    {
+      "ticketId": "LSF-T-06513c2a81000e9dd6fb88d61769a049",
+      "entrantId": "LSF-E-a36cca3787edc43fcacdce621bd4286c",
+      "score": "02eb3d77e9a89e055b68f17d9a696230f865bfcb2cb0c8956072da3d0c582535",
+      "position": 5
+    }
+  ],
+  "producedAt": "2026-10-04T14:35:22.494Z",
   "proofVersion": "aegyo-weighted-vrf-draw-v1",
-  "status": "pending"
+  "randomness": {
+    "chainId": 8453,
+    "chainName": "Base Mainnet",
+    "codeCommit": "9d3247874483b2e502f581aeec76a846b661a2bd",
+    "consumerAddress": "0x8646E890faE384fBaC952A497DafB314Af12EE92",
+    "deploymentTx": "0x958e04b8cc03f8759d71d27216136c129a48e1636e05184fbb7b679280bec1e1",
+    "drawSpecHash": "46fbb2171bb8f0519af8b7a3f1d6d5d102a1ea7c7b7326623df55900c370f146",
+    "explorerBaseUrl": "https://basescan.org",
+    "fulfillmentTx": "0xc4178fffd0c3b86088b5dd70d2253106839e9ed02dd5228e4851727385b5e23b",
+    "randomWord": "0x5b6e79e6668a6b4191903b9a6a71aea5630ca09a8d23d0f94b47edb42ce11808",
+    "requestId": "56197031340644350668416042153803321922025546236150375855990254716736195273264",
+    "requestTx": "0x64c514387f0a1dbb9e130f4052b242615f2180c0b68dc54ca11bd359a86d3441",
+    "source": "chainlink-vrf-v2.5",
+    "testOnly": false,
+    "wrapperAddress": "0xb0407dbe851f8318bd31404A49e658143C982F23"
+  },
+  "runnerUpCandidates": [
+    {
+      "ticketId": "LSF-T-7ce4dc73451367cd1b1ebebd1b5a5fe9",
+      "entrantId": "LSF-E-d47fecf4bec5df508c27496a948a610f",
+      "score": "032bbdaac4aa2a313cb3d8f70a97e0c3032d710ad37a9e33c8dee42a93514ec3",
+      "position": 1
+    },
+    {
+      "ticketId": "LSF-T-5b28091abe20a150fe19e9862a5bbbdc",
+      "entrantId": "LSF-E-f5a1d6089638e9a23ef9bc99a2f0af14",
+      "score": "0342423e9c487b08fb8f092845e06528f02db7bb3dec871195c4167aebd78208",
+      "position": 2
+    },
+    {
+      "ticketId": "LSF-T-042e6528b9697b85b6fedc75f5e51526",
+      "entrantId": "LSF-E-c71677757b91c56b636346cdccbe7155",
+      "score": "03824e8248e877005637bc93c2daae448f3739098b4b5112c1f4a45d91d87fc4",
+      "position": 3
+    },
+    {
+      "ticketId": "LSF-T-a4cae2ab08fe21254ca71853d82a99bd",
+      "entrantId": "LSF-E-e2934123a0083a021a16aaf80bad0cf5",
+      "score": "03b766533762df2777d8a5c4fc5cdbdd4b808dfac4f588e2af0b50ca73c46e38",
+      "position": 4
+    },
+    {
+      "ticketId": "LSF-T-55d20c8ed81227f19e7a10a8bbfc00d1",
+      "entrantId": "LSF-E-4b10fa4dbc902b109f52ec19b6621180",
+      "score": "03c06d9516cc5aabd069777c8ce92a5c30b1e897a328f6730030f8dff7918570",
+      "position": 5
+    }
+  ],
+  "status": "complete",
+  "proofHash": "71493b1c154e0cd7b2f62e581c9f95fea33f02170961eaf1611adcb77b551e61"
 }
