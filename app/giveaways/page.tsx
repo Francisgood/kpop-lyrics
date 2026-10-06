@@ -24,6 +24,20 @@ type Card = {
 
 const CARDS: Card[] = [
   {
+    status: "open",
+    artist: "???",
+    tour: { en: "Mystery Concert Drop", es: "Drop de Concierto Misterioso" },
+    img: "/giveaway/tickets.jpg",
+    accent: "var(--volt)",
+    blurb: {
+      en: "Two seats to a K-pop show in February 2027. The artist stays sealed until the reveal on January 18.",
+      es: "Dos asientos para un show de K-pop en febrero de 2027. El artista queda sellado hasta la revelación del 18 de enero.",
+    },
+    when: { en: "Entries close: Fri, Jan 15, 2027", es: "Cierre: vie 15 de enero de 2027" },
+    where: { en: "Venue revealed with the artist", es: "Recinto revelado con el artista" },
+    actions: [{ label: { en: "Enter now", es: "Participa ahora" }, href: "/mystery-giveaway", primary: true }],
+  },
+  {
     status: "closed",
     artist: "LE SSERAFIM",
     tour: { en: "PUREFLOW Tour", es: "Gira PUREFLOW" },
