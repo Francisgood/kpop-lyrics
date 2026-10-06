@@ -24,11 +24,18 @@ const REVEAL_DATE_ES = "lunes 18 de enero de 2027";
 const CONCERT_MONTH_EN = "February 2027";
 const CONCERT_MONTH_ES = "febrero de 2027";
 
-// Prize art — deliberately generic. Using artist imagery here would give away
-// the reveal, so these are the unbranded ticket and merch shots.
+// Prize art — deliberately artist-neutral and brand-neutral. Any real concert or
+// merch photo would name the artist and kill the reveal, so these are Pexels stock
+// (free for commercial use, no attribution required, no watermark, no logos, no
+// identifiable faces). Hotlinked: images.pexels.com is not in OPTIMIZED_IMAGE_HOSTS,
+// so SmartImage serves them as a plain lazy <img> rather than through the optimizer.
+//   grand   — Pexels 30215324, crowd from behind, stage lost in haze
+//   runner  — Pexels 581339, folded apparel on shelves, nothing branded
+const PEXELS = (id: number) =>
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&fit=crop&dpr=1`;
 const PRIZE_META = [
-  { img: "/giveaway/tickets.jpg", accent: "var(--volt)" },
-  { img: "/giveaway/merch.jpg", accent: "var(--sky)" },
+  { img: PEXELS(30215324), accent: "var(--volt)" },
+  { img: PEXELS(581339), accent: "var(--sky)" },
 ];
 
 type Copy = {

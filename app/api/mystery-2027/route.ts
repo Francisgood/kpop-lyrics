@@ -6,8 +6,8 @@ import { randomUUID, randomBytes } from "crypto";
 
 export const dynamic = "force-dynamic";
 
-// Isolated per campaign, same as the BTS and LE SSERAFIM routes: its own table,
-// its own cutoff. Nothing here touches "GiveawayEntry" or "GiveawayEntryLsf".
+// Isolated per campaign, like the other giveaway routes: its own table, its own
+// cutoff. Nothing here touches the other campaigns' entry tables.
 const MAX_REFERRALS = 50;
 const SITE = "https://www.aegyoarena.com";
 const linkFor = (code: string) => `${SITE}/mystery-giveaway?ref=${code}`;
