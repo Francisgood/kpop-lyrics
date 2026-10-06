@@ -34,13 +34,9 @@ const NAV: NavItem[] = [
   { en: "Games", es: "Juegos", href: "https://arcade.aegyoarena.com" },
   // "Quizzes" stays untranslated, matching the footer's Quiz link.
   { en: "Quizzes", es: "Quizzes", href: "/quiz" },
-  {
-    en: "Giveaways", es: "Sorteos", href: "/giveaways",
-    subs: [
-      { en: "LE SSERAFIM", es: "LE SSERAFIM", href: "/le-sserafim-giveaway" },
-      { en: "BTS", es: "BTS", href: "/bts-giveaway" },
-    ],
-  },
+  // No per-campaign sub-links: the hub lists whatever is live, so the menu does
+  // not need updating every time a campaign opens or closes.
+  { en: "Giveaways", es: "Sorteos", href: "/giveaways" },
 ];
 
 export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props) {
