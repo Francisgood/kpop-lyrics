@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import SmartImage from "@/components/SmartImage";
+import MysteryPanel from "@/components/MysteryPanel";
 import { T, LangToggle } from "@/components/LangProvider";
 
 export const metadata: Metadata = {
@@ -14,7 +15,7 @@ type Card = {
   status: "open" | "closed" | "soon";
   artist: string;
   tour: L;
-  img: string;
+  img: string | null;   // null → render the sealed mystery panel instead
   accent: string;
   blurb: L;
   when: L;
@@ -27,7 +28,7 @@ const CARDS: Card[] = [
     status: "open",
     artist: "???",
     tour: { en: "Mystery Concert Drop", es: "Drop de Concierto Misterioso" },
-    img: "/giveaway/tickets.jpg",
+    img: null,
     accent: "var(--volt)",
     blurb: {
       en: "Two seats to a K-pop show in February 2027. The artist stays sealed until the reveal on January 18.",
@@ -71,20 +72,6 @@ const CARDS: Card[] = [
       { label: { en: "See the selection", es: "Ver la selección" }, href: "/bts-giveaway/draw", primary: true },
     ],
   },
-  {
-    status: "soon",
-    artist: "aespa",
-    tour: { en: "Next up", es: "Lo que viene" },
-    img: "/giveaway/aespa.jpg",
-    accent: "var(--ink-dim)",
-    blurb: {
-      en: "Our next drop: aespa concert tickets. Enter any giveaway above to join the newsletter and hear first.",
-      es: "Nuestro próximo sorteo: boletos para aespa. Participa en cualquier sorteo de arriba para unirte al boletín y enterarte primero.",
-    },
-    when: { en: "Mon, Jan 26, 2027", es: "lun 26 de enero de 2027" },
-    where: { en: "Berlin, Germany", es: "Berlín, Alemania" },
-    actions: [],
-  },
 ];
 
 const STATUS_LABEL: Record<Card["status"], L> = {
@@ -119,7 +106,9 @@ export default function GiveawaysPage() {
           {CARDS.map((card) => (
             <div key={card.artist} style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 20, overflow: "hidden", display: "flex", flexDirection: "column", opacity: card.status === "soon" ? 0.92 : 1 }}>
               <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 10", overflow: "hidden", background: "var(--bg-light)" }}>
-                <SmartImage src={card.img} alt={`${card.artist}`} fill sizes="(max-width: 760px) 100vw, 480px" style={{ objectFit: "cover", filter: card.status === "closed" ? "grayscale(0.35)" : undefined }} />
+                {card.img
+                  ? <SmartImage src={card.img} alt={`${card.artist}`} fill sizes="(max-width: 760px) 100vw, 480px" style={{ objectFit: "cover", filter: card.status === "closed" ? "grayscale(0.35)" : undefined }} />
+                  : <MysteryPanel caption={false} />}
                 <span style={{ position: "absolute", top: 14, left: 14, background: "rgba(15,15,18,0.82)", color: "#fff", fontFamily: "var(--mono)", fontSize: "0.64rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", padding: "6px 12px", borderRadius: 100, border: `1px solid ${card.accent}` }}>
                   <T en={STATUS_LABEL[card.status].en} es={STATUS_LABEL[card.status].es} />
                 </span>

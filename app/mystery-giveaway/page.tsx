@@ -5,6 +5,7 @@ import Link from "next/link";
 import { trackLead } from "@/lib/conversions";
 import { useLang, LangToggle, type Lang } from "@/components/LangProvider";
 import SmartImage from "@/components/SmartImage";
+import MysteryPanel from "@/components/MysteryPanel";
 import { FEATURED_COUNTRIES, COUNTRIES } from "@/lib/countries";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -237,11 +238,8 @@ export default function MysteryGiveaway() {
           <p style={{ color: "var(--ink-dim)", fontSize: "clamp(1rem, 3.5vw, 1.15rem)", lineHeight: 1.6, maxWidth: 560, margin: "0 auto 24px" }}>
             {c.subhead}
           </p>
-          <div style={{ position: "relative", width: "100%", maxWidth: 560, margin: "0 auto 26px", aspectRatio: "16 / 10", borderRadius: 18, overflow: "hidden", border: "1px dashed var(--volt)", background: "linear-gradient(135deg, rgba(10,10,14,0.98), rgba(40,30,60,0.9))", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <span aria-hidden style={{ fontFamily: "var(--serif)", fontSize: "clamp(5rem, 22vw, 9rem)", color: "var(--volt)", lineHeight: 1, opacity: 0.92 }}>?</span>
-            <span style={{ position: "absolute", bottom: 16, fontFamily: "var(--mono)", fontSize: "0.68rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-faint)" }}>
-              {lang === "es" ? "Artista sellado hasta la revelación" : "Artist sealed until the reveal"}
-            </span>
+          <div style={{ position: "relative", width: "100%", maxWidth: 560, margin: "0 auto 26px", aspectRatio: "16 / 10", borderRadius: 18, overflow: "hidden", border: "1px dashed var(--volt)" }}>
+            <MysteryPanel />
           </div>
           <a href="#enter" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 34px", borderRadius: 100, background: "var(--volt)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.03em", textTransform: "uppercase", textDecoration: "none" }}>
             {c.cta}
