@@ -30,6 +30,6 @@ export default async function ChatStatusPage() {
       <strong>{message.status === "held" ? <T en="Waiting for review" es="Pendiente de revisión" /> : <T en="Removed" es="Eliminado" />}</strong> · <time dateTime={message.createdAt.toISOString()}>{message.createdAt.toLocaleString()}</time>
       <p>{message.body}</p><p>{explanation(message.status, message.moderationNote)}</p>
     </li>)}</ul>}
-    <p><T en="To ask for a review or appeal, email" es="Para pedir una revisión o apelar, escribe a" /> <a href="mailto:privacy@aegyoarena.com?subject=Aegyo%20fan%20chat%20appeal">privacy@aegyoarena.com</a>. <T en="Include your account email and the message or date. Do not send passwords or login codes." es="Incluye el correo de tu cuenta y el mensaje o la fecha. No envíes contraseñas ni códigos de acceso." /></p>
+    <p><T en="To ask for a review or appeal, email" es="Para pedir una revisión o apelar, escribe a" /> <a href="mailto:hello@aegyoarena.com?subject=Aegyo%20fan%20chat%20appeal">hello@aegyoarena.com</a>. <T en="Include your account email and the message or date. Do not send passwords or login codes." es="Incluye el correo de tu cuenta y el mensaje o la fecha. No envíes contraseñas ni códigos de acceso." /></p>
   </main>;
 }
