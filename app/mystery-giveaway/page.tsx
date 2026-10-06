@@ -18,7 +18,7 @@ import { FEATURED_COUNTRIES, COUNTRIES } from "@/lib/countries";
 //     that is the campaign concept, not a gap. Only the month is promised.
 //   • CUTOFF must stay in step with app/api/mystery-2027/route.ts.
 // ─────────────────────────────────────────────────────────────────────────────
-const GRAND_PRIZE_ARV: string | null = null;      // e.g. "$935" once decided
+const GRAND_PRIZE_ARV: string | null = "$1,500";   // approximate retail value, confirmed
 const REVEAL_DATE_EN = "Monday, January 18, 2027";
 const REVEAL_DATE_ES = "lunes 18 de enero de 2027";
 const CONCERT_MONTH_EN = "February 2027";
@@ -62,7 +62,7 @@ const COPY: Record<Lang, Copy> = {
     mysteryBody: `We've secured two seats to a K-pop show in ${CONCERT_MONTH_EN}. We're not naming the artist, the venue or the date yet — that's the point. Entries close first, the artist is revealed on ${REVEAL_DATE_EN}, and the draw runs the same day. You're betting on the drop, not shopping for a lineup.`,
     prizesLabel: "The prizes",
     prizes: [
-      { badge: "Grand Prize", title: "Two seats to the mystery concert", sub: `Two (2) tickets to one K-pop concert in ${CONCERT_MONTH_EN}. The artist, venue and exact date are revealed on ${REVEAL_DATE_EN} — after entries have already closed.` },
+      { badge: "Grand Prize", title: "Two seats to the mystery concert", sub: `Two (2) tickets to one K-pop concert in ${CONCERT_MONTH_EN}. The artist, venue and exact date are revealed on ${REVEAL_DATE_EN} — after entries have already closed. A ${GRAND_PRIZE_ARV} approximate value.` },
       { badge: "Runner-Up", title: "$200 in official merch", sub: "One runner-up takes home $200 of official merchandise from the revealed artist, shipped after the reveal." },
     ],
     arvPending: "The approximate retail value of the grand prize will be posted in the Official Rules before entries close.",
@@ -100,7 +100,7 @@ const COPY: Record<Lang, Copy> = {
     mysteryBody: `Aseguramos dos asientos para un show de K-pop en ${CONCERT_MONTH_ES}. Todavía no decimos el artista, el recinto ni la fecha — ese es el punto. Primero cierran las inscripciones, el artista se revela el ${REVEAL_DATE_ES}, y el sorteo ocurre ese mismo día. Estás apostando al drop, no eligiendo un cartel.`,
     prizesLabel: "Los premios",
     prizes: [
-      { badge: "Premio mayor", title: "Dos asientos al concierto misterioso", sub: `Dos (2) boletos para un concierto de K-pop en ${CONCERT_MONTH_ES}. El artista, el recinto y la fecha exacta se revelan el ${REVEAL_DATE_ES} — después de que cierren las inscripciones.` },
+      { badge: "Premio mayor", title: "Dos asientos al concierto misterioso", sub: `Dos (2) boletos para un concierto de K-pop en ${CONCERT_MONTH_ES}. El artista, el recinto y la fecha exacta se revelan el ${REVEAL_DATE_ES} — después de que cierren las inscripciones. Valor aproximado de ${GRAND_PRIZE_ARV}.` },
       { badge: "Premio secundario", title: "$200 en merch oficial", sub: "Un ganador secundario se lleva $200 en mercancía oficial del artista revelado, enviada tras la revelación." },
     ],
     arvPending: "El valor aproximado del premio mayor se publicará en las Reglas Oficiales antes del cierre de inscripciones.",
