@@ -1,4 +1,5 @@
 import Link from "next/link";
+import TravelCTA from "@/components/TravelCTA";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
@@ -1126,6 +1127,10 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                     <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.82)", fontStyle: "italic", lineHeight: 1.5 }}><T en={h.note} es={h.noteEs} /></div>
                   </div>
                 ))}
+              </div>
+              {/* Broader search for anyone whose dates don't fit the picks above. */}
+              <div style={{ marginTop: 12 }}>
+                <TravelCTA destination={`${data.name}, ${data.country}`} compact />
               </div>
             </div>
 

@@ -6,6 +6,7 @@ import { trackLead } from "@/lib/conversions";
 import { useLang, LangToggle, type Lang } from "@/components/LangProvider";
 import SmartImage from "@/components/SmartImage";
 import MysteryPanel from "@/components/MysteryPanel";
+import TravelCTA from "@/components/TravelCTA";
 import { FEATURED_COUNTRIES, COUNTRIES } from "@/lib/countries";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -20,6 +21,9 @@ import { FEATURED_COUNTRIES, COUNTRIES } from "@/lib/countries";
 //   • CUTOFF must stay in step with app/api/mystery-2027/route.ts.
 // ─────────────────────────────────────────────────────────────────────────────
 const GRAND_PRIZE_ARV: string | null = "$1,500";   // approximate retail value, confirmed
+// Set at reveal time ("Newark, NJ"). Until then the travel link stays hidden,
+// because naming the city would give the artist away.
+const CONCERT_CITY: string | null = null;
 const REVEAL_DATE_EN = "Monday, January 18, 2027";
 const REVEAL_DATE_ES = "lunes 18 de enero de 2027";
 const CONCERT_MONTH_EN = "February 2027";
@@ -296,6 +300,13 @@ export default function MysteryGiveaway() {
           ))}
         </div>
       </section>
+
+      {/* Somewhere to stay — only once the city is public. */}
+      {CONCERT_CITY && (
+        <section style={{ maxWidth: 1040, margin: "0 auto", padding: "28px 24px 0" }}>
+          <TravelCTA destination={CONCERT_CITY} />
+        </section>
+      )}
 
       {/* Entry form */}
       <section id="enter" style={{ maxWidth: 560, margin: "0 auto", padding: "40px 24px 0", scrollMarginTop: 24 }}>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { T, LangToggle } from "@/components/LangProvider";
+import TravelCTA from "@/components/TravelCTA";
 import ArcadeCTA from "@/components/ArcadeCTA";
 import EventRegisterForm from "@/components/EventRegisterForm";
 import { HOSTED_EVENTS, hostedEventBySlug, hostedEventUrl, type HostedEvent } from "@/lib/hosted-events";
@@ -287,6 +288,13 @@ export default async function HostedEventPage({ params }: { params: Promise<{ sl
               <Detail label={<T en="Where" es="Dónde" />} value={<>{e.venue}<br /><span style={{ color: "var(--ink-faint)" }}>{e.address}</span></>} />
               <Detail label={<T en="Price" es="Precio" />} value={e.free ? (e.registration ? <T en="Free — registration required" es="Gratis — registro obligatorio" /> : <T en="Free — no ticket needed" es="Gratis — sin entrada" />) : <T en="See listing" es="Ver listado" />} />
               <Detail label={<T en="City" es="Ciudad" />} value={<Link href={`/cities/${e.citySlug}`} style={{ color: "var(--sakura)", fontWeight: 700, textDecoration: "none" }}>{e.city} <T en="city guide →" es="guía de la ciudad →" /></Link>} />
+
+              {/* Travelling in for this one? Dated to the event so the search
+                  lands on the right night. Renders nothing until the Expedia
+                  affiliate id is set. */}
+              <div style={{ marginTop: 14 }}>
+                <TravelCTA destination={e.city} checkIn={e.startsAt} compact />
+              </div>
 
               {e.registration && (
                 <div id="register" style={{ marginTop: 16, marginBottom: 4, scrollMarginTop: 20 }}>

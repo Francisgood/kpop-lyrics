@@ -1,0 +1,40 @@
+// Display names for the city guides, extracted from CITY_DATA in
+// app/cities/[city]/page.tsx. Lives in a non-route module because Next.js only
+// permits specific named exports from a page.tsx — same reason as city-slugs.ts.
+// Keep in sync when a city is added there.
+export type CityName = { slug: string; name: string; country: string; flag: string };
+export const CITY_NAMES: CityName[] = [
+  { slug: "new-york", name: "New York", country: "US", flag: "🇺🇸" },
+  { slug: "los-angeles", name: "Los Angeles", country: "US", flag: "🇺🇸" },
+  { slug: "seoul", name: "Seoul", country: "KR", flag: "🇰🇷" },
+  { slug: "tokyo", name: "Tokyo", country: "JP", flag: "🇯🇵" },
+  { slug: "london", name: "London", country: "UK", flag: "🇬🇧" },
+  { slug: "bangkok", name: "Bangkok", country: "TH", flag: "🇹🇭" },
+  { slug: "paris", name: "Paris", country: "FR", flag: "🇫🇷" },
+  { slug: "mexico-city", name: "Mexico City", country: "MX", flag: "🇲🇽" },
+  { slug: "chicago", name: "Chicago", country: "US", flag: "🇺🇸" },
+  { slug: "dallas", name: "Dallas", country: "US", flag: "🇺🇸" },
+  { slug: "tampa", name: "Tampa", country: "US", flag: "🇺🇸" },
+  { slug: "boston", name: "Boston", country: "US", flag: "🇺🇸" },
+  { slug: "scottsdale", name: "Scottsdale", country: "US", flag: "🇺🇸" },
+  { slug: "sao-paulo", name: "São Paulo", country: "BR", flag: "🇧🇷" },
+  { slug: "buenos-aires", name: "Buenos Aires", country: "AR", flag: "🇦🇷" },
+  { slug: "madrid", name: "Madrid", country: "ES", flag: "🇪🇸" },
+  { slug: "milan", name: "Milan", country: "IT", flag: "🇮🇹" },
+  { slug: "dubai", name: "Dubai", country: "AE", flag: "🇦🇪" },
+  { slug: "manila", name: "Manila", country: "PH", flag: "🇵🇭" },
+  { slug: "kuala-lumpur", name: "Kuala Lumpur", country: "MY", flag: "🇲🇾" },
+  { slug: "shanghai", name: "Shanghai", country: "CN", flag: "🇨🇳" },
+  { slug: "puebla", name: "Puebla", country: "MX", flag: "🇲🇽" },
+  { slug: "tijuana", name: "Tijuana", country: "MX", flag: "🇲🇽" },
+  { slug: "guadalajara", name: "Guadalajara", country: "MX", flag: "🇲🇽" },
+  { slug: "monterrey", name: "Monterrey", country: "MX", flag: "🇲🇽" },
+  { slug: "chihuahua", name: "Chihuahua", country: "MX", flag: "🇲🇽" },
+  { slug: "rio-de-janeiro", name: "Rio de Janeiro", country: "BR", flag: "🇧🇷" },
+  { slug: "santiago", name: "Santiago", country: "CL", flag: "🇨🇱" },
+  { slug: "bogota", name: "Bogotá", country: "CO", flag: "🇨🇴" },
+  { slug: "medellin", name: "Medellín", country: "CO", flag: "🇨🇴" },
+  { slug: "toronto", name: "Toronto", country: "CA", flag: "🇨🇦" },
+  { slug: "melbourne", name: "Melbourne", country: "AU", flag: "🇦🇺" },
+  { slug: "sydney", name: "Sydney", country: "AU", flag: "🇦🇺" },
+];
