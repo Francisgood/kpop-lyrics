@@ -28,4 +28,4 @@ The initial product and risk record is in [chat safety assessment](chat-safety-a
 
 ## Release sequence after those decisions
 
-PR #16 is merged and the cleanup Function points at the live URL, with chat still disabled. After the company owner resolves the operating questions, enable chat; complete a signed-in post, report and moderator smoke test on mobile and both Aegyo hosts; then monitor the queue and errors during the initial rollout. The personal OpenAI key has temporary owner approval, with a Myosin-owned restricted key still to replace it. See [chat operations](chat-operations.md) for the detailed cutover and rollback.
+PR #16 is merged and the cleanup Function points at the live URL, with chat still disabled. After the company owner resolves the operating questions, enable chat; complete a signed-in post, report and moderator smoke test on mobile and both Aegyo hosts; then monitor the queue and errors during the initial rollout. The personal OpenAI key has temporary owner approval, with an Aegyo Arena LLC-owned restricted key still to replace it. See [chat operations](chat-operations.md) for the detailed cutover and rollback.

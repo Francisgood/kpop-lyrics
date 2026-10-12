@@ -109,7 +109,7 @@ After the command reports `status: complete`:
 2. Confirm the private candidate CSV contains exactly five grand-prize and five runner-up rows and no repeated public ID.
 3. Review Git status. Only the public proof may enter Git; private CSVs, keystore material, recovery state, RPC credentials, and passwords must remain outside it.
 4. Commit and push the public proof, deploy the site, and verify `/bts-giveaway/draw` shows links for the source commit, contract deployment, consumer, request, and fulfillment.
-5. Archive the original CSV, private mapping, candidate mapping, recovery summary, public proof, verifier output, commit SHA, and transaction links in Myosin-controlled storage.
+5. Archive the original CSV, private mapping, candidate mapping, recovery summary, public proof, verifier output, commit SHA, and transaction links in Aegyo Arena LLC-controlled storage.
 
 ## Simon's only step
 
