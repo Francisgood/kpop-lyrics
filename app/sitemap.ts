@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { QUIZ_SLUGS } from "@/lib/quiz-data";
+import { PLUSHIES, SET_SLUG } from "@/lib/plushies";
 
 // MUST be request-time: with `revalidate` Next generates this at BUILD time,
 // where Prisma has no DB connection — which silently produced a static-only
@@ -61,12 +62,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry("/bts-giveaway/draw", 0.6, "daily"),
     entry("/leaderboard", 0.5, "daily"),
     entry("/contribute", 0.5, "monthly"),
+    entry("/shop", 0.8, "weekly"),
     entry("/merch", 0.5, "monthly"),
     entry("/daebak-rewards", 0.5, "monthly"),
     entry("/privacy-policy", 0.2, "yearly"),
     entry("/bts-sweepstakes-terms", 0.2, "yearly"),
 
     // ── Static-set dynamic routes ───────────────────────────────────────────
+    entry(`/shop/${SET_SLUG}`, 0.8, "weekly"),
+    ...PLUSHIES.map((p) => entry(`/shop/${p.slug}`, 0.7, "weekly")),
     ...QUIZ_SLUGS.map((s) => entry(`/quiz/${s}`, 0.7, "monthly")),
     ...CULTURE_TOPICS.map((t) => entry(`/culture/${t}`, 0.6, "monthly")),
     ...CITY_SLUGS.map((c) => entry(`/cities/${c}`, 0.6, "monthly")),

@@ -37,6 +37,13 @@ const NAV: NavItem[] = [
   // No per-campaign sub-links: the hub lists whatever is live, so the menu does
   // not need updating every time a campaign opens or closes.
   { en: "Giveaways", es: "Sorteos", href: "/giveaways" },
+  {
+    en: "Shop", es: "Tienda", href: "/shop",
+    subs: [
+      { en: "BABY-T-S plushies", es: "Peluches BABY-T-S", href: "/shop" },
+      { en: "Tees",              es: "Camisetas",         href: "/merch" },
+    ],
+  },
 ];
 
 export default function HamburgerMenu({ isLoggedIn, displayName, userId }: Props) {
