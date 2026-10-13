@@ -154,12 +154,62 @@ export const ARTICLE_POLLS: Record<string, string> = {
   "txt-fifth-world-tour-steal-the-wind": "kpop-listeners-2026-spotify",
 };
 
-/** Resolves either a poll id (API routes) or an article slug (article page). */
+/**
+ * Evergreen questions, safe to put under ANY story: they are preference polls
+ * with no expiry and no dependence on the article they sit beneath.
+ *
+ * The four prediction polls are deliberately excluded — each is tied to one
+ * story and resolves on a date ("will X exceed Y by December 31"), so showing
+ * them under an unrelated article reads as a non sequitur and they go stale.
+ */
+export const FALLBACK_POLL_IDS: string[] = [
+  "bts-era-preference",
+  "male-idol-hair-color",
+  "katseye-song-style",
+  "non-music-idol-content",
+  "kpop-listeners-2026-spotify",
+];
+
+/**
+ * FNV-1a, 32-bit. Any stable hash works; what matters is that it is pure and
+ * identical on server and client, so an article always resolves to the SAME
+ * question. A random pick would change the question on refresh and would let
+ * one reader vote in every poll from a single story.
+ */
+function hashSlug(slug: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < slug.length; i++) {
+    h ^= slug.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return h >>> 0;
+}
+
+/** The question an unmapped article falls back to. Deterministic per slug. */
+export function fallbackPollFor(slug: string): PollSeed | null {
+  if (FALLBACK_POLL_IDS.length === 0) return null;
+  const id = FALLBACK_POLL_IDS[hashSlug(slug) % FALLBACK_POLL_IDS.length];
+  return POLL_SEEDS[id] ?? null;
+}
+
+/**
+ * Resolves either a poll id (API routes) or an article slug (article page).
+ *
+ * Order matters: a poll id wins, then an explicit ARTICLE_POLLS placement, then
+ * the evergreen fallback. The fallback is what makes every full-length article
+ * carry a poll without re-dealing ARTICLE_POLLS each time the feed rotates —
+ * which is why the hand-dealt mapping had drifted onto stories that were no
+ * longer reachable from the homepage.
+ *
+ * Votes dedupe on (poll, voter), so a reader meeting the same fallback question
+ * under several articles still votes once.
+ */
 export function getPollSeed(slugOrId: string): PollSeed | null {
   const direct = POLL_SEEDS[slugOrId];
   if (direct) return direct;
   const mapped = ARTICLE_POLLS[slugOrId];
-  return mapped ? POLL_SEEDS[mapped] ?? null : null;
+  if (mapped) return POLL_SEEDS[mapped] ?? null;
+  return fallbackPollFor(slugOrId);
 }
 
 export function optionOf(seed: PollSeed, key: string): PollOption | null {
