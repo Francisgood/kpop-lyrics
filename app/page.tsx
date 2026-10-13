@@ -194,8 +194,8 @@ export default function HomePage() {
             n="02"
             title={{ en: "Climb the Arcade leaderboard", es: "Sube en el ranking del Arcade" }}
             body={{
-              en: "Your standing on the leaderboard at arcade.aegyoarena.com is what determines reward redemption. Points qualify you; your rank is what gets the reward handed over.",
-              es: "Tu posición en el ranking de arcade.aegyoarena.com es lo que determina la redención. Los puntos te califican; tu rango es lo que hace que te entreguen la recompensa.",
+              en: "Your standing on the leaderboard at arcade.aegyoarena.com/championship is what determines reward redemption. Points qualify you; your rank is what gets the reward handed over.",
+              es: "Tu posición en el ranking de arcade.aegyoarena.com/championship es lo que determina la redención. Los puntos te califican; tu rango es lo que hace que te entreguen la recompensa.",
             }}
             accent
           />
@@ -211,7 +211,7 @@ export default function HomePage() {
 
         {/* Leaderboard callout — the mechanism that decides redemption. */}
         <a
-          href="https://arcade.aegyoarena.com"
+          href="https://arcade.aegyoarena.com/championship"
           style={{
             display: "flex", alignItems: "center", gap: 16, textDecoration: "none", marginTop: 20,
             border: "1px solid var(--sakura)", borderRadius: 16, padding: "20px 24px",
@@ -225,8 +225,8 @@ export default function HomePage() {
             </span>
             <span style={{ display: "block", fontSize: "0.9rem", color: "var(--ink-dim)", lineHeight: 1.55 }}>
               <T
-                en="Rankings live at arcade.aegyoarena.com and reset every month — so a new month is always a fresh shot at the top."
-                es="El ranking vive en arcade.aegyoarena.com y se reinicia cada mes — así que cada mes es una nueva oportunidad de llegar arriba."
+                en="Rankings live at arcade.aegyoarena.com/championship and reset every month — so a new month is always a fresh shot at the top."
+                es="El ranking vive en arcade.aegyoarena.com/championship y se reinicia cada mes — así que cada mes es una nueva oportunidad de llegar arriba."
               />
             </span>
           </span>
