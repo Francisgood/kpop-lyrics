@@ -23,6 +23,10 @@ function specRows(isSet: boolean, sku: string): DetailRow[] {
     { label: { en: "SKU", es: "SKU" }, value: sku },
     { label: { en: "Age", es: "Edad" }, value: "15+" },
     {
+      label: { en: "Main material", es: "Material principal" },
+      value: { en: "100% polyester fiber", es: "100% fibra de poliéster" },
+    },
+    {
       label: { en: "Product size", es: "Tamaño" },
       value: {
         en: `${SPECS.sizeCm} / ${SPECS.sizeIn}${perUnit}`,

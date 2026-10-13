@@ -61,29 +61,33 @@ export default function ShopPage() {
       </section>
 
       {/* ── The word strip ───────────────────────────────────────────────── */}
+      {/* Each block sits in its own column above its own label, so "D is SUGA"
+          lines up under the D. Block sizing lives in the stylesheet at the foot
+          of this file (so the phone breakpoint can shrink it), and only the
+          per-character colour and pulse offset are set inline. */}
       <section style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 24px 8px" }}>
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
-          {PLUSHIES.map((p) => (
-            <Link
-              key={p.slug}
-              href={`/shop/${p.slug}`}
-              title={`${p.member} — “${p.letter}”`}
-              style={{
-                textDecoration: "none", display: "grid", placeItems: "center", width: 62, height: 62, borderRadius: 14,
-                background: p.accent, color: "#1B2027", fontWeight: 900, fontSize: "1.7rem", lineHeight: 1,
-                boxShadow: "0 6px 18px rgba(0,0,0,0.3)",
-              }}
-            >
-              {p.letter}
-            </Link>
+        <div className="babyts-strip">
+          {PLUSHIES.map((p, i) => (
+            <div key={p.slug} className="babyts-col">
+              {/* Fixed-height track so the pulse never nudges the labels. */}
+              <div className="babyts-track">
+                <Link
+                  href={`/shop/${p.slug}`}
+                  title={`${p.member} — “${p.letter}”`}
+                  className="babyts-pulse"
+                  // Each block trails the one on its left by a seventh of the
+                  // cycle, which is what walks the apex from left to right.
+                  style={{ background: p.accent, animationDelay: `${(i / PLUSHIES.length - 1) * 2.8}s` }}
+                >
+                  {p.letter}
+                </Link>
+              </div>
+              <span className="babyts-label">
+                <T en={`${p.letter} is ${p.member}`} es={`${p.letter} es ${p.member}`} />
+              </span>
+            </div>
           ))}
         </div>
-        <p style={{ textAlign: "center", color: "var(--ink-faint)", fontSize: "0.82rem", marginTop: 14 }}>
-          <T
-            en="D is SUGA · A is RM · E is JIN · B is JIMIN · A is V · K is JUNGKOOK · ! is J-HOPE"
-            es="D es SUGA · A es RM · E es JIN · B es JIMIN · A es V · K es JUNGKOOK · ! es J-HOPE"
-          />
-        </p>
       </section>
 
       {/* ── Grid ─────────────────────────────────────────────────────────── */}
@@ -131,6 +135,46 @@ export default function ShopPage() {
       </section>
 
       <style>{`
+        /* A block snaps up to its apex in the first seventh of the cycle, then
+           glides back down over the remaining six sevenths. Combined with the
+           per-block delay below, that puts exactly one block at its apex at any
+           instant: the block to its right is a seventh of a cycle short of its
+           own rise and sits lowest, while the block to its left is a seventh
+           past its apex — second highest, and the next one down. The apex walks
+           D → A → E → B → A → K → ! and wraps. */
+        @keyframes babytsPulse {
+          0%      { transform: translateY(9px)   scale(0.93); box-shadow: 0 2px 8px rgba(0,0,0,0.26); }
+          14.286% { transform: translateY(-13px) scale(1.09); box-shadow: 0 16px 30px rgba(0,0,0,0.44); }
+          100%    { transform: translateY(9px)   scale(0.93); box-shadow: 0 2px 8px rgba(0,0,0,0.26); }
+        }
+        .babyts-strip { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .babyts-col   { width: 112px; display: flex; flex-direction: column; align-items: center; }
+        .babyts-track { height: 88px; display: grid; place-items: center; }
+        .babyts-pulse {
+          text-decoration: none; display: grid; place-items: center;
+          width: 62px; height: 62px; border-radius: 14px;
+          color: #1B2027; font-weight: 900; font-size: 1.7rem; line-height: 1;
+          box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+          animation: babytsPulse 2.8s linear infinite;
+          will-change: transform;
+        }
+        .babyts-label {
+          color: var(--ink-faint); font-size: 0.78rem; line-height: 1.4;
+          text-align: center; margin-top: 4px;
+        }
+        /* Phones: four to a row rather than two, so the wave still reads as one
+           pass across the word. The label box keeps a two-line height so the
+           labels stay on a shared baseline when the longer ones wrap. */
+        @media (max-width: 560px) {
+          .babyts-strip { gap: 8px; }
+          .babyts-col   { width: 76px; }
+          .babyts-track { height: 76px; }
+          .babyts-pulse { width: 52px; height: 52px; border-radius: 12px; font-size: 1.4rem; }
+          .babyts-label { font-size: 0.66rem; min-height: 2.8em; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .babyts-pulse { animation: none; }
+        }
         @media (max-width: 860px) {
           .shop-hero { grid-template-columns: 1fr !important; gap: 28px !important; }
           .shop-insp { grid-template-columns: 1fr !important; gap: 24px !important; }
