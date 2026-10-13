@@ -100,7 +100,7 @@ export default function MerchPage() {
           <RestockAlert />
           <p style={{ marginTop: 26, fontSize: "0.85rem", color: "var(--ink-faint)" }}>
             <T en="Rather earn it?" es="¿Prefieres ganártela?" />{" "}
-            <Link href="/daebak-rewards" style={{ color: "var(--sakura)", fontWeight: 700 }}>
+            <Link href="/" style={{ color: "var(--sakura)", fontWeight: 700 }}>
               <T en="Bank 2,000 points" es="Junta 2,000 puntos" />
             </Link>{" "}
             <T en="and claim a tee for free." es="y reclama una camiseta gratis." />

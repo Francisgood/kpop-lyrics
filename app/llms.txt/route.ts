@@ -24,7 +24,9 @@ Aegyo Arena is community-powered and is not affiliated with any artist, label, o
 - [Leaderboard](${SITE}/leaderboard): Top community contributors.
 - [Contribute](${SITE}/contribute): How fans add annotations, translations, and corrections.
 - [Merch](${SITE}/merch): Aegyo Arena K-pop apparel and fan merchandise.
-- [Daebak Rewards](${SITE}/daebak-rewards): The community points and rewards program — earn points by contributing and redeem them for perks.
+- [Daebak Rewards](${SITE}/): The homepage — the community points and rewards program. Earn points by playing the Arcade, registering for random play dances, learning slang, learning choreography, voting in polls and contributing; standing on the arcade.aegyoarena.com leaderboard determines reward redemption.
+- [The Feed](${SITE}/feed): The K-pop news, gossip and rumor feed, updated hourly, with a poll on every story.
+- [BABY-T-S plush shop](${SITE}/shop): Seven chibi plush pendants that spell DAEBAK! — $25 each, $150 for the set of seven.
 
 ## URL structure
 

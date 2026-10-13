@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
       { source: "/define/:slug", destination: "/korean-slang/:slug", permanent: true },
       { source: "/pc-index", destination: "/pocamarket-index", permanent: true },
       { source: "/pc-index/forecast", destination: "/pocamarket-index/forecast", permanent: true },
+      // The rewards pitch became the homepage; its old URL keeps its link equity.
+      { source: "/daebak-rewards", destination: "/", permanent: true },
     ];
   },
   typescript: { ignoreBuildErrors: true },

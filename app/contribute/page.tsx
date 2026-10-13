@@ -183,7 +183,7 @@ export default async function ContributePage() {
 
         <div className="rewards-grid">
           {REWARDS.map((r) => (
-            <Link href="/daebak-rewards" className={`reward-card ${r.cls}`} key={r.name.en}>
+            <Link href="/" className={`reward-card ${r.cls}`} key={r.name.en}>
               <span className="reward-badge"><T en={r.badge.en} es={r.badge.es} /></span>
               <span className="reward-icon">{r.icon}</span>
               <div className="reward-name"><T en={r.name.en} es={r.name.es} /></div>

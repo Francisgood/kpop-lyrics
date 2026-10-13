@@ -47,7 +47,7 @@ export async function GET() {
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Aegyo Arena — K-pop News, Gossip &amp; Rumors</title>
-    <link>${SITE}</link>
+    <link>${SITE}/feed</link>
     <atom:link href="${SITE}/feed.xml" rel="self" type="application/rss+xml" />
     <description>The K-pop feed: latest news, gossip, rumors, comebacks and charts — original summaries linking to each source.</description>
     <language>en</language>

@@ -19,7 +19,7 @@ type NavItem = { en: string; es: string; href: string; subs?: Sub[] };
 // into the various parts of that section.
 const NAV: NavItem[] = [
   {
-    en: "News", es: "Noticias", href: "/",
+    en: "News", es: "Noticias", href: "/feed",
     subs: [
       { en: "Charts & Signals", es: "Charts y Señales", href: "/news" },
       { en: "Artists",          es: "Artistas",         href: "/artists" },
