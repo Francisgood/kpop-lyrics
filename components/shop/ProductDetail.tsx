@@ -6,7 +6,7 @@ import SmartImage from "@/components/SmartImage";
 import { useLang } from "@/components/LangProvider";
 import { useCart } from "@/components/shop/CartProvider";
 import NotifyMeModal from "@/components/shop/NotifyMeModal";
-import { PRICE_SINGLE, SET_SLUG } from "@/lib/plushies";
+import { SET_SLUG, STOCK_PER_CHARACTER } from "@/lib/plushies";
 
 export type DetailRow = { label: { en: string; es: string }; value: string | { en: string; es: string } };
 
@@ -22,6 +22,8 @@ export type DetailProduct = {
   isSet: boolean;
   description: { en: string; es: string };
   rows: DetailRow[];
+  /** Size / weight / tension test / material — shown outside the accordion. */
+  highlights: DetailRow[];
   /** Rendered under "Product Details" — the long-form section at the bottom. */
   story: { en: string; es: string }[];
 };
@@ -127,16 +129,9 @@ export default function ProductDetail({ product }: { product: DetailProduct }) {
 
           <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 20 }}>
             <span style={{ fontWeight: 900, fontSize: "1.9rem", color: "var(--ink)" }}>${product.price.toFixed(2)}</span>
-            {product.isSet && (
-              <>
-                <span style={{ fontSize: "1rem", color: "var(--ink-faint)", textDecoration: "line-through" }}>
-                  ${(PRICE_SINGLE * 7).toFixed(2)}
-                </span>
-                <span style={{ background: "var(--sakura-light)", border: "1px solid var(--sakura)", color: "var(--sakura)", borderRadius: 100, padding: "4px 12px", fontSize: "0.76rem", fontWeight: 800 }}>
-                  {es ? "Ahorras $25" : "Save $25"}
-                </span>
-              </>
-            )}
+            <span style={{ fontSize: "0.95rem", color: "var(--ink-dim)" }}>
+              {product.isSet ? (es ? "los 7 babies" : "all 7 babies") : (es ? "1 baby" : "1 baby")}
+            </span>
           </div>
 
           <p style={{ color: "var(--ink-dim)", fontSize: "1rem", lineHeight: 1.7, margin: "0 0 24px" }}>
@@ -219,6 +214,35 @@ export default function ProductDetail({ product }: { product: DetailProduct }) {
               </button>
             </div>
           )}
+
+          {/* The four figures people actually ask for, out in the open rather
+              than only inside the Details accordion. */}
+          <div style={{ marginTop: 24, display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
+            {product.highlights.map((h) => (
+              <div key={h.label.en} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 10, padding: "12px 14px" }}>
+                <div style={{ fontFamily: "var(--mono)", fontSize: "0.62rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-faint)", marginBottom: 5 }}>
+                  {es ? h.label.es : h.label.en}
+                </div>
+                <div style={{ color: "var(--ink)", fontWeight: 700, fontSize: "0.88rem", lineHeight: 1.45 }}>
+                  {typeof h.value === "string" ? h.value : es ? h.value.es : h.value.en}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Scarcity — the reason to decide now. */}
+          <div style={{ marginTop: 14, display: "flex", alignItems: "center", gap: 10, background: "var(--volt-dim)", border: "1px solid var(--volt)", borderRadius: 10, padding: "12px 16px" }}>
+            <span aria-hidden style={{ fontSize: "1.1rem", lineHeight: 1 }}>🔒</span>
+            <span style={{ color: "var(--ink)", fontSize: "0.86rem", lineHeight: 1.5 }}>
+              {product.isSet
+                ? es
+                  ? `Solo se hicieron ${STOCK_PER_CHARACTER} de cada baby. Un set se arma con ese mismo inventario — cuando se agote uno, el set completo se va con él.`
+                  : `Only ${STOCK_PER_CHARACTER} of each baby were made. A set is built from that same stock — when one sells out, the complete set goes with it.`
+                : es
+                  ? `Edición limitada: solo ${STOCK_PER_CHARACTER} de este baby existen. No habrá una segunda tanda.`
+                  : `Limited run: only ${STOCK_PER_CHARACTER} of this baby exist. There is no second batch.`}
+            </span>
+          </div>
 
           {/* Accordions */}
           <div style={{ marginTop: 28, borderTop: "1px solid var(--border)" }}>

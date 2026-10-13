@@ -24,7 +24,7 @@ function specRows(isSet: boolean, sku: string): DetailRow[] {
     { label: { en: "Age", es: "Edad" }, value: "15+" },
     {
       label: { en: "Main material", es: "Material principal" },
-      value: { en: "100% polyester fiber", es: "100% fibra de poliéster" },
+      value: { en: SPECS.material.en, es: SPECS.material.es ?? SPECS.material.en },
     },
     {
       label: { en: "Product size", es: "Tamaño" },
@@ -64,6 +64,29 @@ function specRows(isSet: boolean, sku: string): DetailRow[] {
   ];
 }
 
+/** Size, weight, tension test and material — surfaced on every product page. */
+function highlights(isSet: boolean): DetailRow[] {
+  const each = isSet ? { en: " each", es: " cada uno" } : { en: "", es: "" };
+  return [
+    {
+      label: { en: "Size", es: "Tamaño" },
+      value: { en: `${SPECS.sizeCm}${each.en}`, es: `${SPECS.sizeCm}${each.es}` },
+    },
+    {
+      label: { en: "Weight", es: "Peso" },
+      value: { en: `${SPECS.weightG} g${each.en}`, es: `${SPECS.weightG} g${each.es}` },
+    },
+    {
+      label: { en: "Tension test", es: "Prueba de tracción" },
+      value: { en: "Passed", es: "Aprobada" },
+    },
+    {
+      label: { en: "Material", es: "Material" },
+      value: { en: SPECS.material.en, es: SPECS.material.es ?? SPECS.material.en },
+    },
+  ];
+}
+
 function buildProduct(slug: string): DetailProduct | null {
   if (slug === SET_SLUG) {
     const stock = setStock();
@@ -78,9 +101,10 @@ function buildProduct(slug: string): DetailProduct | null {
       stock,
       isSet: true,
       description: {
-        en: `All seven BABY-T-S pendants in one box — SUGA, RM, JIN, JIMIN, V, JUNGKOOK and J-HOPE. Lined up in order their tees read DAEBAK!, and the set costs $${PRICE_SET} instead of $${PRICE_SINGLE * 7}.`,
-        es: `Los siete colgantes BABY-T-S en una caja — SUGA, RM, JIN, JIMIN, V, JUNGKOOK y J-HOPE. En orden, sus camisetas deletrean DAEBAK!, y el set cuesta $${PRICE_SET} en vez de $${PRICE_SINGLE * 7}.`,
+        en: `All seven BABY-T-S babies in one box — SUGA, RM, JIN, JIMIN, V, JUNGKOOK and J-HOPE — $${PRICE_SET} for the set. Lined up in order their tees read DAEBAK!, and only ${STOCK_PER_CHARACTER} of each baby were ever made.`,
+        es: `Los siete babies BABY-T-S en una caja — SUGA, RM, JIN, JIMIN, V, JUNGKOOK y J-HOPE — $${PRICE_SET} el set. En orden, sus camisetas deletrean DAEBAK!, y solo se hicieron ${STOCK_PER_CHARACTER} de cada baby.`,
       },
+      highlights: highlights(true),
       rows: [
         ...specRows(true, "AA-2026-SET"),
         {
@@ -125,6 +149,7 @@ function buildProduct(slug: string): DetailProduct | null {
       en: `${p.tagline.en} ${p.blurb.en}`,
       es: `${p.tagline.es ?? p.tagline.en} ${p.blurb.es ?? p.blurb.en}`,
     },
+    highlights: highlights(false),
     rows: [
       ...specRows(false, p.sku),
       {

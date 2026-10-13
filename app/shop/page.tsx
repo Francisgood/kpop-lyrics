@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { T, LangToggle } from "@/components/LangProvider";
 import ShopGrid from "@/components/shop/ShopGrid";
-import { PLUSHIES, PRICE_SET, PRICE_SINGLE, SET_SAVINGS, SET_SLUG, SPECS, STOCK_PER_CHARACTER, TOTAL_PRODUCED } from "@/lib/plushies";
+import { PLUSHIES, PRICE_SET, PRICE_SINGLE, SET_SLUG, SPECS, STOCK_PER_CHARACTER, TOTAL_PRODUCED } from "@/lib/plushies";
 
 export const metadata: Metadata = {
   title: "BABY-T-S Plush Pendants — Aegyo Arena Shop",
@@ -31,11 +31,21 @@ export default function ShopPage() {
               />
             </p>
 
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 24 }}>
-              <Stat label={{ en: "Single", es: "Individual" }} value={`$${PRICE_SINGLE}`} />
-              <Stat label={{ en: "Set of 7", es: "Set de 7" }} value={`$${PRICE_SET}`} accent />
-              <Stat label={{ en: "You save", es: "Ahorras" }} value={`$${SET_SAVINGS}`} />
-              <Stat label={{ en: "Units made", es: "Unidades" }} value={`${TOTAL_PRODUCED}`} />
+            {/* Two prices, and the scarcity. Nothing else — no savings maths. */}
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 20 }}>
+              <Stat label={{ en: "1 baby", es: "1 baby" }} value={`$${PRICE_SINGLE}`} />
+              <Stat label={{ en: "All 7 babies", es: "Los 7 babies" }} value={`$${PRICE_SET}`} accent />
+              <Stat label={{ en: "Made of each", es: "De cada uno" }} value={`${STOCK_PER_CHARACTER}`} />
+            </div>
+
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--volt-dim)", border: "1px solid var(--volt)", borderRadius: 100, padding: "9px 20px", marginBottom: 24 }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--volt)", display: "inline-block", flexShrink: 0 }} />
+              <span style={{ fontWeight: 800, fontSize: "0.82rem", letterSpacing: "0.03em", color: "var(--ink)" }}>
+                <T
+                  en={`Limited run — ${STOCK_PER_CHARACTER} of each baby, ${TOTAL_PRODUCED} in total`}
+                  es={`Edición limitada — ${STOCK_PER_CHARACTER} de cada baby, ${TOTAL_PRODUCED} en total`}
+                />
+              </span>
             </div>
 
             <Link
@@ -87,6 +97,36 @@ export default function ShopPage() {
               </span>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ── Limited run ──────────────────────────────────────────────────── */}
+      <section style={{ maxWidth: 1100, margin: "0 auto", padding: "34px 24px 0" }}>
+        <div style={{ background: "var(--bg-card)", border: "1px solid var(--volt)", borderRadius: 18, padding: "28px 30px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 26, alignItems: "start" }} className="shop-scarcity">
+          <Fact
+            value={`${STOCK_PER_CHARACTER}`}
+            label={{ en: "of each baby", es: "de cada baby" }}
+            note={{
+              en: "That's the whole production run for that character. There is no second batch of this colourway.",
+              es: "Ese es todo el lote de producción de ese personaje. No habrá una segunda tanda de esta combinación.",
+            }}
+          />
+          <Fact
+            value={`${TOTAL_PRODUCED}`}
+            label={{ en: "babies in total", es: "babies en total" }}
+            note={{
+              en: "Seven characters, 100 each, counted and inspected before they shipped. When they're gone, they're gone.",
+              es: "Siete personajes, 100 de cada uno, contados e inspeccionados antes de enviarse. Cuando se acaben, se acabaron.",
+            }}
+          />
+          <Fact
+            value="7 / 7"
+            label={{ en: "to finish the word", es: "para completar la palabra" }}
+            note={{
+              en: "A set is built from that same stock — so the moment any one baby sells out, the complete DAEBAK! goes with it.",
+              es: "Un set se arma con ese mismo inventario — así que en cuanto se agote un baby, el DAEBAK! completo se va con él.",
+            }}
+          />
         </div>
       </section>
 
@@ -165,9 +205,18 @@ export default function ShopPage() {
         /* Phones: four to a row rather than two, so the wave still reads as one
            pass across the word. The label box keeps a two-line height so the
            labels stay on a shared baseline when the longer ones wrap. */
+        /* Phones: break the word deliberately — DAE on the first line, BAK! on
+           the second — instead of letting flex wrap it wherever it fits. A
+           12-column grid gives the first three a third each and the last four
+           a quarter each, so each row fills exactly. */
         @media (max-width: 560px) {
-          .babyts-strip { gap: 8px; }
-          .babyts-col   { width: 76px; }
+          .babyts-strip {
+            display: grid; grid-template-columns: repeat(12, 1fr);
+            gap: 14px 6px; justify-items: center;
+          }
+          .babyts-col                   { width: 100%; }
+          .babyts-col:nth-child(-n + 3) { grid-column: span 4; }
+          .babyts-col:nth-child(n + 4)  { grid-column: span 3; }
           .babyts-track { height: 76px; }
           .babyts-pulse { width: 52px; height: 52px; border-radius: 12px; font-size: 1.4rem; }
           .babyts-label { font-size: 0.66rem; min-height: 2.8em; }
@@ -178,6 +227,7 @@ export default function ShopPage() {
         @media (max-width: 860px) {
           .shop-hero { grid-template-columns: 1fr !important; gap: 28px !important; }
           .shop-insp { grid-template-columns: 1fr !important; gap: 24px !important; }
+          .shop-scarcity { grid-template-columns: 1fr !important; gap: 22px !important; }
         }
       `}</style>
     </main>
@@ -197,6 +247,20 @@ function Stat({ label, value, accent }: { label: { en: string; es: string }; val
         <T en={label.en} es={label.es} />
       </div>
       <div style={{ fontWeight: 900, fontSize: "1.15rem", color: accent ? "var(--sakura)" : "var(--ink)", marginTop: 2 }}>{value}</div>
+    </div>
+  );
+}
+
+function Fact({ value, label, note }: { value: string; label: { en: string; es: string }; note: { en: string; es: string } }) {
+  return (
+    <div>
+      <div style={{ fontWeight: 900, fontSize: "2.4rem", color: "var(--volt)", lineHeight: 1 }}>{value}</div>
+      <div style={{ fontFamily: "var(--mono)", fontSize: "0.68rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink)", margin: "8px 0 10px" }}>
+        <T en={label.en} es={label.es} />
+      </div>
+      <div style={{ color: "var(--ink-dim)", fontSize: "0.9rem", lineHeight: 1.6 }}>
+        <T en={note.en} es={note.es} />
+      </div>
     </div>
   );
 }

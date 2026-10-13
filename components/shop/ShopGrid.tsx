@@ -163,8 +163,8 @@ export default function ShopGrid() {
                 <div style={{ marginTop: "auto", paddingTop: 10, display: "flex", alignItems: "baseline", gap: 8 }}>
                   <span style={{ fontWeight: 900, fontSize: "1.1rem", color: "var(--ink)" }}>${c.price.toFixed(2)}</span>
                   {c.isSet && (
-                    <span style={{ fontSize: "0.82rem", color: "var(--ink-faint)", textDecoration: "line-through" }}>
-                      ${(PRICE_SINGLE * 7).toFixed(2)}
+                    <span style={{ fontSize: "0.8rem", color: "var(--ink-dim)" }}>
+                      {es ? "los 7 babies" : "all 7 babies"}
                     </span>
                   )}
                 </div>

@@ -32,8 +32,6 @@ export type Plushie = {
 
 export const PRICE_SINGLE = 25;
 export const PRICE_SET = 150;
-/** 7 × $25 = $175, so the set saves $25. */
-export const SET_SAVINGS = PRICE_SINGLE * 7 - PRICE_SET;
 
 /** Shared across all seven — they're the same body, different colourway. */
 export const SPECS = {
@@ -41,6 +39,7 @@ export const SPECS = {
   sizeIn: "3.7 × 3.7 × 2.2 in",
   weightG: 40,
   weightOz: "1.4 oz",
+  material: { en: "100% polyester fabric", es: "100% tela de poliéster" } as Localized,
   /** Outer carton, from the report's CARTON SIZE / G.W. row. */
   cartonCm: "60 × 45 × 30 cm",
   cartonKg: "3.5 kg",
