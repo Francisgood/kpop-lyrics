@@ -69,7 +69,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </div>
 
           {/* Footer links */}
-          <div style={{ maxWidth: 1240, margin: "0 auto", padding: "56px 24px 36px", display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 48 }} className="footer-top-grid">
+          <div style={{ maxWidth: 1240, margin: "0 auto", padding: "56px 24px 36px", display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 48 }} className="footer-top-grid">
             <div>
               <Link href="/" style={{ display: "inline-block", marginBottom: 16 }}>
                 <Image src="/images/aegyo-logo-footer.png" alt="Aegyo Arena" width={113} height={34} style={{ height: 34, width: "auto", display: "block" }} />
@@ -92,20 +92,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               ))}
             </div>
             <div>
-              {/* "Culture Vulture" is a brand name — stays EN. */}
-              <div className="footer-col-title">Culture Vulture</div>
+              <div className="footer-col-title"><T en="Community" es="Comunidad" /></div>
               {/* Arcade is a separate subdomain app, so a plain <a>, not next/link. */}
               <a href="https://arcade.aegyoarena.com" style={{ display: "block", fontSize: "1rem", fontWeight: 700, color: "var(--sakura)", textDecoration: "none", marginBottom: 10 }}>
                 🕹 Arcade
               </a>
-              {[["Dance", "/culture/dance", "Baile"], ["Fashion", "/culture/fashion", "Moda"], ["Beauty", "/culture/beauty", "Belleza"], ["Mukbang", "/culture/mukbang", "Mukbang"]].map(([label, href, labelEs]) => (
-                <Link key={href} href={href} style={{ display: "block", fontSize: "1rem", fontWeight: 300, color: "var(--ink-dim)", textDecoration: "none", marginBottom: 10 }}>
-                  <T en={label} es={labelEs} />
-                </Link>
-              ))}
-            </div>
-            <div>
-              <div className="footer-col-title"><T en="Community" es="Comunidad" /></div>
               {[["Quiz", "/quiz", "Quiz"], ["Daebak Rewards", "/", "Daebak Rewards"], ["The Feed", "/feed", "El Feed"], ["BABY-T-S Plushies", "/shop", "Peluches BABY-T-S"], ["Merch", "/merch", "Merch"], ["Leaderboard", "/leaderboard", "Ranking"], ["Tips", "/tips", "Pistas"], ["Giveaways", "/giveaways", "Sorteos"]].map(([label, href, labelEs]) => (
                 <Link key={label} href={href} style={{ display: "block", fontSize: "1rem", fontWeight: 300, color: "var(--ink-dim)", textDecoration: "none", marginBottom: 10 }}>
                   <T en={label} es={labelEs} />

@@ -21,7 +21,9 @@ const CITY_SLUGS = [
   "seoul", "tokyo", "bangkok", "manila", "kuala-lumpur", "shanghai", "dubai",
   "melbourne", "sydney",
 ];
-const CULTURE_TOPICS = ["dance", "fashion", "beauty", "mukbang"];
+// "dance" now lives at /teach-dance (listed as a static route below); the rest
+// stay under /culture/<topic>.
+const CULTURE_TOPICS = ["fashion", "beauty", "mukbang"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
@@ -64,6 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry("/contribute", 0.5, "monthly"),
     entry("/shop", 0.8, "weekly"),
     entry("/merch", 0.5, "monthly"),
+    entry("/teach-dance", 0.7, "weekly"),
     entry("/feed", 0.9, "hourly"),
     entry("/privacy-policy", 0.2, "yearly"),
     entry("/bts-sweepstakes-terms", 0.2, "yearly"),

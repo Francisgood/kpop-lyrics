@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
       { source: "/pc-index/forecast", destination: "/pocamarket-index/forecast", permanent: true },
       // The rewards pitch became the homepage; its old URL keeps its link equity.
       { source: "/daebak-rewards", destination: "/", permanent: true },
+      // Teach + the dance culture page are now one combined page.
+      { source: "/teach", destination: "/teach-dance", permanent: true },
+      { source: "/culture/dance", destination: "/teach-dance", permanent: true },
     ];
   },
   typescript: { ignoreBuildErrors: true },

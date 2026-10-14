@@ -2,14 +2,21 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { T, LangToggle, useT } from "@/components/LangProvider";
+import { T, useT } from "@/components/LangProvider";
+
+/**
+ * Teach Choreography — fan-submitted dance-teaching clips (YouTube), with upload
+ * + unique-upvote points. Extracted from the old /teach page so it can sit at the
+ * top of /teach-dance above the dance showcase. `next` is where login redirects
+ * come back to (defaults to the combined page).
+ */
 
 type Clip = {
   id: string; videoId: string; title: string; artist: string | null; city: string | null;
   userName: string | null; upvotes: number; mine: boolean; upvotedByMe: boolean;
 };
 
-export default function TeachPage() {
+export default function TeachChoreography({ next = "/teach-dance" }: { next?: string }) {
   const t = useT();
   const [clips, setClips] = useState<Clip[]>([]);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -61,7 +68,7 @@ export default function TeachPage() {
   }
 
   async function upvote(clip: Clip) {
-    if (!loggedIn) { window.location.href = "/login?next=/teach"; return; }
+    if (!loggedIn) { window.location.href = `/login?next=${encodeURIComponent(next)}`; return; }
     if (clip.upvotedByMe || clip.mine) return;
     // optimistic
     setClips((cs) => cs.map((c) => c.id === clip.id ? { ...c, upvotes: c.upvotes + 1, upvotedByMe: true } : c));
@@ -80,9 +87,7 @@ export default function TeachPage() {
   const labelStyle: React.CSSProperties = { fontSize: "0.72rem", fontWeight: 700, color: "var(--ink)", letterSpacing: "0.08em", textTransform: "uppercase", display: "block", marginBottom: 7 };
 
   return (
-    <main style={{ maxWidth: 1060, margin: "0 auto", padding: "40px 24px 80px" }}>
-      <LangToggle align="center" marginBottom={16} />
-
+    <section style={{ maxWidth: 1060, margin: "0 auto", padding: "40px 24px 52px" }}>
       {/* Header */}
       <div style={{ textAlign: "center", maxWidth: 680, margin: "0 auto 10px" }}>
         <div style={{ fontSize: "2.4rem", marginBottom: 6 }}>🪩</div>
@@ -112,7 +117,7 @@ export default function TeachPage() {
             <p style={{ color: "var(--ink-dim)", fontSize: "0.95rem", lineHeight: 1.55, margin: "0 0 16px" }}>
               <T en="Log in to upload your clip and start earning points." es="Inicia sesión para subir tu clip y empezar a ganar puntos." />
             </p>
-            <Link href="/login?next=/teach" className="btn-yellow" style={{ display: "inline-block", padding: "12px 26px", fontSize: "0.88rem", textDecoration: "none" }}>
+            <Link href={`/login?next=${encodeURIComponent(next)}`} className="btn-yellow" style={{ display: "inline-block", padding: "12px 26px", fontSize: "0.88rem", textDecoration: "none" }}>
               <T en="Log in to upload" es="Inicia sesión para subir" />
             </Link>
           </div>
@@ -214,6 +219,6 @@ export default function TeachPage() {
           ))}
         </div>
       )}
-    </main>
+    </section>
   );
 }

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useLang } from "@/components/LangProvider";
 import type { DeckTerm } from "@/lib/slang-terms";
-import { SAVED_KEY, REVIEW_KEY, readReview, clearFromReview } from "@/lib/slang-review";
+import { SAVED_KEY, readReview, clearFromReview } from "@/lib/slang-review";
 
 /**
  * The Tinder-style slang deck. Swipe right to save a term to *My Deck*, left to

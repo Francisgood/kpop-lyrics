@@ -15,25 +15,21 @@ interface Props {
 type Sub = { en: string; es: string; href: string };
 type NavItem = { en: string; es: string; href: string; subs?: Sub[] };
 
-// Big TMZ-style categories. Each points at its category page; `subs` deep-link
-// into the various parts of that section.
+// Big TMZ-style categories, ordered by what we're leading with: the arcade,
+// learning (slang / dance / quizzes), concert giveaways, the live plushie shop,
+// then news. Each points at its section; `subs` deep-link into its parts.
 const NAV: NavItem[] = [
-  {
-    en: "News", es: "Noticias", href: "/feed",
-    subs: [
-      { en: "Charts & Signals", es: "Charts y Señales", href: "/news" },
-      { en: "Artists",          es: "Artistas",         href: "/artists" },
-      { en: "Events",           es: "Eventos",          href: "/events" },
-    ],
-  },
-  { en: "Slang",   es: "Jerga",   href: "/korean-slang" },
-  { en: "Mukbang", es: "Mukbang", href: "/culture/mukbang" },
-  { en: "Dance",   es: "Baile",   href: "/culture/dance" },
   // Arcade is a separate subdomain app, so this href is absolute (rendered as a
   // plain <a>, not next/link — see the NAV render below).
   { en: "Games", es: "Juegos", href: "https://arcade.aegyoarena.com" },
-  // "Quizzes" stays untranslated, matching the footer's Quiz link.
-  { en: "Quizzes", es: "Quizzes", href: "/quiz" },
+  {
+    en: "Learn", es: "Aprende", href: "/korean-slang",
+    subs: [
+      { en: "Slang",   es: "Jerga",   href: "/korean-slang" },
+      { en: "Dance",   es: "Baile",   href: "/teach-dance" },
+      { en: "Quizzes", es: "Quizzes", href: "/quiz" },
+    ],
+  },
   // No per-campaign sub-links: the hub lists whatever is live, so the menu does
   // not need updating every time a campaign opens or closes.
   { en: "Giveaways", es: "Sorteos", href: "/giveaways" },
@@ -42,6 +38,14 @@ const NAV: NavItem[] = [
     subs: [
       { en: "BABY-T-S plushies", es: "Peluches BABY-T-S", href: "/shop" },
       { en: "Tees",              es: "Camisetas",         href: "/merch" },
+    ],
+  },
+  {
+    en: "News", es: "Noticias", href: "/feed",
+    subs: [
+      { en: "Charts & Signals", es: "Charts y Señales", href: "/news" },
+      { en: "Artists",          es: "Artistas",         href: "/artists" },
+      { en: "Events",           es: "Eventos",          href: "/events" },
     ],
   },
 ];
