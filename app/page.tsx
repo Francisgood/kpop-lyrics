@@ -55,13 +55,13 @@ const EARN: { icon: string; name: L; note: L; href: string; cta: L; external?: b
   },
   {
     icon: "🪩",
-    name: { en: "Learn choreography", es: "Aprende coreografía" },
+    name: { en: "Teach choreography", es: "Enseña coreografía" },
     note: {
-      en: "Break down the choreo to the songs you already have on repeat, step by step, at your own speed.",
-      es: "Desglosa la coreo de las canciones que ya tienes en repetición, paso a paso, a tu ritmo.",
+      en: "Film yourself teaching a K-pop dance, upload the YouTube clip, and earn 10 points — plus 100 more when 10+ fans upvote it.",
+      es: "Grábate enseñando un baile de K-pop, sube el clip de YouTube y gana 10 puntos — más 100 cuando 10+ fans lo voten.",
     },
-    href: "/culture/dance",
-    cta: { en: "Start a dance lesson", es: "Empezar una lección" },
+    href: "/teach",
+    cta: { en: "Upload a dance clip", es: "Sube un clip de baile" },
   },
   {
     icon: "🗳️",
