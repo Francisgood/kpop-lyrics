@@ -10,70 +10,15 @@
  * points in the PointsEvent ledger (credited = false). The arcade reads
  * uncredited events and credits balances after whatever review it applies —
  * which also means no upload/upvote instantly mints redeemable points here.
- *
- * Self-healing tables (CREATE TABLE IF NOT EXISTS), same pattern as Follow/Tip.
  */
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { randomUUID } from "crypto";
+import { ensureTeachTables, youtubeId, UPLOAD_POINTS, UPVOTE_BONUS_THRESHOLD, BONUS_POINTS } from "@/lib/teach";
 
 export const dynamic = "force-dynamic";
-
-export const UPVOTE_BONUS_THRESHOLD = 10; // ">10 unique users" unlocks the bonus
-export const UPLOAD_POINTS = 10;
-export const BONUS_POINTS = 100;
-
-let ready = false;
-export async function ensureTeachTables() {
-  if (ready) return;
-  await prisma.$executeRawUnsafe(`
-    CREATE TABLE IF NOT EXISTS "TeachClip" (
-      "id"            TEXT PRIMARY KEY,
-      "userId"        TEXT NOT NULL,
-      "userName"      TEXT,
-      "videoId"       TEXT NOT NULL,
-      "title"         TEXT NOT NULL,
-      "artist"        TEXT,
-      "city"          TEXT,
-      "status"        TEXT NOT NULL DEFAULT 'live',
-      "bonusAwarded"  BOOLEAN NOT NULL DEFAULT false,
-      "createdAt"     TIMESTAMP NOT NULL DEFAULT now()
-    )`);
-  await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "TeachClip_status_created_idx" ON "TeachClip" ("status","createdAt")`);
-  // One submission per (user, video) so the +10 can't be farmed with one clip.
-  await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "TeachClip_user_video_key" ON "TeachClip" ("userId","videoId")`);
-  await prisma.$executeRawUnsafe(`
-    CREATE TABLE IF NOT EXISTS "TeachClipVote" (
-      "id"         TEXT PRIMARY KEY,
-      "clipId"     TEXT NOT NULL,
-      "userId"     TEXT NOT NULL,
-      "createdAt"  TIMESTAMP NOT NULL DEFAULT now()
-    )`);
-  // One upvote per account per clip → COUNT(*) is the unique-user count.
-  await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "TeachClipVote_clip_user_key" ON "TeachClipVote" ("clipId","userId")`);
-  await prisma.$executeRawUnsafe(`
-    CREATE TABLE IF NOT EXISTS "PointsEvent" (
-      "id"         TEXT PRIMARY KEY,
-      "userId"     TEXT NOT NULL,
-      "kind"       TEXT NOT NULL,
-      "points"     INTEGER NOT NULL,
-      "clipId"     TEXT,
-      "credited"   BOOLEAN NOT NULL DEFAULT false,
-      "createdAt"  TIMESTAMP NOT NULL DEFAULT now()
-    )`);
-  await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "PointsEvent_credited_idx" ON "PointsEvent" ("credited","createdAt")`);
-  ready = true;
-}
-
-// Pull the 11-char video id out of any common YouTube URL form.
-export function youtubeId(raw: string): string | null {
-  const s = (raw || "").trim();
-  const m = s.match(/(?:youtu\.be\/|v=|\/embed\/|\/shorts\/|\/live\/)([A-Za-z0-9_-]{11})/) ||
-            s.match(/^([A-Za-z0-9_-]{11})$/);
-  return m ? m[1] : null;
-}
 
 type ClipRow = {
   id: string; videoId: string; title: string; artist: string | null; city: string | null;
@@ -126,7 +71,6 @@ export async function POST(req: NextRequest) {
     const userId = session.user.id;
     const userName = session.user.displayName ?? session.user.email.split("@")[0];
 
-    // One clip per (user, video): a duplicate just no-ops (no extra +10).
     const dupe = await prisma.$queryRawUnsafe<{ id: string }[]>(
       `SELECT "id" FROM "TeachClip" WHERE "userId" = $1 AND "videoId" = $2 LIMIT 1`, userId, videoId);
     if (dupe.length) return NextResponse.json({ error: "You already submitted that clip." }, { status: 409 });
@@ -135,7 +79,6 @@ export async function POST(req: NextRequest) {
     await prisma.$executeRawUnsafe(
       `INSERT INTO "TeachClip" ("id","userId","userName","videoId","title","artist","city") VALUES ($1,$2,$3,$4,$5,$6,$7)`,
       id, userId, userName, videoId, title, artist, city);
-    // Earned-points event for the upload (credited later, arcade-side).
     await prisma.$executeRawUnsafe(
       `INSERT INTO "PointsEvent" ("id","userId","kind","points","clipId") VALUES ($1,$2,'teach_upload',${UPLOAD_POINTS},$3)`,
       randomUUID(), userId, id);

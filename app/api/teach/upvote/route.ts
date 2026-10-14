@@ -11,7 +11,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { randomUUID } from "crypto";
-import { ensureTeachTables, UPVOTE_BONUS_THRESHOLD, BONUS_POINTS } from "../route";
+import { ensureTeachTables, UPVOTE_BONUS_THRESHOLD, BONUS_POINTS } from "@/lib/teach";
 
 export const dynamic = "force-dynamic";
 
