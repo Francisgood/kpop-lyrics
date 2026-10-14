@@ -130,8 +130,13 @@ export default function HomePage() {
             </div>
             <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(2.1rem, 5.4vw, 3.2rem)", fontWeight: 700, color: "var(--ink)", margin: "0 0 18px", lineHeight: 1.1 }}>
               <T
-                en="Social media farms your attention. Here it’s rewarded."
-                es="Las redes explotan tu atención. Aquí se recompensa."
+                en="They farm your attention."
+                es="Ellos explotan tu atención."
+              />
+              <br />
+              <T
+                en="We reward it."
+                es="Nosotros la recompensamos."
               />
             </h1>
             <p style={{ color: "var(--ink-dim)", fontSize: "1.08rem", lineHeight: 1.7, marginBottom: 26 }}>
