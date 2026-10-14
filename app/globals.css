@@ -573,4 +573,17 @@ body:has(.chat-page) .genius-nav { position: relative !important; }
   .chat-page-intro { display: block; margin-bottom: 16px; }
   .chat-page-intro p { font-size: .88rem; }
   .chat-page-channel { display: inline-block; margin-top: 12px; }
+
+  /* Homepage leaderboard callout: drop the "See the leaderboard" link to its
+     own full-width line instead of cramming it on the right. */
+  .lb-callout { flex-wrap: wrap; row-gap: 10px; }
+  .lb-callout .lb-cta { margin-left: 0 !important; flex-basis: 100%; }
+
+  /* Homepage reward tiers: stack the card so the CTA has the full width — one
+     line, centered — instead of being squeezed in the 3-column row. */
+  .hm-tier { flex-direction: column; text-align: center; }
+  .hm-tier .hm-tier-body { width: 100%; }
+  .hm-tier .hm-tier-head { justify-content: center; }
+  .hm-tier .hm-tier-pts { width: 100%; text-align: center !important; }
+  .hm-tier .hm-tier-cta { white-space: nowrap; }
 }

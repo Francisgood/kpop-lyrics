@@ -208,6 +208,7 @@ export default function HomePage() {
         {/* Leaderboard callout — the mechanism that decides redemption. */}
         <a
           href="https://arcade.aegyoarena.com/championship"
+          className="lb-callout"
           style={{
             display: "flex", alignItems: "center", gap: 16, textDecoration: "none", marginTop: 20,
             border: "1px solid var(--sakura)", borderRadius: 16, padding: "20px 24px",
@@ -226,7 +227,7 @@ export default function HomePage() {
               />
             </span>
           </span>
-          <span style={{ marginLeft: "auto", color: "var(--sakura)", fontWeight: 800, fontSize: "0.88rem", whiteSpace: "nowrap", flexShrink: 0 }}>
+          <span className="lb-cta" style={{ marginLeft: "auto", color: "var(--sakura)", fontWeight: 800, fontSize: "0.88rem", whiteSpace: "nowrap", flexShrink: 0 }}>
             <T en="See the leaderboard →" es="Ver el ranking →" />
           </span>
         </a>
@@ -289,19 +290,19 @@ export default function HomePage() {
           {TIERS.map((t) => (
             <div key={t.name.en} style={{ display: "flex", alignItems: "center", gap: 20, background: "var(--bg-card)", border: "1px solid var(--border)", borderLeft: `4px solid ${t.accent}`, borderRadius: 14, padding: "22px 26px" }} className="hm-tier">
               <div style={{ fontSize: "2.2rem", flexShrink: 0, width: 56, textAlign: "center" }} aria-hidden>{t.icon}</div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: "flex", alignItems: "baseline", gap: 12, flexWrap: "wrap" }}>
+              <div className="hm-tier-body" style={{ flex: 1, minWidth: 0 }}>
+                <div className="hm-tier-head" style={{ display: "flex", alignItems: "baseline", gap: 12, flexWrap: "wrap" }}>
                   <span style={{ fontWeight: 800, fontSize: "1.2rem", color: "var(--ink)" }}><T en={t.name.en} es={t.name.es} /></span>
                   <span style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ink-faint)" }}><T en={t.tier.en} es={t.tier.es} /></span>
                 </div>
                 <div style={{ color: "var(--ink-dim)", fontSize: "0.92rem", marginTop: 4, lineHeight: 1.55 }}><T en={t.note.en} es={t.note.es} /></div>
                 {t.link && t.linkLabel && (
-                  <Link href={t.link} style={{ display: "inline-block", marginTop: 12, padding: "9px 20px", borderRadius: 100, background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.85rem", textDecoration: "none" }}>
+                  <Link href={t.link} className="hm-tier-cta" style={{ display: "inline-block", marginTop: 12, padding: "9px 20px", borderRadius: 100, background: "var(--sakura)", color: "var(--on-accent)", fontWeight: 800, fontSize: "0.85rem", textDecoration: "none" }}>
                     <T en={t.linkLabel.en} es={t.linkLabel.es} />
                   </Link>
                 )}
               </div>
-              <div style={{ flexShrink: 0, textAlign: "right" }}>
+              <div className="hm-tier-pts" style={{ flexShrink: 0, textAlign: "right" }}>
                 <div style={{ fontWeight: 800, fontSize: "1.05rem", color: t.accent }}><T en={t.pts.en} es={t.pts.es} /></div>
                 {t.usd && <div style={{ fontSize: "0.72rem", color: "var(--ink-faint)", marginTop: 3 }}>{t.usd}</div>}
               </div>
