@@ -69,7 +69,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </div>
 
           {/* Footer links */}
-          <div style={{ maxWidth: 1240, margin: "0 auto", padding: "56px 24px 36px", display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 48 }} className="footer-top-grid">
+          <div style={{ maxWidth: 1240, margin: "0 auto", padding: "56px 24px 36px", display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 48 }} className="footer-top-grid">
             <div>
               <Link href="/" style={{ display: "inline-block", marginBottom: 16 }}>
                 <Image src="/images/aegyo-logo-footer.png" alt="Aegyo Arena" width={113} height={34} style={{ height: 34, width: "auto", display: "block" }} />
@@ -102,6 +102,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   <T en={label} es={labelEs} />
                 </Link>
               ))}
+            </div>
+            <div>
+              <div className="footer-col-title"><T en="Cities" es="Ciudades" /></div>
+              {[["New York", "/cities/new-york", "Nueva York"], ["Los Angeles", "/cities/los-angeles", "Los Ángeles"], ["Boston", "/cities/boston", "Boston"], ["Dallas", "/cities/dallas", "Dallas"], ["Chicago", "/cities/chicago", "Chicago"], ["Tampa", "/cities/tampa", "Tampa"], ["Toronto", "/cities/toronto", "Toronto"], ["Mexico City", "/cities/mexico-city", "Ciudad de México"], ["Puebla", "/cities/puebla", "Puebla"], ["Bogotá", "/cities/bogota", "Bogotá"]].map(([label, href, labelEs]) => (
+                <Link key={href} href={href} style={{ display: "block", fontSize: "1rem", fontWeight: 300, color: "var(--ink-dim)", textDecoration: "none", marginBottom: 10 }}>
+                  <T en={label} es={labelEs} />
+                </Link>
+              ))}
+              <Link href="/cities" style={{ display: "block", fontSize: "0.88rem", fontWeight: 700, color: "var(--sakura)", textDecoration: "none", marginTop: 4 }}>
+                <T en="All cities →" es="Todas las ciudades →" />
+              </Link>
             </div>
           </div>
 

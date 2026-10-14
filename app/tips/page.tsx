@@ -79,6 +79,19 @@ export default function TipsPage() {
                   <T en="Back to the feed" es="Volver al feed" />
                 </Link>
               </div>
+
+              {/* Rewards nudge — ties tips into the points economy. */}
+              <div style={{ marginTop: 22, background: "var(--sakura-light)", border: "1px solid var(--sakura)", borderRadius: 12, padding: "16px 18px", textAlign: "center" }}>
+                <div style={{ fontWeight: 800, color: "var(--ink)", fontSize: "1rem", marginBottom: 5 }}>
+                  🎁 <T en="Claim your 10 points" es="Reclama tus 10 puntos" />
+                </div>
+                <div style={{ color: "var(--ink-dim)", fontSize: "0.86rem", lineHeight: 1.55 }}>
+                  <T
+                    en="Every tip gets you closer to rewards like plushies, concert tickets, and more."
+                    es="Cada chisme te acerca a recompensas como peluches, boletos de concierto y más."
+                  />
+                </div>
+              </div>
             </div>
           ) : (
             <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
