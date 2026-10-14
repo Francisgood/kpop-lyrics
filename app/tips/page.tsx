@@ -8,6 +8,8 @@ export default function TipsPage() {
   const t = useT();
   const [tip, setTip] = useState("");
   const [artist, setArtist] = useState("");
+  const [city, setCity] = useState("");
+  const [mediaUrl, setMediaUrl] = useState("");
   const [email, setEmail] = useState("");
   const [subscribe, setSubscribe] = useState(true);
   const [state, setState] = useState<"idle" | "saving" | "done" | "error">("idle");
@@ -22,7 +24,7 @@ export default function TipsPage() {
       const res = await fetch("/api/tips", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tip, artist, email, subscribe }),
+        body: JSON.stringify({ tip, artist, city, mediaUrl, email, subscribe }),
       });
       if (res.ok) {
         setState("done");
@@ -50,8 +52,8 @@ export default function TipsPage() {
         </div>
         <p style={{ textAlign: "center", color: "var(--ink-dim)", fontSize: "0.95rem", lineHeight: 1.55, margin: "0 0 22px" }}>
           <T
-            en="Spill it, bestie. Comebacks, dating rumors, receipts, messy timelines — send us the scoop and stay anonymous if you want. 👀"
-            es="Suéltalo, amiga. Comebacks, rumores de romance, pruebas, dramas — mándanos el chisme y quédate anónima si quieres. 👀"
+            en="Spotted an idol in your city? Drop the where, the who, and a photo, video, or link to the post. Comebacks, dating rumors and messy receipts are welcome too — stay anonymous if you want. 👀"
+            es="¿Viste a un idol en tu ciudad? Dinos dónde, quién, y una foto, video o enlace al post. También van comebacks, rumores de romance y pruebas — quédate anónima si quieres. 👀"
           />
         </p>
 
@@ -70,7 +72,7 @@ export default function TipsPage() {
                 />
               </p>
               <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-                <button onClick={() => { setTip(""); setArtist(""); setState("idle"); }} className="btn-yellow" style={{ padding: "11px 20px", fontSize: "0.82rem" }}>
+                <button onClick={() => { setTip(""); setArtist(""); setCity(""); setMediaUrl(""); setState("idle"); }} className="btn-yellow" style={{ padding: "11px 20px", fontSize: "0.82rem" }}>
                   <T en="Send another" es="Enviar otro" />
                 </button>
                 <Link href="/" style={{ padding: "11px 20px", borderRadius: 100, border: "1px solid var(--border-strong)", color: "var(--ink)", fontWeight: 700, fontSize: "0.82rem", textDecoration: "none", display: "inline-flex", alignItems: "center" }}>
@@ -87,13 +89,13 @@ export default function TipsPage() {
               )}
 
               <div>
-                <label style={labelStyle}><T en="The Tip" es="El Chisme" /></label>
+                <label style={labelStyle}><T en="The sighting or scoop" es="El avistamiento o chisme" /></label>
                 <textarea
                   value={tip}
                   onChange={(e) => setTip(e.target.value)}
                   required
                   rows={5}
-                  placeholder={t("What's the scoop? Who, what, when — spill everything…", "¿Cuál es el chisme? Quién, qué, cuándo — suéltalo todo…")}
+                  placeholder={t("Who did you spot (or what's the gossip)? Where and when, plus any details…", "¿A quién viste (o cuál es el chisme)? Dónde y cuándo, más cualquier detalle…")}
                   style={{ ...field, resize: "vertical", minHeight: 110, fontFamily: "inherit" }}
                 />
               </div>
@@ -101,6 +103,16 @@ export default function TipsPage() {
               <div>
                 <label style={labelStyle}><T en="About which artist? (optional)" es="¿Sobre qué artista? (opcional)" /></label>
                 <input type="text" value={artist} onChange={(e) => setArtist(e.target.value)} placeholder={t("e.g. aespa, BTS, Jennie…", "ej. aespa, BTS, Jennie…")} style={field} />
+              </div>
+
+              <div>
+                <label style={labelStyle}><T en="City where you spotted them (optional)" es="Ciudad donde lo viste (opcional)" /></label>
+                <input type="text" value={city} onChange={(e) => setCity(e.target.value)} placeholder={t("e.g. Seoul, New York, Mexico City…", "ej. Seúl, Nueva York, Ciudad de México…")} style={field} />
+              </div>
+
+              <div>
+                <label style={labelStyle}><T en="Photo, video, or link (optional)" es="Foto, video o enlace (opcional)" /></label>
+                <input type="url" value={mediaUrl} onChange={(e) => setMediaUrl(e.target.value)} placeholder={t("Paste a link to your pic, clip, or the social post", "Pega un enlace a tu foto, clip o el post")} style={field} />
               </div>
 
               <div>

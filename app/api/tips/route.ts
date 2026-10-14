@@ -20,6 +20,8 @@ async function ensureTable() {
       "createdAt" TIMESTAMP NOT NULL DEFAULT now()
     )`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "Tip_status_created_idx" ON "Tip" ("status", "createdAt")`);
+  await prisma.$executeRawUnsafe(`ALTER TABLE "Tip" ADD COLUMN IF NOT EXISTS "city" TEXT`);
+  await prisma.$executeRawUnsafe(`ALTER TABLE "Tip" ADD COLUMN IF NOT EXISTS "mediaUrl" TEXT`);
   tableReady = true;
 }
 
@@ -32,6 +34,8 @@ export async function POST(req: NextRequest) {
     const b = await req.json().catch(() => ({}));
     const tip = String(b.tip ?? "").trim().slice(0, 4000);
     const artist = b.artist ? String(b.artist).trim().slice(0, 120) : null;
+    const city = b.city ? String(b.city).trim().slice(0, 160) : null;
+    const mediaUrl = b.mediaUrl ? String(b.mediaUrl).trim().slice(0, 600) : null;
     const email = b.email ? String(b.email).trim().toLowerCase().slice(0, 200) : null;
     const subscribe = b.subscribe !== false; // default opt-in
 
@@ -42,7 +46,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "That email doesn't look right — leave it blank to stay anonymous." }, { status: 400 });
     }
 
-    await prisma.$executeRaw`INSERT INTO "Tip" ("id","tip","artist","email") VALUES (${randomUUID()}, ${tip}, ${artist}, ${email})`;
+    await prisma.$executeRaw`INSERT INTO "Tip" ("id","tip","artist","city","mediaUrl","email") VALUES (${randomUUID()}, ${tip}, ${artist}, ${city}, ${mediaUrl}, ${email})`;
 
     // Collect the email into Beehiiv too (best-effort; never blocks the tip),
     // with the newsletter welcome, when they opted in.
@@ -66,8 +70,8 @@ export async function GET(req: NextRequest) {
     const secret = process.env.IMAGE_REFRESH_SECRET;
     if (secret && req.headers.get("authorization") === `Bearer ${secret}`) {
       const tips = await prisma.$queryRaw<
-        { id: string; tip: string; artist: string | null; email: string | null; status: string; createdAt: Date }[]
-      >`SELECT "id","tip","artist","email","status","createdAt" FROM "Tip" ORDER BY "createdAt" DESC LIMIT 200`;
+        { id: string; tip: string; artist: string | null; city: string | null; mediaUrl: string | null; email: string | null; status: string; createdAt: Date }[]
+      >`SELECT "id","tip","artist","city","mediaUrl","email","status","createdAt" FROM "Tip" ORDER BY "createdAt" DESC LIMIT 200`;
       return NextResponse.json({ totalTips: Number(total[0]?.c ?? 0), tips });
     }
     return NextResponse.json({ totalTips: Number(total[0]?.c ?? 0) });
