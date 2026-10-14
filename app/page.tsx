@@ -5,7 +5,7 @@ import { T, LangToggle } from "@/components/LangProvider";
 export const metadata: Metadata = {
   title: "Aegyo Arena — Where Your Attention Is Rewarded",
   description:
-    "Social media farms your attention. Aegyo Arena pays it back. Earn points for playing, dancing, learning slang, voting in polls and contributing — then climb the Arcade leaderboard and redeem real K-pop merch, plushies, concert tickets and signed memorabilia.",
+    "Social media farms your attention. Aegyo Arena pays it back. Earn points for playing, dancing, learning slang, voting in polls and contributing — then climb the Arcade leaderboard and redeem real K-pop merch, plushies and concert tickets.",
   openGraph: {
     title: "Aegyo Arena — Where Your Attention Is Rewarded",
     description:
@@ -86,34 +86,25 @@ const EARN: { icon: string; name: L; note: L; href: string; cta: L; external?: b
 ];
 
 // ── Reward tiers ────────────────────────────────────────────────────────────
-const TIERS: { tier: L; icon: string; name: L; pts: L; accent: string; note: L; link?: string; linkLabel?: L }[] = [
+// Points redeem at ~$0.02 each, so the point cost tracks each reward's MSRP.
+const TIERS: { tier: L; icon: string; name: L; pts: L; usd?: string; accent: string; note: L; link?: string; linkLabel?: L }[] = [
   {
-    tier: { en: "Tier 1", es: "Nivel 1" }, icon: "👕", name: { en: "Merch Drop", es: "Drop de Merch" },
-    pts: { en: "2,000 points", es: "2,000 puntos" }, accent: "var(--sakura)",
-    note: { en: "Early access to limited-run Aegyo Arena apparel & accessories.", es: "Acceso anticipado a ropa y accesorios de edición limitada de Aegyo Arena." },
-    link: "/merch", linkLabel: { en: "See the tees →", es: "Ver las camisetas →" },
-  },
-  {
-    tier: { en: "Tier 2", es: "Nivel 2" }, icon: "🧸", name: { en: "BABY-T-S Plushie", es: "Peluche BABY-T-S" },
-    pts: { en: "3,000 points", es: "3,000 puntos" }, accent: "var(--volt)",
-    note: { en: "Our chibi plush pendants — seven characters that spell DAEBAK! Collect your bias, or the whole set.", es: "Nuestros colgantes de peluche chibi — siete personajes que deletrean DAEBAK! Colecciona a tu bias, o el set completo." },
+    tier: { en: "Tier 1", es: "Nivel 1" }, icon: "🧸", name: { en: "BABY-T-S Plushie", es: "Peluche BABY-T-S" },
+    pts: { en: "1,250 points", es: "1,250 puntos" }, usd: "≈ $25", accent: "var(--volt)",
+    note: { en: "Our chibi plush pendants — seven characters that spell DAEBAK! Collect your bias, or the whole set. A $25 value.", es: "Nuestros colgantes de peluche chibi — siete personajes que deletrean DAEBAK! Colecciona a tu bias, o el set completo. Un valor de $25." },
     link: "/shop", linkLabel: { en: "🧸 See the BABY-T-S collection →", es: "🧸 Ver la colección BABY-T-S →" },
   },
   {
-    tier: { en: "Tier 3", es: "Nivel 3" }, icon: "✨", name: { en: "Desk Toy", es: "Figura de Escritorio" },
-    pts: { en: "4,000 points", es: "4,000 puntos" }, accent: "var(--sky)",
-    note: { en: "Collectible desk figures to flex your fandom at work or in stream.", es: "Figuras coleccionables para presumir tu fandom en la oficina o en stream." },
+    tier: { en: "Tier 2", es: "Nivel 2" }, icon: "👕", name: { en: "Merch Drop", es: "Drop de Merch" },
+    pts: { en: "2,500 points", es: "2,500 puntos" }, usd: "≈ $50", accent: "var(--sakura)",
+    note: { en: "Early access to limited-run Aegyo Arena apparel & accessories. A $50 value.", es: "Acceso anticipado a ropa y accesorios de edición limitada de Aegyo Arena. Un valor de $50." },
+    link: "/merch", linkLabel: { en: "See the tees →", es: "Ver las camisetas →" },
   },
   {
-    tier: { en: "Tier 4", es: "Nivel 4" }, icon: "🎫", name: { en: "Concert Tickets", es: "Boletos de Concierto" },
+    tier: { en: "Tier 3", es: "Nivel 3" }, icon: "🎫", name: { en: "Concert Tickets", es: "Boletos de Concierto" },
     pts: { en: "5,000 points", es: "5,000 puntos" }, accent: "var(--tangerine)",
-    note: { en: "Only 4 tickets are available per season — first qualified, first served.", es: "Solo hay 4 boletos por temporada — el primero que califique se los lleva." },
+    note: { en: "Just 2 fans can redeem — 5,000 points each for 1 concert ticket. First qualified, first served.", es: "Solo 2 fans pueden canjear — 5,000 puntos cada uno por 1 boleto de concierto. El primero que califique se lo lleva." },
     link: "/giveaways", linkLabel: { en: "🎟 See what's live →", es: "🎟 Ver qué está activo →" },
-  },
-  {
-    tier: { en: "Auction", es: "Subasta" }, icon: "✍️", name: { en: "Signed Memorabilia", es: "Memorabilia Firmada" },
-    pts: { en: "Bid-based", es: "Por subasta" }, accent: "var(--lavender)",
-    note: { en: "Spend your points to bid on one-of-a-kind signed items. Highest bid wins.", es: "Usa tus puntos para pujar por piezas firmadas únicas. Gana la puja más alta." },
   },
 ];
 
@@ -141,8 +132,8 @@ export default function HomePage() {
             </h1>
             <p style={{ color: "var(--ink-dim)", fontSize: "1.08rem", lineHeight: 1.7, marginBottom: 26 }}>
               <T
-                en="Every other platform turns the hours you spend on K-pop into someone else’s ad revenue. Aegyo Arena turns them into points — and points into real merch, plushies, concert tickets and signed memorabilia."
-                es="Las demás plataformas convierten las horas que dedicas al K-pop en ingresos publicitarios ajenos. Aegyo Arena las convierte en puntos — y los puntos en merch real, peluches, boletos de concierto y memorabilia firmada."
+                en="Every other platform turns the hours you spend on K-pop into someone else’s ad revenue. Aegyo Arena turns them into points — and points into real merch, plushies and concert tickets."
+                es="Las demás plataformas convierten las horas que dedicas al K-pop en ingresos publicitarios ajenos. Aegyo Arena las convierte en puntos — y los puntos en merch real, peluches y boletos de concierto."
               />
             </p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -208,8 +199,8 @@ export default function HomePage() {
             n="03"
             title={{ en: "Redeem something real", es: "Canjea algo real" }}
             body={{
-              en: "Merch, BABY-T-S plushies, desk toys, concert tickets, signed memorabilia. Physical things that ship to your door.",
-              es: "Merch, peluches BABY-T-S, figuras de escritorio, boletos de concierto, memorabilia firmada. Cosas físicas que llegan a tu puerta.",
+              en: "Merch, BABY-T-S plushies, concert tickets. Physical things that ship to your door.",
+              es: "Merch, peluches BABY-T-S, boletos de concierto. Cosas físicas que llegan a tu puerta.",
             }}
           />
         </div>
@@ -312,6 +303,7 @@ export default function HomePage() {
               </div>
               <div style={{ flexShrink: 0, textAlign: "right" }}>
                 <div style={{ fontWeight: 800, fontSize: "1.05rem", color: t.accent }}><T en={t.pts.en} es={t.pts.es} /></div>
+                {t.usd && <div style={{ fontSize: "0.72rem", color: "var(--ink-faint)", marginTop: 3 }}>{t.usd}</div>}
               </div>
             </div>
           ))}

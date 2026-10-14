@@ -28,16 +28,13 @@ const MARQUEE_ITEMS: L[] = [
   { en: "Fan Annotations", es: "Anotaciones de Fans" },
   { en: "Slang Dictionary", es: "Diccionario de Jerga" },
   { en: "Concert Tickets", es: "Boletos de Concierto" },
-  { en: "Signed Memorabilia", es: "Memorabilia Firmada" },
   { en: "240,000 Members", es: "240,000 Miembros" },
 ];
 
 const REWARDS: { cls: string; badge: L; icon: string; name: L; pts: L }[] = [
-  { cls: "rc-sakura",    badge: { en: "Tier 1",  es: "Nivel 1" }, icon: "👕", name: { en: "Merch Drop",         es: "Drop de Merch" },       pts: { en: "2,000 pts" } },
-  { cls: "rc-volt",      badge: { en: "Tier 2",  es: "Nivel 2" }, icon: "🧸", name: { en: "K-pop Plushie",      es: "Peluche K-pop" },       pts: { en: "3,000 pts" } },
-  { cls: "rc-sky",       badge: { en: "Tier 3",  es: "Nivel 3" }, icon: "✨", name: { en: "Desk Toy",           es: "Figura de Escritorio" }, pts: { en: "4,000 pts" } },
-  { cls: "rc-tangerine", badge: { en: "Tier 4",  es: "Nivel 4" }, icon: "🎫", name: { en: "Concert Ticket",     es: "Boleto de Concierto" }, pts: { en: "5,000 pts" } },
-  { cls: "rc-lavender",  badge: { en: "Auction", es: "Subasta" }, icon: "✍️", name: { en: "Signed Memorabilia", es: "Memorabilia Firmada" }, pts: { en: "Bid-based", es: "Por subasta" } },
+  { cls: "rc-volt",      badge: { en: "Tier 1", es: "Nivel 1" }, icon: "🧸", name: { en: "BABY-T-S Plushie", es: "Peluche BABY-T-S" }, pts: { en: "1,250 pts" } },
+  { cls: "rc-sakura",    badge: { en: "Tier 2", es: "Nivel 2" }, icon: "👕", name: { en: "Merch Drop",      es: "Drop de Merch" },     pts: { en: "2,500 pts" } },
+  { cls: "rc-tangerine", badge: { en: "Tier 3", es: "Nivel 3" }, icon: "🎫", name: { en: "Concert Ticket",  es: "Boleto de Concierto" }, pts: { en: "5,000 pts" } },
 ];
 
 const EARN_WAYS: { icon: string; iconCls: string; name: L; desc: L; pts: L }[] = [

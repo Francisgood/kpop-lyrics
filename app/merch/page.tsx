@@ -7,7 +7,7 @@ import SmartImage from "@/components/SmartImage";
 export const metadata: Metadata = {
   title: "Merch — Aegyo Arena",
   description:
-    "Aegyo Arena street-style tees — $40 or 2,000 points each. Everything’s sold out right now. Sign up to get alerted the moment the warehouse restocks.",
+    "Aegyo Arena street-style tees — $50 or 2,500 points each. Everything’s sold out right now. Sign up to get alerted the moment the warehouse restocks.",
 };
 
 // `name` is the slogan printed on the tee (a product name) — never translated.
@@ -36,8 +36,8 @@ export default function MerchPage() {
               en="Limited-run street-style tees, worn in the neon of Seoul. Every drop is"
               es="Camisetas street-style de edición limitada, con el neón de Seoul. Cada drop cuesta"
             />{" "}
-            <strong style={{ color: "var(--ink)" }}>$40</strong> <T en="or" es="o" />{" "}
-            <strong style={{ color: "var(--sakura)" }}><T en="2,000 points" es="2,000 puntos" /></strong>.
+            <strong style={{ color: "var(--ink)" }}>$50</strong> <T en="or" es="o" />{" "}
+            <strong style={{ color: "var(--sakura)" }}><T en="2,500 points" es="2,500 puntos" /></strong>.
           </p>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--sakura-light)", border: "1px solid var(--sakura)", borderRadius: 100, padding: "9px 20px" }}>
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--sakura)", display: "inline-block" }} />
@@ -72,9 +72,9 @@ export default function MerchPage() {
                 <div style={{ fontWeight: 800, fontSize: "0.98rem", color: "var(--ink)", lineHeight: 1.3 }}>{t.name}</div>
                 <div style={{ fontSize: "0.82rem", color: "var(--ink-faint)" }}><T en={t.sub} es={t.subEs} /></div>
                 <div style={{ marginTop: 8, display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
-                  <span style={{ fontWeight: 800, fontSize: "1.05rem", color: "var(--ink)" }}>$40</span>
+                  <span style={{ fontWeight: 800, fontSize: "1.05rem", color: "var(--ink)" }}>$50</span>
                   <span style={{ fontSize: "0.8rem", color: "var(--ink-faint)" }}><T en="or" es="o" /></span>
-                  <span style={{ fontWeight: 800, fontSize: "0.95rem", color: "var(--sakura)" }}><T en="2,000 points" es="2,000 puntos" /></span>
+                  <span style={{ fontWeight: 800, fontSize: "0.95rem", color: "var(--sakura)" }}><T en="2,500 points" es="2,500 puntos" /></span>
                 </div>
                 <div style={{ marginTop: 12, textAlign: "center", padding: "10px", borderRadius: 8, border: "1px solid var(--border)", background: "var(--bg)", color: "var(--ink-faint)", fontWeight: 700, fontSize: "0.8rem", letterSpacing: "0.06em", textTransform: "uppercase" }}>
                   <T en="Sold Out" es="Agotado" />
@@ -101,7 +101,7 @@ export default function MerchPage() {
           <p style={{ marginTop: 26, fontSize: "0.85rem", color: "var(--ink-faint)" }}>
             <T en="Rather earn it?" es="¿Prefieres ganártela?" />{" "}
             <Link href="/" style={{ color: "var(--sakura)", fontWeight: 700 }}>
-              <T en="Bank 2,000 points" es="Junta 2,000 puntos" />
+              <T en="Bank 2,500 points" es="Junta 2,500 puntos" />
             </Link>{" "}
             <T en="and claim a tee for free." es="y reclama una camiseta gratis." />
           </p>
