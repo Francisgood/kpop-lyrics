@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useLang } from "@/components/LangProvider";
+import type { DeckTerm } from "@/lib/slang-terms";
+import { SAVED_KEY, REVIEW_KEY, readReview, clearFromReview } from "@/lib/slang-review";
 
 /**
  * The Tinder-style slang deck. Swipe right to save a term to *My Deck*, left to
@@ -15,19 +17,9 @@ import { useLang } from "@/components/LangProvider";
  * animated gradient card, which still reads as a clean flash-card.
  */
 
-export type DeckTerm = {
-  slug: string;
-  term: string;
-  hangul?: string | null;
-  roman?: string | null;
-  gifUrl?: string | null;
-  imageUrl?: string | null;
-  def: string;
-  defEs?: string | null;
-  example?: string | null;
-  exampleEs?: string | null;
-  songCount: number;
-};
+// DeckTerm now lives in lib/slang-terms (shared with the practice quiz); re-export
+// it here so existing importers keep working.
+export type { DeckTerm } from "@/lib/slang-terms";
 
 // ── tiny deterministic PRNG so "today's 10" is stable across devices + SSR ───────
 function xmur3(str: string): number {
@@ -81,7 +73,7 @@ const GRADIENTS = [
   "linear-gradient(145deg,#FFF2F8 0%,#FFBFE0 50%,#CBB0FF 100%)",
 ];
 
-const SAVED_KEY = "aegyo_slang_saved";
+// SAVED_KEY + REVIEW_KEY are shared with the quiz (see lib/slang-review).
 const STREAK_KEY = "aegyo_slang_streak";
 const DONE_KEY = "aegyo_slang_done"; // { date, count }
 
@@ -89,7 +81,7 @@ const DAILY_SIZE = 10;
 const SWIPE_THRESHOLD = 90; // px past which a release commits the swipe
 
 type Anim = "left" | "right" | null;
-type Mode = "daily" | "all" | "saved";
+type Mode = "daily" | "all" | "saved" | "review";
 
 export default function SlangDeck({ terms }: { terms: DeckTerm[] }) {
   const { lang } = useLang();
@@ -119,6 +111,9 @@ export default function SlangDeck({ terms }: { terms: DeckTerm[] }) {
   const [dailyDone, setDailyDone] = useState(false);
   const [drawer, setDrawer] = useState(false);
   const [savedQueue, setSavedQueue] = useState<number[]>([]);
+  // Review = slugs the user missed in the quiz, surfaced here next round.
+  const [review, setReview] = useState<string[]>([]);
+  const [reviewQueue, setReviewQueue] = useState<number[]>([]);
 
   const history = useRef<{ pos: number; dir: "left" | "right"; slug: string }[]>([]);
   const start = useRef<{ x: number; y: number; t: number } | null>(null);
@@ -129,6 +124,7 @@ export default function SlangDeck({ terms }: { terms: DeckTerm[] }) {
       const s = JSON.parse(localStorage.getItem(SAVED_KEY) || "[]");
       if (Array.isArray(s)) setSaved(s.filter((x) => typeof x === "string"));
     } catch { /* ignore */ }
+    setReview(readReview());
     try {
       const st = JSON.parse(localStorage.getItem(STREAK_KEY) || "null");
       if (st && typeof st.count === "number") setStreak(st.count);
@@ -161,7 +157,7 @@ export default function SlangDeck({ terms }: { terms: DeckTerm[] }) {
     } catch { /* ignore */ }
   }, [terms.length]);
 
-  const queue = mode === "daily" ? dailyQueue : mode === "all" ? allQueue : savedQueue;
+  const queue = mode === "daily" ? dailyQueue : mode === "all" ? allQueue : mode === "review" ? reviewQueue : savedQueue;
   const remaining = queue.length - pos;
   const current = pos < queue.length ? bySlug.get(terms[queue[pos]]?.slug) ?? terms[queue[pos]] : null;
 
@@ -172,6 +168,8 @@ export default function SlangDeck({ terms }: { terms: DeckTerm[] }) {
       const t = terms[idx];
       if (t) history.current.push({ pos, dir, slug: t.slug });
       if (dir === "right" && t && !saved.includes(t.slug)) persistSaved([...saved, t.slug]);
+      // Practiced a review card → it's no longer "missed".
+      if (mode === "review" && t) { clearFromReview(t.slug); setReview((r) => r.filter((s) => s !== t.slug)); }
       const wasLast = pos + 1 >= queue.length;
       setPos((p) => p + 1);
       setFlipped(false);
@@ -246,6 +244,10 @@ export default function SlangDeck({ terms }: { terms: DeckTerm[] }) {
       const idxs = saved.map((sl) => terms.findIndex((t) => t.slug === sl)).filter((i) => i >= 0);
       setSavedQueue(idxs);
     }
+    if (nextMode === "review") {
+      const idxs = review.map((sl) => terms.findIndex((t) => t.slug === sl)).filter((i) => i >= 0);
+      setReviewQueue(idxs);
+    }
     history.current = [];
     setMode(nextMode);
     setPos(0);
@@ -273,7 +275,11 @@ export default function SlangDeck({ terms }: { terms: DeckTerm[] }) {
       {/* mode + progress bar */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
         <div style={{ display: "inline-flex", background: "var(--bg-card,#141414)", border: "1px solid var(--border,#262626)", borderRadius: 100, padding: 3 }}>
-          {([["daily", tr("Daily 10", "10 del día")], ["all", tr(`All ${terms.length}`, "Todas")]] as [Mode, string][]).map(([m, label]) => (
+          {([
+            ["daily", tr("Daily 10", "10 del día")],
+            ["all", tr(`All ${terms.length}`, "Todas")],
+            ...(review.length ? ([["review", `📌 ${tr("Review", "Repaso")} · ${review.length}`]] as [Mode, string][]) : []),
+          ] as [Mode, string][]).map(([m, label]) => (
             <button key={m} type="button" onClick={() => restart(m)} aria-pressed={mode === m}
               style={{ padding: "7px 15px", borderRadius: 100, border: "none", cursor: "pointer", fontSize: "0.78rem", fontWeight: 800, background: mode === m ? "#FF6FA8" : "transparent", color: mode === m ? "#0a0a0a" : "var(--ink-dim,#9aa)", transition: "all .15s" }}>
               {label}
@@ -284,6 +290,16 @@ export default function SlangDeck({ terms }: { terms: DeckTerm[] }) {
           ❤ {tr("My Deck", "Mi mazo")} · {saved.length}
         </button>
       </div>
+
+      {/* Nudge back into the words the quiz flagged as missed. */}
+      {review.length > 0 && mode !== "review" && (
+        <button type="button" onClick={() => restart("review")} className="review-nudge">
+          📌 {tr(
+            `You missed ${review.length} in your last quiz — review ${review.length === 1 ? "it" : "them"}`,
+            `Fallaste ${review.length} en tu último quiz — ${review.length === 1 ? "repásala" : "repásalas"}`,
+          )} →
+        </button>
+      )}
 
       {mode === "daily" && (
         <div style={{ marginBottom: 18 }}>
@@ -376,10 +392,12 @@ export default function SlangDeck({ terms }: { terms: DeckTerm[] }) {
           // Empty / completion state
           <div className="card-wrap" style={{ pointerEvents: "auto" }}>
             <div className="face front done-face">
-              <div style={{ fontSize: "3rem", marginBottom: 8 }}>{mode === "daily" ? "🎉" : "✨"}</div>
+              <div style={{ fontSize: "3rem", marginBottom: 8 }}>{mode === "daily" ? "🎉" : mode === "review" ? "📌" : "✨"}</div>
               <div className="done-title">
                 {mode === "daily"
                   ? tr("You cleared today's 10!", "¡Completaste las 10 de hoy!")
+                  : mode === "review"
+                  ? tr("Review cleared!", "¡Repaso completado!")
                   : mode === "saved"
                   ? tr("That's your whole deck.", "Ese es todo tu mazo.")
                   : tr("You went through them all!", "¡Las revisaste todas!")}
@@ -389,11 +407,14 @@ export default function SlangDeck({ terms }: { terms: DeckTerm[] }) {
               )}
               <div className="done-sub">
                 {mode === "daily"
-                  ? tr("Come back tomorrow for a fresh stack — or keep going.", "Vuelve mañana por un mazo nuevo — o sigue.")
-                  : tr("Review the terms you saved, or start over.", "Repasa lo que guardaste, o empieza de nuevo.")}
+                  ? tr("Come back tomorrow for a fresh stack — or quiz yourself now.", "Vuelve mañana por un mazo nuevo — o ponte a prueba ahora.")
+                  : mode === "review"
+                  ? tr("Those words are off your review list. Quiz yourself to lock in the points.", "Esas palabras salieron de tu lista de repaso. Ponte a prueba para asegurar los puntos.")
+                  : tr("Quiz yourself on these, or start over.", "Ponte a prueba con estas, o empieza de nuevo.")}
               </div>
               <div className="done-actions">
-                {saved.length > 0 && <button type="button" className="pill-btn" onClick={() => restart("saved")}>❤ {tr("Study my deck", "Estudiar mi mazo")} ({saved.length})</button>}
+                <Link href="/korean-slang/quiz" className="pill-btn" style={{ textDecoration: "none", textAlign: "center" }}>💬 {tr("Quiz me — earn +10", "A prueba — gana +10")} →</Link>
+                {saved.length > 0 && <button type="button" className="pill-btn ghost" onClick={() => restart("saved")}>❤ {tr("Study my deck", "Estudiar mi mazo")} ({saved.length})</button>}
                 {mode === "daily"
                   ? <button type="button" className="pill-btn ghost" onClick={() => restart("all")}>{tr(`Keep going — all ${terms.length} →`, `Seguir — las ${terms.length} →`)}</button>
                   : <button type="button" className="pill-btn ghost" onClick={() => restart(mode)}>{tr("Start over", "Empezar de nuevo")}</button>}
@@ -518,6 +539,8 @@ const deckCss = `
 .pill-btn{padding:12px 18px;border-radius:100px;border:none;background:#FF6FA8;color:#0a0a0a;font-weight:800;font-size:.9rem;cursor:pointer;}
 .pill-btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.18);}
 .ghost-btn{background:transparent;border:1px solid var(--border,#333);color:var(--ink-dim,#aaa);border-radius:100px;padding:7px 14px;font-weight:800;font-size:.78rem;cursor:pointer;}
+.review-nudge{display:block;width:100%;margin:0 0 16px;padding:11px 16px;border-radius:12px;border:1px solid #FF6FA8;background:rgba(255,111,168,.08);color:#FF6FA8;font-weight:800;font-size:.8rem;cursor:pointer;text-align:left;}
+.review-nudge:hover{background:rgba(255,111,168,.14);}
 .drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:80;display:flex;justify-content:flex-end;backdrop-filter:blur(2px);}
 .drawer{width:min(420px,92vw);height:100%;background:#0f0f12;border-left:1px solid var(--border,#262626);padding:22px;overflow-y:auto;animation:slideIn .22s ease;}
 .drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}

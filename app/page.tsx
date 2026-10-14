@@ -47,8 +47,8 @@ const EARN: { icon: string; name: L; note: L; href: string; cta: L; external?: b
     icon: "🧠",
     name: { en: "Learn slang through memory games", es: "Aprende jerga con juegos de memoria" },
     note: {
-      en: "Match, recall and guess your way through the Korean slang deck. You keep the vocabulary; the points are the bonus.",
-      es: "Empareja, recuerda y adivina con el mazo de jerga coreana. Te quedas con el vocabulario; los puntos son el extra.",
+      en: "Swipe through the Korean slang deck, then take the practice quiz it builds from your cards. Score a perfect 10 and earn 10 points — once a day.",
+      es: "Desliza por el mazo de jerga coreana y haz el quiz de práctica que arma con tus tarjetas. Haz un 10 perfecto y gana 10 puntos — una vez al día.",
     },
     href: "/korean-slang",
     cta: { en: "Open the slang deck", es: "Abrir el mazo de jerga" },

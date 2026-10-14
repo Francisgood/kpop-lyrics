@@ -1,60 +1,15 @@
-import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { T, LangToggle } from "@/components/LangProvider";
-import SlangDeck, { type DeckTerm } from "@/components/SlangDeck";
-import { hangulFromDefinition, romanizeHangul } from "@/lib/hangul";
+import SlangDeck from "@/components/SlangDeck";
+import { romanizeHangul } from "@/lib/hangul";
+import { getSlangData } from "@/lib/slang-terms";
 
 export const revalidate = 3600;
 
-type MediaRow = { slug: string; gifUrl: string | null; imageUrl: string | null; hangul: string | null };
-
 export default async function DefinePage() {
-  const terms = await prisma.codedTerm.findMany({
-    include: {
-      definitions: { orderBy: { votesUp: "desc" }, take: 1 },
-      _count: { select: { annotations: true } },
-    },
-    orderBy: { term: "asc" },
-  });
-
-  // Card media (GIF / image / hangul) — read defensively: the SlangMedia table is
-  // self-healing and may not exist yet, in which case the deck falls back to
-  // branded gradient cards. (See app/api/admin/slang-media/route.ts.)
-  const media = new Map<string, MediaRow>();
-  try {
-    const rows = await prisma.$queryRawUnsafe<MediaRow[]>(
-      `SELECT "slug","gifUrl","imageUrl","hangul" FROM "SlangMedia"`,
-    );
-    for (const r of rows) media.set(r.slug, r);
-  } catch { /* table not created yet → gradient cards */ }
-
-  // Hangul for a term: prefer the curated SlangMedia value, else pull it from the
-  // definition (which conventionally leads with the Korean). Shared by the deck and
-  // the A–Z grid so both show the same Korean + pronunciation hint.
-  const hangulOf = (slug: string, body: string | null | undefined) =>
-    media.get(slug)?.hangul ?? hangulFromDefinition(body);
-
-  // Only terms that actually have a definition make good flash-cards.
-  const deckTerms: DeckTerm[] = terms
-    .filter((t) => t.definitions[0])
-    .map((t) => {
-      const d = t.definitions[0];
-      const m = media.get(t.slug);
-      const hangul = hangulOf(t.slug, d.body);
-      return {
-        slug: t.slug,
-        term: t.term,
-        hangul,
-        roman: romanizeHangul(hangul),
-        gifUrl: m?.gifUrl ?? null,
-        imageUrl: m?.imageUrl ?? null,
-        def: d.body,
-        defEs: d.bodyEs,
-        example: d.example,
-        exampleEs: d.exampleEs,
-        songCount: t._count.annotations,
-      };
-    });
+  // Terms + derived flash-card deck come from the shared loader so the deck and
+  // the practice quiz (/korean-slang/quiz) always draw from the same set.
+  const { terms, deckTerms, hangulOf } = await getSlangData();
 
   return (
     <main>
@@ -75,10 +30,10 @@ export default async function DefinePage() {
             />
           </p>
           <div style={{ marginTop: 20 }}>
-            <Link href="/quiz/korean-slang" style={{ display: "inline-block", background: "var(--genius-yellow)", color: "#000", fontWeight: 700, fontSize: "0.85rem", padding: "11px 20px", borderRadius: 4, textDecoration: "none", letterSpacing: "0.02em" }}>
+            <Link href="/korean-slang/quiz" style={{ display: "inline-block", background: "var(--genius-yellow)", color: "#000", fontWeight: 700, fontSize: "0.85rem", padding: "11px 20px", borderRadius: 4, textDecoration: "none", letterSpacing: "0.02em" }}>
               <T
-                en="Think you know your slang? Take the 10-question quiz →"
-                es="¿Crees que dominas la jerga? Haz el quiz de 10 preguntas →"
+                en="Quiz yourself on your deck — score 100% for +10 points →"
+                es="Ponte a prueba con tu mazo — 100% te da +10 puntos →"
               />
             </Link>
           </div>
