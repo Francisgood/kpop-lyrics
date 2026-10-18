@@ -5,6 +5,9 @@ const hiddenCountries = new Set([
   "PL", "PT", "RO", "SK", "SI", "ES", "SE", "GB",
 ]);
 
+// Read-only view for the mobile contract test; the app mirrors this list.
+export const chatHiddenCountries: ReadonlySet<string> = hiddenCountries;
+
 export function showChatForCountry(country: unknown): boolean {
   return typeof country === "string" && /^[A-Z]{2}$/.test(country) && !hiddenCountries.has(country);
 }
