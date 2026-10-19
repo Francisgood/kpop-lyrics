@@ -20,6 +20,9 @@ const mocks = vi.hoisted(() => ({
   participationUpsert: vi.fn(),
   attemptUpdate: vi.fn(),
   transaction: vi.fn(),
+  beginAuthorization: vi.fn(),
+  finishAuthorization: vi.fn(),
+  providerState: vi.fn(),
 }));
 
 vi.mock("../lib/prisma", () => ({
@@ -34,7 +37,7 @@ vi.mock("../lib/prisma", () => ({
     chatPostAttempt: { update: mocks.attemptUpdate },
   },
 }));
-vi.mock("../lib/auth", () => ({ getSession: mocks.getSession }));
+vi.mock("../lib/auth", () => ({ getSession: mocks.getSession, generateToken: () => "session-token" }));
 vi.mock("../lib/chat-auth", () => ({ getChatSession: mocks.chatSession }));
 vi.mock("../lib/chat-policy", async (original) => ({
   ...(await original<typeof import("../lib/chat-policy")>()),
@@ -44,6 +47,15 @@ vi.mock("../lib/shared-auth/mode", async (original) => ({
   ...(await original<typeof import("../lib/shared-auth/mode")>()),
   resolveAuthMode: mocks.authMode,
 }));
+vi.mock("../lib/shared-auth/provider", async (original) => ({
+  ...(await original<typeof import("../lib/shared-auth/provider")>()),
+  beginAuthorization: mocks.beginAuthorization,
+  finishAuthorization: mocks.finishAuthorization,
+}));
+vi.mock("../lib/shared-auth/security-state", async (original) => ({
+  ...(await original<typeof import("../lib/shared-auth/security-state")>()),
+  fetchProviderSecurityState: mocks.providerState,
+}));
 
 import { GET as newsGET } from "../app/api/news/route";
 import { GET as pollGET } from "../app/api/polls/[slug]/route";
@@ -51,6 +63,10 @@ import { POST as votePOST } from "../app/api/polls/[slug]/vote/route";
 import { GET as chatGET, POST as chatPOST } from "../app/api/chat/route";
 import { GET as participationGET, POST as participationPOST } from "../app/api/chat/participation/route";
 import { GET as sessionGET } from "../app/api/auth/shared/session/route";
+import { GET as loginGET } from "../app/api/auth/shared/login/route";
+import { GET as callbackGET } from "../app/api/auth/shared/callback/route";
+import { openTransaction, sealTransaction } from "../lib/shared-auth/transaction";
+import { MOBILE_SESSION_TTL_SECONDS, WEB_SESSION_TTL_SECONDS } from "../lib/shared-auth/config";
 import { chatReportReasons } from "../lib/chat-report-policy";
 import { CHAT_RULES_VERSION } from "../lib/chat-participation";
 import { chatHiddenCountries } from "../lib/chat-region";
@@ -241,19 +257,113 @@ describe("fan chat", () => {
   });
 });
 
+const SHARED_CONFIG = {
+  providerBaseUrl: "https://accounts.example.test",
+  issuer: "https://accounts.example.test/api/auth",
+  clientId: "a", clientSecret: "b", appOrigin: ORIGIN,
+  transactionSecret: "x".repeat(32), stateReaderKey: "reader",
+};
+
 describe("shared auth session (GET /api/auth/shared/session)", () => {
   it("returns 401 {authenticated:false} without a session cookie", async () => {
-    mocks.authMode.mockResolvedValue({
-      kind: "shared",
-      config: {
-        providerBaseUrl: "https://accounts.example.test",
-        issuer: "https://accounts.example.test/api/auth",
-        clientId: "a", clientSecret: "b", appOrigin: ORIGIN,
-        transactionSecret: "x".repeat(32), stateReaderKey: "reader",
-      },
-    });
+    mocks.authMode.mockResolvedValue({ kind: "shared", config: SHARED_CONFIG });
     const res = await sessionGET(new NextRequest(`${ORIGIN}/api/auth/shared/session`));
     expect(res.status, `signed-out status: ${MOBILE}`).toBe(401);
     expect(await res.json(), `signed-out body: ${MOBILE}`).toEqual({ authenticated: false });
+  });
+});
+
+describe("shared auth session lifetime by client (?client=mobile)", () => {
+  const DAY = 24 * 60 * 60;
+  const reset = { version: 1 as const, kind: "database" as const, lastPasswordReset: null };
+  const baseTx = {
+    state: "state-state-state",
+    nonce: "nonce-nonce-nonce",
+    codeVerifier: "v".repeat(43),
+    maxAgeSeconds: 3600,
+    reauthenticationAttempt: 0 as const,
+  };
+
+  beforeEach(() => {
+    mocks.authMode.mockResolvedValue({ kind: "shared", config: SHARED_CONFIG });
+    mocks.beginAuthorization.mockImplementation(async (_config: unknown, input: { maxAgeSeconds: number; reauthenticationAttempt: 0 | 1 }) => ({
+      url: new URL("https://accounts.example.test/api/auth/oauth2/authorize"),
+      transaction: { ...baseTx, requestedAtMs: Date.now(), ...input },
+    }));
+  });
+
+  async function loginTransaction(query: string) {
+    const res = await loginGET(new NextRequest(`${ORIGIN}/api/auth/shared/login${query}`));
+    expect(res.status, MOBILE).toBe(307);
+    const sealed = res.cookies.get("__Host-aegyo_oidc_tx")?.value;
+    return openTransaction(sealed, SHARED_CONFIG.transactionSecret);
+  }
+
+  it("login with client=mobile stores client \"mobile\" in the signed transaction", async () => {
+    expect((await loginTransaction("?client=mobile"))?.client, `client=mobile: ${MOBILE}`).toBe("mobile");
+  });
+
+  it("login without client, or with any other value, stores client \"web\"", async () => {
+    for (const query of ["", "?client=web", "?client=Mobile", "?client=mobile-app", "?client="]) {
+      expect((await loginTransaction(query))?.client, `default web for "${query}": ${MOBILE}`).toBe("web");
+    }
+  });
+
+  it("the non-canonical host redirect keeps client=mobile", async () => {
+    const res = await loginGET(new NextRequest("https://www.aegyo.example.test/api/auth/shared/login?client=mobile"));
+    expect(res.headers.get("location"), MOBILE).toBe(`${ORIGIN}/api/auth/shared/login?client=mobile`);
+  });
+
+  it("a transaction sealed without a client field opens as web", () => {
+    const sealed = sealTransaction({ ...baseTx, requestedAtMs: Date.now() }, SHARED_CONFIG.transactionSecret);
+    expect(openTransaction(sealed, SHARED_CONFIG.transactionSecret)?.client).toBe("web");
+  });
+
+  async function callback(client?: "web" | "mobile") {
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    mocks.finishAuthorization.mockResolvedValue({
+      issuer: SHARED_CONFIG.issuer, subject: "sub", providerSessionId: "sid",
+      email: "fan@example.test", emailVerified: true, name: null, picture: null,
+      authTime: nowSeconds, resetState: reset, securityVersion: 2, operatorCutoff: null,
+    });
+    mocks.providerState.mockResolvedValue({
+      kind: "ok",
+      state: {
+        version: 1, subject: "sub", providerSessionId: "sid", active: true,
+        passwordResetState: reset, operatorCutoff: null, securityVersion: 2,
+      },
+    });
+    const sessionCreate = vi.fn(({ data }) => Promise.resolve({ id: "session-1", ...data }));
+    mocks.transaction.mockImplementation((run: (tx: unknown) => Promise<unknown>) => run({
+      sharedAuthIdentity: { findUnique: vi.fn().mockResolvedValue({ userId: "fan-1" }) },
+      session: { create: sessionCreate },
+    }));
+    const tx = { ...baseTx, requestedAtMs: Date.now(), ...(client ? { client } : {}) };
+    const before = Date.now();
+    const res = await callbackGET(new NextRequest(`${ORIGIN}/api/auth/shared/callback?code=c&state=${baseTx.state}`, {
+      headers: { cookie: `__Host-aegyo_oidc_tx=${sealTransaction(tx, SHARED_CONFIG.transactionSecret)}` },
+    }));
+    expect(res.status, MOBILE).toBe(307);
+    expect(res.headers.get("location"), `sign-in landing URL: ${MOBILE}`).toBe(`${ORIGIN}/`);
+    expect(sessionCreate).toHaveBeenCalledOnce();
+    const expiresAt = sessionCreate.mock.calls[0][0].data.expiresAt as Date;
+    return { cookie: res.cookies.get("session"), lifetimeMs: expiresAt.getTime() - before };
+  }
+
+  it("a mobile transaction mints a 90-day session and cookie", async () => {
+    const { cookie, lifetimeMs } = await callback("mobile");
+    expect(MOBILE_SESSION_TTL_SECONDS).toBe(90 * DAY);
+    expect(cookie?.value, MOBILE).toBeTruthy();
+    expect(cookie?.maxAge, `mobile cookie maxAge: ${MOBILE}`).toBe(90 * DAY);
+    expect(Math.abs(lifetimeMs - 90 * DAY * 1000), `mobile session expiresAt: ${MOBILE}`).toBeLessThan(5_000);
+  });
+
+  it("a web transaction, or one without a client, mints a 1-day session and cookie", async () => {
+    expect(WEB_SESSION_TTL_SECONDS).toBe(DAY);
+    for (const client of ["web", undefined] as const) {
+      const { cookie, lifetimeMs } = await callback(client);
+      expect(cookie?.maxAge, `web cookie maxAge (${client})`).toBe(DAY);
+      expect(Math.abs(lifetimeMs - DAY * 1000), `web session expiresAt (${client})`).toBeLessThan(5_000);
+    }
   });
 });

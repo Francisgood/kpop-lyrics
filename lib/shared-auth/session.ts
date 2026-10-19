@@ -3,7 +3,7 @@ import type { Prisma } from "@prisma/client";
 import { generateToken } from "@/lib/auth";
 import {
   PROVIDER_STATE_MAX_AGE_MS,
-  SESSION_TTL_SECONDS,
+  WEB_SESSION_TTL_SECONDS,
   type SharedAuthConfig,
 } from "./config";
 import {
@@ -28,6 +28,8 @@ type SessionInput = {
   authenticatedAtMs: number;
   securityVersion: number;
   resetState: ResetState;
+  /** Fixed lifetime of the new local session; defaults to the web lifetime. */
+  ttlSeconds?: number;
 };
 function normalizedVerifiedEmail(input: SessionInput): string | null {
   if (!input.emailVerified || input.email === null) return null;
@@ -54,7 +56,9 @@ async function createSessionForIdentity(
     data: {
       userId,
       token,
-      expiresAt: new Date(now.getTime() + SESSION_TTL_SECONDS * 1000),
+      expiresAt: new Date(
+        now.getTime() + (input.ttlSeconds ?? WEB_SESSION_TTL_SECONDS) * 1000,
+      ),
       providerSessionId: input.providerSessionId,
       authenticatedAt: new Date(input.authenticatedAtMs),
       providerCheckedAt: now,

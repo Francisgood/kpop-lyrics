@@ -5,11 +5,14 @@ import {
   randomBytes,
 } from "node:crypto";
 import type { AuthorizationTransaction } from "./freshness";
+import type { SessionClient } from "./config";
 
 export type OidcTransaction = AuthorizationTransaction & {
   state: string;
   nonce: string;
   codeVerifier: string;
+  // Absent in transactions sealed before this field existed; read as "web".
+  client?: SessionClient;
 };
 
 const MAX_TRANSACTION_AGE_MS = 10 * 60 * 1000;
@@ -58,7 +61,7 @@ export function openTransaction(
       nowMs - parsed.requestedAtMs > MAX_TRANSACTION_AGE_MS
     )
       return null;
-    return parsed;
+    return { ...parsed, client: parsed.client ?? "web" };
   } catch {
     return null;
   }
@@ -76,6 +79,7 @@ function isTransaction(value: unknown): value is OidcTransaction {
     item.codeVerifier.length >= 43 &&
     Number.isSafeInteger(item.requestedAtMs) &&
     Number.isSafeInteger(item.maxAgeSeconds) &&
-    (item.reauthenticationAttempt === 0 || item.reauthenticationAttempt === 1)
+    (item.reauthenticationAttempt === 0 || item.reauthenticationAttempt === 1) &&
+    (item.client === undefined || item.client === "web" || item.client === "mobile")
   );
 }

@@ -19,6 +19,7 @@ import {
 import { createSharedSession } from "@/lib/shared-auth/session";
 import { openTransaction } from "@/lib/shared-auth/transaction";
 import { canonicalRequestUrl } from "@/lib/shared-auth/request-url";
+import { sessionTtlSeconds } from "@/lib/shared-auth/config";
 function fail(code: string, status = 400, message?: string) {
   const response = NextResponse.json(
     message ? { code, message } : { code },
@@ -33,9 +34,10 @@ function provisioningFailure(
   title: string,
   message: string,
   action?: { href: string; label: string },
+  retryHref = "/api/auth/shared/login",
 ) {
   const response = new NextResponse(
-    `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title></head><body style="margin:0;background:#17131f;color:#fff;font-family:system-ui,sans-serif"><main style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:48px 24px"><section style="max-width:440px;background:#241d30;border:8px solid #fff;border-radius:18px;padding:34px 30px;box-shadow:0 18px 50px rgba(0,0,0,.35)"><h1 style="margin:0 0 12px">${title}</h1><p style="line-height:1.55;color:#ddd">${message}</p>${action ? `<a href="${action.href}" style="display:inline-block;margin-top:12px;color:#17131f;background:#ffd84d;border-radius:9px;padding:12px 16px;font-weight:700;text-decoration:none">${action.label}</a><br>` : ""}<a href="/api/auth/shared/login" style="display:inline-block;margin-top:12px;color:#17131f;background:#ffd84d;border-radius:9px;padding:12px 16px;font-weight:700;text-decoration:none">Try Accounts sign-in again</a><p style="margin-top:18px"><a href="/" style="color:#ff9fbd">Return to Aegyo</a></p><small style="color:#aaa">Reference: ${code}</small></section></main></body></html>`,
+    `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title></head><body style="margin:0;background:#17131f;color:#fff;font-family:system-ui,sans-serif"><main style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:48px 24px"><section style="max-width:440px;background:#241d30;border:8px solid #fff;border-radius:18px;padding:34px 30px;box-shadow:0 18px 50px rgba(0,0,0,.35)"><h1 style="margin:0 0 12px">${title}</h1><p style="line-height:1.55;color:#ddd">${message}</p>${action ? `<a href="${action.href}" style="display:inline-block;margin-top:12px;color:#17131f;background:#ffd84d;border-radius:9px;padding:12px 16px;font-weight:700;text-decoration:none">${action.label}</a><br>` : ""}<a href="${retryHref}" style="display:inline-block;margin-top:12px;color:#17131f;background:#ffd84d;border-radius:9px;padding:12px 16px;font-weight:700;text-decoration:none">Try Accounts sign-in again</a><p style="margin-top:18px"><a href="/" style="color:#ff9fbd">Return to Aegyo</a></p><small style="color:#aaa">Reference: ${code}</small></section></main></body></html>`,
     { status, headers: { "content-type": "text/html; charset=utf-8" } },
   );
   clearTransaction(response);
@@ -76,6 +78,11 @@ export async function GET(request: NextRequest) {
       "Sign-in could not finish",
       "Your sign-in session expired or started on a different address. Please try signing in again.",
     );
+  const client = tx.client ?? "web";
+  const retryHref =
+    client === "mobile"
+      ? "/api/auth/shared/login?client=mobile"
+      : "/api/auth/shared/login";
   try {
     const identity = await finishAuthorization(config, callbackUrl, tx);
     if (
@@ -125,9 +132,11 @@ export async function GET(request: NextRequest) {
         maxAgeSeconds: 0,
         reauthenticationAttempt: 1,
         nowMs: Math.max(Date.now(), notBeforeMs),
+        client,
       });
     }
     if (decision.kind !== "allow") return fail(decision.reason);
+    const ttlSeconds = sessionTtlSeconds(client);
     const created = await createSharedSession({
       issuer: identity.issuer,
       subject: identity.subject,
@@ -139,10 +148,11 @@ export async function GET(request: NextRequest) {
       authenticatedAtMs: decision.authenticatedAtMs,
       securityVersion: state.securityVersion,
       resetState: state.passwordResetState,
+      ttlSeconds,
     });
     const response = NextResponse.redirect(new URL("/", config.appOrigin));
     clearTransaction(response);
-    setSessionCookie(response, created.token);
+    setSessionCookie(response, created.token, { maxAge: ttlSeconds });
     return response;
   } catch (error) {
     if (isAuthenticationAgeError(error)) {
@@ -152,6 +162,7 @@ export async function GET(request: NextRequest) {
         return await authorizationRedirect(config, {
           maxAgeSeconds: 0,
           reauthenticationAttempt: 1,
+          client,
         });
       } catch {
         return fail("identity_provider_unavailable", 503);
@@ -167,6 +178,7 @@ export async function GET(request: NextRequest) {
           href: `${config.providerBaseUrl}/verify-email`,
           label: "Verify email in Accounts",
         },
+        retryHref,
       );
     if (error instanceof Error && error.message === "local_email_collision")
       return provisioningFailure(
@@ -174,6 +186,8 @@ export async function GET(request: NextRequest) {
         409,
         "Your existing Aegyo account needs linking",
         "This email already belongs to an Aegyo account. Contact Aegyo support to restore access to your existing account. No account data was changed.",
+        undefined,
+        retryHref,
       );
     return fail("authorization_failed");
   }
