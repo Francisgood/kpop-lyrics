@@ -124,6 +124,7 @@ describe("shared callback", () => {
     expect(mocks.redirect).toHaveBeenCalledWith(expect.anything(), {
       maxAgeSeconds: 0,
       reauthenticationAttempt: 1,
+      client: "web",
     });
     const exhausted = await GET(request(undefined, 1));
     expect(await exhausted.json()).toEqual({ code: "reauthentication_failed" });

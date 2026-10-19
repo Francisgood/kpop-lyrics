@@ -1,6 +1,21 @@
 export const NORMAL_MAX_AGE_SECONDS = 3600;
 export const PROVIDER_STATE_MAX_AGE_MS = 30_000;
-export const SESSION_TTL_SECONDS = 8 * 60 * 60;
+// Session lifetimes, fixed at creation (owner policy, October 19, 2026).
+// The client is a convenience signal from /api/auth/shared/login?client=mobile,
+// not a security boundary: anyone may request the mobile lifetime for their
+// own account. Revocation still applies through provider session-state checks.
+export const WEB_SESSION_TTL_SECONDS = 24 * 60 * 60;
+export const MOBILE_SESSION_TTL_SECONDS = 90 * 24 * 60 * 60;
+export type SessionClient = "web" | "mobile";
+/** Exactly "mobile" selects the mobile client; anything else is web. */
+export function parseSessionClient(value: unknown): SessionClient {
+  return value === "mobile" ? "mobile" : "web";
+}
+export function sessionTtlSeconds(client: SessionClient): number {
+  return client === "mobile"
+    ? MOBILE_SESSION_TTL_SECONDS
+    : WEB_SESSION_TTL_SECONDS;
+}
 
 export type SharedAuthConfig = {
   providerBaseUrl: string;
