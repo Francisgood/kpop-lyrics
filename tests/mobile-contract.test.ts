@@ -4,6 +4,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 
+import { GET as availabilityGET } from "../app/api/chat/availability/route";
+
 const MOBILE = "mobile app depends on this; see docs/MOBILE_CONTRACT.md";
 const ORIGIN = "https://aegyo.example.test";
 
@@ -364,6 +366,25 @@ describe("shared auth session lifetime by client (?client=mobile)", () => {
       const { cookie, lifetimeMs } = await callback(client);
       expect(cookie?.maxAge, `web cookie maxAge (${client})`).toBe(DAY);
       expect(Math.abs(lifetimeMs - DAY * 1000), `web session expiresAt (${client})`).toBeLessThan(5_000);
+    }
+  });
+});
+
+
+describe("chat availability", () => {
+  it("allows unknown country and ignores untrusted country hints with a private response", async () => {
+    const previous = process.env.AEGYO_CHAT_RAILWAY_IP_VERIFIED;
+    process.env.AEGYO_CHAT_RAILWAY_IP_VERIFIED = "false";
+    try {
+      const response = await availabilityGET(new NextRequest(`${ORIGIN}/api/chat/availability`, {
+        headers: { "x-country": "GB", "x-vercel-ip-country": "GB", "x-real-ip": "8.8.8.8" },
+      }));
+      expect(response.status, MOBILE).toBe(200);
+      expect(await response.json(), MOBILE).toEqual({ country: null, allowed: true });
+      expect(response.headers.get("cache-control"), MOBILE).toBe("private, no-store");
+    } finally {
+      if (previous === undefined) delete process.env.AEGYO_CHAT_RAILWAY_IP_VERIFIED;
+      else process.env.AEGYO_CHAT_RAILWAY_IP_VERIFIED = previous;
     }
   });
 });

@@ -60,7 +60,10 @@ export default function FanChatbox({ canPost, signedIn, previewRestricted = fals
   const refresh = useCallback(async () => {
     try {
       const response = await fetch("/api/chat", { cache: "no-store" });
-      if (!response.ok) throw new Error();
+      if (!response.ok) {
+        if (response.status === 403) setMessages([]);
+        throw new Error();
+      }
       const data = await response.json() as { messages?: Message[] };
       if (!Array.isArray(data.messages)) throw new Error();
       setMessages(data.messages);

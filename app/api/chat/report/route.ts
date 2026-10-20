@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { chatRegionDenial } from "@/lib/chat-region-server";
 import { prisma } from "@/lib/prisma";
 import { getChatSession } from "@/lib/chat-auth";
 import { canWriteChatInEnvironment, sameOrigin } from "@/lib/chat-policy";
@@ -9,6 +10,7 @@ import { chatReportReasons, shouldHoldAfterReport } from "@/lib/chat-report-poli
 
 export async function POST(request: NextRequest) {
   if (process.env.AEGYO_CHAT_ENABLED !== "true") return NextResponse.json({ error: "Chat is not enabled." }, { status: 404 });
+  const denied = await chatRegionDenial(request); if (denied) return denied;
   if (!sameOrigin(request)) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
   const session = await getChatSession();
   if (!session) return NextResponse.json({ error: "Sign in with Aegyo Accounts to report a message." }, { status: 401 });

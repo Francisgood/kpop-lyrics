@@ -71,9 +71,10 @@ Write routes need an Aegyo Accounts session (`getChatSession`). When `AEGYO_CHAT
 - 200 `{ ok: true }`, also when the user already reported that message.
 - 400 bad reason, unknown or non-visible message, or own message. 401 not signed in. 403 bad origin, tester limit, or muted. 413 too large. 429 after 5 reports a day. 503 on failure.
 
-### Region visibility (mirrored client-side)
-- `lib/chat-region.ts`: chat UI is hidden for the EU-27 plus GB (28 codes, exported as `chatHiddenCountries`). This controls visibility only; it is not access control.
-- `components/ChatRegionGate.tsx`: country lookup via `https://api.country.is/` (4 s timeout, credentials omitted), cached in `sessionStorage` for 1 hour. Unknown country means hidden. The full-page notice text lives here.
+### Region availability (shared with mobile)
+- `lib/chat-region.ts`: EU-27 plus GB are restricted (28 codes, exported as `chatHiddenCountries`); unknown country is allowed.
+- `GET /api/chat/availability` supplies the shared country and availability decision. API enforcement requires verified Railway ingress configuration; see rollout below.
+- `components/ChatRegionGate.tsx` refreshes the shared decision every minute and on foregrounding. While the backend cannot resolve a country, web retains its existing credential-free `https://api.country.is/` lookup as a visibility fallback (4 s total timeout). This preserves current EU/UK web visibility during backend activation; it does not replace server access control.
 
 ### Copy mirrored in the app
 - Chat gate (rules checkbox, 16+ confirmation, "Public chat · no links or personal details"): `components/FanChatbox.tsx`.
@@ -119,3 +120,17 @@ Outside shared mode, the login, callback, session, and logout routes return 404 
 4. For a new user-facing feature, say in the PR whether mobile ships it, skips it, or follows up later.
 
 The `mobile-parity` workflow (`.github/workflows/mobile-parity.yml`) labels PRs that touch these paths and posts the checklist as a comment.
+
+## Oct 20 shared chat enforcement and deletion (pending rollout)
+
+Chat policy now belongs to the server. `GET /api/chat/availability` returns `{country:string|null,allowed:boolean}` with private/no-store caching. EU-27 and GB are blocked. Unknown country (including lookup failure) is allowed by the owner's explicit decision. Message GET/POST, participation GET/POST, reports and `/chat/status` enforce the same rule. API denial is **403**, `code:"chat_region_restricted"`. Web clears stale messages; mobile must suppress cached messages on that code. Existing disabled-chat 404, session, moderation and 16+ rules remain.
+
+`AEGYO_CHAT_RAILWAY_IP_VERIFIED=true` is required to trust `x-real-ip`; set it only after proving the production proxy overwrites incoming client values. Forwarded country headers are not accepted. The server queries `https://api.country.is/<verified-ip>` with a two-second timeout, caching a country for 60 seconds or unknown for five seconds. Without verified ingress configuration, country is unknown, so EU/UK enforcement is **not proven active**. Raw IPs are held only in a bounded in-memory cache and are not logged by this module. Update privacy disclosures for server geolocation.
+
+Shared account deletion uses dedicated server-only `AEGYO_ACCOUNT_DELETION_KEY` (minimum 32 characters). `GET /api/internal/account-deletion` checks migration readiness and returns `{ready:true,version:1,product:"social"}`. POST accepts `{requestId:UUID,issuer,subject}`, where issuer must exactly equal `${AEGYO_AUTH_BASE_URL}/api/auth`. Neither endpoint accepts ordinary user cookies as authorization.
+
+Apply `20261020170000_account_deletion` before new code. The participant deletes securely associated identity/profile/session, chat/content/vote/follow records, plus email-matched local registration/tip/giveaway/notification records. Other users' content is preserved. Display-name-only CommunityAnnotation/CommunityComment ownership is ambiguous; private receipt `reviewRecords` records matching IDs rather than deleting someone else's content. External newsletter copies receive a private reconciliation reference before local email records are erased. The public response contains counts/category names, not those references. Operator access to this table must be restricted; clear resolved review references under the approved retention policy.
+
+The receipt is a permanent identity tombstone for stale OAuth callbacks, including `no_link` requests. Raw account-owned tables now enforce account existence under a row lock, including tables created later at runtime. This prevents a previously authenticated request from recreating content after the User deletion commits. The coordinator processes other products and scrubs central credentials even when this participant returns `needs_review`.
+
+Local proof: `AEGYO_DELETION_PG_TEST=1 npx vitest run tests/account-deletion-postgres.test.ts tests/chat-region-server.test.ts tests/chat-region.test.ts`. It creates a unique local `/tmp` PostgreSQL database, applies the current schema and deletion migration, and tests peer preservation, private review references, replay and stale-write rejection. Production contract probes must remain anonymous GET/HEAD only.
