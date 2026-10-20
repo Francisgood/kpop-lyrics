@@ -48,6 +48,7 @@ export async function ensurePollTables() {
   for (const col of ["optionC", "optionCEs", "optionD", "optionDEs"]) {
     await prisma.$executeRawUnsafe(`ALTER TABLE "Poll" ADD COLUMN IF NOT EXISTS "${col}" TEXT`);
   }
+  await prisma.$executeRawUnsafe("SELECT aegyo_install_account_guard('PollVote','voterRef')");
   tablesReady = true;
 }
 

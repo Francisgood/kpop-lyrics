@@ -5,6 +5,7 @@ import { canWriteChatInEnvironment, chatDisplayName, classifyChatBody, sameOrigi
 import { hasCurrentChatParticipation } from "@/lib/chat-participation";
 import { readChatJson } from "@/lib/chat-request";
 import { logChatFailure } from "@/lib/chat-logging";
+import { chatRegionDenial } from "@/lib/chat-region-server";
 
 export const dynamic = "force-dynamic";
 
@@ -14,8 +15,9 @@ function publicMessage(message: {
   return { id: message.id, body: message.body, createdAt: message.createdAt.toISOString(), authorName: message.authorName };
 }
 
-export async function GET() {
+export async function GET(request?: NextRequest) {
   if (process.env.AEGYO_CHAT_ENABLED !== "true") return NextResponse.json({ error: "Chat is not enabled." }, { status: 404 });
+  if (request) { const denied = await chatRegionDenial(request); if (denied) return denied; }
   try {
     const messages = await prisma.chatMessage.findMany({
       where: { status: "visible", createdAt: { gte: new Date(Date.now() - 30 * 86400000) } },
@@ -31,6 +33,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   if (process.env.AEGYO_CHAT_ENABLED !== "true") return NextResponse.json({ error: "Chat is not enabled." }, { status: 404 });
+  const denied = await chatRegionDenial(request); if (denied) return denied;
   if (!sameOrigin(request)) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
   const session = await getChatSession();
   if (!session) {

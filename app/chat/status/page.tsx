@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
+import { chatCountry } from "@/lib/chat-region-server";
+import { showChatForCountry } from "@/lib/chat-region";
 import { T } from "@/components/LangProvider";
 import { getChatSession } from "@/lib/chat-auth";
 import { prisma } from "@/lib/prisma";
@@ -15,6 +18,9 @@ function explanation(status: string, note: string | null): string {
 
 export default async function ChatStatusPage() {
   if (process.env.AEGYO_CHAT_ENABLED !== "true") notFound();
+  if (!showChatForCountry(await chatCountry(await headers()))) {
+    return <main className="chat-page"><p><T en="Fan chat isn't available in your area right now." es="El chat de fans no está disponible en tu zona por ahora." /></p></main>;
+  }
   const session = await getChatSession();
   if (!session) return <main className="chat-terms-page"><h1><T en="My chat status" es="Mi estado en el chat" /></h1><p><T en="Sign in with your Aegyo account to see your chat decisions." es="Inicia sesión con tu cuenta Aegyo para ver las decisiones sobre tu chat." /></p><Link href="/login"><T en="Sign in" es="Iniciar sesión" /></Link></main>;
   const [messages, restriction] = await Promise.all([

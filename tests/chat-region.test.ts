@@ -8,12 +8,12 @@ describe("chat interface visibility", () => {
     }
   });
 
-  it("shows the interface elsewhere and hides it when the lookup is unknown", () => {
+  it("shows the interface elsewhere and allows unknown locations", () => {
     for (const country of ["US", "CA", "MX", "BR", "CO", "KR", "JP"]) {
       expect(showChatForCountry(country)).toBe(true);
     }
     for (const country of [null, undefined, "", "zz", "USA"]) {
-      expect(showChatForCountry(country)).toBe(false);
+      expect(showChatForCountry(country)).toBe(true);
     }
   });
 });

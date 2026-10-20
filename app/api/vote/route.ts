@@ -19,6 +19,7 @@ async function ensureTable() {
       "createdAt"    TIMESTAMP NOT NULL DEFAULT now()
     )`);
   await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "SlangVote_user_def_key" ON "SlangVote" ("userId","definitionId")`);
+  await prisma.$executeRawUnsafe("SELECT aegyo_install_account_guard('SlangVote','userId')");
   ready = true;
 }
 

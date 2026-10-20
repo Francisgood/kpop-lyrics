@@ -5,11 +5,13 @@ import { CHAT_RULES_VERSION, hasCurrentChatParticipation, validatesChatParticipa
 import { prisma } from "@/lib/prisma";
 import { readChatJson } from "@/lib/chat-request";
 import { logChatFailure } from "@/lib/chat-logging";
+import { chatRegionDenial } from "@/lib/chat-region-server";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request?: NextRequest) {
   if (process.env.AEGYO_CHAT_ENABLED !== "true") return NextResponse.json({ error: "Chat is not enabled." }, { status: 404 });
+  if (request) { const denied = await chatRegionDenial(request); if (denied) return denied; }
   const session = await getChatSession();
   if (!session) return NextResponse.json({ error: "Sign in required." }, { status: 401 });
   if (!canWriteChatInEnvironment(session.user.email)) return NextResponse.json({ error: "Chat access is limited to preview testers." }, { status: 403 });
@@ -21,6 +23,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   if (process.env.AEGYO_CHAT_ENABLED !== "true") return NextResponse.json({ error: "Chat is not enabled." }, { status: 404 });
+  const denied = await chatRegionDenial(request); if (denied) return denied;
   if (!sameOrigin(request)) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
   const session = await getChatSession();
   if (!session) return NextResponse.json({ error: "Sign in required." }, { status: 401 });

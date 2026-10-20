@@ -1,4 +1,4 @@
-// This only controls whether the chat UI is shown. It is not access control.
+// Shared policy for API enforcement and UI. Unknown countries are allowed (Oct 20 decision).
 const hiddenCountries = new Set([
   "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR",
   "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL",
@@ -9,5 +9,5 @@ const hiddenCountries = new Set([
 export const chatHiddenCountries: ReadonlySet<string> = hiddenCountries;
 
 export function showChatForCountry(country: unknown): boolean {
-  return typeof country === "string" && /^[A-Z]{2}$/.test(country) && !hiddenCountries.has(country);
+  return !(typeof country === "string" && hiddenCountries.has(country.toUpperCase()));
 }
