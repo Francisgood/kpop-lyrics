@@ -31,6 +31,6 @@ export async function ensureSlangQuizTable() {
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "PointsEvent_credited_idx" ON "PointsEvent" ("credited","createdAt")`);
   // Speeds up the once-per-day guard (userId + kind + day).
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "PointsEvent_user_kind_idx" ON "PointsEvent" ("userId","kind","createdAt")`);
-  await prisma.$executeRawUnsafe("SELECT aegyo_install_account_guard('PointsEvent','userId')");
+  await prisma.$executeRawUnsafe("DO $$ BEGIN IF to_regprocedure('aegyo_install_account_guard(text,text)') IS NOT NULL THEN PERFORM aegyo_install_account_guard('PointsEvent','userId'); END IF; END $$");
   ready = true;
 }

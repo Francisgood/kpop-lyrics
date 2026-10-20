@@ -13,12 +13,13 @@ test.skipIf(process.env.AEGYO_DELETION_PG_TEST !== "1")("deletes confirmed conte
   let disconnect: (() => Promise<void>) | undefined;
   try {
     execFileSync(process.execPath,["node_modules/prisma/build/index.js","db","push","--skip-generate"],{env:{...process.env,DATABASE_URL:url},stdio:"pipe"});
-    sql(name, readFileSync(new URL("../prisma/migrations/20261020170000_account_deletion/migration.sql",import.meta.url),"utf8"));
     const { prisma } = await import("../lib/prisma"); disconnect=()=>prisma.$disconnect();
     const { deleteSocialAccount } = await import("../lib/account-deletion");
     const { ensureTeachTables } = await import("../lib/teach");
     const { ensurePollTables } = await import("../lib/polls-db");
+    // Production's custom build can ship code before the additive migration.
     await ensureTeachTables(); await ensurePollTables();
+    sql(name, readFileSync(new URL("../prisma/migrations/20261020170000_account_deletion/migration.sql",import.meta.url),"utf8"));
     await prisma.user.createMany({data:[{id:"fan",email:"fan@example.test",displayName:"Same Name",passwordHash:"unused"},{id:"peer",email:"peer@example.test",displayName:"Same Name",passwordHash:"unused"}]});
     const issuer="https://accounts.example.test/api/auth";
     await prisma.sharedAuthIdentity.create({data:{id:"binding",userId:"fan",issuer,subject:"subject-fan"}});

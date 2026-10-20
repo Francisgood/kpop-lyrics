@@ -173,7 +173,7 @@ describe("polls", () => {
     expect(json.poll.counts.total, `counts.total: ${MOBILE}`).toBe(4);
   });
 
-  it("GET without a device id mints one and sets the aa_vid cookie", async () => {
+  it("GET without a device id mints one and sets the aa_vid cookie before deletion activation", async () => {
     const res = await pollGET(new NextRequest(`${ORIGIN}/api/polls/${pollSlug}`), params);
     const json = await res.json();
     expect(typeof json.deviceToken, `deviceToken in body: ${MOBILE}`).toBe("string");
