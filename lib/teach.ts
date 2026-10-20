@@ -47,9 +47,9 @@ export async function ensureTeachTables() {
       "createdAt"  TIMESTAMP NOT NULL DEFAULT now()
     )`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "PointsEvent_credited_idx" ON "PointsEvent" ("credited","createdAt")`);
-  await prisma.$executeRawUnsafe("SELECT aegyo_install_account_guard('TeachClip','userId')");
-  await prisma.$executeRawUnsafe("SELECT aegyo_install_account_guard('TeachClipVote','userId')");
-  await prisma.$executeRawUnsafe("SELECT aegyo_install_account_guard('PointsEvent','userId')");
+  await prisma.$executeRawUnsafe("DO $$ BEGIN IF to_regprocedure('aegyo_install_account_guard(text,text)') IS NOT NULL THEN PERFORM aegyo_install_account_guard('TeachClip','userId'); END IF; END $$");
+  await prisma.$executeRawUnsafe("DO $$ BEGIN IF to_regprocedure('aegyo_install_account_guard(text,text)') IS NOT NULL THEN PERFORM aegyo_install_account_guard('TeachClipVote','userId'); END IF; END $$");
+  await prisma.$executeRawUnsafe("DO $$ BEGIN IF to_regprocedure('aegyo_install_account_guard(text,text)') IS NOT NULL THEN PERFORM aegyo_install_account_guard('PointsEvent','userId'); END IF; END $$");
   ready = true;
 }
 

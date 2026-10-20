@@ -19,7 +19,7 @@ async function ensureTable() {
     )`);
   await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "Follow_follower_target_key" ON "Follow" ("followerId","targetSlug")`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "Follow_target_idx" ON "Follow" ("targetSlug")`);
-  await prisma.$executeRawUnsafe("SELECT aegyo_install_account_guard('Follow','followerId')");
+  await prisma.$executeRawUnsafe("DO $$ BEGIN IF to_regprocedure('aegyo_install_account_guard(text,text)') IS NOT NULL THEN PERFORM aegyo_install_account_guard('Follow','followerId'); END IF; END $$");
   ready = true;
 }
 
