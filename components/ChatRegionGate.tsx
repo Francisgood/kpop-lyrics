@@ -20,7 +20,18 @@ export default function ChatRegionGate({ children, fullPage = false }: { childre
           cache: "no-store", signal: controller.signal,
         });
         const data = response.ok ? await response.json() as { country?: unknown } : null;
-        if (active) setCountry(typeof data?.country === "string" ? data.country : null);
+        let resolved = typeof data?.country === "string" ? data.country : null;
+        // Preserve the existing web visibility check while trusted server ingress
+        // is being activated. A failed lookup still follows the unknown-country policy.
+        if (!resolved) {
+          const fallback = await fetch("https://api.country.is/", {
+            cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer",
+            signal: controller.signal,
+          });
+          const visitor = fallback.ok ? await fallback.json() as { country?: unknown } : null;
+          resolved = typeof visitor?.country === "string" ? visitor.country : null;
+        }
+        if (active) setCountry(resolved);
       } catch { if (active) setCountry(null); }
       finally { window.clearTimeout(timeout); controller = null; }
     };

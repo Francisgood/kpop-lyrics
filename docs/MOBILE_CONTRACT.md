@@ -71,9 +71,10 @@ Write routes need an Aegyo Accounts session (`getChatSession`). When `AEGYO_CHAT
 - 200 `{ ok: true }`, also when the user already reported that message.
 - 400 bad reason, unknown or non-visible message, or own message. 401 not signed in. 403 bad origin, tester limit, or muted. 413 too large. 429 after 5 reports a day. 503 on failure.
 
-### Region visibility (mirrored client-side)
-- `lib/chat-region.ts`: chat UI is hidden for the EU-27 plus GB (28 codes, exported as `chatHiddenCountries`). This controls visibility only; it is not access control.
-- `components/ChatRegionGate.tsx`: country lookup via `https://api.country.is/` (4 s timeout, credentials omitted), cached in `sessionStorage` for 1 hour. Unknown country means hidden. The full-page notice text lives here.
+### Region availability (shared with mobile)
+- `lib/chat-region.ts`: EU-27 plus GB are restricted (28 codes, exported as `chatHiddenCountries`); unknown country is allowed.
+- `GET /api/chat/availability` supplies the shared country and availability decision. API enforcement requires verified Railway ingress configuration; see rollout below.
+- `components/ChatRegionGate.tsx` refreshes the shared decision every minute and on foregrounding. While the backend cannot resolve a country, web retains its existing credential-free `https://api.country.is/` lookup as a visibility fallback (4 s total timeout). This preserves current EU/UK web visibility during backend activation; it does not replace server access control.
 
 ### Copy mirrored in the app
 - Chat gate (rules checkbox, 16+ confirmation, "Public chat · no links or personal details"): `components/FanChatbox.tsx`.
