@@ -19,5 +19,8 @@ export async function POST(request: NextRequest) {
   const input = deletionInput(body.value);
   if (!input) return json({ error: "invalid_request" }, 400);
   try { return json(await deleteSocialAccount(input)); }
-  catch { return json({ error: "deletion_retry_required" }, 503); }
+  catch (error) {
+    if (error instanceof Error && error.message === "request_conflict") return json({ error: "request_conflict" }, 409);
+    return json({ error: "deletion_retry_required" }, 503);
+  }
 }

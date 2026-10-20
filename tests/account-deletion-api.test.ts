@@ -14,3 +14,10 @@ test("deletion API rejects ordinary user cookies and wrong issuer without touchi
  expect(oversized.status).toBe(413);
  expect(mocks.transaction).not.toHaveBeenCalled();expect(mocks.query).not.toHaveBeenCalled();
 });
+
+test("a conflicting deletion request returns 409 instead of a retryable failure", async () => {
+ vi.stubEnv("AEGYO_ACCOUNT_DELETION_KEY","s".repeat(40)); vi.stubEnv("AEGYO_AUTH_BASE_URL",origin);
+ mocks.transaction.mockRejectedValue(new Error("request_conflict"));
+ const response=await POST(new NextRequest("https://example.test/api/internal/account-deletion",{method:"POST",headers:{authorization:`Bearer ${"s".repeat(40)}`,"content-type":"application/json"},body:JSON.stringify({requestId:"00000000-0000-4000-8000-000000000001",issuer:`${origin}/api/auth`,subject:"fan"})}));
+ expect(response.status).toBe(409); expect(await response.json()).toEqual({error:"request_conflict"});
+});
