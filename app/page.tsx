@@ -85,6 +85,10 @@ const EARN: { icon: string; name: L; note: L; href: string; cta: L; external?: b
   },
 ];
 
+// Card backgrounds for the six earn cards — a gradient stepping from dark pink
+// to magenta pink across the grid (index-matched to EARN).
+const EARN_COLORS = ["#8E1F57", "#A52265", "#BB2574", "#D22882", "#E82B91", "#FF2E9F"];
+
 // ── Reward tiers ────────────────────────────────────────────────────────────
 // Points redeem at ~$0.02 each, so the point cost tracks each reward's MSRP.
 const TIERS: { tier: L; icon: string; name: L; pts: L; usd?: string; accent: string; note: L; link?: string; linkLabel?: L }[] = [
@@ -150,6 +154,11 @@ export default function HomePage() {
                 <T en="Read the feed" es="Leer el feed" />
               </Link>
             </div>
+            <div style={{ marginTop: 14 }}>
+              <Link href="/how-it-works" style={{ color: "var(--ink-dim)", fontSize: "0.88rem", fontWeight: 700, textDecoration: "underline", textUnderlineOffset: 3 }}>
+                <T en="How it works →" es="Cómo funciona →" />
+              </Link>
+            </div>
           </div>
 
           {/* The plushie reel — the clearest picture of what points actually buy. */}
@@ -166,75 +175,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── How it works ─────────────────────────────────────────────────── */}
-      <section style={{ maxWidth: 1060, margin: "0 auto", padding: "60px 24px 10px" }}>
-        <h2 style={{ fontFamily: "var(--serif)", fontSize: "2rem", color: "var(--ink)", margin: "0 0 10px", textAlign: "center" }}>
-          <T en="How it works" es="Cómo funciona" />
-        </h2>
-        <p style={{ color: "var(--ink-dim)", fontSize: "1rem", textAlign: "center", maxWidth: 620, margin: "0 auto 36px", lineHeight: 1.65 }}>
-          <T
-            en="Three steps, and the middle one is the part most people miss."
-            es="Tres pasos, y el del medio es el que casi todos se saltan."
-          />
-        </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18 }} className="hm-steps">
-          <Step
-            n="01"
-            title={{ en: "Earn points", es: "Gana puntos" }}
-            body={{
-              en: "Play, dance, learn slang, vote in polls, annotate lyrics. Six ways to bank points, all listed below.",
-              es: "Juega, baila, aprende jerga, vota en encuestas, anota letras. Seis formas de sumar puntos, todas aquí abajo.",
-            }}
-          />
-          <Step
-            n="02"
-            title={{ en: "Climb the Arcade leaderboard", es: "Sube en el ranking del Arcade" }}
-            body={{
-              en: "Your standing on the leaderboard at arcade.aegyoarena.com/championship is what determines reward redemption. Points qualify you; your rank is what gets the reward handed over.",
-              es: "Tu posición en el ranking de arcade.aegyoarena.com/championship es lo que determina la redención. Los puntos te califican; tu rango es lo que hace que te entreguen la recompensa.",
-            }}
-            accent
-          />
-          <Step
-            n="03"
-            title={{ en: "Redeem something real", es: "Canjea algo real" }}
-            body={{
-              en: "Merch, BABY-T-S plushies, concert tickets. Physical things that ship to your door.",
-              es: "Merch, peluches BABY-T-S, boletos de concierto. Cosas físicas que llegan a tu puerta.",
-            }}
-          />
-        </div>
-
-        {/* Leaderboard callout — the mechanism that decides redemption. */}
-        <a
-          href="https://arcade.aegyoarena.com/championship"
-          className="lb-callout"
-          style={{
-            display: "flex", alignItems: "center", gap: 16, textDecoration: "none", marginTop: 20,
-            border: "1px solid var(--sakura)", borderRadius: 16, padding: "20px 24px",
-            background: "linear-gradient(120deg, rgba(255,111,168,0.16), rgba(255,111,168,0.03))",
-          }}
-        >
-          <span aria-hidden style={{ fontSize: "2.1rem", lineHeight: 1, flexShrink: 0 }}>🏆</span>
-          <span style={{ minWidth: 0 }}>
-            <span style={{ display: "block", fontWeight: 800, color: "var(--ink)", fontSize: "1.05rem", marginBottom: 3 }}>
-              <T en="The leaderboard decides who redeems" es="El ranking decide quién canjea" />
-            </span>
-            <span style={{ display: "block", fontSize: "0.9rem", color: "var(--ink-dim)", lineHeight: 1.55 }}>
-              <T
-                en="Rankings live at arcade.aegyoarena.com/championship and reset every month — so a new month is always a fresh shot at the top."
-                es="El ranking vive en arcade.aegyoarena.com/championship y se reinicia cada mes — así que cada mes es una nueva oportunidad de llegar arriba."
-              />
-            </span>
-          </span>
-          <span className="lb-cta" style={{ marginLeft: "auto", color: "var(--sakura)", fontWeight: 800, fontSize: "0.88rem", whiteSpace: "nowrap", flexShrink: 0 }}>
-            <T en="See the leaderboard →" es="Ver el ranking →" />
-          </span>
-        </a>
-      </section>
-
       {/* ── Ways to earn ─────────────────────────────────────────────────── */}
-      <section style={{ maxWidth: 1060, margin: "0 auto", padding: "56px 24px 10px" }}>
+      <section id="earn" style={{ maxWidth: 1060, margin: "0 auto", padding: "56px 24px 10px" }}>
         <h2 style={{ fontFamily: "var(--serif)", fontSize: "2rem", color: "var(--ink)", margin: "0 0 10px" }}>
           <T en="Six ways to earn points" es="Seis formas de ganar puntos" />
         </h2>
@@ -245,24 +187,25 @@ export default function HomePage() {
           />
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16 }}>
-          {EARN.map((e) => {
+          {EARN.map((e, i) => {
             const inner = (
               <>
                 <div style={{ fontSize: "1.9rem", lineHeight: 1, marginBottom: 12 }} aria-hidden>{e.icon}</div>
-                <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "var(--ink)", marginBottom: 8, lineHeight: 1.3 }}>
+                <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "#fff", marginBottom: 8, lineHeight: 1.3 }}>
                   <T en={e.name.en} es={e.name.es} />
                 </div>
-                <div style={{ color: "var(--ink-dim)", fontSize: "0.92rem", lineHeight: 1.6, marginBottom: 14 }}>
+                <div style={{ color: "rgba(255,255,255,0.9)", fontSize: "0.92rem", lineHeight: 1.6, marginBottom: 14 }}>
                   <T en={e.note.en} es={e.note.es} />
                 </div>
-                <div style={{ marginTop: "auto", color: "var(--sakura)", fontWeight: 800, fontSize: "0.85rem" }}>
+                <div style={{ marginTop: "auto", color: "#fff", fontWeight: 800, fontSize: "0.85rem" }}>
                   <T en={e.cta.en} es={e.cta.es} /> →
                 </div>
               </>
             );
             const style: React.CSSProperties = {
               display: "flex", flexDirection: "column", textDecoration: "none",
-              background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 16, padding: "24px 24px 22px",
+              background: EARN_COLORS[i % EARN_COLORS.length], border: "1px solid rgba(255,255,255,0.16)", borderRadius: 16, padding: "24px 24px 22px",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
             };
             // The Arcade is a separate subdomain app, so it gets a plain <a>.
             return e.external ? (
@@ -340,32 +283,9 @@ export default function HomePage() {
       <style>{`
         @media (max-width: 860px) {
           .hm-hero  { grid-template-columns: 1fr !important; gap: 28px !important; }
-          .hm-steps { grid-template-columns: 1fr !important; }
           .hm-tier  { flex-wrap: wrap; }
         }
       `}</style>
     </main>
-  );
-}
-
-function Step({ n, title, body, accent }: { n: string; title: L; body: L; accent?: boolean }) {
-  return (
-    <div
-      style={{
-        background: "var(--bg-card)",
-        border: `1px solid ${accent ? "var(--sakura)" : "var(--border)"}`,
-        borderRadius: 16, padding: "26px 24px",
-      }}
-    >
-      <div style={{ fontFamily: "var(--mono)", fontSize: "0.72rem", letterSpacing: "0.16em", color: accent ? "var(--sakura)" : "var(--ink-faint)", marginBottom: 12 }}>
-        {n}
-      </div>
-      <div style={{ fontWeight: 800, fontSize: "1.1rem", color: "var(--ink)", marginBottom: 9, lineHeight: 1.3 }}>
-        <T en={title.en} es={title.es} />
-      </div>
-      <div style={{ color: "var(--ink-dim)", fontSize: "0.93rem", lineHeight: 1.65 }}>
-        <T en={body.en} es={body.es} />
-      </div>
-    </div>
   );
 }

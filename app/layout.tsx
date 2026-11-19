@@ -85,7 +85,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {/* [label, href, labelEs] — label stays the canonical EN key, labelEs is display-only. */}
             <div>
               <div className="footer-col-title"><T en="Discover" es="Descubre" /></div>
-              {[["Artists", "/artists", "Artistas"], ["Collaborations", "/collabs", "Colaboraciones"], ["Signals", "/news", "Señales"], ["Slang", "/korean-slang", "Jerga"], ["Cities", "/cities", "Ciudades"], ["Events", "/events", "Eventos"], ["Search", "/search", "Buscar"]].map(([label, href, labelEs]) => (
+              {[["How it works", "/how-it-works", "Cómo funciona"], ["Artists", "/artists", "Artistas"], ["Collaborations", "/collabs", "Colaboraciones"], ["Signals", "/news", "Señales"], ["Slang", "/korean-slang", "Jerga"], ["Cities", "/cities", "Ciudades"], ["Events", "/events", "Eventos"], ["Search", "/search", "Buscar"]].map(([label, href, labelEs]) => (
                 <Link key={href} href={href} style={{ display: "block", fontSize: "1rem", fontWeight: 300, color: "var(--ink-dim)", textDecoration: "none", marginBottom: 10 }}>
                   <T en={label} es={labelEs} />
                 </Link>

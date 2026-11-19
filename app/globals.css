@@ -587,3 +587,9 @@ body:has(.chat-page) .genius-nav { position: relative !important; }
   .hm-tier .hm-tier-pts { width: 100%; text-align: center !important; }
   .hm-tier .hm-tier-cta { white-space: nowrap; }
 }
+
+/* How-it-works steps grid (also used on the homepage before it was moved) —
+   collapse the 3-up to a single column on narrow screens. */
+@media (max-width: 860px) {
+  .hm-steps { grid-template-columns: 1fr !important; }
+}
