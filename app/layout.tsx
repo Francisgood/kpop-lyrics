@@ -139,6 +139,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </span>
             <span><T en="Made with ♡ by the fandom" es="Hecho con ♡ por el fandom" /></span>
           </div>
+          {/* Registered office of the operating entity. */}
+          <div style={{ maxWidth: 1240, margin: "0 auto", padding: "0 24px 28px", fontSize: "0.72rem", color: "var(--ink-faint)", fontFamily: "var(--mono)", letterSpacing: "0.04em" }}>
+            Aegyo Arena LLC · 325 Hudson Street, Floor 4, New York, NY 10013
+          </div>
         </footer>
         {process.env.AEGYO_CHAT_ENABLED === "true" && <ChatRegionGate><FanChatbox canPost={hasAegyoAccountSession(session) && canWriteChatInEnvironment(session?.user.email)} signedIn={isLoggedIn} previewRestricted={isLoggedIn && !canWriteChatInEnvironment(session?.user.email)} /></ChatRegionGate>}
 

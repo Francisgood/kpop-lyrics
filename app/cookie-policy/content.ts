@@ -32,4 +32,4 @@ When you reject a non-essential category, the cookies in that category are not s
 5. Changes to This Policy
 We may update this Cookie Policy from time to time. When we make material changes, we will update the "Effective Date" above. Your continued use of the Service after an update takes effect constitutes your acceptance of the updated policy.
 6. Contact Us
-If you have questions about this Cookie Policy or our use of cookies, please contact us at privacy@aegyoarena.com. For more about how we handle personal information generally, see our Privacy Policy at https://www.aegyoarena.com/privacy-policy.`;
+If you have questions about this Cookie Policy or our use of cookies, please contact us at privacy@aegyoarena.com. You can also reach us by post at Aegyo Arena LLC, 325 Hudson Street, Floor 4, New York, NY 10013. For more about how we handle personal information generally, see our Privacy Policy at https://www.aegyoarena.com/privacy-policy.`;
