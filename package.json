@@ -53,6 +53,9 @@
     "typescript": "^5.7.0",
     "vitest": "4.1.11"
   },
+  "overrides": {
+    "magic-string": "0.30.21"
+  },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   }
