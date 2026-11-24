@@ -81,6 +81,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 />
               </div>
               <SocialLinks />
+              <div style={{ marginTop: 24 }}>
+                <div className="footer-col-title"><T en="Contact" es="Contacto" /></div>
+                <a href="mailto:hello@aegyoarena.com" style={{ display: "block", fontSize: "1rem", fontWeight: 300, color: "var(--ink-dim)", textDecoration: "none", marginBottom: 8 }}>hello@aegyoarena.com</a>
+                <address style={{ fontStyle: "normal", fontSize: "0.95rem", fontWeight: 300, lineHeight: 1.6, color: "var(--ink-faint)" }}>
+                  Aegyo Arena LLC<br />325 Hudson Street, Floor 4<br />New York, NY 10013
+                </address>
+              </div>
             </div>
             {/* [label, href, labelEs] — label stays the canonical EN key, labelEs is display-only. */}
             <div>
@@ -138,10 +145,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </button>
             </span>
             <span><T en="Made with ♡ by the fandom" es="Hecho con ♡ por el fandom" /></span>
-          </div>
-          {/* Registered office of the operating entity. */}
-          <div style={{ maxWidth: 1240, margin: "0 auto", padding: "0 24px 28px", fontSize: "0.72rem", color: "var(--ink-faint)", fontFamily: "var(--mono)", letterSpacing: "0.04em" }}>
-            Aegyo Arena LLC · 325 Hudson Street, Floor 4, New York, NY 10013
           </div>
         </footer>
         {process.env.AEGYO_CHAT_ENABLED === "true" && <ChatRegionGate><FanChatbox canPost={hasAegyoAccountSession(session) && canWriteChatInEnvironment(session?.user.email)} signedIn={isLoggedIn} previewRestricted={isLoggedIn && !canWriteChatInEnvironment(session?.user.email)} /></ChatRegionGate>}
